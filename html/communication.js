@@ -117,7 +117,7 @@ function ServerConnection(host, port) {
         var l = observers.length;
         for (var i = 0; i < l; i++) {
             if (observers[i].cmdType == msg.type) {
-                observers[i].handler();
+                observers[i].handler(msg);
             }
         }
     }

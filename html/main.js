@@ -36,6 +36,11 @@ function connect() {
         serverConnection.send(makeSetCmd("name", name));
         serverConnection.send(makeSimpleCmd("create", "name", name));
         serverConnection.send(makeSimpleCmd("join", "game_id", 0));
+        
+        serverConnection.addObserver(new Observer("player_won", function(msg) {
+            var s = msg.playerName + " hat die Aufgabe geloest!!";
+            infoBox(s);
+        }));
     });
 }
 
@@ -43,3 +48,17 @@ function connect() {
 function openMainFrame() {
     show("mainFrame");
 }
+
+function infoBox(message) {
+    byID("infoboxContent").innerHTML = message;
+    byID("infobox").style.display = "block";
+    byID("infobox").style.opacity = 1;
+    setTimeout(function() {
+        byID("infobox").style.opacity = 0;
+    }, 3000);
+    setTimeout(function() {
+        byID("infobox").style.display = "none";
+    }, 3500);
+}
+
+
