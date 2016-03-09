@@ -87,18 +87,21 @@ public class Game implements Runnable {
         // einen countdown starten zu können. Dann wird 30 Sekunden gewartet
 
         JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
-
+        int sekunden = 30;
         try {
-            j.put("time", 30);
+            j.put("time", sekunden);
             for (int i = 0; i < joinedPlayers.size(); i++) {
-               Player p = joinedPlayers.get(i);
+                Player p = joinedPlayers.get(i);
                 p.makePushRequest(new PushRequest(j));
             }
-            this.wait(30000);
+            this.wait(sekunden * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        if (alreadyRunning == false){
+            exercise();
         }
     }
 
@@ -137,15 +140,30 @@ public class Game implements Runnable {
         return "";
     }
 
+    boolean alreadyRunning;
+
     public boolean playerAnswered(Player p, int answer) {
+        boolean allFinished = true;
         broadcastScoreboard();
+        Score s = p.getScore();
         if (answer == result) {
             sendPlayerWon(p.getName());
-            Score s = p.getScore();
             s.setScoreValue(s.getScoreValue() + difficulty);
-            exercise();
+            p.getName();
+            p.FINISHED = true;
+            for(int i = 0;i < joinedPlayers.size();i++){
+                p = joinedPlayers.get(i);
+                if(p.FINISHED == false){
+                    allFinished = false;
+                }
+            }
+            if(allFinished == true){
+                alreadyRunning = true;
+                exercise();
+            }
             return true;
         } else {
+            s.setScoreValue(s.getScoreValue() - 1);
             return false;
         }
     }
