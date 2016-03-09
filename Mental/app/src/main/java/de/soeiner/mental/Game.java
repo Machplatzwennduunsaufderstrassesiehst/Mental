@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by sven on 13.02.16.
+ * Created by malte on 13.02.16.
  */
 public class Game implements Runnable {
     //test
