@@ -82,7 +82,27 @@ public class Game implements Runnable {
             Player p = joinedPlayers.get(i);
             p.sendExercise(createExercise());
         }
+
+        //der folgende Code schickt allen spielern einen integer (hier 30) um
+        // einen countdown starten zu können. Dann wird 30 Sekunden gewartet
+
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
+
+        try {
+            j.put("time", 30);
+            for (int i = 0; i < joinedPlayers.size(); i++) {
+               Player p = joinedPlayers.get(i);
+                p.makePushRequest(new PushRequest(j));
+            }
+            this.wait(30000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
+
+
 
     public String createExercise(){
 
@@ -122,7 +142,7 @@ public class Game implements Runnable {
         if (answer == result) {
             sendPlayerWon(p.getName());
             Score s = p.getScore();
-            s.setScoreValue(s.getScoreValue()+difficulty);
+            s.setScoreValue(s.getScoreValue() + difficulty);
             exercise();
             return true;
         } else {
