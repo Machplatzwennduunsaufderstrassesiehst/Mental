@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by sven on 13.02.16.
+ * Created by malte on 13.02.16.
  */
 public class Game implements Runnable {
 
@@ -23,6 +23,7 @@ public class Game implements Runnable {
     private String name = "";
     private String description = "";
     private ArrayList<Player> joinedPlayers;
+    private int difficulty = 0;
 
     private int result = 0;
     private Score[] scoreboard;
@@ -76,19 +77,52 @@ public class Game implements Runnable {
     }
 
     public void exercise() {
-        int a = (int) (Math.random() * 100);
-        int b = (int) (Math.random() * 100);
-        result = a + b;
+
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
-            p.sendExercise(a + " + " + b);
+            p.sendExercise(createExercise());
         }
+    }
+
+    public String createExercise(){
+
+        int temp;
+        int a = (int) (Math.random() * 5 * difficulty/2)+1;
+        int b = (int) (Math.random() * 5 * difficulty/2)+1;
+
+        if(difficulty % 3 == 0){
+            if(a < b){
+                temp = a;
+                a = b;
+                b = temp;
+                result = a - b;
+                return a+" - "+b;
+            }
+        }else{
+            if(difficulty % 5 == 0){
+                while(a * b > 1000){
+                    a = (int) (a/10);
+                    b = (int) (b/10);
+                }
+                result = a * b;
+                return a+" * "+b;
+
+            }else {
+                result = a + b;
+                return a+" + "+b;
+            }
+        }
+
+        difficulty++;
+        return "";
     }
 
     public boolean playerAnswered(Player p, int answer) {
         broadcastScoreboard();
         if (answer == result) {
             sendPlayerWon(p.getName());
+            Score s = p.getScore();
+            s.setScoreValue(s.getScoreValue()+difficulty);
             exercise();
             return true;
         } else {
@@ -102,7 +136,7 @@ public class Game implements Runnable {
 
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_PLAYER_WON);
             try {
-                j.put("name", playerName);
+                j.put("playerName", playerName);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

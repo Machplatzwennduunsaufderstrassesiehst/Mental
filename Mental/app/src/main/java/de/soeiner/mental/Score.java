@@ -26,6 +26,15 @@ public class Score extends JSONObject{
         }
     }
 
+    public int getScoreValue() {
+        try {
+            return this.getInt("scoreValue");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public void setScoreValue(int scoreValue) {
         this.remove("scoreValue");
         try {
