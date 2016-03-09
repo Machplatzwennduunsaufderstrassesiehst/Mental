@@ -13,7 +13,7 @@ public class CmdRequest {
     public static final String SEND_GAMES = "{type: '_get_games_'}";
     public static final String SEND_PLAYER_WON = "{type: 'player_won'}";
     public static final String SEND_ANSWER_FEEDBACK = "{type: '_answer_'}";
-    public static final String SEND_TIME_LEFT = "{type: 'time_left', time: 'seconds'}";
+    public static final String SEND_TIME_LEFT = "{type: 'time_left'}";
 
     private JSONObject cmd;
 
