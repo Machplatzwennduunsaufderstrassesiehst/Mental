@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Created by sven on 13.02.16.
  */
 public class Game implements Runnable {
-
+    //test
     private static ArrayList<Game> games;
 
     static {
