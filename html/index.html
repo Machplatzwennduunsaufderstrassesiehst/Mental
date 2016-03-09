@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html encoding="UNICODE">
+<head>
+    <link rel="stylesheet" href="style.css"/>
+    <script src="utils.js" type="text/javascript"></script>
+    <script src="commandSet.js" type="text/javascript"></script>
+    <script src="communication.js" type="text/javascript"></script>
+    <script src="main.js" type="text/javascript"></script>
+</head>
+<body>
+    <div id="menu">
+        <h3>Mental</h3>
+    </div>
+    <div id="main">
+        <div id="welcome" class="frame">
+            <p>
+                <input placeholder="User Name" type="text" id="name" onkeyup="nameChanged()"/>
+                <br>
+                <input playceholder="Server IP" type="text" id="ip" />
+                <br>
+                <span onclick="connect()" class="btn">Connect</span> 
+            </p>
+        </div>
+        <div id="mainFrame" class="frame">
+            <p>
+                <table id="numpadTable">
+                    <tr><td colspan=3>
+                        <input style="margin:auto;" placeholder="Answer" type="number" id="answer" />
+                        <br><br>
+                    </td></tr>
+                    <tr>
+                        <td><span class="btn" onclick="numpad(7)">7</span></td>
+                        <td><span class="btn" onclick="numpad(8)">8</span></td>
+                        <td><span class="btn" onclick="numpad(9)">9</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="btn" onclick="numpad(4)">4</span></td>
+                        <td><span class="btn" onclick="numpad(5)">5</span></td>
+                        <td><span class="btn" onclick="numpad(6)">6</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="btn" onclick="numpad(1)">1</span></td>
+                        <td><span class="btn" onclick="numpad(2)">2</span></td>
+                        <td><span class="btn" onclick="numpad(3)">3</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="btn" onclick="numpadDel()">del</span></td>
+                        <td><span class="btn" onclick="numpad(0)">0</span></td>
+                        <td><span class="btn" onclick="sendAnswer()">OK</span></td>
+                    </tr>
+                </table>
+                <br>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
