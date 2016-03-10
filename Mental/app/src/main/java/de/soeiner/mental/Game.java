@@ -26,7 +26,6 @@ public class Game implements Runnable {
     private int difficulty = 0;
 
     private int result = 0;
-    private Score[] scoreboard;
 
     public Game(String name) {
         games.add(this);
@@ -48,32 +47,15 @@ public class Game implements Runnable {
         games.remove(this);
     }
 
-    public void updateScoreBoardSize() {
-        scoreboard = new Score[joinedPlayers.size()];
-        for (int i = 0; i < joinedPlayers.size(); i++) {
-            Score s = joinedPlayers.get(i).getScore();
-            scoreboard[i] = s;
-        }
-        broadcastScoreboard();
-    }
-
-    public void broadcastScoreboard() {
-        for (Player p : joinedPlayers) {
-            p.sendScoreBoard(scoreboard);
-        }
-    }
-
     public void join(Player p) {
         if (!joinedPlayers.contains(p)) {
             joinedPlayers.add(p);
         }
         p.updateScore();
-        updateScoreBoardSize();
     }
 
     public void leave(Player p) {
         joinedPlayers.remove(p);
-        updateScoreBoardSize();
     }
 
     public void exercise() {
@@ -106,8 +88,6 @@ public class Game implements Runnable {
             exercise();
         }
     }
-
-
 
     public String createExercise(){
 
@@ -146,7 +126,6 @@ public class Game implements Runnable {
 
     public boolean playerAnswered(Player p, int answer) {
         boolean allFinished = true;
-        broadcastScoreboard();
         Score s = p.getScore();
         if (answer == result) {
             sendPlayerWon(p.getName());
