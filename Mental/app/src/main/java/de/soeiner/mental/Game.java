@@ -81,13 +81,16 @@ public class Game implements Runnable {
         alreadyRunning = false;
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
-            p.sendExercise(createExercise());
+            p.FINISHED = false;
+            String Aufgabe = createExercise();
+            p.sendExercise(Aufgabe);
+            System.out.println("AUFGABE "+Aufgabe+" wurde geschickt");
         }
 
         //der folgende Code schickt allen spielern einen integer (hier 30) um
         // einen countdown starten zu können. Dann wird 30 Sekunden gewartet
 
-        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
+       /* JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
         int sekunden = 30;
         try {
             j.put("time", sekunden);
@@ -95,7 +98,9 @@ public class Game implements Runnable {
                 Player p = joinedPlayers.get(i);
                 p.makePushRequest(new PushRequest(j));
             }
-            this.wait(sekunden * 1000);
+            for(int i = 0; i<sekunden*1000;i++) {
+                Thread.sleep(10);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -103,13 +108,14 @@ public class Game implements Runnable {
         }
         if (alreadyRunning == false){
             exercise();
-        }
+        }*/
     }
 
 
 
     public String createExercise(){
 
+        System.out.println("createExercise() wuurde aufgerufen");
         int temp;
         int a = (int) (Math.random() * 5 * difficulty/2)+1;
         int b = (int) (Math.random() * 5 * difficulty/2)+1;
@@ -119,9 +125,11 @@ public class Game implements Runnable {
                 temp = a;
                 a = b;
                 b = temp;
-                result = a - b;
-                return a+" - "+b;
             }
+                result = a - b;
+                difficulty++;
+                return a+" - "+b;
+
         }else{
             if(difficulty % 5 == 0){
                 while(a * b > 1000){
@@ -129,21 +137,21 @@ public class Game implements Runnable {
                     b = (int) (b/10);
                 }
                 result = a * b;
+                difficulty++;
                 return a+" * "+b;
 
             }else {
                 result = a + b;
+                difficulty++;
                 return a+" + "+b;
             }
         }
-
-        difficulty++;
-        return "";
     }
 
     boolean alreadyRunning;
 
     public boolean playerAnswered(Player p, int answer) {
+        System.out.println("spieler hat geantwortet");
         boolean allFinished = true;
         Score s = p.getScore();
         if (answer == result) {
@@ -195,6 +203,11 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
+        while(joinedPlayers.size() == 0){
+            try {
+                Thread.sleep(100);
+            }catch(Exception e){}
+        }
         exercise();
     }
 }
