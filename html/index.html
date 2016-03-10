@@ -25,10 +25,18 @@
         <div id="mainFrame" class="frame">
             <p>
                 <table id="numpadTable">
-                    <tr><td colspan=3>
-                        <input style="margin:auto;" placeholder="Answer" type="number" id="answer" />
-                        <br><br>
-                    </td></tr>
+                    <tr>
+                        <td colspan=2 style="text-align: center;">
+                            <h3 style="margin-bottom: 0.8em;" id="exercise"></h3>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan=2 style="text-align: center;">
+                            <input style="margin:auto;" placeholder="Answer" type="number" id="answer" />
+                            <br><br>
+                        </td><td><span id="countdown"></span></td>
+                    </tr>
                     <tr>
                         <td><span class="btn" onclick="numpad(7)">7</span></td>
                         <td><span class="btn" onclick="numpad(8)">8</span></td>

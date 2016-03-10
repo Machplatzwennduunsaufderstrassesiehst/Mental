@@ -74,6 +74,7 @@ function ServerConnection(host, port) {
             if (currentRequest != null && "_"+currentRequest.jsonCmd.type+"_" == msg.type) {
                 removeRequest(currentRequest);
                 currentRequest.handler(msg);
+                currentRequest = null;
             } else {
                 notify(msg);
             }
@@ -144,7 +145,7 @@ function ServerConnection(host, port) {
             currentRequest = commandRequestQueue.shift();
         }
         if (currentRequest != null) {
-            send(serverRemote.currentRequest.jsonCmd);
+            send(currentRequest.jsonCmd);
         }
         setTimeout(function(){startGetRequestScheduler();},actRate);
     }
