@@ -79,7 +79,6 @@ public class Game implements Runnable {
     public void exercise() {
 
         alreadyRunning = false;
-
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             p.sendExercise(createExercise());
@@ -146,7 +145,6 @@ public class Game implements Runnable {
 
     public boolean playerAnswered(Player p, int answer) {
         boolean allFinished = true;
-        broadcastScoreboard();
         Score s = p.getScore();
         if (answer == result) {
             sendPlayerWon(p.getName());
@@ -163,11 +161,11 @@ public class Game implements Runnable {
                 alreadyRunning = true;
                 exercise();
             }
-            p.sendScoreBoard(getPlayerScores());
+            broadcastScoreboard();
             return true;
         } else {
             s.setScoreValue(s.getScoreValue() - 1);
-            p.sendScoreBoard(getPlayerScores());
+            broadcastScoreboard();
             return false;
         }
     }
