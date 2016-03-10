@@ -52,10 +52,12 @@ public class Game implements Runnable {
             joinedPlayers.add(p);
         }
         p.updateScore();
+        p.sendScoreBoard(getPlayerScores());
     }
 
     public void leave(Player p) {
         joinedPlayers.remove(p);
+        p.sendScoreBoard(getPlayerScores());
     }
 
     public void exercise() {
