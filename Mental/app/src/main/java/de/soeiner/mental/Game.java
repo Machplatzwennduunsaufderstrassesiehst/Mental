@@ -78,6 +78,8 @@ public class Game implements Runnable {
 
     public void exercise() {
 
+        alreadyRunning = false;
+
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             p.sendExercise(createExercise());
@@ -161,11 +163,22 @@ public class Game implements Runnable {
                 alreadyRunning = true;
                 exercise();
             }
+            p.sendScoreBoard(getPlayerScores());
             return true;
         } else {
             s.setScoreValue(s.getScoreValue() - 1);
+            p.sendScoreBoard(getPlayerScores());
             return false;
         }
+    }
+
+    public Score[] getPlayerScores(){
+        Score[] playerscores = new Score[joinedPlayers.size()];
+        for(int i = 0; i < joinedPlayers.size();i++) {
+            Player p = joinedPlayers.get(i);
+            playerscores[i] = p.getScore();
+        }
+        return playerscores;
     }
 
     public void sendPlayerWon(String playerName) {
