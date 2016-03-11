@@ -81,6 +81,7 @@ public class Game implements Runnable {
         alreadyRunning = false;
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
+            p.FINISHED = false;
             p.sendExercise(createExercise());
         }
 
@@ -147,8 +148,11 @@ public class Game implements Runnable {
         boolean allFinished = true;
         Score s = p.getScore();
         if (answer == result) {
-            sendPlayerWon(p.getName());
-            s.setScoreValue(s.getScoreValue() + difficulty);
+            s.setScoreValue(s.getScoreValue() + getPoints());
+            sendExerciseSolvedMessage(p.getName(), getRang());
+            if(s.getScoreValue() > 100){
+                sendPlayerWon(p.getName());
+            }
             p.getName();
             p.FINISHED = true;
             for(int i = 0;i < joinedPlayers.size();i++){
@@ -164,22 +168,50 @@ public class Game implements Runnable {
             broadcastScoreboard();
             return true;
         } else {
-            s.setScoreValue(s.getScoreValue() - 1);
-            broadcastScoreboard();
+            if(s.getScoreValue() > 0) {
+                s.setScoreValue(s.getScoreValue() - 1);
+                broadcastScoreboard();
+            }
             return false;
         }
     }
 
-    public Score[] getPlayerScores(){
-        Score[] playerscores = new Score[joinedPlayers.size()];
-        for(int i = 0; i < joinedPlayers.size();i++) {
-            Player p = joinedPlayers.get(i);
-            playerscores[i] = p.getScore();
-        }
-        return playerscores;
+    private int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
+    //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
+        int points = difficulty;
+            for(int i = 0; i<getRang();i++){
+                points = points/2;
+            }
+        return points;
     }
 
-    public void sendPlayerWon(String playerName) {
+    private int getRang(){ //methode berechnet wie viele
+    // Spieler die Aufgabe schon gelöst haben
+        int rang = 0;
+        for(int i = 0; i<joinedPlayers.size();i++){
+            Player p = joinedPlayers.get(i);
+            if(p.FINISHED == true){
+                rang++;
+            }
+        }
+        return rang;
+    }
+    public void sendExerciseSolvedMessage(String playerName, int rang) {
+        String m = playerName+" hat die Aufgabe als "+(rang+1)+". gelöst!";
+        for (int i = 0; i < joinedPlayers.size(); i++) {
+            Player p = joinedPlayers.get(i);
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_EXERCISE_SOLVED_MESSAGE);
+            try {
+                j.put("message", m);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            p.makePushRequest(new PushRequest(j));
+        }
+    }
+
+    public void sendPlayerWon(String playerName) { //wird nur aufgerufen wenn Spieler das Spiel gewonnen hat
+        //dem scoreboard können nun auch der zweite und dritte platz entnommen werden
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
 
