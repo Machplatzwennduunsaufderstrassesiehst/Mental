@@ -14,7 +14,7 @@ public class Player extends ClientConnection {
     private String name;
     private Score score;
     private Game game;
-    public boolean FINISHED;
+    public boolean finished;
 
     public Player (WebSocket socket) {
         super(socket);

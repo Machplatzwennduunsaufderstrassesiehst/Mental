@@ -26,9 +26,11 @@ public class Game implements Runnable {
     private int difficulty = 0;
 
     private int EXERCISE_TIMEOUT = 30;
+    private int GAME_TIMEOUT = 30; //für pause zwischen den spielen mit siegerbildschirm
 
     private int result = 0;
     private Score[] scoreboard;
+    boolean gameIsLive;
 
     public Game(String name) {
         games.add(this);
@@ -82,7 +84,7 @@ public class Game implements Runnable {
         String exercise = createExercise();
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
-            p.FINISHED = false;
+            p.finished = false;
             p.sendExercise(exercise);
         }
 
@@ -143,16 +145,16 @@ public class Game implements Runnable {
         boolean allFinished = true;
         Score s = player.getScore();
         synchronized (this) {
-            if (answer == result && !player.FINISHED) { // sonst kann man 2x mal punkte absahnen
+            if (answer == result && !player.finished) { // sonst kann man 2x mal punkte absahnen
                 s.setScoreValue(s.getScoreValue() + getPoints());
                 sendExerciseSolvedMessage(player.getName(), getRang());
                 if(s.getScoreValue() > 100){
                     sendPlayerWon(player.getName());
                 }
-                player.FINISHED = true;
+                player.finished = true;
                 for (int i = 0; i < joinedPlayers.size(); i++) {
                     Player p = joinedPlayers.get(i);
-                    if (!p.FINISHED) {
+                    if (!p.finished) {
                         allFinished = false;
                     }
                 }
@@ -185,7 +187,7 @@ public class Game implements Runnable {
         int rang = 0;
         for(int i = 0; i<joinedPlayers.size();i++){
             Player p = joinedPlayers.get(i);
-            if(p.FINISHED == true){
+            if(p.finished == true){
                 rang++;
             }
         }
@@ -208,12 +210,14 @@ public class Game implements Runnable {
 
     public void sendPlayerWon(String playerName) { //wird nur aufgerufen wenn Spieler das Spiel gewonnen hat
         //dem scoreboard können nun auch der zweite und dritte platz entnommen werden
+        gameIsLive = false;
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
 
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_PLAYER_WON);
             try {
                 j.put("playerName", playerName);
+                j.put("gameTimeout", GAME_TIMEOUT);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -223,11 +227,6 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
-        while(joinedPlayers.size() == 0){
-            try {
-                Thread.sleep(100);
-            }catch(Exception e){}
-        }
         loop();
     }
 
@@ -235,14 +234,30 @@ public class Game implements Runnable {
         // jetzt gibt es hier so eine art game loop, der die Abfolge managed
         // vllt besser als das immer rekursiv aufzurufen wie ich das anfangs gemacht habe
         // spaeter dann vllt auch Match management?
-        while (true) {
-            broadcastExercise();
-            synchronized (this) { // ist angefordert damit man wait oder notify nutzen kann
-                try {
-                    wait(EXERCISE_TIMEOUT * 1000);
-                } catch (InterruptedException e) {
+        while(joinedPlayers.size() == 0){ //Warten bis spieler das Spiel betreten hat
+            try {
+                Thread.sleep(100);
+            }catch(Exception e){}
+        }
+        gameIsLive = true;
+
+        while (gameIsLive) {
+            if(joinedPlayers.size() == 0){ //wenn keine spieler mehr da sin
+                loop(); //springe zurück in den Wartezustand
+            }else {
+                broadcastExercise();
+                synchronized (this) { // ist angefordert damit man wait oder notify nutzen kann
+                     try {
+                           wait(EXERCISE_TIMEOUT * 1000);
+                        } catch (InterruptedException e) {
+                    }
                 }
             }
         }
+        try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
+            wait(GAME_TIMEOUT * 1000);
+        } catch (InterruptedException e) {
+        }
+        loop();
     }
 }
