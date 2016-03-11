@@ -25,6 +25,8 @@ public class Game implements Runnable {
     private ArrayList<Player> joinedPlayers;
     private int difficulty = 0;
 
+    private int EXERCISE_TIMEOUT = 30;
+
     private int result = 0;
     private Score[] scoreboard;
 
@@ -76,39 +78,27 @@ public class Game implements Runnable {
         updateScoreBoardSize();
     }
 
-    public void exercise() {
-
-        alreadyRunning = false;
+    public void broadcastExercise() {
+        String exercise = createExercise();
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             p.FINISHED = false;
-            String Aufgabe = createExercise();
-            p.sendExercise(Aufgabe);
-            System.out.println("AUFGABE "+Aufgabe+" wurde geschickt");
+            p.sendExercise(exercise);
         }
 
         //der folgende Code schickt allen spielern einen integer (hier 30) um
         // einen countdown starten zu können. Dann wird 30 Sekunden gewartet
 
-       /* JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
-        int sekunden = 30;
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
         try {
-            j.put("time", sekunden);
+            j.put("time", EXERCISE_TIMEOUT);
             for (int i = 0; i < joinedPlayers.size(); i++) {
                 Player p = joinedPlayers.get(i);
                 p.makePushRequest(new PushRequest(j));
             }
-            for(int i = 0; i<sekunden*1000;i++) {
-                Thread.sleep(10);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (alreadyRunning == false){
-            exercise();
-        }*/
     }
 
 
@@ -148,44 +138,43 @@ public class Game implements Runnable {
         }
     }
 
-    boolean alreadyRunning;
-
-    public boolean playerAnswered(Player p, int answer) {
+    public boolean playerAnswered(Player player, int answer) {
         System.out.println("spieler hat geantwortet");
         boolean allFinished = true;
-        Score s = p.getScore();
-        if (answer == result) {
-            sendPlayerWon(p.getName());
-            s.setScoreValue(s.getScoreValue() + difficulty);
-            p.getName();
-            p.FINISHED = true;
-            for(int i = 0;i < joinedPlayers.size();i++){
-                p = joinedPlayers.get(i);
-                if(p.FINISHED == false){
-                    allFinished = false;
+        Score s = player.getScore();
+        synchronized (this) {
+            if (answer == result && !player.FINISHED) { // sonst kann man 2x mal punkte absahnen
+                sendPlayerWon(player.getName());
+                s.setScoreValue(s.getScoreValue() + difficulty);
+                player.FINISHED = true;
+                for (int i = 0; i < joinedPlayers.size(); i++) {
+                    Player p = joinedPlayers.get(i);
+                    if (!p.FINISHED) {
+                        allFinished = false;
+                    }
                 }
+                if (allFinished) {
+                    notify(); // beendet das wait in createExercise() vorzeitig wenn alle fertig sind
+                }
+                broadcastScoreboard();
+                return true;
+            } else {
+                s.setScoreValue(s.getScoreValue() - 1);
+                broadcastScoreboard();
+                return false;
             }
-            if(allFinished == true){
-                alreadyRunning = true;
-                exercise();
-            }
-            broadcastScoreboard();
-            return true;
-        } else {
-            s.setScoreValue(s.getScoreValue() - 1);
-            broadcastScoreboard();
-            return false;
         }
     }
 
-    public Score[] getPlayerScores(){
+    // die kann auch raus oder?
+    /*public Score[] getPlayerScores(){
         Score[] playerscores = new Score[joinedPlayers.size()];
         for(int i = 0; i < joinedPlayers.size();i++) {
             Player p = joinedPlayers.get(i);
             playerscores[i] = p.getScore();
         }
         return playerscores;
-    }
+    }*/
 
     public void sendPlayerWon(String playerName) {
         for (int i = 0; i < joinedPlayers.size(); i++) {
@@ -208,6 +197,17 @@ public class Game implements Runnable {
                 Thread.sleep(100);
             }catch(Exception e){}
         }
-        exercise();
+
+        // jetzt gibt es hier so eine art game loop, der die Abfolge managed
+        // vllt besser als das immer rekursiv aufzurufen wie ich das anfangs gemacht habe
+        // spaeter dann vllt auch Match management?
+        while (true) {
+            broadcastExercise();
+            synchronized (this) { // ist angefordert damit man wait oder notify nutzen kann
+                try {
+                    wait(EXERCISE_TIMEOUT * 1000);
+                } catch (InterruptedException e) {}
+            }
+        }
     }
 }
