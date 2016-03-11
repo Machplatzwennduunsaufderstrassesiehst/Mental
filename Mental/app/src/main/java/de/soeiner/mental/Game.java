@@ -154,7 +154,7 @@ public class Game implements Runnable {
                     }
                 }
                 if (allFinished) {
-                    notify(); // beendet das wait in createExercise() vorzeitig wenn alle fertig sind
+                    notify(); // beendet das wait in loop() vorzeitig wenn alle fertig sind
                 }
                 broadcastScoreboard();
                 return true;
@@ -197,7 +197,10 @@ public class Game implements Runnable {
                 Thread.sleep(100);
             }catch(Exception e){}
         }
+        loop();
+    }
 
+    public void loop() {
         // jetzt gibt es hier so eine art game loop, der die Abfolge managed
         // vllt besser als das immer rekursiv aufzurufen wie ich das anfangs gemacht habe
         // spaeter dann vllt auch Match management?
@@ -206,7 +209,8 @@ public class Game implements Runnable {
             synchronized (this) { // ist angefordert damit man wait oder notify nutzen kann
                 try {
                     wait(EXERCISE_TIMEOUT * 1000);
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException e) {
+                }
             }
         }
     }
