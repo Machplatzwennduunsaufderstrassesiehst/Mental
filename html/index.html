@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html encoding="UNICODE">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <link rel="stylesheet" href="jQuery/jquery.mobile-1.2.1.min.css" />
+    <script src="jQuery/jquery-1.8.3.min.js"></script>
+    <script src="jQuery/jquery.mobile-1.2.1.min.js"></script>
+    
     <link rel="stylesheet" href="style.css"/>
     <script src="utils.js" type="text/javascript"></script>
     <script src="commandSet.js" type="text/javascript"></script>
@@ -8,58 +13,48 @@
     <script src="main.js" type="text/javascript"></script>
 </head>
 <body>
-    <div id="infobox"><p id="infoboxContent">test</p></div>
-    <div id="menu">
-        <h3>Mental</h3>
-    </div>
-    <div id="main">
-        <div id="welcome" class="frame">
-            <p>
-                <input placeholder="User Name" type="text" id="name" onkeyup="nameChanged()"/>
-                <br>
-                <input placeholder="Server IP" type="text" id="ip" />
-                <br>
-                <span onclick="connect()" class="btn">Connect</span> 
-            </p>
+    <div data-role="page">
+        <div id="infobox"><p id="infoboxContent">test</p></div>
+        <div id="menu" data-role="header">
+            <h2>Mental</h2>
         </div>
-        <div id="mainFrame" class="frame">
-            <p>
+        <div id="main" data-role="content">
+            <div id="welcome" class="frame">
+                <p>
+                    <input placeholder="User Name" type="text" id="name" onkeyup="nameChanged()"/>
+                    <input placeholder="Server IP" type="text" id="ip" />
+                    <a id="connect" href="#" onclick="connect()" class="btn" data-role="button">Connect</a> 
+                </p>
+            </div>
+            <div id="mainFrame" class="frame" style="text-align:center;">
+                <span style="margin: auto auto 15px auto;display:inline-block;">
+                    <span id="exercise" style="margin-bottom: 0.8em;font-size: 1.2em;"></span>&nbsp;
+                    <input style="width:8em;display:inline;" placeholder="Antwort?" type="number" id="answer"/>
+                    <span id="countdown"></span>
+                </span>
                 <table id="numpadTable">
                     <tr>
-                        <td colspan=2 style="text-align: center;">
-                            <h3 style="margin-bottom: 0.8em;" id="exercise"></h3>
-                        </td>
-                        <td></td>
+                        <td><span class="btn" onmousedown="numpad(7)">7</span></td>
+                        <td><span class="btn" onmousedown="numpad(8)">8</span></td>
+                        <td><span class="btn" onmousedown="numpad(9)">9</span></td>
                     </tr>
                     <tr>
-                        <td colspan=2 style="text-align: center;">
-                            <input style="margin:auto;" placeholder="Answer" type="number" id="answer" />
-                            <br><br>
-                        </td><td><span id="countdown"></span></td>
+                        <td><span class="btn" onmousedown="numpad(4)">4</span></td>
+                        <td><span class="btn" onmousedown="numpad(5)">5</span></td>
+                        <td><span class="btn" onmousedown="numpad(6)">6</span></td>
                     </tr>
                     <tr>
-                        <td><span class="btn" onclick="numpad(7)">7</span></td>
-                        <td><span class="btn" onclick="numpad(8)">8</span></td>
-                        <td><span class="btn" onclick="numpad(9)">9</span></td>
+                        <td><span class="btn" onmousedown="numpad(1)">1</span></td>
+                        <td><span class="btn" onmousedown="numpad(2)">2</span></td>
+                        <td><span class="btn" onmousedown="numpad(3)">3</span></td>
                     </tr>
                     <tr>
-                        <td><span class="btn" onclick="numpad(4)">4</span></td>
-                        <td><span class="btn" onclick="numpad(5)">5</span></td>
-                        <td><span class="btn" onclick="numpad(6)">6</span></td>
-                    </tr>
-                    <tr>
-                        <td><span class="btn" onclick="numpad(1)">1</span></td>
-                        <td><span class="btn" onclick="numpad(2)">2</span></td>
-                        <td><span class="btn" onclick="numpad(3)">3</span></td>
-                    </tr>
-                    <tr>
-                        <td><span class="btn" onclick="numpadDel()">del</span></td>
-                        <td><span class="btn" onclick="numpad(0)">0</span></td>
-                        <td><span class="btn" onclick="sendAnswer()">OK</span></td>
+                        <td><span class="btn" onmousedown="numpadDel()">-</span></td>
+                        <td><span class="btn" onmousedown="numpad(0)">0</span></td>
+                        <td><span id="sendAnswer" class="btn" onclick="sendAnswer()">></span></td>
                     </tr>
                 </table>
-                <br>
-            </p>
+            </div>
         </div>
     </div>
 </body>

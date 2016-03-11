@@ -6,7 +6,12 @@ var serverConnection = null;
 
 window.onload = function() {
     show("welcome");
+    setDoOnEnter(function(){byID("connect").click();});
     countdown();
+    /*var fontSize = window.screen.availHeight / 15;
+    window.document.body.style.fontSize = String(fontSize) + "px";*/
+    byID("answer").onfocus = function(){byID("numpadTable").style.opacity = 0;};
+    byID("answer").onblur = function(){byID("numpadTable").style.opacity = 1;};
 }
 
 function nameChanged() {
@@ -20,15 +25,18 @@ function numpad(n) {
 function numpadDel() {
     var v = String(byID("answer").value);
     byID("answer").value = v.substring(0, v.length-1);
-} 
+}
+    
 
 function sendAnswer() {
     var answer = byID("answer").value;
     serverConnection.communicate(makeSimpleCmd("answer", "answer", Number(answer)), function(msg) {
             if (msg.isCorrect) {
                 byID("answer").style.backgroundColor = "#dfd";
+                byID("answer").placeholder = "Richtig!";
             } else {
                 byID("answer").style.backgroundColor = "#fdd";
+                byID("answer").placeholder = "Falsch!";
             }
             setTimeout(function(){
                 byID("answer").style.backgroundColor = "#fff";
@@ -53,7 +61,8 @@ function connect() {
         }));
         serverConnection.addObserver(new Observer("exercise", function(msg) {
             var ex = msg.exercise;
-            byID("exercise").innerHTML = ex + " ?";
+            byID("exercise").innerHTML = ex + " = ";
+            byID("answer").placeholder = "?";
         }));
         serverConnection.addObserver(new Observer("time_left", function(msg) {
             countdownValue = msg.time;
@@ -64,6 +73,7 @@ function connect() {
 
 function openMainFrame() {
     show("mainFrame");
+    setDoOnEnter(function(){byID("sendAnswer").click();});
 }
 
 function infoBox(message) {

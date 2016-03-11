@@ -1,4 +1,5 @@
 
+var uselessFunction = function(){};
 
 function closeAll() {
     var frames = window.document.getElementsByClassName("frame");
@@ -28,4 +29,17 @@ function countdown() {
         byID(countDownId).innerHTML = String(countdownValue) + "s";
     }
     setTimeout(function(){countdown();}, 1000);
+}
+
+
+var doOnEnter = uselessFunction;
+
+document.onkeydown = function(event) {
+    if (event.keyCode == 13) { // enter key pressed
+        doOnEnter();
+    }
+}
+
+function setDoOnEnter(f) {
+    doOnEnter = f;
 }
