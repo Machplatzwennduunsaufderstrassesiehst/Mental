@@ -48,7 +48,9 @@ public class Player extends ClientConnection {
         GetRequest request = new GetRequest(jsonObject, this.getHost());
         makeGetRequest(request);
         try {
-            request.wait(2000);
+            synchronized (request) {
+                request.wait(2000);
+            }
         } catch (Exception e) {}
         int points = 0;
         try {

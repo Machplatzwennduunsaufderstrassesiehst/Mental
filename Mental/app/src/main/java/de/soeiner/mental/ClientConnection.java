@@ -1,6 +1,7 @@
 package de.soeiner.mental;
 
 import org.java_websocket.WebSocket;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -47,7 +48,9 @@ public abstract class ClientConnection implements RequestAnswerObserver {
     protected void makeGetRequest(GetRequest r) {
         if (pendingRequest != null) {
             try {
-                pendingRequest.wait(2000);
+                synchronized (pendingRequest) {
+                    pendingRequest.wait(2000);
+                }
             } catch (Exception e) {}
         }
         pendingRequest = r;
@@ -60,7 +63,11 @@ public abstract class ClientConnection implements RequestAnswerObserver {
     }
 
     protected void send(CmdRequest r) {
-        socket.send(r.toString());
+        try {
+            socket.send(r.toString());
+        } catch (WebsocketNotConnectedException e) {
+            Logger.log("Can't send to Connection " + this.host + "! Socket not connected.");
+        }
     }
 
     public void onRequestAnswer(GetRequest request) {

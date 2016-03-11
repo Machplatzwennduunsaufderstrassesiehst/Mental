@@ -23,7 +23,9 @@ public class GetRequest extends CmdRequest {
         for (RequestAnswerObserver observer : observers) {
             observer.onRequestAnswer(this);
         }
-        this.notifyAll();
+        synchronized (this) {
+            this.notifyAll();
+        }
     }
 
     public void addObserver(RequestAnswerObserver observer) {
