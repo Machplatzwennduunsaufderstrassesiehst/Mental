@@ -105,7 +105,7 @@ public class Game implements Runnable {
 
     public String createExercise(){
 
-        System.out.println("createExercise() wuurde aufgerufen");
+        System.out.println("createExercise() wurde aufgerufen");
         int temp;
         int a = (int) (Math.random() * 5 * difficulty/2)+1;
         int b = (int) (Math.random() * 5 * difficulty/2)+1;
@@ -144,8 +144,11 @@ public class Game implements Runnable {
         Score s = player.getScore();
         synchronized (this) {
             if (answer == result && !player.FINISHED) { // sonst kann man 2x mal punkte absahnen
-                sendPlayerWon(player.getName());
-                s.setScoreValue(s.getScoreValue() + difficulty);
+                s.setScoreValue(s.getScoreValue() + getPoints());
+                sendExerciseSolvedMessage(player.getName(), getRang());
+                if(s.getScoreValue() > 100){
+                    sendPlayerWon(player.getName());
+                }
                 player.FINISHED = true;
                 for (int i = 0; i < joinedPlayers.size(); i++) {
                     Player p = joinedPlayers.get(i);
@@ -158,25 +161,53 @@ public class Game implements Runnable {
                 }
                 broadcastScoreboard();
                 return true;
-            } else {
-                s.setScoreValue(s.getScoreValue() - 1);
-                broadcastScoreboard();
+                } else {
+                  if(s.getScoreValue() > 0) {
+                      s.setScoreValue(s.getScoreValue() - 1);
+                      broadcastScoreboard();
+                }
                 return false;
             }
         }
     }
 
-    // die kann auch raus oder?
-    /*public Score[] getPlayerScores(){
-        Score[] playerscores = new Score[joinedPlayers.size()];
-        for(int i = 0; i < joinedPlayers.size();i++) {
-            Player p = joinedPlayers.get(i);
-            playerscores[i] = p.getScore();
+    private int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
+        //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
+        int points = difficulty;
+        for(int i = 0; i<getRang();i++){
+            points = points/2;
         }
-        return playerscores;
-    }*/
+        return points;
+    }
 
-    public void sendPlayerWon(String playerName) {
+    private int getRang(){ //methode berechnet wie viele
+        // Spieler die Aufgabe schon gelöst haben
+        int rang = 0;
+        for(int i = 0; i<joinedPlayers.size();i++){
+            Player p = joinedPlayers.get(i);
+            if(p.FINISHED == true){
+                rang++;
+            }
+        }
+        return rang;
+    }
+
+    public void sendExerciseSolvedMessage(String playerName, int rang) {
+        String m = playerName+" hat die Aufgabe als "+(rang+1)+". gelöst!";
+        for (int i = 0; i < joinedPlayers.size(); i++) {
+            Player p = joinedPlayers.get(i);
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_EXERCISE_SOLVED_MESSAGE);
+            try {
+                j.put("message", m);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            p.makePushRequest(new PushRequest(j));
+        }
+    }
+
+    public void sendPlayerWon(String playerName) { //wird nur aufgerufen wenn Spieler das Spiel gewonnen hat
+        //dem scoreboard können nun auch der zweite und dritte platz entnommen werden
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
 
