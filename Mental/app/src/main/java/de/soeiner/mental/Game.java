@@ -177,16 +177,16 @@ public class Game implements Runnable {
     }
 
     private int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
-    //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
+        //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
         int points = difficulty;
-            for(int i = 0; i<getRang();i++){
-                points = points/2;
-            }
+        for(int i = 0; i<getRang();i++){
+            points = points/2;
+        }
         return points;
     }
 
     private int getRang(){ //methode berechnet wie viele
-    // Spieler die Aufgabe schon gelöst haben
+        // Spieler die Aufgabe schon gelöst haben
         int rang = 0;
         for(int i = 0; i<joinedPlayers.size();i++){
             Player p = joinedPlayers.get(i);
