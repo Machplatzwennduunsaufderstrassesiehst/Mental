@@ -55,18 +55,10 @@ function connect() {
         serverConnection.send(makeSimpleCmd("create", "name", name));
         serverConnection.send(makeSimpleCmd("join", "game_id", 0));
         
-        serverConnection.addObserver(new Observer("player_won", function(msg) {
-            var s = msg.playerName + " hat die Aufgabe gel&ouml;st!!";
-            infoBox(s);
-        }));
-        serverConnection.addObserver(new Observer("exercise", function(msg) {
-            var ex = msg.exercise;
-            byID("exercise").innerHTML = ex + " = ";
-            byID("answer").placeholder = "?";
-        }));
-        serverConnection.addObserver(new Observer("time_left", function(msg) {
-            countdownValue = msg.time;
-        }));
+        serverConnection.addObserver(playerWonObserver);
+        serverConnection.addObserver(exerciseObserver);
+        serverConnection.addObserver(timeLeftObserver);
+        serverConnection.addObserver(messageObserver);
     });
 }
 
@@ -91,4 +83,20 @@ function infoBox(message) {
     }, 3500);
 }
 
-
+var msgIDCounter = 0;
+function displayMessage(message) {
+    var msgC = byID("messageContainer");
+    var slide = function(value){
+        if (value >= 0) {return;}
+        msgC.style.marginTop = String(value) + "em";
+        value += 0.1;
+        setTimeout(function(){slide(value);}, 25);
+    }
+    slide(-1.5);
+    var msgID = "msg" + msgIDCounter;
+    msgC.innerHTML = "<span id='"+msgID+"'>" + message + "</span><br>" + msgC.innerHTML;
+    setTimeout(function(){byID(msgID).style.opacity = 0;}, 5000);
+    setTimeout(function(){msgC.removeChild(byID(msgID));}, 5500);
+    msgIDCounter++;
+}
+    

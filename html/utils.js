@@ -21,13 +21,13 @@ var countdownValue = 0;
 
 function countdown() {
     var countDownId = "countdown";
-    countdownValue -= 1;
     if (countdownValue < 0) {
         byID(countDownId).style.display = "none";
     } else {
         byID(countDownId).style.display = "inline";
         byID(countDownId).innerHTML = String(countdownValue) + "s";
     }
+    countdownValue -= 1;
     setTimeout(function(){countdown();}, 1000);
 }
 
