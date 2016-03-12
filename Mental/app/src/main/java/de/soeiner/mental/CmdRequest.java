@@ -14,7 +14,7 @@ public class CmdRequest {
     public static final String SEND_PLAYER_WON = "{type: 'player_won'}";
     public static final String SEND_ANSWER_FEEDBACK = "{type: '_answer_'}";
     public static final String SEND_TIME_LEFT = "{type: 'time_left'}";
-    public static final String SEND_EXERCISE_SOLVED_MESSAGE = "{type: 'exercise_solved'}";
+    public static final String SEND_MESSAGE = "{type: 'message'}"; // wird nun allgemein fuer broadcast "nachrichten" genutzt
 
     private JSONObject cmd;
 

@@ -147,7 +147,7 @@ public class Game implements Runnable {
         synchronized (this) {
             if (answer == result && !player.finished) { // sonst kann man 2x mal punkte absahnen
                 s.setScoreValue(s.getScoreValue() + getPoints());
-                sendExerciseSolvedMessage(player.getName(), getRang());
+                sendExerciseSolvedMessage(player.getName(), getRank());
                 if(s.getScoreValue() > 100){
                     sendPlayerWon(player.getName());
                 }
@@ -176,29 +176,29 @@ public class Game implements Runnable {
     private int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
         //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
         int points = difficulty;
-        for(int i = 0; i<getRang();i++){
+        for(int i = 0; i<getRank();i++){
             points = points/2;
         }
         return points;
     }
 
-    private int getRang(){ //methode berechnet wie viele
+    private int getRank(){ //methode berechnet wie viele
         // Spieler die Aufgabe schon gelöst haben
-        int rang = 0;
+        int rank = 0;
         for(int i = 0; i<joinedPlayers.size();i++){
             Player p = joinedPlayers.get(i);
             if(p.finished == true){
-                rang++;
+                rank++;
             }
         }
-        return rang;
+        return rank;
     }
 
     public void sendExerciseSolvedMessage(String playerName, int rang) {
         String m = playerName+" hat die Aufgabe als "+(rang+1)+". gelöst!";
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
-            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_EXERCISE_SOLVED_MESSAGE);
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_MESSAGE);
             try {
                 j.put("message", m);
             } catch (JSONException e) {
@@ -255,9 +255,15 @@ public class Game implements Runnable {
             }
         }
         try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
-            wait(GAME_TIMEOUT * 1000);
-        } catch (InterruptedException e) {
+            Thread.sleep(GAME_TIMEOUT * 1000);
+        } catch (InterruptedException e) {}
+
+        // punktestaende fuer alle Spieler zuruecksetzen
+        for (int i = 0; i < joinedPlayers.size(); i++) {
+            Player p = joinedPlayers.get(i);
+            p.getScore().setScoreValue(0);
         }
+
         loop();
     }
 }
