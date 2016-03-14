@@ -73,7 +73,7 @@ public class Game implements Runnable {
             joinedPlayers.add(p);
         }
         p.updateScore();
-        p.sendExercise(exercise);
+        p.sendExercise(exercise, result);
         updateScoreBoardSize();
     }
 
@@ -87,7 +87,7 @@ public class Game implements Runnable {
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             p.finished = false;
-            p.sendExercise(exercise);
+            p.sendExercise(exercise, (int) (Math.log10(result))+1);
         }
 
         //der folgende Code schickt allen spielern einen integer (hier 30) um
