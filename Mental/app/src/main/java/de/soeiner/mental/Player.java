@@ -20,7 +20,7 @@ public class Player extends ClientConnection {
         super(socket);
         name = socket.getRemoteSocketAddress().getAddress().getHostAddress();
         score = new Score(name, 0);
-        players.add(this);
+        connections.add(this);
     }
 
     public void sendExercise(String ex, int length) {
@@ -47,7 +47,7 @@ public class Player extends ClientConnection {
 
     public Score updateScore() {
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.GET_POINTS);
-        GetRequest request = new GetRequest(jsonObject, this.getHost());
+        GetRequest request = new GetRequest(jsonObject, socket);
         makeGetRequest(request);
         try {
             synchronized (request) {

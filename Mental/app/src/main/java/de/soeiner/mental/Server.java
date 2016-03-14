@@ -26,19 +26,15 @@ public class Server extends WebSocketServer {
     @Override
     public void onOpen(WebSocket newConnection, ClientHandshake handshake) {
         String host = newConnection.getRemoteSocketAddress().getAddress().getHostAddress();
-        Player player = Player.getBySocket(newConnection);
-        if (player == null) {
-            new Player(newConnection);
-        } else {
-            player.newSocket(newConnection);
-        }
+        new Player(newConnection);
     }
 
     @Override
     public void onClose( WebSocket socket, int code, String reason, boolean remote ) {
-        Player player = Player.getBySocket(socket);
+        Player player = (Player) Player.getBySocket(socket);
         Game g = player.getGame();
         g.leave(player);
+        player.disconnect();
         System.out.println("");
     }
 
@@ -46,7 +42,7 @@ public class Server extends WebSocketServer {
     public void onMessage( WebSocket socket, String message ) {
         String host = socket.getRemoteSocketAddress().getAddress().getHostAddress();
         System.out.println(message + " from " + host);
-        Player player = Player.getBySocket(socket);
+        Player player = (Player) Player.getBySocket(socket);
         player.onMessage(message);
         System.out.println(player.getName());
     }

@@ -11,16 +11,16 @@ import java.util.ArrayList;
  */
 public abstract class ClientConnection implements RequestAnswerObserver {
 
-    protected static ArrayList<Player> players = new ArrayList<Player>();
+    protected static ArrayList<ClientConnection> connections = new ArrayList<ClientConnection>();
 
-    public static Player[] getPlayers() {
-        return (Player[]) players.toArray();
+    public static ClientConnection[] getConnections() {
+        return (ClientConnection[]) connections.toArray();
     }
 
-    public static Player getBySocket(WebSocket socket) {
-        for (int i = 0; i < players.size(); i++) {
-            Player p = players.get(i);
-            if (p.compareSocket(socket)) return p;
+    public static ClientConnection getBySocket(WebSocket socket) {
+        for (int i = 0; i < connections.size(); i++) {
+            ClientConnection c = connections.get(i);
+            if (c.compareSocket(socket)) return c;
         }
         return null;
     }
@@ -35,12 +35,15 @@ public abstract class ClientConnection implements RequestAnswerObserver {
 
     }
 
-    public void newSocket(WebSocket socket) {
-        this.socket = socket;
+    public void disconnect() {
+        try {
+            socket.close();
+        } catch (Exception e) {}
+        connections.remove(this);
     }
 
-    public String getHost() {
-        return host;
+    public void newSocket(WebSocket socket) {
+        this.socket = socket;
     }
 
     public boolean compareSocket(WebSocket socket) {

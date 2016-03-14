@@ -1,5 +1,6 @@
 package de.soeiner.mental;
 
+import org.java_websocket.WebSocket;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -11,12 +12,12 @@ public class GetRequest extends CmdRequest {
 
     private ArrayList<RequestAnswerObserver> observers = new ArrayList<RequestAnswerObserver>();
 
-    public String host;
+    public WebSocket socket;
     public JSONObject answer;
 
-    public GetRequest (JSONObject cmd, String host) {
+    public GetRequest (JSONObject cmd, WebSocket socket) {
         super(cmd);
-        this.host = host;
+        this.socket = socket;
     }
 
     public void notifyObservers() {
