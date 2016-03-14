@@ -43,4 +43,52 @@ public class Score extends JSONObject{
             e.printStackTrace();
         }
     }
+
+    public String getScoreString(){
+        int score = getScoreValue();
+        if(score == 0){
+            return "git gud nub";
+        }
+        String scoreString = Integer.toString(score);
+        int k = 0;
+        int a = 0;
+        int kontrollbit = 0;
+        for(int i = 0;i < scoreString.length();i++){
+            a = Character.getNumericValue(scoreString.charAt(i));
+            switch(k%4){
+                case 0 : kontrollbit += 7*a; break;
+                case 1 : kontrollbit += 3*a; break;
+                case 2 : kontrollbit += 5*a; break;
+                case 3 : kontrollbit += 13*a; break;
+            }
+        }
+        kontrollbit %= 10;
+        scoreString = score+""+kontrollbit;
+//		int Value = Integer.parseInt(scoreString);
+//		System.out.println(Value);
+
+        return scoreString;
+    }
+
+    public boolean checkScoreString(String scoreString){
+
+        int k = 0;
+        int a = 0;
+        int kontrollbit = 0;
+        for(int i = 0;i < scoreString.length()-1;i++){
+            a = Character.getNumericValue(scoreString.charAt(i));
+            switch(k%4){
+                case 0 : kontrollbit += 7*a; break;
+                case 1 : kontrollbit += 3*a; break;
+                case 2 : kontrollbit += 5*a; break;
+                case 3 : kontrollbit += 13*a; break;
+            }
+        }
+        kontrollbit %= 10;
+        if(kontrollbit == Character.getNumericValue(scoreString.charAt(scoreString.length()-1))){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
