@@ -68,6 +68,10 @@ public class Player extends ClientConnection {
         return name;
     }
 
+    public Game getGame() {
+        return game;
+    }
+
     @Override
     public void processData(JSONObject json) {
         try {

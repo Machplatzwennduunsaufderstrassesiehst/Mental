@@ -36,7 +36,10 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onClose( WebSocket socket, int code, String reason, boolean remote ) {
-        System.out.println( socket + " has left the room!" );
+        String host = socket.getRemoteSocketAddress().getAddress().getHostAddress();
+        Player player = Player.getByHost(host);
+        Game g = player.getGame();
+        g.leave(player);
     }
 
     @Override
