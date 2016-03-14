@@ -28,6 +28,7 @@ public class Game implements Runnable {
     private int EXERCISE_TIMEOUT = 30;
     private int GAME_TIMEOUT = 30; //für pause zwischen den spielen mit siegerbildschirm
 
+    String exercise = "";
     private int result = 0;
     private Score[] scoreboard;
     boolean gameIsLive;
@@ -72,6 +73,7 @@ public class Game implements Runnable {
             joinedPlayers.add(p);
         }
         p.updateScore();
+        p.sendExercise(exercise);
         updateScoreBoardSize();
     }
 
@@ -81,7 +83,7 @@ public class Game implements Runnable {
     }
 
     public void broadcastExercise() {
-        String exercise = createExercise();
+        exercise = createExercise();
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             p.finished = false;
@@ -119,7 +121,6 @@ public class Game implements Runnable {
                 b = temp;
             }
                 result = a - b;
-                difficulty++;
                 return a+" - "+b;
 
         }else{
@@ -129,12 +130,10 @@ public class Game implements Runnable {
                     b = (int) (b/10);
                 }
                 result = a * b;
-                difficulty++;
                 return a+" * "+b;
 
             }else {
                 result = a + b;
-                difficulty++;
                 return a+" + "+b;
             }
         }
@@ -234,36 +233,41 @@ public class Game implements Runnable {
         // jetzt gibt es hier so eine art game loop, der die Abfolge managed
         // vllt besser als das immer rekursiv aufzurufen wie ich das anfangs gemacht habe
         // spaeter dann vllt auch Match management?
-        while(joinedPlayers.size() == 0){ //Warten bis spieler das Spiel betreten hat
-            try {
-                Thread.sleep(100);
-            }catch(Exception e){}
-        }
-        gameIsLive = true;
+        start:
+        while(true) {
+            difficulty = 0;
+            while (joinedPlayers.size() == 0) { //Warten bis spieler das Spiel betreten hat
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                }
+            }
+            gameIsLive = true;
 
-        while (gameIsLive) {
-            if(joinedPlayers.size() == 0){ //wenn keine spieler mehr da sin
-                loop(); //springe zurück in den Wartezustand
-            }else {
-                broadcastExercise();
-                synchronized (this) { // ist angefordert damit man wait oder notify nutzen kann
-                     try {
-                           wait(EXERCISE_TIMEOUT * 1000);
+            while (gameIsLive) {
+                if (joinedPlayers.size() == 0) { //wenn keine spieler mehr da sin
+                    continue start; //springe zurück in den Wartezustand
+                } else {
+                    broadcastExercise();
+                    difficulty++;
+                    synchronized (this) { // ist angefordert damit man wait oder notify nutzen kann
+                        try {
+                            wait(EXERCISE_TIMEOUT * 1000);
                         } catch (InterruptedException e) {
+                        }
                     }
                 }
             }
-        }
-        try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
-            Thread.sleep(GAME_TIMEOUT * 1000);
-        } catch (InterruptedException e) {}
+            try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
+                Thread.sleep(GAME_TIMEOUT * 1000);
+            } catch (InterruptedException e) {
+            }
 
-        // punktestaende fuer alle Spieler zuruecksetzen
-        for (int i = 0; i < joinedPlayers.size(); i++) {
-            Player p = joinedPlayers.get(i);
-            p.getScore().setScoreValue(0);
+            // punktestaende fuer alle Spieler zuruecksetzen
+            for (int i = 0; i < joinedPlayers.size(); i++) {
+                Player p = joinedPlayers.get(i);
+                p.getScore().setScoreValue(0);
+            }
         }
-
-        loop();
     }
 }

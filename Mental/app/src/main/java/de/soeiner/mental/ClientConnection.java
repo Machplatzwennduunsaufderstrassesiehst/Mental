@@ -17,12 +17,10 @@ public abstract class ClientConnection implements RequestAnswerObserver {
         return (Player[]) players.toArray();
     }
 
-    public static Player getByHost(String host) {
+    public static Player getBySocket(WebSocket socket) {
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
-            if (p.getHost().equals(host)) {
-                return p;
-            }
+            if (p.compareSocket(socket)) return p;
         }
         return null;
     }
@@ -43,6 +41,10 @@ public abstract class ClientConnection implements RequestAnswerObserver {
 
     public String getHost() {
         return host;
+    }
+
+    public boolean compareSocket(WebSocket socket) {
+        return (socket == this.socket);
     }
 
     protected void makeGetRequest(GetRequest r) {
