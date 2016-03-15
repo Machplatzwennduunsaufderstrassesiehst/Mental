@@ -25,6 +25,14 @@ public abstract class ClientConnection implements RequestAnswerObserver {
         return null;
     }
 
+    public static ClientConnection getByHost(String host) {
+        for (int i = 0; i < connections.size(); i++) {
+            ClientConnection c = connections.get(i);
+            if (c.compareHost(host)) return c;
+        }
+        return null;
+    }
+
     protected WebSocket socket;
     private String host;
     private GetRequest pendingRequest = null;
@@ -32,7 +40,6 @@ public abstract class ClientConnection implements RequestAnswerObserver {
     public ClientConnection (WebSocket socket) {
         this.socket = socket;
         host = socket.getRemoteSocketAddress().getAddress().getHostAddress();
-
     }
 
     public void disconnect() {
@@ -49,6 +56,7 @@ public abstract class ClientConnection implements RequestAnswerObserver {
     public boolean compareSocket(WebSocket socket) {
         return (socket == this.socket);
     }
+    public boolean compareHost(String host) {return (host.equals(this.host));}
 
     protected void makeGetRequest(GetRequest r) {
         if (pendingRequest != null) {
