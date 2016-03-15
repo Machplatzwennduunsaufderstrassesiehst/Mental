@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html encoding="UNICODE">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1" /> 
     <link rel="stylesheet" href="jQuery/jquery.mobile-1.2.1.min.css" />
     <script src="jQuery/jquery-1.8.3.min.js"></script>
     <script src="jQuery/jquery.mobile-1.2.1.min.js"></script>
@@ -31,13 +31,13 @@
                 <div style="margin:auto; display:inline-block; overflow-y:hidden; height:1.5em; background-color: #ddddff; min-width: 200px; padding:5px; border-radius:5px;">
                     <p id="messageContainer"></p>
                 </div>
-                <p>
+                <form data-ajax="false" onsubmit="sendAnswer(); return false;" action="#"><!-- return false causes the form not to be submitted-->
                     <span style="margin: auto auto 15px auto;display:inline-block;">
-                        <span id="exercise" style="margin-bottom: 0.8em;font-size: 1.2em;"></span>&nbsp;
-                        <input style="width:8em;display:inline;" placeholder="Antwort?" type="number" id="answer"/>
+                        <span id="exercise" style="margin-bottom: 0.8em;font-size: 1.2em;"></span>
+                        <input style="width:8em;display:inline;" placeholder="?" type="number" id="answer"/>
                         <span id="countdown"></span>
                     </span>
-                </p>
+                </form>
                 <table id="numpadTable">
                     <tr>
                         <td><span class="btn" onmousedown="numpad(7)">7</span></td>
@@ -57,7 +57,7 @@
                     <tr>
                         <td><span class="btn" onmousedown="numpadDel()">-</span></td>
                         <td><span class="btn" onmousedown="numpad(0)">0</span></td>
-                        <td><span id="sendAnswer" class="btn" onclick="sendAnswer()">></span></td>
+                        <td><!--<span id="sendAnswer" class="btn" onclick="sendAnswer()">></span>--></td>
                     </tr>
                 </table>
             </div>
