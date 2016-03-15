@@ -72,7 +72,7 @@ public class Game implements Runnable {
         if (!joinedPlayers.contains(p)) {
             joinedPlayers.add(p);
         }
-        p.updateScore();
+       // p.updateScore();
         p.sendExercise(exercise, result);
         updateScoreBoardSize();
     }
@@ -144,31 +144,34 @@ public class Game implements Runnable {
         boolean allFinished = true;
         Score s = player.getScore();
         synchronized (this) {
-            if (answer == result && !player.finished) { // sonst kann man 2x mal punkte absahnen
-                s.setScoreValue(s.getScoreValue() + getPoints());
-                sendExerciseSolvedMessage(player.getName(), getRank());
-                if(s.getScoreValue() > 100){
-                    sendPlayerWon(player.getName());
-                }
-                player.finished = true;
-                for (int i = 0; i < joinedPlayers.size(); i++) {
-                    Player p = joinedPlayers.get(i);
-                    if (!p.finished) {
-                        allFinished = false;
+            if(!player.finished) { // sonst kann man 2x mal punkte absahnen ;; spieler kriegt jetzt keine punkte mehr abgezogen für doppeltes antworten
+                if (answer == result) {
+                    s.updateScore(getPoints());
+                    sendExerciseSolvedMessage(player.getName(), getRank());
+                    if (s.getScoreValue() > 100) {
+                        sendPlayerWon(player.getName());
                     }
-                }
-                if (allFinished) {
-                    notify(); // beendet das wait in loop() vorzeitig wenn alle fertig sind
-                }
-                broadcastScoreboard();
-                return true;
+                    player.finished = true;
+                    for (int i = 0; i < joinedPlayers.size(); i++) {
+                        Player p = joinedPlayers.get(i);
+                        if (!p.finished) {
+                            allFinished = false;
+                        }
+                    }
+                    if (allFinished) {
+                        notify(); // beendet das wait in loop() vorzeitig wenn alle fertig sind
+                    }
+                    broadcastScoreboard();
+                    return true;
                 } else {
-                  if(s.getScoreValue() > 0) {
-                      s.setScoreValue(s.getScoreValue() - 1);
-                      broadcastScoreboard();
+                    if (s.getScoreValue() > 0) {
+                        s.updateScore(-1);
+                        broadcastScoreboard();
+                    }
+                    return false;
                 }
-                return false;
             }
+            return true;
         }
     }
 
@@ -266,7 +269,7 @@ public class Game implements Runnable {
             // punktestaende fuer alle Spieler zuruecksetzen
             for (int i = 0; i < joinedPlayers.size(); i++) {
                 Player p = joinedPlayers.get(i);
-                p.getScore().setScoreValue(0);
+                p.getScore().resetScore(); //reset
             }
         }
     }

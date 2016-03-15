@@ -19,7 +19,7 @@ public class Player extends ClientConnection {
     public Player (WebSocket socket) {
         super(socket);
         name = socket.getRemoteSocketAddress().getAddress().getHostAddress();
-        score = new Score(name, 0);
+        score = new Score(name, ""); //hier könnte nun der String der das Level speichert eingefügt werden
         players.add(this);
     }
 
@@ -45,7 +45,8 @@ public class Player extends ClientConnection {
         makePushRequest(request);
     }
 
-    public Score updateScore() {
+    //wozu ist das gut ?
+   /* public Score updateScore() {
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.GET_POINTS);
         GetRequest request = new GetRequest(jsonObject, this.getHost());
         makeGetRequest(request);
@@ -60,7 +61,7 @@ public class Player extends ClientConnection {
         } catch (Exception e) {}
         score.setScoreValue(points);
         return score;
-    }
+    }*/
 
     public Score getScore() {
         return score;
