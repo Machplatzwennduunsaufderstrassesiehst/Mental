@@ -10,6 +10,7 @@
 
 // sleep time between GUI checks
 var actRate = 500;
+var maxWaitTimeout = 2500;
 
 // class constructor definition
 function GetRequest(jc, hl, eHl) {
@@ -70,7 +71,7 @@ function ServerConnection(host, port) {
         var msg = "";
         try {
             msg = JSON.parse(event.data);
-            console.log(msg);
+            console.log("Received: " + event.data);
             if (currentRequest != null && "_"+currentRequest.jsonCmd.type+"_" == msg.type) {
                 removeRequest(currentRequest);
                 currentRequest.handler(msg);
@@ -100,6 +101,7 @@ function ServerConnection(host, port) {
             console.log(e);
         }
         socket.send(jsonStr);
+        console.log("Sent: " + jsonStr);
     }
     
     this.send = send;
@@ -143,11 +145,16 @@ function ServerConnection(host, port) {
         if (currentRequest == null && commandRequestQueue.length > 0) {
             // get thekk first request on the queue and remove it from the queue
             currentRequest = commandRequestQueue.shift();
+            console.log(commandRequestQueue);
         }
+        var timeout;
         if (currentRequest != null) {
             send(currentRequest.jsonCmd);
+            timeout = maxWaitTimeout;
+        } else {
+            timeout = actRate;
         }
-        setTimeout(function(){startGetRequestScheduler();},actRate);
+        setTimeout(function(){startGetRequestScheduler();},timeout);
     }
     
     startGetRequestScheduler();

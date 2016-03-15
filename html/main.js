@@ -26,7 +26,7 @@ function numpadDel() {
     var v = String(byID("answer").value);
     byID("answer").value = v.substring(0, v.length-1);
 }
-    
+        
 
 function sendAnswer() {
     var answer = byID("answer").value;
@@ -65,7 +65,8 @@ function connect() {
 
 function openMainFrame() {
     show("mainFrame");
-    setDoOnEnter(function(){byID("sendAnswer").click();});
+    //setDoOnEnter(function(){sendAnswer();});
+    setDoOnEnter(uselessFunction);
 }
 
 function infoBox(message) {
@@ -81,22 +82,5 @@ function infoBox(message) {
     setTimeout(function() {
         byID("infobox").style.display = "none";
     }, 3500);
-}
-
-var msgIDCounter = 0;
-function displayMessage(message) {
-    var msgC = byID("messageContainer");
-    var slide = function(value){
-        if (value >= 0) {return;}
-        msgC.style.marginTop = String(value) + "em";
-        value += 0.1;
-        setTimeout(function(){slide(value);}, 25);
-    }
-    slide(-1.5);
-    var msgID = "msg" + msgIDCounter;
-    msgC.innerHTML = "<span id='"+msgID+"'>" + message + "</span><br>" + msgC.innerHTML;
-    setTimeout(function(){byID(msgID).style.opacity = 0;}, 5000);
-    setTimeout(function(){msgC.removeChild(byID(msgID));}, 5500);
-    msgIDCounter++;
 }
     

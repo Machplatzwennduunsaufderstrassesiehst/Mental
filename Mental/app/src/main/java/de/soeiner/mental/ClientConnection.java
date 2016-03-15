@@ -11,16 +11,24 @@ import java.util.ArrayList;
  */
 public abstract class ClientConnection implements RequestAnswerObserver {
 
-    protected static ArrayList<Player> players = new ArrayList<Player>();
+    protected static ArrayList<ClientConnection> connections = new ArrayList<ClientConnection>();
 
-    public static Player[] getPlayers() {
-        return (Player[]) players.toArray();
+    public static ClientConnection[] getConnections() {
+        return (ClientConnection[]) connections.toArray();
     }
 
-    public static Player getBySocket(WebSocket socket) {
-        for (int i = 0; i < players.size(); i++) {
-            Player p = players.get(i);
-            if (p.compareSocket(socket)) return p;
+    public static ClientConnection getBySocket(WebSocket socket) {
+        for (int i = 0; i < connections.size(); i++) {
+            ClientConnection c = connections.get(i);
+            if (c.compareSocket(socket)) return c;
+        }
+        return null;
+    }
+
+    public static ClientConnection getByHost(String host) {
+        for (int i = 0; i < connections.size(); i++) {
+            ClientConnection c = connections.get(i);
+            if (c.compareHost(host)) return c;
         }
         return null;
     }
@@ -32,20 +40,23 @@ public abstract class ClientConnection implements RequestAnswerObserver {
     public ClientConnection (WebSocket socket) {
         this.socket = socket;
         host = socket.getRemoteSocketAddress().getAddress().getHostAddress();
+    }
 
+    public void disconnect() {
+        try {
+            socket.close();
+        } catch (Exception e) {}
+        connections.remove(this);
     }
 
     public void newSocket(WebSocket socket) {
         this.socket = socket;
     }
 
-    public String getHost() {
-        return host;
-    }
-
     public boolean compareSocket(WebSocket socket) {
         return (socket == this.socket);
     }
+    public boolean compareHost(String host) {return (host.equals(this.host));}
 
     protected void makeGetRequest(GetRequest r) {
         if (pendingRequest != null) {
