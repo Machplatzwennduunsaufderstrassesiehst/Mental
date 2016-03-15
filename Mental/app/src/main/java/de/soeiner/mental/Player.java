@@ -19,7 +19,7 @@ public class Player extends ClientConnection {
     public Player (WebSocket socket) {
         super(socket);
         name = socket.getRemoteSocketAddress().getAddress().getHostAddress();
-        score = new Score(name, 0);
+        score = new Score(name, "");
         connections.add(this);
     }
 
