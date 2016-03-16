@@ -23,7 +23,7 @@ public class Game implements Runnable {
     private String name = "";
     private String description = "";
     private ArrayList<Player> joinedPlayers;
-    private int difficulty = 0;
+    private int difficulty = 1;
 
     private int EXERCISE_TIMEOUT = 30;
     private int GAME_TIMEOUT = 30; //für pause zwischen den spielen mit siegerbildschirm
