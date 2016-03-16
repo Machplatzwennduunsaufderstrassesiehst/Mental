@@ -2,6 +2,7 @@ package de.soeiner.mental;
 
 import org.java_websocket.WebSocket;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class Player extends ClientConnection {
     public Player (WebSocket socket) {
         super(socket);
         name = socket.getRemoteSocketAddress().getAddress().getHostAddress();
-        score = new Score(name, "");
+        score = new Score(name);
         connections.add(this);
     }
 
@@ -45,21 +46,17 @@ public class Player extends ClientConnection {
         makePushRequest(request);
     }
 
-    public Score updateScore() {
-        JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.GET_POINTS);
-        GetRequest request = new GetRequest(jsonObject, socket);
-        makeGetRequest(request);
+    public void sendScoreString() {
+        Score s = getScore();
+        String scoreString = s.getScoreString();
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SCORE_STRING);
         try {
-            synchronized (request) {
-                request.wait(2000);
-            }
-        } catch (Exception e) {}
-        int points = 0;
-        try {
-            points = request.getAnswer().getInt("points");
-        } catch (Exception e) {}
-        score.setScoreValue(points);
-        return score;
+            j.put("score_string", scoreString);
+            makePushRequest(new PushRequest(j));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public Score getScore() {
@@ -78,7 +75,7 @@ public class Player extends ClientConnection {
     public void processData(JSONObject json) {
         try {
             String type = json.getString("type");
-            System.out.println(type);
+            // TODO switch anstatt if
             if (type.equals("get_games")) {
                 String s = "[";
                 ArrayList<Game> games = Game.getGames();
@@ -118,6 +115,10 @@ public class Player extends ClientConnection {
                 String name = json.getString("name");
                 this.name = name;
                 this.score.setPlayerName(name);
+            }
+            if (type.equals("set_score_string")) {
+                String s = json.getString("score_string");
+                score.loadScoreString(s);
             }
         } catch (Exception e) {
             e.printStackTrace();

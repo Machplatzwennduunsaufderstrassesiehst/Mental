@@ -8,30 +8,15 @@ import org.json.JSONObject;
  */
 public class Score extends JSONObject{
 
-
-    public Score(String playerName, String score) {
-
-        int overallScoreValue = 0;
-
-        if(checkScoreString(score)){
-            score = score.substring(0,score.length()-2);
-            overallScoreValue = Integer.parseInt(score);
-        }
-
-        try {
-            put("playerName", playerName);
-            put("scoreValue", 0);
-            put("overallScoreValue", overallScoreValue);
-            put("playerLevel", calculateLevel(overallScoreValue));
-            put("playerLevelProgress", calculateLevelProgress(overallScoreValue));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public Score(String playerName) {
+        setPlayerName(playerName);
+        setScoreValue(0);
     }
 
     private static int calculateLevel(int score){
         return (int) ((score/500)+Math.log10((double) score)+1);
     }
+
     private static int calculateLevelProgress(int score){ //in Prozent
         double level = ((score/500)+Math.log10((double) score)+1);
         level %= 1;
@@ -39,7 +24,7 @@ public class Score extends JSONObject{
         return (int) level;
     }
 
-    public void updateScore(int plus){
+    public void updateScore(int plus) {
         int scoreValue = this.getScoreValue() + plus;
         setScoreValue(scoreValue);
         int overallScoreValue = this.getOverallScoreValue()+plus;
@@ -48,17 +33,19 @@ public class Score extends JSONObject{
         setPlayerLevelProgress(overallScoreValue);
     }
 
-    public void resetScore(){
-        setScoreValue(0);
-    }
+    // ich habe den scoreString mal aus dem konstruktor entfernt, weil wir eher nicht in die situation kommen,
+    // einen scoreString zu haben, wenn das Score Objekt noch nicht existiert
+    public void loadScoreString(String scoreString) {
+        int overallScoreValue = 0;
 
-    public void setPlayerName(String playerName) {
-        this.remove("playerName");
-        try {
-            this.put("playerName", playerName);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (checkScoreString(scoreString)) {
+            scoreString = scoreString.substring(0,scoreString.length()-2);
+            overallScoreValue = Integer.parseInt(scoreString);
         }
+
+        setOverallScoreValue(overallScoreValue);
+        setPlayerLevel(overallScoreValue);
+        setPlayerLevel(overallScoreValue);
     }
 
     public int getScoreValue() {
@@ -79,40 +66,42 @@ public class Score extends JSONObject{
         return 0;
     }
 
+    public void setPlayerName(String playerName) {
+        if (has("playerName")) this.remove("playerName");
+        try {
+            this.put("playerName", playerName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setInt(String key, int value) {
+        if (has(key)) this.remove(key);
+        try {
+            this.put(key, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setScoreValue(int scoreValue) {
-        this.remove("scoreValue");
-        try {
-            this.put("scoreValue", scoreValue);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        setInt("scoreValue", scoreValue);
     }
 
-    private void setOverallScoreValue(int scoreValue) {
-        this.remove("overallScoreValue");
-        try {
-            this.put("overallScoreValue", scoreValue);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public void resetScoreValue(){
+        setScoreValue(0);
     }
 
-    private void setPlayerLevel(int scoreValue){
-        this.remove("playerLevel");
-        try {
-            this.put("playerLevel", calculateLevel(scoreValue));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private void setOverallScoreValue(int overallScoreValue) {
+        setInt("overallScoreValue", overallScoreValue);
     }
 
-    private void setPlayerLevelProgress(int scoreValue){
-        this.remove("playerLevelProgress");
-        try {
-            this.put("playerLevelProgress", calculateLevelProgress(scoreValue));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private void setPlayerLevel(int overallScoreValue) {
+        setInt("playerLevel", calculateLevel(overallScoreValue));
+    }
+
+    private void setPlayerLevelProgress(int scoreValue) {
+        setInt("playerLevelProgress", calculateLevelProgress(scoreValue));
     }
 
 
@@ -124,18 +113,18 @@ public class Score extends JSONObject{
         String scoreString = Integer.toString(score);
         int k = 0;
         int a = 0;
-        int kontrollbit = 0;
+        int checksum = 0;
         for(int i = 0;i < scoreString.length();i++){
             a = Character.getNumericValue(scoreString.charAt(i));
             switch(k%4){
-                case 0 : kontrollbit += 7*a; break;
-                case 1 : kontrollbit += 3*a; break;
-                case 2 : kontrollbit += 5*a; break;
-                case 3 : kontrollbit += 13*a; break;
+                case 0 : checksum += 7*a; break;
+                case 1 : checksum += 3*a; break;
+                case 2 : checksum += 5*a; break;
+                case 3 : checksum += 13*a; break;
             }
         }
-        kontrollbit %= 10;
-        scoreString = score+""+kontrollbit;
+        checksum %= 10;
+        scoreString = score+""+checksum;
 //		int Value = Integer.parseInt(scoreString);
 //		System.out.println(Value);
 
@@ -150,18 +139,18 @@ public class Score extends JSONObject{
 
         int k = 0;
         int a = 0;
-        int kontrollbit = 0;
+        int checksum = 0;
         for(int i = 0;i < scoreString.length()-1;i++){
             a = Character.getNumericValue(scoreString.charAt(i));
             switch(k%4){
-                case 0 : kontrollbit += 7*a; break;
-                case 1 : kontrollbit += 3*a; break;
-                case 2 : kontrollbit += 5*a; break;
-                case 3 : kontrollbit += 13*a; break;
+                case 0 : checksum += 7*a; break;
+                case 1 : checksum += 3*a; break;
+                case 2 : checksum += 5*a; break;
+                case 3 : checksum += 13*a; break;
             }
         }
-        kontrollbit %= 10;
-        if(kontrollbit == Character.getNumericValue(scoreString.charAt(scoreString.length()-1))){
+        checksum %= 10;
+        if(checksum == Character.getNumericValue(scoreString.charAt(scoreString.length()-1))){
             return true;
         }else{
             return false;

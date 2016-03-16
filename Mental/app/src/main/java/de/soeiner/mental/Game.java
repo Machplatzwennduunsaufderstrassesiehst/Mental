@@ -95,16 +95,7 @@ public class Game implements Runnable {
     public void sendScoreStrings() {
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
-            Score s = p.getScore();
-            String scoreString = s.getScoreString();
-            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_PLAYER_MESSAGE);
-            try {
-                j.put("score_string", scoreString);
-                p.makePushRequest(new PushRequest(j));
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            p.sendScoreString();
         }
     }
 
@@ -308,7 +299,7 @@ public class Game implements Runnable {
             // punktestaende fuer alle Spieler zuruecksetzen
             for (int i = 0; i < joinedPlayers.size(); i++) {
                 Player p = joinedPlayers.get(i);
-                p.getScore().resetScore(); //reset
+                p.getScore().resetScoreValue(); //reset
             }
         }
     }

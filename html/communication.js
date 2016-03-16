@@ -188,12 +188,13 @@ function NetworkScanner() {
     
     // leider viel zu langsam, habe noch keinen besseren Ansatz...
     this.scan = function() {
-        var ipParts = [getArrayFromTo(1,255),getArrayFromTo(1,255),getArrayFromTo(1,255),getArrayFromTo(1,255)];
+        var ipParts = [getArrayFromTo(0,255),getArrayFromTo(0,255),getArrayFromTo(0,255),getArrayFromTo(0,255)];
         if (localIP) {
             var elements = localIP.split(".");
             ipParts[0] = [elements[0]];
             ipParts[1] = [elements[1]];
             ipParts[2].unshift(elements[2]); // add the 3rd part of local ip to the beginning of array, so it is checked first
+            ipParts[2] = [elements[2]];
         }
         console.log(ipParts);
         scanning = true;
@@ -202,7 +203,7 @@ function NetworkScanner() {
                 for (var i2 = 0; i2 < ipParts[2].length; i2++) {
                     for (var i3 = 0; i3 < ipParts[3].length; i3++) {
                         var ip = ipParts[0][i0]+"."+ipParts[1][i1]+"."+ipParts[2][i2]+"."+ipParts[3][i3];
-                        tryConnect(ip);
+                        new function(ip){isUsed(ip);}(ip);
                     }
                 }
             }
@@ -210,14 +211,29 @@ function NetworkScanner() {
         scanning = false;
     }
     
-    function tryConnect(ip) {
+    var timeout = 0;
+    function isUsed(ip) {
+        var f = function(output){tryConnect(ip);};
         try {
-            if (scanning == true) {throw new Exception();}
-            var s = new ServerConnection(ip, gameServerPort);
-            s.setOnOpen(function(){addServer(s, ip);});
-        } catch (e) {
-            setTimeout(function(){tryConnect(ip);}, 2000);
-        }
+            //new WebSocket("ws://" + ip + ":" + gameServerPort + "/");
+            $.ajax({ type: "GET",
+                url: "http://" + ip + ":" + gameServerPort + "/",
+                data: {},
+                cache: false,
+                200: f,
+                302: f,
+                error: function(xhr, ajaxOptions, thrownError){
+                    console.log(xhr.status);
+                }
+            });
+        } catch (e) {}
+        timeout += 2;
+    }
+    
+    function tryConnect(ip) {
+        if (scanning == true) {throw new Exception();}
+        var s = new ServerConnection(ip, gameServerPort);
+        s.setOnOpen(function(){addServer(s, ip);});
     }
     
     function addServer(conn, host) {
