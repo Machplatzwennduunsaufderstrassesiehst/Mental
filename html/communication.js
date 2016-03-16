@@ -11,12 +11,16 @@
 // sleep time between GUI checks
 var actRate = 500;
 var maxWaitTimeout = 2500;
+var gameServerPort = 6382;
 
+
+    
 // class constructor definition
 function GetRequest(jc, hl, eHl) {
     this.jsonCmd = jc; // is an object
     this.handler = hl; // is a function
     this.errorHandler = eHl; // is a function and optional
+    this.errorCounter = 0;
     
     // these functions are called by receive() when data is received
     this.ok = function(msg) {
@@ -54,9 +58,14 @@ function ServerConnection(host, port) {
     var socket = new WebSocket("ws://"+host+":"+String(port));
     var observers = [];
     var onopen = function(){};
+    var self = this;
     
     socket.onopen = function(event) {
         onopen();
+    }
+    
+    this.close = function() {
+        socket.close();
     }
     
     socket.onclose = function(event) {
@@ -148,13 +157,101 @@ function ServerConnection(host, port) {
         }
         var timeout;
         if (currentRequest != null) {
-            send(currentRequest.jsonCmd);
-            timeout = maxWaitTimeout;
-        } else {
-            timeout = actRate;
+            if (currentRequest.errorCounter < 3) {
+                send(currentRequest.jsonCmd);
+                currentRequest.errorCounter += 1;
+            } else {
+                currentRequest = null;
+            }
         }
-        setTimeout(function(){startGetRequestScheduler();},timeout);
+        setTimeout(function(){startGetRequestScheduler();},actRate);
     }
     
     startGetRequestScheduler();
+}
+
+
+
+
+
+
+
+
+
+
+function NetworkScanner() {
+    var possibleHosts = [];
+    var openServerConnections = [];
+    var localIP = false;
+    var scanning = false;
+    updateLocalIP();
+    
+    // leider viel zu langsam, habe noch keinen besseren Ansatz...
+    this.scan = function() {
+        var ipParts = [getArrayFromTo(1,255),getArrayFromTo(1,255),getArrayFromTo(1,255),getArrayFromTo(1,255)];
+        if (localIP) {
+            var elements = localIP.split(".");
+            ipParts[0] = [elements[0]];
+            ipParts[1] = [elements[1]];
+            ipParts[2].unshift(elements[2]); // add the 3rd part of local ip to the beginning of array, so it is checked first
+        }
+        console.log(ipParts);
+        scanning = true;
+        for (var i0 = 0; i0 < ipParts[0].length; i0++) {
+            for (var i1 = 0; i1 < ipParts[1].length; i1++) {
+                for (var i2 = 0; i2 < ipParts[2].length; i2++) {
+                    for (var i3 = 0; i3 < ipParts[3].length; i3++) {
+                        var ip = ipParts[0][i0]+"."+ipParts[1][i1]+"."+ipParts[2][i2]+"."+ipParts[3][i3];
+                        tryConnect(ip);
+                    }
+                }
+            }
+        }
+        scanning = false;
+    }
+    
+    function tryConnect(ip) {
+        try {
+            if (scanning == true) {throw new Exception();}
+            var s = new ServerConnection(ip, gameServerPort);
+            s.setOnOpen(function(){addServer(s, ip);});
+        } catch (e) {
+            setTimeout(function(){tryConnect(ip);}, 2000);
+        }
+    }
+    
+    function addServer(conn, host) {
+        openServerConnections.push(conn);
+        possibleHosts.push(host);
+    }
+    
+    function getArrayFromTo(from, to) {
+        var a = [];
+        for (var i = from; i <= to; i++) {
+            a.push(i);
+        }
+        return a;
+    }
+    
+    // kleiner hack um die
+    function updateLocalIP(){
+        window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;   //compatibility for firefox and chrome
+        var pc = new RTCPeerConnection({iceServers:[]}); 
+        pc.createDataChannel("");    //create a bogus data channel
+        pc.createOffer(pc.setLocalDescription.bind(pc), uselessFunction);    // create offer and set local description
+        pc.onicecandidate = function(ice){  //listen for candidate events
+            if(!ice || !ice.candidate || !ice.candidate.candidate)  return;
+            localIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
+            pc.onicecandidate = uselessFunction;
+        };
+    }
+    
+    this.getLocalIP = function() {
+        return localIP;
+    }
+    
+    this.getLocalIPSub = function() {
+        var a = localIP.split(".");
+        return a[0] + "." + a[1] + ".";
+    }
 }

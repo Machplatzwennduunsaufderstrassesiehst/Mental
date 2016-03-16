@@ -10,9 +10,22 @@ body {
 
 #menu {
     background-color: #ccccff;
-    border-bottom: 2px solid #8888ee;
-    box-shadow: 0px 0.05cm 0.1cm #8888ee;
-    padding: 0.2cm 0.3cm 0.2cm 0.3cm;
+    border-bottom: 2px solid #abf;
+    box-shadow: 0px 0.15cm 0.1cm #aabbff;
+}
+
+#headerMenu {
+    position: absolute;
+    top: 3.5em;
+    right: 10px;
+    border: 1px solid #abf;
+    border-radius: 0.5em;
+    width:auto;
+    display: inline-block;
+    padding: 0px 20px;
+    background-color: black;
+    opacity: 0.8;
+    color: white;
 }
 
 #main {
@@ -20,25 +33,29 @@ body {
 }
 
 .frame {
-    padding-top: 8px;
+    
 }
 
-.btn, input {
-    box-shadow: 0px 0px 0.2em #5555ee;
+.btn, input, a {
+    box-shadow: 0px 0px 0.2em #abf;
     border-radius: 0.1em;
     display: inline-block;
-    border: 1px solid #9999ee;
+    border: 1px solid #abf;
 }
 
 .btn {
-    padding: auto;
-    min-width: 2em;
+    min-width: 3em;
     text-align: center;
+    color: black;
+    text-decoration: none;
+    padding: 3px;
+    font-size: 0.8em;
+    border-radius: 0.5em;
 }
 
 .btn:hover {
     cursor: pointer;
-    background-color: #5555ff;
+    background-color: #abf;
 }
 
 
@@ -51,11 +68,11 @@ body {
 }
 
 #messageContainerDivision {
-    margin:auto; 
+    margin: 10px auto 0px auto;
     display:inline-block; 
     overflow-y:hidden; 
     height:1.2em; 
-    background-color: #ddddff; 
+    background-color: #c1cfff; 
     min-width: 200px; 
     padding:5px; 
     border-radius:5px;
@@ -75,19 +92,18 @@ body {
 
 #scoreboard {
     text-align: left;
-    border-radius: 20px;
-    background-color: #e4e4ef;
+    border-radius: 1em;
+    background-color: #e4eaef;
 }
 
 #scoreboard td {
     border-top: 4px solid white;
-    padding: 15px;
-    min-width: 100px;
+    padding: 10px;
 }
 #scoreboard td + td { border-left: 2px solid white;}
 
 #scoreboard th {
-    padding: 20px;
+    padding: 10px;
 }
 
 

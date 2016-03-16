@@ -8,25 +8,32 @@
     
     <link rel="stylesheet" href="style.css"/>
     <script src="utils.js" type="text/javascript"></script>
+    <script src="cookies.js" type="text/javascript"></script>
     <script src="commandSet.js" type="text/javascript"></script>
     <script src="communication.js" type="text/javascript"></script>
     <script src="observers.js" type="text/javascript"></script>
     <script src="main.js" type="text/javascript"></script>
 </head>
-<body>
+<body onclick="byID('headerMenu').style.display = 'none';">
     <!-- used for default countdown, if no other countdown container should be displayed -->
     <span style="position:absolute;top:-200px;opacity:0;" id="countdownHack"></span>
     <div data-role="page">
         <div id="infobox"><p id="infoboxContent">test</p></div>
         <div id="menu" data-role="header">
-            <h2>Mental</h2>
+            <a href="#" class="ui-btn-left" onclick="disconnect()">Disconnect</a>
+            <h1>Mental</h1>
+            <a href="#" class="ui-btn-right" onclick="setTimeout(function(){byID('headerMenu').style.display = 'inline-block';},50);">Information</a>
         </div>
         <div id="main" data-role="content">
+            <div id="headerMenu" style="display:none;">
+                <p><span id="localIP" style="float:left;font-size:0.8em"></span><br>
+                <span style="color:#fff;" class="btn">Schlie&szlig;en</span></p>
+            </div>
             <div id="welcome" class="frame">
                 <p>
                     <input placeholder="User Name" type="text" id="name"/>
-                    <input placeholder="Server IP" type="text" id="ip" />
-                    <a id="connect" href="#" onclick="connect()" class="btn" data-role="button">Connect</a> 
+                    <input placeholder="Server IP - siehe oben links bei Server" type="text" id="ip" />
+                    <a style="max-width:10em;" id="connect" href="#" onclick="connect()" data-role="button">Connect</a> 
                 </p>
             </div>
             <div id="mainFrame" class="frame" style="text-align:center;">
@@ -71,12 +78,15 @@
                     <thead>
                         <tr>
                             <th>Rank</th>
-                            <th data-priority="2">Name</th>
+                            <th data-priority="3">Name</th>
                             <th data-priority="1">Score</th>
+                            <th data-priority="2">Overall</th>
+                            <th>Level</th>
                         </tr>
                     </thead>
                     <tbody id="scoreboardBody">
-                        <tr><td>loading...</td><td>loading...</td><td>loading...</td></tr>
+                        <tr><td>loading...</td><td>loading...</td><td>loading...</td>
+                        <td>loading...</td><td>loading...</td></tr>
                     </tbody>
                 </table>
                 <p>Die n&auml;chste Runde startet in <span id="gameTimeoutCountdown"></span>!</p>

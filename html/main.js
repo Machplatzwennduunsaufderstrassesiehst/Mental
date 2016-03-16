@@ -2,25 +2,29 @@
 "use strict";
 
 var serverConnection = null;
+var netScan = new NetworkScanner();
 
 // DO AFTER HTML LOADED
 window.onload = function() {
-    show("welcome");
+    setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netScan.getLocalIP();},1000);
     setDoOnEnter(function(){byID("connect").click();});
-    countdown();
-    /*var fontSize = window.screen.availHeight / 15;
-    window.document.body.style.fontSize = String(fontSize) + "px";*/
     setTimeout(function() {
         byID("answerFormSubmit").parentElement.style.position = "absolute";
         byID("answerFormSubmit").parentElement.style.top = "-200px";
     }, 1000);
     byID("answer").onfocus = function(){byID("numpadTable").style.opacity = 0;};
     byID("answer").onblur = function(){byID("numpadTable").style.opacity = 1;};
-    if (document.fullscreenEnabled || document.webkitFullscreenEnabled || 
-        document.mozFullScreenEnabled || document.msFullscreenEnabled) {
-        setTimeout(function(){document.requestFullScreen();}, 50);
-        setTimeout(function(){document.requestFullscreen();}, 50);
-    }
+    
+    fullScreen();
+    countdown();
+    
+    byID("ip").onkeyup = function(){if (byID("ip").value == "") byID("ip").value = netScan.getLocalIPSub();};
+    
+    // versuche die letzten anmeldedaten aus den cookies zu lesen
+    if (getCookie("userName") != "") byID("name").value = getCookie("userName");
+    if (getCookie("ip") != "") byID("ip").value = getCookie("ip");
+    
+    show("welcome");
 }
 
 
@@ -67,9 +71,11 @@ function sendAnswer() {
 function connect() {
     var ip = document.getElementById("ip").value;
     var name = document.getElementById("name").value;
+    setCookie("userName", name, 1000);
     serverConnection = new ServerConnection(ip, 6382);
     openMainFrame();
     serverConnection.setOnOpen(function() {
+        setCookie("ip", ip, 1000);
         serverConnection.send(makeSetCmd("name", name));
         serverConnection.send(makeSimpleCmd("create", "name", name));
         serverConnection.send(makeSimpleCmd("join", "game_id", 0));
@@ -79,6 +85,12 @@ function connect() {
         serverConnection.addObserver(timeLeftObserver);
         serverConnection.addObserver(messageObserver);
     });
+}
+
+function disconnect() {
+    if (serverConnection) {
+        serverConnection.close();
+    }
 }
 
 function infoBox(message) {

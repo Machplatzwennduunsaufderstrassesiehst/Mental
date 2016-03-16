@@ -43,3 +43,11 @@ document.onkeydown = function(event) {
 function setDoOnEnter(f) {
     doOnEnter = f;
 }
+
+function fullScreen() {
+    if (document.fullscreenEnabled || document.webkitFullscreenEnabled || 
+        document.mozFullScreenEnabled || document.msFullscreenEnabled) {
+        setTimeout(function(){document.requestFullScreen();}, 50);
+        setTimeout(function(){document.requestFullscreen();}, 50);
+    }
+}
