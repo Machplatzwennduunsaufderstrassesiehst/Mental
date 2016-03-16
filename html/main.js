@@ -6,6 +6,12 @@ var netScan = new NetworkScanner();
 
 // DO AFTER HTML LOADED
 window.onload = function() {
+    show("welcome");
+    
+    // versuche die letzten anmeldedaten aus den cookies zu lesen
+    if (getCookie("userName") != "") byID("name").value = getCookie("userName");
+    if (getCookie("ip") != "") byID("ip").value = getCookie("ip");
+    
     setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netScan.getLocalIP();},1000);
     setDoOnEnter(function(){byID("connect").click();});
     setTimeout(function() {
@@ -15,16 +21,9 @@ window.onload = function() {
     byID("answer").onfocus = function(){byID("numpadTable").style.opacity = 0;};
     byID("answer").onblur = function(){byID("numpadTable").style.opacity = 1;};
     
-    fullScreen();
     countdown();
     
     byID("ip").onkeyup = function(){if (byID("ip").value == "") byID("ip").value = netScan.getLocalIPSub();};
-    
-    // versuche die letzten anmeldedaten aus den cookies zu lesen
-    if (getCookie("userName") != "") byID("name").value = getCookie("userName");
-    if (getCookie("ip") != "") byID("ip").value = getCookie("ip");
-    
-    show("welcome");
 }
 
 
@@ -69,6 +68,7 @@ function sendAnswer() {
 }
 
 function connect() {
+    fullScreen(byID("page_"));
     var ip = document.getElementById("ip").value;
     var name = document.getElementById("name").value;
     setCookie("userName", name, 1000);

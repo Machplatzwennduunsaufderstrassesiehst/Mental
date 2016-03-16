@@ -44,10 +44,14 @@ function setDoOnEnter(f) {
     doOnEnter = f;
 }
 
-function fullScreen() {
-    if (document.fullscreenEnabled || document.webkitFullscreenEnabled || 
-        document.mozFullScreenEnabled || document.msFullscreenEnabled) {
-        setTimeout(function(){document.requestFullScreen();}, 50);
-        setTimeout(function(){document.requestFullscreen();}, 50);
+function fullScreen(element) {
+    if (element.requestFullscreen) {
+        element.requestFullscreen();
+    }
+    else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+    }
+    else if (element.webkitRequestFullScreen) {
+        element.webkitRequestFullScreen();
     }
 }

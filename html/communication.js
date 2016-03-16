@@ -271,3 +271,17 @@ function NetworkScanner() {
         return a[0] + "." + a[1] + ".";
     }
 }
+
+var test1;
+setTimeout(function(){
+$.ajax({ type: "GET",
+    url: "http://" + "192.168.2.101" + ":" + 6383 + "/",
+    data: {},
+    cache: false,
+    error: function(xhr, ajaxOptions, thrownError){
+        test1 = xhr;
+        console.log(xhr);
+    }
+});
+},100);
+
