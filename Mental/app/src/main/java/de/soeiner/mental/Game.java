@@ -82,6 +82,22 @@ public class Game implements Runnable {
         updateScoreBoardSize();
     }
 
+    public void sendScoreStrings() {
+        for (int i = 0; i < joinedPlayers.size(); i++) {
+            Player p = joinedPlayers.get(i);
+            Score s = p.getScore();
+            String scoreString = s.getScoreString();
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_PLAYER_MESSAGE);
+            try {
+                j.put("score_string", scoreString);
+                p.makePushRequest(new PushRequest(j));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void broadcastExercise() {
         exercise = createExercise();
         for (int i = 0; i < joinedPlayers.size(); i++) {
@@ -250,7 +266,7 @@ public class Game implements Runnable {
         // spaeter dann vllt auch Match management?
         start:
         while(true) {
-            difficulty = 0;
+            difficulty = 1;
             while (joinedPlayers.size() == 0) { //Warten bis spieler das Spiel betreten hat
                 try {
                     Thread.sleep(100);
@@ -274,6 +290,7 @@ public class Game implements Runnable {
                 }
             }
             try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
+                sendScoreStrings();
                 Thread.sleep(GAME_TIMEOUT * 1000);
             } catch (InterruptedException e) {
             }
