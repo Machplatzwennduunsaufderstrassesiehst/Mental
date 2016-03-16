@@ -18,9 +18,9 @@ function show(id) {
 }
 
 var countdownValue = 0;
+var countDownId = "countdownHack";
 
 function countdown() {
-    var countDownId = "countdown";
     if (countdownValue < 0) {
         byID(countDownId).style.display = "none";
     } else {

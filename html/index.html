@@ -14,6 +14,8 @@
     <script src="main.js" type="text/javascript"></script>
 </head>
 <body>
+    <!-- used for default countdown, if no other countdown container should be displayed -->
+    <span style="position:absolute;top:-200px;opacity:0;" id="countdownHack"></span>
     <div data-role="page">
         <div id="infobox"><p id="infoboxContent">test</p></div>
         <div id="menu" data-role="header">
@@ -36,8 +38,8 @@
                         <span id="exercise" style="margin-bottom: 0.8em;font-size: 1.2em;"></span>
                         <input type="number" style="width:8em;display:inline;" placeholder="?" id="answer" onkeydown="document.onkeydown(event);"/>
                         <!-- kleiner hack, einige browser benoetigen den submit button, und auf enter druck fokussieren sie darauf -->
-                        <input type="submit" value="Submit" style="position:absolute;top:-200px;left:-200px;" onfocus="sendAnswer();byID('answer').focus();" /> 
-                        <span id="countdown"></span>
+                        <input id="answerFormSubmit" type="submit" value="Submit" style="position:absolute;top:-200px;left:-200px;" onfocus="sendAnswer();byID('answer').focus();" /> 
+                        <span id="exerciseCountdown"></span>
                     </span>
                 </form>
                 <table id="numpadTable">

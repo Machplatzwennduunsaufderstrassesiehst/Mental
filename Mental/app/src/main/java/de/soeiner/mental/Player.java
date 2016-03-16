@@ -101,6 +101,7 @@ public class Player extends ClientConnection {
                 game = g;
             }
             if (type.equals("create")) {
+                // TODO spaeter sollte diese option vllt komplett geloescht werden und create direkt in der Android app erfolgen
                 if (true || socket.getRemoteSocketAddress().getAddress().isLinkLocalAddress()) { // TODO check for local ip
                     String name = json.getString("name");
                     Game.getGames().add(new Game(name));

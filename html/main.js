@@ -3,12 +3,17 @@
 
 var serverConnection = null;
 
+// DO AFTER HTML LOADED
 window.onload = function() {
     show("welcome");
     setDoOnEnter(function(){byID("connect").click();});
     countdown();
     /*var fontSize = window.screen.availHeight / 15;
     window.document.body.style.fontSize = String(fontSize) + "px";*/
+    setTimeout(function() {
+        byID("answerFormSubmit").parentElement.style.position = "absolute";
+        byID("answerFormSubmit").parentElement.style.top = "-200px";
+    }, 1000);
     byID("answer").onfocus = function(){byID("numpadTable").style.opacity = 0;};
     byID("answer").onblur = function(){byID("numpadTable").style.opacity = 1;};
 }

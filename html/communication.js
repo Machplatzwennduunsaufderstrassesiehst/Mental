@@ -143,7 +143,7 @@ function ServerConnection(host, port) {
 
     function startGetRequestScheduler() {
         if (currentRequest == null && commandRequestQueue.length > 0) {
-            // get thekk first request on the queue and remove it from the queue
+            // get the first request on the queue and remove it from the queue
             currentRequest = commandRequestQueue.shift();
         }
         var timeout;

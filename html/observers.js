@@ -25,7 +25,7 @@ var finalScoreboardObserver = new Observer("scoreboard", function(msg) {
     for (var i = 0; i < msg.scoreboard.length; i++) {
         var e = msg.scoreboard[i];
         var name = e.playerName;
-        var score = e.value;
+        var score = e.scoreValue;
         scoreboardTable.innerHTML += "<tr><td>"+(i+1)+"</td><td>"+name+"</td><td>"+score+"</td></tr>";
     }
     
@@ -34,10 +34,13 @@ var finalScoreboardObserver = new Observer("scoreboard", function(msg) {
 
 var reopenMainFrameObserver = new Observer("exercise", function(msg) {
     openMainFrame();
+    setTimeout(openMainFrame, 1000);
     serverConnection.removeObserver(reopenMainFrameObserver);
-}
+    serverConnection.removeObserver(finalScoreboardObserver);
+});
 
 var playerWonObserver = new Observer("player_won", function(msg) {
+    serverConnection.addObserver(finalScoreboardObserver);
     displayMessage(msg.playerName + " hat diese Runde gewonnen!");
     openScoreboardFrame();
     countdownValue = 0;
@@ -55,6 +58,7 @@ var exerciseObserver = new Observer("exercise", function(msg) {
 
 var timeLeftObserver = new Observer("time_left", function(msg) {
     countdownValue = msg.time;
+    countDownId = "exerciseCountdown";
 });
 
 var messageObserver = new Observer("message", function(msg){displayMessage(msg.message);});
