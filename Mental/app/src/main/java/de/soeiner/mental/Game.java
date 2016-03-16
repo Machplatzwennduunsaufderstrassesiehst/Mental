@@ -107,34 +107,45 @@ public class Game implements Runnable {
 
 
 
-    public String createExercise(){
+    public String createExercise() {
+        start: while (true) {
+            int temp;
+            int a = (int) (Math.random() * 5 * difficulty / 2 + Math.random() * 20);
+            int b = (int) (Math.random() * 5 * difficulty / 2 + Math.random() * 20);
 
-        System.out.println("createExercise() wurde aufgerufen");
-        int temp;
-        int a = (int) (Math.random() * 5 * difficulty/2)+1;
-        int b = (int) (Math.random() * 5 * difficulty/2)+1;
-
-        if(difficulty % 3 == 0){
-            if(a < b){
-                temp = a;
-                a = b;
-                b = temp;
-            }
-                result = a - b;
-                return a+" - "+b;
-
-        }else{
-            if(difficulty % 5 == 0){
-                while(a * b > 1000){
-                    a = (int) (a/10);
-                    b = (int) (b/10);
+            if (difficulty % 5 == 0) {
+                while (a * b < (100 + 8 * difficulty) - (75 + difficulty)) {
+                    a += b;
+                    b += b;
+                }
+                while (a * b > 100 + 4 * difficulty) {
+                    if (a >= b)
+                        a = (int) (a / 2);
+                    if (b > a)
+                        b = (int) (b / 2);
                 }
                 result = a * b;
-                return a+" * "+b;
+                return a + " * " + b;
 
-            }else {
-                result = a + b;
-                return a+" + "+b;
+            } else {
+                if (a < difficulty || b < difficulty) {
+                    continue start;
+                }
+                if (a - b < difficulty) {
+                    continue start;
+                }
+                if (difficulty % 3 == 0) {
+                    if (a < b) {
+                        temp = a;
+                        a = b;
+                        b = temp;
+                    }
+                    result = a - b;
+                    return a + " - " + b;
+                } else {
+                    result = a + b;
+                    return a + " + " + b;
+                }
             }
         }
     }
