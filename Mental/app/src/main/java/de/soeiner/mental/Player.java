@@ -34,16 +34,6 @@ public class Player extends ClientConnection {
     }
 
     public void sendScoreBoard(Score[] playerScores) {
-        Score temp;
-        for(int i = 0; i < playerScores.length;i++){ //aufsteigendes Sortieren nach ScoreValue
-            for(int j = 1; j < (playerScores.length - i); j++){
-                if(playerScores[j-1].getScoreValue() < playerScores[j].getScoreValue()){
-                    temp = playerScores[j];
-                    playerScores[j] = playerScores[j-1];
-                    playerScores[j-1] = temp;
-                }
-            }
-        }
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_SCOREBOARD);
         try {
             JSONArray scoreJSONArray = new JSONArray(playerScores);

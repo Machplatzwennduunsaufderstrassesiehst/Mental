@@ -63,6 +63,16 @@ public class Game implements Runnable {
     }
 
     public void broadcastScoreboard() {
+        Score temp;
+        for(int i = 0; i < scoreboard.length;i++){ //aufsteigendes Sortieren nach ScoreValue
+            for(int j = 1; j < (scoreboard.length - i); j++){
+                if(scoreboard[j-1].getScoreValue() < scoreboard[j].getScoreValue()){
+                    temp = scoreboard[j];
+                    scoreboard[j] = scoreboard[j-1];
+                    scoreboard[j-1] = temp;
+                }
+            }
+        }
         for (Player p : joinedPlayers) {
             p.sendScoreBoard(scoreboard);
         }
