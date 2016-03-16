@@ -23,7 +23,7 @@ public class Game implements Runnable {
     private String name = "";
     private String description = "";
     private ArrayList<Player> joinedPlayers;
-    private int difficulty = 1;
+    private int difficulty;
 
     private int EXERCISE_TIMEOUT = 30;
     private int GAME_TIMEOUT = 30; //für pause zwischen den spielen mit siegerbildschirm
@@ -108,17 +108,18 @@ public class Game implements Runnable {
 
 
     public String createExercise() {
+        System.out.println("!!!!!!!!!!!!!!DIFFICULTY:  "+(difficulty+50));
         start: while (true) {
             int temp;
-            int a = (int) (Math.random() * 5 * difficulty / 2 + Math.random() * 20);
-            int b = (int) (Math.random() * 5 * difficulty / 2 + Math.random() * 20);
+            int a = (int) (Math.random() * 5 * (difficulty+50) / 2 + Math.random() * 20);
+            int b = (int) (Math.random() * 5 * (difficulty+50) / 2 + Math.random() * 20);
 
-            if (difficulty % 5 == 0) {
-                while (a * b < (100 + 8 * difficulty) - (75 + difficulty)) {
+            if ((difficulty+50) % 5 == 0) {
+                while (a * b < (100 + 8 * (difficulty+50)) - (75 + (difficulty+50))) {
                     a += b;
                     b += b;
                 }
-                while (a * b > 100 + 4 * difficulty) {
+                while (a * b > 100 + 4 * (difficulty+50)) {
                     if (a >= b)
                         a = (int) (a / 2);
                     if (b > a)
@@ -128,13 +129,13 @@ public class Game implements Runnable {
                 return a + " * " + b;
 
             } else {
-                if (a < difficulty || b < difficulty) {
+                if (a < (difficulty+50) || b < (difficulty+50)) {
                     continue start;
                 }
-                if (a - b < difficulty) {
+                if (a - b < (difficulty+50)) {
                     continue start;
                 }
-                if (difficulty % 3 == 0) {
+                if ((difficulty+50) % 3 == 0) {
                     if (a < b) {
                         temp = a;
                         a = b;
