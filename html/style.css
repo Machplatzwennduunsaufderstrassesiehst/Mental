@@ -1,6 +1,6 @@
-* {margin:0;padding:0;transition: top 1s, width 0.5s, height 0.5s, opacity 0.5s, color 0.5s, background 0.5s, box-shadow 0.5s;}
+* {transition: top 1s, width 0.5s, height 0.5s, opacity 0.5s, color 0.5s, background 0.5s, box-shadow 0.5s;}
 
-table {border: none;} table * {border:none}
+table {border: none; margin:auto;} table * {border:none}
 
 
 body {
@@ -50,9 +50,48 @@ body {
     font-weight: bold;
 }
 
-#numpadTable {
-    margin:auto;
+#messageContainerDivision {
+    margin:auto; 
+    display:inline-block; 
+    overflow-y:hidden; 
+    height:1.2em; 
+    background-color: #ddddff; 
+    min-width: 200px; 
+    padding:5px; 
+    border-radius:5px;
 }
+
+#exerciseCountdown {
+    display: none;
+    padding-left: 0.4cm;
+    font-weight: bold;
+}
+
+
+
+#scoreboardFrame {
+    text-align: center;
+}
+
+#scoreboard {
+    text-align: left;
+    border-radius: 20px;
+    background-color: #e4e4ef;
+}
+
+#scoreboard td {
+    border-top: 4px solid white;
+    padding: 15px;
+    min-width: 100px;
+}
+#scoreboard td + td { border-left: 2px solid white;}
+
+#scoreboard th {
+    padding: 20px;
+}
+
+
+
 
 
 
@@ -73,11 +112,4 @@ body {
     color: #ffffff;
     border-radius: 0.15cm;
     padding: 0.1cm 0.1cm 0.1cm 0.1cm;
-}
-
-
-#countdown {
-    display: none;
-    padding: 0.4cm;
-    font-weight: bold;
 }

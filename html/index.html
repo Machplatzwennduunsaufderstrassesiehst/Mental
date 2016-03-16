@@ -30,7 +30,7 @@
                 </p>
             </div>
             <div id="mainFrame" class="frame" style="text-align:center;">
-                <div style="margin:auto; display:inline-block; overflow-y:hidden; height:1.2em; background-color: #ddddff; min-width: 200px; padding:5px; border-radius:5px;">
+                <div id="messageContainerDivision">
                     <p id="messageContainer"></p>
                 </div>
                 <form data-ajax="false" onsubmit="sendAnswer(); return false;" action="#"><!-- return false causes the form not to be submitted-->
@@ -67,7 +67,19 @@
             </div>
             <div id="scoreboardFrame" class="frame">
                 <h3>Scoreboard</h3>
-                <table id="scoreboard"></table>
+                <table id="scoreboard">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th data-priority="2">Name</th>
+                            <th data-priority="1">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoreboardBody">
+                        <tr><td>loading...</td><td>loading...</td><td>loading...</td></tr>
+                    </tbody>
+                </table>
+                <p>Die n&auml;chste Runde startet in <span id="gameTimeoutCountdown"></span>!</p>
             </div>
         </div>
     </div>

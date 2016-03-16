@@ -16,6 +16,11 @@ window.onload = function() {
     }, 1000);
     byID("answer").onfocus = function(){byID("numpadTable").style.opacity = 0;};
     byID("answer").onblur = function(){byID("numpadTable").style.opacity = 1;};
+    if (document.fullscreenEnabled || document.webkitFullscreenEnabled || 
+        document.mozFullScreenEnabled || document.msFullscreenEnabled) {
+        setTimeout(function(){document.requestFullScreen();}, 50);
+        setTimeout(function(){document.requestFullscreen();}, 50);
+    }
 }
 
 
