@@ -22,19 +22,21 @@
         <div id="main" data-role="content">
             <div id="welcome" class="frame">
                 <p>
-                    <input placeholder="User Name" type="text" id="name" onkeyup="nameChanged()"/>
+                    <input placeholder="User Name" type="text" id="name"/>
                     <input placeholder="Server IP" type="text" id="ip" />
                     <a id="connect" href="#" onclick="connect()" class="btn" data-role="button">Connect</a> 
                 </p>
             </div>
             <div id="mainFrame" class="frame" style="text-align:center;">
-                <div style="margin:auto; display:inline-block; overflow-y:hidden; height:1.5em; background-color: #ddddff; min-width: 200px; padding:5px; border-radius:5px;">
+                <div style="margin:auto; display:inline-block; overflow-y:hidden; height:1.2em; background-color: #ddddff; min-width: 200px; padding:5px; border-radius:5px;">
                     <p id="messageContainer"></p>
                 </div>
                 <form data-ajax="false" onsubmit="sendAnswer(); return false;" action="#"><!-- return false causes the form not to be submitted-->
                     <span style="margin: auto auto 15px auto;display:inline-block;">
                         <span id="exercise" style="margin-bottom: 0.8em;font-size: 1.2em;"></span>
-                        <input style="width:8em;display:inline;" placeholder="?" type="number" id="answer"/>
+                        <input type="number" style="width:8em;display:inline;" placeholder="?" id="answer" onkeydown="document.onkeydown(event);"/>
+                        <!-- kleiner hack, einige browser benoetigen den submit button, und auf enter druck fokussieren sie darauf -->
+                        <input type="submit" value="Submit" style="position:absolute;top:-200px;left:-200px;" onfocus="sendAnswer();byID('answer').focus();" /> 
                         <span id="countdown"></span>
                     </span>
                 </form>
@@ -57,9 +59,13 @@
                     <tr>
                         <td><span class="btn" onmousedown="numpadDel()">-</span></td>
                         <td><span class="btn" onmousedown="numpad(0)">0</span></td>
-                        <td><!--<span id="sendAnswer" class="btn" onclick="sendAnswer()">></span>--></td>
+                        <td><span id="sendAnswer" class="btn" onclick="sendAnswer()">></span></td>
                     </tr>
                 </table>
+            </div>
+            <div id="scoreboardFrame" class="frame">
+                <h3>Scoreboard</h3>
+                <table id="scoreboard"></table>
             </div>
         </div>
     </div>

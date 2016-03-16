@@ -145,7 +145,6 @@ function ServerConnection(host, port) {
         if (currentRequest == null && commandRequestQueue.length > 0) {
             // get thekk first request on the queue and remove it from the queue
             currentRequest = commandRequestQueue.shift();
-            console.log(commandRequestQueue);
         }
         var timeout;
         if (currentRequest != null) {

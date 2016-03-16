@@ -18,10 +18,28 @@ var slide = function(msgC, value){
     setTimeout(function(){slide(msgC, value);}, 25);
 }
 
+var finalScoreboardObserver = new Observer("scoreboard", function(msg) {
+    var scoreboardTable = byID("scoreboard");
+    scoreboardTable.innerHTML = "<tr><td>Pos.</td><td>Name</td><td>Score</td></tr>";
+    
+    for (var i = 0; i < msg.scoreboard.length; i++) {
+        var e = msg.scoreboard[i];
+        var name = e.playerName;
+        var score = e.value;
+        scoreboardTable.innerHTML += "<tr><td>"+(i+1)+"</td><td>"+name+"</td><td>"+score+"</td></tr>";
+    }
+    
+    serverConnection.addObserver(reopenMainFrameObserver);
+});
 
+var reopenMainFrameObserver = new Observer("exercise", function(msg) {
+    openMainFrame();
+    serverConnection.removeObserver(reopenMainFrameObserver);
+}
 
 var playerWonObserver = new Observer("player_won", function(msg) {
     displayMessage(msg.playerName + " hat diese Runde gewonnen!");
+    openScoreboardFrame();
     countdownValue = 0;
 });
 

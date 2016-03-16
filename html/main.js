@@ -1,7 +1,6 @@
 
 "use strict";
 
-var name = "";
 var serverConnection = null;
 
 window.onload = function() {
@@ -14,8 +13,15 @@ window.onload = function() {
     byID("answer").onblur = function(){byID("numpadTable").style.opacity = 1;};
 }
 
-function nameChanged() {
-    name = this.value;
+
+function openMainFrame() {
+    show("mainFrame");
+    setDoOnEnter(function(){sendAnswer();});
+}
+
+function openScoreboardFrame() {
+    show("scoreboardFrame");
+    setDoOnEnter(uselessFunction);
 }
 
 function numpad(n) {
@@ -27,10 +33,13 @@ function numpadDel() {
     byID("answer").value = v.substring(0, v.length-1);
 }
         
-
+var answered = false;
 function sendAnswer() {
+    if (answered) {return;}
+    answered = true;
     var answer = byID("answer").value;
     serverConnection.communicate(makeSimpleCmd("answer", "answer", Number(answer)), function(msg) {
+            answered = false;
             if (msg.isCorrect) {
                 byID("answer").style.backgroundColor = "#dfd";
                 byID("answer").placeholder = "Richtig!";
@@ -60,13 +69,6 @@ function connect() {
         serverConnection.addObserver(timeLeftObserver);
         serverConnection.addObserver(messageObserver);
     });
-}
-
-
-function openMainFrame() {
-    show("mainFrame");
-    //setDoOnEnter(function(){sendAnswer();});
-    setDoOnEnter(uselessFunction);
 }
 
 function infoBox(message) {

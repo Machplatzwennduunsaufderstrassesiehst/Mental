@@ -20,7 +20,7 @@ body {
 }
 
 .frame {
-    
+    padding-top: 8px;
 }
 
 .btn, input {
