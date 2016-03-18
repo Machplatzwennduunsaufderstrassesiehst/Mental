@@ -171,69 +171,56 @@ function ServerConnection(host, port) {
 }
 
 
-
-
-
-
-
-
-
-
 function NetworkScanner() {
     var possibleHosts = [];
     var openServerConnections = [];
     var localIP = false;
     var scanning = false;
+    var onScanReady = false;
     updateLocalIP();
     
-    // leider viel zu langsam, habe noch keinen besseren Ansatz...
-    this.scan = function() {
-        var ipParts = [getArrayFromTo(0,255),getArrayFromTo(0,255),getArrayFromTo(0,255),getArrayFromTo(0,255)];
-        if (localIP) {
-            var elements = localIP.split(".");
-            ipParts[0] = [elements[0]];
-            ipParts[1] = [elements[1]];
-            ipParts[2].unshift(elements[2]); // add the 3rd part of local ip to the beginning of array, so it is checked first
-            ipParts[2] = [elements[2]];
-        }
-        console.log(ipParts);
+    // basic scan: nur 4. stelle der ip
+    // leider viel zu langsam für scan auf 3. und 4. stelle, habe noch keinen besseren Ansatz...
+    this.scan = function(onScanReadyHandler) {
+        if (onScanReadyHandler) onScanReady = onScanReadyHandler;
+        if (!localIP) return;
+        localIP = localIP.split(".");
         scanning = true;
-        for (var i0 = 0; i0 < ipParts[0].length; i0++) {
-            for (var i1 = 0; i1 < ipParts[1].length; i1++) {
-                for (var i2 = 0; i2 < ipParts[2].length; i2++) {
-                    for (var i3 = 0; i3 < ipParts[3].length; i3++) {
-                        var ip = ipParts[0][i0]+"."+ipParts[1][i1]+"."+ipParts[2][i2]+"."+ipParts[3][i3];
-                        new function(ip){isUsed(ip);}(ip);
-                    }
-                }
-            }
-        }
-        scanning = false;
+        tryPing("localhost");
+        checkNext([localIP[0], localIP[1], localIP[2], 0], true, 0);
     }
     
-    var timeout = 0;
-    function isUsed(ip) {
-        var f = function(output){tryConnect(ip);};
+    function checkNext(ipArray, isBasic, c) {
+        if (!scanning || c > 255*255) return;
+        var ip = String(ipArray[0]) + "." + String(ipArray[1]) + "." + String((Math.floor(ipArray[2])+256)%256) + "." + String(ipArray[3]);
+        tryPing(ip);
+        ipArray[3] = ipArray[3] + 1;
+        if (ipArray[3] >= 255) {
+            if (isBasic) onScanReady();
+            ipArray[3] = 0;
+            var diff = ipArray[2] - localIP[2];
+            ipArray[2] -= (diff * 2 + Math.signum(diff)/2);
+            console.log(ip);
+        }
+        setTimeout(function(){checkNext(ipArray, isBasic, c+1);}, 20);
+    }
+    
+    function tryPing(ip) {
         try {
-            //new WebSocket("ws://" + ip + ":" + gameServerPort + "/");
-            $.ajax({ type: "GET",
-                url: "http://" + ip + ":" + gameServerPort + "/",
-                data: {},
-                cache: false,
-                200: f,
-                302: f,
-                error: function(xhr, ajaxOptions, thrownError){
-                    console.log(xhr.status);
-                }
-            });
+            var img = new Image();
+            img.onload = function(){tryConnect(ip);};
+            img.src = "http://" + ip + ":6383/ping.gif";
         } catch (e) {}
-        timeout += 2;
     }
     
     function tryConnect(ip) {
-        if (scanning == true) {throw new Exception();}
+        console.log(ip);
         var s = new ServerConnection(ip, gameServerPort);
         s.setOnOpen(function(){addServer(s, ip);});
+    }
+    
+    function setOnScanReady(f) {
+        onScanReady = f;
     }
     
     function addServer(conn, host) {
@@ -272,16 +259,4 @@ function NetworkScanner() {
     }
 }
 
-var test1;
-setTimeout(function(){
-$.ajax({ type: "GET",
-    url: "http://" + "192.168.2.101" + ":" + 6383 + "/",
-    data: {},
-    cache: false,
-    error: function(xhr, ajaxOptions, thrownError){
-        test1 = xhr;
-        console.log(xhr);
-    }
-});
-},100);
 

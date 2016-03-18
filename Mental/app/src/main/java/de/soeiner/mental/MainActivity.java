@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
 
+    PingHttpServer httpServer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,5 +27,14 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        httpServer = new PingHttpServer();
+        httpServer.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        httpServer.stop();
     }
 }

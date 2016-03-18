@@ -68,7 +68,7 @@ function sendAnswer() {
 }
 
 function connect() {
-    fullScreen(byID("page_"));
+    if (isMobile()) fullScreen(byID("page_"));
     var ip = document.getElementById("ip").value;
     var name = document.getElementById("name").value;
     setCookie("userName", name, 1000);
