@@ -5,9 +5,7 @@ import android.os.Bundle;
 
 import org.java_websocket.WebSocketImpl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String[] args = {};
         try {
             WebSocketImpl.DEBUG = true;
             int port = 6382;
@@ -30,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
         httpServer = new PingHttpServer();
         httpServer.start();
+
+        String name = "Mental Game";
+        new Game(name);
     }
 
     @Override

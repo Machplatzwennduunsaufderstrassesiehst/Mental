@@ -7,7 +7,6 @@ import org.json.JSONObject;
  */
 public class CmdRequest {
 
-    public static final String GET_POINTS = "{type:'get', get:'points'}";
     public static final String SEND_EXERCISE = "{type:'exercise'}";
     public static final String SEND_SCOREBOARD = "{type: 'scoreboard'}";
     public static final String SEND_GAMES = "{type: '_get_games_'}";

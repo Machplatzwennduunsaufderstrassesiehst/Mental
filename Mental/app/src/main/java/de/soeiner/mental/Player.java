@@ -5,8 +5,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 /**
  * Created by sven on 12.02.16.
  */
@@ -77,18 +75,9 @@ public class Player extends ClientConnection {
             String type = json.getString("type");
             // TODO switch anstatt if
             if (type.equals("get_games")) {
-                String s = "[";
-                ArrayList<Game> games = Game.getGames();
-                for (int i = 0; i < games.size(); i++) {
-                    Game g = games.get(i);
-                    if (g == null) continue;
-                    String name = g.getName();
-                    String desc = g.getDescription();
-                    s += "{'name':'" + name + "', desc:'" + desc + "', game_id:' " + i + "},";
-                }
-                s += "false]";
+                JSONArray jsonGameArray = Game.getGamesJSONArray();
                 JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_GAMES);
-                j.put("games", new JSONArray(s));
+                j.put("games", jsonGameArray);
                 send(new PushRequest(j));
             }
             if (type.equals("join")) {
@@ -100,8 +89,7 @@ public class Player extends ClientConnection {
             if (type.equals("create")) {
                 // TODO spaeter sollte diese option vllt komplett geloescht werden und create direkt in der Android app erfolgen
                 if (true || socket.getRemoteSocketAddress().getAddress().isLinkLocalAddress()) { // TODO check for local ip
-                    String name = json.getString("name");
-                    Game.getGames().add(new Game(name));
+
                 }
             }
             if (type.equals("answer")) {

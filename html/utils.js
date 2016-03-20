@@ -1,20 +1,44 @@
 
 var uselessFunction = function(){};
 
-function closeAll() {
-    var frames = window.document.getElementsByClassName("frame");
-    for (var i = 0; i < frames.length; i++) {
-        frames[i].style.display = "none";
-    }
-}
-
 function byID(id) {
     return window.document.getElementById(id);
 }
 
-function show(id) {
-    closeAll();
-    byID(id).style.display = "block";
+function Navigation() {
+    var history = [];
+    
+    function closeAll() {
+        var frames = window.document.getElementsByClassName("frame");
+        for (var i = 0; i < frames.length; i++) {
+            frames[i].style.display = "none";
+        }
+    }
+    
+    // add to history and show
+    function navigate() {
+        // compatibility: you can also put arguments as an array 
+        if (arguments[0].callee) arguments = arguments[0];
+        history.push(arguments);
+        show(arguments);
+    }
+    this.navigate = navigate;
+    
+    // do not add to history and show
+    function show() {
+        if (arguments[0].callee) arguments = arguments[0];
+        closeAll();
+        for (i = 0; i < arguments.length; i++) {
+            byID(arguments[i]).style.display = "block";
+        }
+    } 
+    this.show = show;
+    
+    this.back = function() {
+        if (history.length < 2) return;
+        history.pop(); // pop the currently shown ids from history
+        navigate(history.pop());
+    }
 }
 
 var countdownValue = 0;

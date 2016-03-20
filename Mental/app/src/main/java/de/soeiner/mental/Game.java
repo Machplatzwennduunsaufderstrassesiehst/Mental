@@ -1,5 +1,6 @@
 package de.soeiner.mental;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,8 +17,26 @@ public class Game implements Runnable {
         games = new ArrayList<Game>();
     }
 
+    public static void addGame(Game g) {games.add(g);}
     public static ArrayList<Game> getGames() {
         return games;
+    }
+    public static JSONArray getGamesJSONArray() {
+        try {
+            JSONArray jsonGameArray = new JSONArray();
+            for (int i = 0; i < games.size(); i++) {
+                Game g = games.get(i);
+                if (g == null) continue;
+                JSONObject jsonGameObject = new JSONObject();
+                jsonGameObject.put("game_id", i);
+                jsonGameObject.put("name", g.getName());
+                jsonGameObject.put("description", g.getDescription());
+                jsonGameObject.put("players", new JSONArray(g.getScoreboard()));
+                jsonGameArray.put(jsonGameObject);
+            }
+            return jsonGameArray;
+        } catch (Exception e) {e.printStackTrace();}
+        return new JSONArray();
     }
 
     private String name = "";
@@ -30,7 +49,8 @@ public class Game implements Runnable {
 
     String exercise = "";
     private int result = 0;
-    private Score[] scoreboard;
+    private Score[] scoreboard = new Score[0];
+    private Score[] getScoreboard() {return scoreboard;}
     boolean gameIsLive;
 
     public Game(String name) {

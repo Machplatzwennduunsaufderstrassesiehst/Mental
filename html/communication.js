@@ -12,6 +12,7 @@
 var actRate = 500;
 var maxWaitTimeout = 2500;
 var gameServerPort = 6382;
+var pingServerPort = 6383;
 
 
     
@@ -55,6 +56,7 @@ function Observer(cmdType, handler) {
  * The "Subject" part of the Observer pattern. 
 */
 function ServerConnection(host, port) {
+    this.host = host;
     var socket = new WebSocket("ws://"+host+":"+String(port));
     var observers = [];
     var onopen = function(){};
@@ -69,7 +71,7 @@ function ServerConnection(host, port) {
     }
     
     socket.onclose = function(event) {
-        show("welcome");
+        
     }
     
     this.setOnOpen = function(func) {
@@ -171,8 +173,8 @@ function ServerConnection(host, port) {
 }
 
 
+
 function NetworkScanner() {
-    var possibleHosts = [];
     var openServerConnections = [];
     var localIP = false;
     var scanning = false;
@@ -182,12 +184,18 @@ function NetworkScanner() {
     // basic scan: nur 4. stelle der ip
     // leider viel zu langsam für scan auf 3. und 4. stelle, habe noch keinen besseren Ansatz...
     this.scan = function(onScanReadyHandler) {
+        openServerConnections = [];
         if (onScanReadyHandler) onScanReady = onScanReadyHandler;
         if (!localIP) return;
-        localIP = localIP.split(".");
+        var localIP_ = localIP.split(".");
         scanning = true;
         tryPing("localhost");
-        checkNext([localIP[0], localIP[1], localIP[2], 0], true, 0);
+        checkNext([localIP_[0], localIP_[1], localIP_[2], 0], true, 0);
+    }
+    
+    this.scanManually = function(ip) {
+        tryPing(ip);
+        setTimeout(onScanReady, 1500);
     }
     
     function checkNext(ipArray, isBasic, c) {
@@ -196,7 +204,7 @@ function NetworkScanner() {
         tryPing(ip);
         ipArray[3] = ipArray[3] + 1;
         if (ipArray[3] >= 255) {
-            if (isBasic) onScanReady();
+            if (isBasic) {onScanReady();console.log("scan ready");return;}
             ipArray[3] = 0;
             var diff = ipArray[2] - localIP[2];
             ipArray[2] -= (diff * 2 + Math.signum(diff)/2);
@@ -209,31 +217,26 @@ function NetworkScanner() {
         try {
             var img = new Image();
             img.onload = function(){tryConnect(ip);};
-            img.src = "http://" + ip + ":6383/ping.gif";
+            img.src = "http://" + ip + ":" + pingServerPort + "/ping.gif";
         } catch (e) {}
     }
     
     function tryConnect(ip) {
         console.log(ip);
         var s = new ServerConnection(ip, gameServerPort);
-        s.setOnOpen(function(){addServer(s, ip);});
+        s.setOnOpen(function(){addServer(s);});
     }
     
-    function setOnScanReady(f) {
+    this.setOnScanReady = function(f) {
         onScanReady = f;
     }
     
-    function addServer(conn, host) {
+    function addServer(conn) {
         openServerConnections.push(conn);
-        possibleHosts.push(host);
     }
     
-    function getArrayFromTo(from, to) {
-        var a = [];
-        for (var i = from; i <= to; i++) {
-            a.push(i);
-        }
-        return a;
+    this.getOpenServerConnections = function() {
+        return openServerConnections;
     }
     
     // kleiner hack um die
