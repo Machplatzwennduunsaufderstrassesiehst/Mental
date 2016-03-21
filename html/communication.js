@@ -174,7 +174,7 @@ function ServerConnection(host, port) {
 
 
 
-function NetworkScanner() {
+function NetworkManager() {
     var openServerConnections = [];
     var localIP = false;
     var scanning = false;
@@ -194,8 +194,8 @@ function NetworkScanner() {
     }
     
     this.scanManually = function(ip) {
-        tryPing(ip);
-        setTimeout(onScanReady, 1500);
+        var s = new ServerConnection(ip, gameServerPort);
+        s.setOnOpen(function(){addServer(s);listAvailableGames();});
     }
     
     function checkNext(ipArray, isBasic, c) {
@@ -204,7 +204,7 @@ function NetworkScanner() {
         tryPing(ip);
         ipArray[3] = ipArray[3] + 1;
         if (ipArray[3] >= 255) {
-            if (isBasic) {onScanReady();console.log("scan ready");return;}
+            if (isBasic) {setTimeout(onScanReady,100);console.log("scan ready");return;}
             ipArray[3] = 0;
             var diff = ipArray[2] - localIP[2];
             ipArray[2] -= (diff * 2 + Math.signum(diff)/2);

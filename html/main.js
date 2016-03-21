@@ -2,21 +2,21 @@
 "use strict";
 
 var serverConnection = null;
-var netScan = new NetworkScanner();
+var netManager = new NetworkManager();
 var navi = new Navigation();
 
 // DO AFTER HTML LOADED
 window.onload = function() {
     navi.navigate("welcome");
     
-    // netScan konfigurieren
-    netScan.setOnScanReady(function(){setTimeout(listAvailableGames, 1000);});
+    // netManager konfigurieren
+    netManager.setOnScanReady(function(){setTimeout(listAvailableGames, 1000);});
     
     // versuche die letzten anmeldedaten aus den cookies zu lesen
     if (getCookie("userName") != "") byID("name").value = getCookie("userName");
     if (getCookie("ip") != "") byID("ip").value = getCookie("ip");
     
-    setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netScan.getLocalIP();},1000);
+    setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netManager.getLocalIP();},1000);
     setDoOnEnter(function(){byID("connect").click();});
     setTimeout(function() {
         byID("answerFormSubmit").parentElement.style.position = "absolute";
@@ -27,7 +27,7 @@ window.onload = function() {
     
     countdown();
     
-    byID("ip").onkeyup = function(){if (byID("ip").value == "") byID("ip").value = netScan.getLocalIPSub();};
+    byID("ip").onkeyup = function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();};
     byID("ip").onfocus = byID("ip").onkeyup;
 }
 
@@ -58,7 +58,7 @@ function numpadDel() {
 }
 
 function listAvailableGames() {
-    var openConnections = netScan.getOpenServerConnections();
+    var openConnections = netManager.getOpenServerConnections();
     byID("gamesList").innerHTML = "";
     for (var i = 0; i < openConnections.length; i++) {
         var conn = openConnections[i];
@@ -84,13 +84,9 @@ function listAvailableGames() {
     }
 }
 
-function connect() {
-    setCookie("userName", name, 1000);
-    serverConnection = new ServerConnection(ip, 6382);
-}
-
 function joinGame(connection, gameId) {
     var name = document.getElementById("name").value;
+    setCookie("userName", name, 1000);
     if (isMobile()) fullScreen(byID("page_"));
     serverConnection = connection;
     serverConnection.send(makeSimpleCmd("join", "game_id", gameId));

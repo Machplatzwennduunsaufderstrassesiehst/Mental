@@ -1,6 +1,11 @@
 
 var uselessFunction = function(){};
 
+var logContent_ = "";
+console = console || (new function() {
+    this.log = function(s) {logContent_ += s;}
+});
+
 function byID(id) {
     return window.document.getElementById(id);
 }
