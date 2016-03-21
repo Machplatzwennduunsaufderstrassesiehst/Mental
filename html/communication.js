@@ -12,6 +12,7 @@
 var actRate = 500;
 var maxWaitTimeout = 2500;
 var gameServerPort = 6382;
+var pingServerPort = 6383;
 
 
     
@@ -55,6 +56,7 @@ function Observer(cmdType, handler) {
  * The "Subject" part of the Observer pattern. 
 */
 function ServerConnection(host, port) {
+    this.host = host;
     var socket = new WebSocket("ws://"+host+":"+String(port));
     var observers = [];
     var onopen = function(){};
@@ -69,7 +71,7 @@ function ServerConnection(host, port) {
     }
     
     socket.onclose = function(event) {
-        show("welcome");
+        
     }
     
     this.setOnOpen = function(func) {
@@ -172,81 +174,69 @@ function ServerConnection(host, port) {
 
 
 
-
-
-
-
-
-
-
-function NetworkScanner() {
-    var possibleHosts = [];
+function NetworkManager() {
     var openServerConnections = [];
     var localIP = false;
     var scanning = false;
+    var onScanReady = false;
     updateLocalIP();
     
-    // leider viel zu langsam, habe noch keinen besseren Ansatz...
-    this.scan = function() {
-        var ipParts = [getArrayFromTo(0,255),getArrayFromTo(0,255),getArrayFromTo(0,255),getArrayFromTo(0,255)];
-        if (localIP) {
-            var elements = localIP.split(".");
-            ipParts[0] = [elements[0]];
-            ipParts[1] = [elements[1]];
-            ipParts[2].unshift(elements[2]); // add the 3rd part of local ip to the beginning of array, so it is checked first
-            ipParts[2] = [elements[2]];
-        }
-        console.log(ipParts);
+    // basic scan: nur 4. stelle der ip
+    // leider viel zu langsam für scan auf 3. und 4. stelle, habe noch keinen besseren Ansatz...
+    this.scan = function(onScanReadyHandler) {
+        openServerConnections = [];
+        if (onScanReadyHandler) onScanReady = onScanReadyHandler;
+        if (!localIP) return;
+        var localIP_ = localIP.split(".");
         scanning = true;
-        for (var i0 = 0; i0 < ipParts[0].length; i0++) {
-            for (var i1 = 0; i1 < ipParts[1].length; i1++) {
-                for (var i2 = 0; i2 < ipParts[2].length; i2++) {
-                    for (var i3 = 0; i3 < ipParts[3].length; i3++) {
-                        var ip = ipParts[0][i0]+"."+ipParts[1][i1]+"."+ipParts[2][i2]+"."+ipParts[3][i3];
-                        new function(ip){isUsed(ip);}(ip);
-                    }
-                }
-            }
-        }
-        scanning = false;
+        tryPing("localhost");
+        checkNext([localIP_[0], localIP_[1], localIP_[2], 0], true, 0);
     }
     
-    var timeout = 0;
-    function isUsed(ip) {
-        var f = function(output){tryConnect(ip);};
+    this.scanManually = function(ip) {
+        var s = new ServerConnection(ip, gameServerPort);
+        s.setOnOpen(function(){addServer(s);listAvailableGames();});
+    }
+    
+    function checkNext(ipArray, isBasic, c) {
+        if (!scanning || c > 255*255) return;
+        var ip = String(ipArray[0]) + "." + String(ipArray[1]) + "." + String((Math.floor(ipArray[2])+256)%256) + "." + String(ipArray[3]);
+        tryPing(ip);
+        ipArray[3] = ipArray[3] + 1;
+        if (ipArray[3] >= 255) {
+            if (isBasic) {setTimeout(onScanReady,100);console.log("scan ready");return;}
+            ipArray[3] = 0;
+            var diff = ipArray[2] - localIP[2];
+            ipArray[2] -= (diff * 2 + Math.signum(diff)/2);
+            console.log(ip);
+        }
+        setTimeout(function(){checkNext(ipArray, isBasic, c+1);}, 20);
+    }
+    
+    function tryPing(ip) {
         try {
-            //new WebSocket("ws://" + ip + ":" + gameServerPort + "/");
-            $.ajax({ type: "GET",
-                url: "http://" + ip + ":" + gameServerPort + "/",
-                data: {},
-                cache: false,
-                200: f,
-                302: f,
-                error: function(xhr, ajaxOptions, thrownError){
-                    console.log(xhr.status);
-                }
-            });
+            var img = new Image();
+            img.onload = function(){tryConnect(ip);};
+            img.src = "http://" + ip + ":" + pingServerPort + "/ping.gif";
         } catch (e) {}
-        timeout += 2;
     }
     
     function tryConnect(ip) {
-        if (scanning == true) {throw new Exception();}
+        console.log(ip);
         var s = new ServerConnection(ip, gameServerPort);
-        s.setOnOpen(function(){addServer(s, ip);});
+        s.setOnOpen(function(){addServer(s);});
     }
     
-    function addServer(conn, host) {
+    this.setOnScanReady = function(f) {
+        onScanReady = f;
+    }
+    
+    function addServer(conn) {
         openServerConnections.push(conn);
-        possibleHosts.push(host);
     }
     
-    function getArrayFromTo(from, to) {
-        var a = [];
-        for (var i = from; i <= to; i++) {
-            a.push(i);
-        }
-        return a;
+    this.getOpenServerConnections = function() {
+        return openServerConnections;
     }
     
     // kleiner hack um die
@@ -272,16 +262,4 @@ function NetworkScanner() {
     }
 }
 
-var test1;
-setTimeout(function(){
-$.ajax({ type: "GET",
-    url: "http://" + "192.168.2.101" + ":" + 6383 + "/",
-    data: {},
-    cache: false,
-    error: function(xhr, ajaxOptions, thrownError){
-        test1 = xhr;
-        console.log(xhr);
-    }
-});
-},100);
 

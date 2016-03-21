@@ -19,4 +19,9 @@ function makeSimpleCmd(type_, key, value) {
     return cmd;
 }
 
+function makeGetCmd(type_) {
+    var s = '{"type": "'+type_+'"}';
+    var cmd = JSON.parse(s);
+    return cmd;
+}
 

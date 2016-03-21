@@ -19,10 +19,6 @@ public class Server extends WebSocketServer {
         super( new InetSocketAddress( port ) );
     }
 
-    public Server( InetSocketAddress address ) {
-        super( address );
-    }
-
     @Override
     public void onOpen(WebSocket newConnection, ClientHandshake handshake) {
         String host = newConnection.getRemoteSocketAddress().getAddress().getHostAddress();
@@ -31,6 +27,7 @@ public class Server extends WebSocketServer {
             new Player(newConnection);
         } else {
             player.newSocket(newConnection);
+            System.out.println("new socket");
         }
     }
 
