@@ -29,19 +29,17 @@
             <div id="headerMenu" style="display:none;font-size:0.8em;">
                 <p><span id="localIP"></span><br>
                 <span id="scoreString"></span><br>
-                <span style="color:#fff;" class="btn">Schlie&szlig;en</span></p>
+                <span style="color:#fff;margin-top:5px;" class="btn">Schlie&szlig;en</span></p>
             </div>
             <div id="welcome" class="frame">
                 <p>"Kopfrechnen Wettbewerb - doch Competition findet keine statt wie'n Navi im Provinznest."</p>
                 <p>
-                    <input placeholder="*User Name" type="text" id="name"/>
-                    <input placeholder="Dein pers&ouml;nlicher Fortschrittscode" type="text" id="scoreStringInput"/>
-                    <input placeholder="*Server IP - Info oben rechts bei Host" type="text" id="ip"/>
+                    <input placeholder="Benutzername (frei w&auml;hlbar)" type="text" id="name"/>
+                    <input placeholder="Dein Punkte-Code (optional)" type="text" id="scoreStringInput"/>
+                    <input placeholder='Server IP ("Info" oben rechts bei Host)' type="text" id="ip"/>
                     <a style="max-width:12em;" id="connect" href="#" onclick="netManager.scanManually(byID('ip').value);openListGamesFrame();" data-role="button">Server beitreten</a> 
                     Oder:<br>
                     <a style="max-width:12em;" id="scan" href="#" onclick="netManager.scan();openListGamesFrame();" data-role="button">Server suchen</a> 
-                    <br>
-                    * Pflichtfeld
                 </p>
                 <p>
                 </p>
@@ -60,7 +58,8 @@
                     <span style="margin: auto auto 15px auto;display:inline-block;">
                         <span id="exercise" style="margin-bottom: 0.8em;font-size: 1.2em;"></span>
                         <input type="number" style="width:8em;display:inline;" placeholder="?" id="answer" onkeydown="document.onkeydown(event);"/>
-                        <!-- kleiner hack, einige browser benoetigen den submit button, und auf enter druck fokussieren sie darauf -->
+                        <!-- kleiner hack, einige browser benoetigen den submit button, und auf enter druck fokussieren sie darauf 
+                             das hier interpretiert das dann als senden und fokussiert wieder die eingabe -->
                         <input id="answerFormSubmit" type="submit" value="Submit" style="position:absolute;top:-200px;left:-200px;" onfocus="sendAnswer();byID('answer').focus();" /> 
                         <span id="exerciseCountdown"></span>
                     </span>
@@ -93,16 +92,17 @@
                 <table id="scoreboard">
                     <thead>
                         <tr>
-                            <th>Rank</th>
+                            <th>Pos.</th>
                             <th data-priority="3">Name</th>
                             <th data-priority="1">Score</th>
                             <th data-priority="2">Overall</th>
                             <th>Level</th>
+                            <th>+ Fortschritt</th>
                         </tr>
                     </thead>
                     <tbody id="scoreboardBody">
                         <tr><td>loading...</td><td>loading...</td><td>loading...</td>
-                        <td>loading...</td><td>loading...</td></tr>
+                            <td>loading...</td><td>loading...</td><td>loading...</td></tr>
                     </tbody>
                 </table>
                 <p>Die n&auml;chste Runde startet in <span id="gameTimeoutCountdown"></span>!</p>

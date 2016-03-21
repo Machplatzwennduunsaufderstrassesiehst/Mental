@@ -40,7 +40,7 @@ public class Score extends JSONObject{
         int overallScoreValue = 0;
 
         if (checkScoreString(scoreString)) {
-            scoreString = scoreString.substring(0,scoreString.length()-2);
+            scoreString = scoreString.substring(0,scoreString.length()-1);
             overallScoreValue = Integer.parseInt(scoreString);
         }
 

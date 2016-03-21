@@ -1,13 +1,14 @@
 var finalScoreboardObserver = new Observer("scoreboard", function(msg) {
     var scoreboardBody = byID("scoreboardBody");
-    scoreboardBody.innerHTML = "";
-    
+    var html = "";
     for (var i = 0; i < msg.scoreboard.length; i++) {
         var e = msg.scoreboard[i];
         var name = e.playerName;
         var score = e.scoreValue;
-        scoreboardBody.innerHTML += "<tr><td>"+(i+1)+"</td><td>"+name+"</td><td>"+score+"</td><td>"+e.overallScoreValue+"</td><td>"+e.playerLevel+"</td></tr>";
+        html += "<tr><td>"+(i+1)+"</td><td>"+name+"</td><td>"+score+"</td><td>"+e.overallScoreValue+"</td><td>"+e.playerLevel+"</td>";
+        html += "<td><span class='lvlProgress'><span class='lvlProgressBar' style='width: " + e.playerLevelProgress + "%;'></span></span></td></tr>";
     }
+    scoreboardBody.innerHTML = html;
 });
 
 var reopenMainFrameObserver = new Observer("exercise", function(msg) {
@@ -27,7 +28,7 @@ var playerWonObserver = new Observer("player_won", function(msg) {
 var scoreStringObserver = new Observer("score_string", function(msg) {
     setCookie("scoreString", msg.score_string, 1000);
     byID("scoreStringInput").value = msg.score_string;
-    byID("scoreString").value = msg.score_string;
+    byID("scoreString").innerHTML = "Dein Punkte-Code: " + msg.score_string;
 });
 
 var exerciseResultSize = 0;
