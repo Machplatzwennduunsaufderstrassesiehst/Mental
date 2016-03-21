@@ -68,11 +68,11 @@ function listAvailableGames() {
                 var game = msg.games[j];
                 var players = "";
                 for (var k = 0; k < game.players.length; k++) {
-                    player += game.players[k].playerName;
-                    if (k < game.players.length-1) player += ", ";
+                    players += game.players[k].playerName;
+                    if (k < game.players.length-1) players += ", ";
                 }
                 html += "<div class='gameListItem' id='game"+conn.host+""+game.game_id+"'>";
-                html += "<p>"+game.name+" on "+conn.host+" - Players: "+"</p>"
+                html += "<p>"+game.name+" auf "+conn.host+" - Spieler: "+players+"</p>"
                 html += "</div>";
                 byID("gamesList").innerHTML += html;
                 byID("game"+conn.host+""+game.game_id).onclick = function() {
