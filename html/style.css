@@ -82,13 +82,14 @@ body {
 
 #messageContainerDivision {
     margin: 10px auto 0px auto;
-    display:inline-block; 
+    display: inline-block;
+    opacity: 0;
     overflow-y:hidden; 
     height:1.2em; 
     background-color: #c1cfff; 
-    min-width: 200px; 
-    padding:5px; 
-    border-radius:5px;
+    min-width: 400px; 
+    padding: 5px; 
+    border-radius: 5px;
 }
 
 #exerciseCountdown {
@@ -113,10 +114,11 @@ body {
     border-top: 4px solid white;
     padding: 10px;
 }
-#scoreboard td + td { border-left: 2px solid white;}
+#scoreboard td + td { border-left: 2px solid white;margin:0;}
 
 #scoreboard th {
     padding: 10px;
+    margin: 0;
 }
 
 

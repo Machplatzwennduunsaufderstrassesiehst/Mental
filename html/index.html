@@ -26,18 +26,22 @@
             <a href="#" class="ui-btn-right" onclick="setTimeout(function(){byID('headerMenu').style.display = 'inline-block';},50);">Info</a>
         </div>
         <div id="main" data-role="content">
-            <div id="headerMenu" style="display:none;">
-                <p><span id="localIP" style="float:left;font-size:0.8em"></span><br>
+            <div id="headerMenu" style="display:none;font-size:0.8em;">
+                <p><span id="localIP"></span><br>
+                <span id="scoreString"></span><br>
                 <span style="color:#fff;" class="btn">Schlie&szlig;en</span></p>
             </div>
             <div id="welcome" class="frame">
                 <p>"Kopfrechnen Wettbewerb - doch Competition findet keine statt wie'n Navi im Provinznest."</p>
                 <p>
-                    <input placeholder="User Name" type="text" id="name"/>
-                    <input placeholder="Server IP - Info oben rechts bei Host" type="text" id="ip"/>
+                    <input placeholder="*User Name" type="text" id="name"/>
+                    <input placeholder="Dein pers&ouml;nlicher Fortschrittscode" type="text" id="scoreStringInput"/>
+                    <input placeholder="*Server IP - Info oben rechts bei Host" type="text" id="ip"/>
                     <a style="max-width:12em;" id="connect" href="#" onclick="netManager.scanManually(byID('ip').value);openListGamesFrame();" data-role="button">Server beitreten</a> 
                     Oder:<br>
-                    <a style="max-width:12em;" id="scan" href="#" onclick="netManager.scan();openListGamesFrame();" data-role="button">Netzwerk-Scan</a> 
+                    <a style="max-width:12em;" id="scan" href="#" onclick="netManager.scan();openListGamesFrame();" data-role="button">Server suchen</a> 
+                    <br>
+                    * Pflichtfeld
                 </p>
                 <p>
                 </p>

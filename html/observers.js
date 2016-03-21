@@ -24,6 +24,11 @@ var playerWonObserver = new Observer("player_won", function(msg) {
     countDownId = "gameTimeoutCountdown";
 });
 
+var scoreStringObserver = new Observer("score_string", function(msg) {
+    setCookie("scoreString", msg.score_string, 1000);
+    byID("scoreStringInput").value = msg.score_string;
+    byID("scoreString").value = msg.score_string;
+});
 
 var exerciseResultSize = 0;
 var exerciseObserver = new Observer("exercise", function(msg) {

@@ -15,6 +15,8 @@ window.onload = function() {
     // versuche die letzten anmeldedaten aus den cookies zu lesen
     if (getCookie("userName") != "") byID("name").value = getCookie("userName");
     if (getCookie("ip") != "") byID("ip").value = getCookie("ip");
+    if (getCookie("scoreString") != "") byID("scoreStringInput").value = getCookie("scoreString");
+    if (getCookie("scoreString") != "") byID("scoreString").value = "Dein Fortschritts-Code: " + getCookie("scoreString");
     
     setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netManager.getLocalIP();},1000);
     setDoOnEnter(function(){byID("connect").click();});
@@ -86,12 +88,14 @@ function listAvailableGames() {
 }
 
 function joinGame(connection, gameId) {
-    var name = document.getElementById("name").value;
+    var name = byID("name").value;
+    var scoreString = byID("scoreStringInput").value;
     setCookie("userName", name, 1000);
     if (isMobile()) fullScreen(byID("page_"));
     serverConnection = connection;
     serverConnection.send(makeSimpleCmd("join", "game_id", gameId));
     serverConnection.send(makeSetCmd("name", name));
+    serverConnection.send(makeSetCmd("score_string", scoreString));
     serverConnection.addObserver(playerWonObserver);
     serverConnection.addObserver(exerciseObserver);
     serverConnection.addObserver(timeLeftObserver);

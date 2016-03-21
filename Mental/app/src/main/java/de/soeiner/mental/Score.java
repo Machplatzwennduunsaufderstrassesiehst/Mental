@@ -35,6 +35,7 @@ public class Score extends JSONObject{
 
     // ich habe den scoreString mal aus dem konstruktor entfernt, weil wir eher nicht in die situation kommen,
     // einen scoreString zu haben, wenn das Score Objekt noch nicht existiert
+    // stattdessen, kann man jetzt zur Laufzeit einen ScoreString "laden"
     public void loadScoreString(String scoreString) {
         int overallScoreValue = 0;
 
@@ -45,7 +46,7 @@ public class Score extends JSONObject{
 
         setOverallScoreValue(overallScoreValue);
         setPlayerLevel(overallScoreValue);
-        setPlayerLevel(overallScoreValue);
+        setPlayerLevelProgress(overallScoreValue);
     }
 
     public int getScoreValue() {
@@ -100,8 +101,8 @@ public class Score extends JSONObject{
         setInt("playerLevel", calculateLevel(overallScoreValue));
     }
 
-    private void setPlayerLevelProgress(int scoreValue) {
-        setInt("playerLevelProgress", calculateLevelProgress(scoreValue));
+    private void setPlayerLevelProgress(int overallScoreValue) {
+        setInt("playerLevelProgress", calculateLevelProgress(overallScoreValue));
     }
 
 
