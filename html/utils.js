@@ -73,6 +73,27 @@ function setDoOnEnter(f) {
     doOnEnter = f;
 }
 
+var msgIDCounter = 0;
+function displayMessage(message) {
+    var i = 0;
+    var msgCD = byID("messageContainerDivision");
+    var msgC = byID("messageContainer");
+    msgCD.style.opacity = 1;
+    slide(msgC, -1.45);
+    var msgID = "msg" + msgIDCounter;
+    msgC.innerHTML = "<span id='"+msgID+"'>" + message + "<br></span>" + msgC.innerHTML;
+    setTimeout(function(){byID(msgID).style.opacity = 0;}, 5000);
+    setTimeout(function(){msgC.removeChild(byID(msgID));
+                if (msgC.innerHTML.length <= 3) msgCD.style.opacity = 0;}, 5500);
+    msgIDCounter++;
+}
+var slide = function(msgC, value) {
+    if (value >= 0) {return;}
+    msgC.style.marginTop = String(value) + "em";
+    value += 0.1;
+    setTimeout(function(){slide(msgC, value);}, 25);
+}
+
 function fullScreen(element) {
     if (element.requestFullscreen) {
         element.requestFullscreen();

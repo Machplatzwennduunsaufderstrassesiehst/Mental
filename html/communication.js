@@ -2,7 +2,6 @@
  * (c) Sven Langner 2015
  * 
  * 
- * Old style classes are used due to the attempt to make this script compatible to almost all browsers.
  */
 
 // TODO <<<<<<<<<<<<< maybe remove this later

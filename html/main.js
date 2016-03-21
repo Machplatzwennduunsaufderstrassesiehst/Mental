@@ -40,6 +40,7 @@ function openMainFrame() {
 function openScoreboardFrame() {
     navi.show("scoreboardFrame");
     setDoOnEnter(uselessFunction);
+    serverConnection.addObserver(reopenMainFrameObserver);
 }
 
 function openListGamesFrame() {
@@ -101,26 +102,26 @@ function joinGame(connection, gameId) {
     openMainFrame();
 }
         
-var answered = false;
+var alreadyAnswered = false;
 function sendAnswer() {
     console.log("sendAnswer");
-    if (answered) {return;}
-    answered = true;
+    if (alreadyAnswered) {return;}
+    alreadyAnswered = true;
+    setTimeout(function(){alreadyAnswered = false;}, 500); // hier lieber ein Timeout, da es ja sein kann, dass keine Antwort kommt (dann waere diese Methode für immer gelockt!)
     var answer = byID("answer").value;
     serverConnection.communicate(makeSimpleCmd("answer", "answer", Number(answer)), function(msg) {
-            answered = false;
-            if (msg.isCorrect) {
-                byID("answer").style.backgroundColor = "#dfd";
-                byID("answer").placeholder = "Richtig!";
-            } else {
-                byID("answer").style.backgroundColor = "#fdd";
-                byID("answer").placeholder = "Falsch!";
-            }
-            setTimeout(function(){
-                byID("answer").style.backgroundColor = "#fff";
-            }, 1000);
-        });
-    byID("answer").value = "";
+        if (msg.isCorrect) {
+            byID("answer").style.backgroundColor = "#dfd";
+            byID("answer").placeholder = "Richtig!";
+        } else {
+            byID("answer").style.backgroundColor = "#fdd";
+            byID("answer").placeholder = "Falsch!";
+            byID("answer").value = ""; // bei einer richtigen Antwort bleibt das Ergebnis stehen, bis die nächste Aufgabe kommt
+        }
+        setTimeout(function(){
+            byID("answer").style.backgroundColor = "#fff";
+        }, 1000);
+    });
 }
 
 function disconnect() {
