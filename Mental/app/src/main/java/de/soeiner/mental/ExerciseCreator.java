@@ -56,7 +56,7 @@ class SimpleMultExerciseCreator extends ExerciseCreator {
         int d = difficulty / 2;
         int a = (int) (Math.random() * (10-d)) + d; // Zahlen zwischen d und 10
         int b = (int) (Math.random() * (10-d)) + d;
-        return createMult(a, b);
+        return createMult(a % 10, b % 10);
     }
 }
 
@@ -67,7 +67,7 @@ class MultExerciseCreator extends ExerciseCreator {
         int bmax = 20;
         if (a <= 4) bmax = 100 * d / a;
         int b = (int) (Math.random() * (bmax-d)) + d;
-        return createMult(a, b);
+        return createMult(a % 20, b % bmax);
     }
 }
 
@@ -82,12 +82,12 @@ class MixedExerciseCreator2 extends ExerciseCreator {
             int a = (int) (Math.random() * 5 * d / 2 + Math.random() * 20);
             int b = (int) (Math.random() * 5 * d / 2 + Math.random() * 20);
 
-            if (d % 5 == 0) {
-                while (a * b < (100 + 8 * d) - (75 + d)) {
+            if (difficulty % 5 == 0) {
+                while (a * b < (100 + 8 * difficulty) - (75 + difficulty)) {
                     a += b;
                     b += b;
                 }
-                while (a * b > 100 + 4 * d) {
+                while (a * b > 100 + 4 * difficulty) {
                     if (a >= b)
                         a = (int) (a / 2);
                     if (b > a)
@@ -102,7 +102,7 @@ class MixedExerciseCreator2 extends ExerciseCreator {
                 if (a - b < d) {
                     continue start;
                 }
-                if (d % 3 == 0) {
+                if (difficulty % 3 == 0) {
                     if (a < b) {
                         temp = a;
                         a = b;

@@ -60,6 +60,7 @@ function numpadDel() {
     byID("answer").value = v.substring(0, v.length-1);
 }
 
+var gameInstances = {};
 function listAvailableGames() {
     var openConnections = netManager.getOpenServerConnections();
     byID("gamesList").innerHTML = "";
@@ -69,6 +70,9 @@ function listAvailableGames() {
             for (var j = 0; j < msg.games.length; j++) {
                 var html = "";
                 var game = msg.games[j];
+                gameInstances["game"+conn.host+""+game.game_id] = {};
+                gameInstances["game"+conn.host+""+game.game_id].conn = conn;
+                gameInstances["game"+conn.host+""+game.game_id].gameId = game.game_id;
                 var players = "";
                 for (var k = 0; k < game.players.length; k++) {
                     players += game.players[k].playerName;
@@ -78,10 +82,16 @@ function listAvailableGames() {
                 html += "<p>"+game.name+" auf "+conn.host+" - Spieler: "+players+"</p>"
                 html += "</div>";
                 byID("gamesList").innerHTML += html;
-                byID("game"+conn.host+""+game.game_id).onclick = function() {
-                    joinGame(conn, game.game_id);
-                }
-                //setTimeout(new function(conn, game){byID("game"+conn.host+""+game.game_id).onclick = function() {joinGame(conn, game.game_id);}}(conn, game), 20);
+    
+                setTimeout(function(){
+                    var gameListItems = document.getElementsByClassName("gameListItem");
+                    for (var i = 0; i < gameListItems.length; i++) {
+                        console.log(gameListItems[i]);
+                        gameListItems[i].onclick = function() {
+                            joinGame(gameInstances[this.id].conn, gameInstances[this.id].gameId);
+                        }
+                    }
+                }, 1000);
             }
         });
     }
@@ -92,10 +102,14 @@ function joinGame(connection, gameId) {
     var scoreString = byID("scoreStringInput").value;
     setCookie("userName", name, 1000);
     if (isMobile()) fullScreen(byID("page_"));
+    var connections = netManager.getOpenServerConnections()
+    for (var i = 0; i < connections; i++) {
+        if (connections[i] != connection) connections[i].close();
+    }
     serverConnection = connection;
-    serverConnection.send(makeSimpleCmd("join", "game_id", gameId));
     serverConnection.send(makeSetCmd("name", name));
     serverConnection.send(makeSetCmd("score_string", scoreString));
+    serverConnection.send(makeSimpleCmd("join", "game_id", gameId));
     serverConnection.addObserver(playerWonObserver);
     serverConnection.addObserver(exerciseObserver);
     serverConnection.addObserver(timeLeftObserver);

@@ -98,10 +98,10 @@ public class Game implements Runnable {
     }
 
     public void join(Player p) {
-        if (!joinedPlayers.contains(p)) {
-            joinedPlayers.add(p);
+        for (Game g : Game.games) { // den Spieler aus anderen Spielen gegebenenfalls entfernen
+            if (g.joinedPlayers.contains(p)) g.leave(p);
         }
-       // p.updateScore();
+        joinedPlayers.add(p);
         p.sendExercise(exerciseCreator.getExerciseString());
         updateScoreBoardSize();
         broadcastMessage(p.getName() + " ist beigetreten.");
