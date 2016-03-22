@@ -22,11 +22,10 @@ public class Player extends ClientConnection {
         connections.add(this);
     }
 
-    public void sendExercise(String ex, int length) {
+    public void sendExercise(String ex) {
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_EXERCISE);
         try {
             jsonObject.put("exercise", ex);
-            jsonObject.put("length", length);
         } catch (Exception e) {}
         PushRequest request = new PushRequest(jsonObject);
         makePushRequest(request);
