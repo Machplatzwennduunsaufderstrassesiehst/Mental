@@ -96,7 +96,6 @@ function listAvailableGames() {
             }
         });
     }
-    setTimeout
 }
 
 function joinGame(connection, gameId) {
