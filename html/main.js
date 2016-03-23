@@ -12,7 +12,7 @@ window.onload = function() {
     // netManager konfigurieren
     netManager.setOnScanReady(function(){setTimeout(listAvailableGames, 1000);});
     
-    // versuche die letzten anmeldedaten aus den cookies zu lesen
+    // versuche die letzten anmeldedaten und scoreString aus den cookies zu lesen
     if (getCookie("userName") != "") byID("name").value = getCookie("userName");
     if (getCookie("ip") != "") byID("ip").value = getCookie("ip");
     if (getCookie("scoreString") != "") byID("scoreStringInput").value = getCookie("scoreString");
@@ -63,6 +63,7 @@ function numpadDel() {
 var gameInstances = {};
 function listAvailableGames() {
     var openConnections = netManager.getOpenServerConnections();
+    
     byID("gamesList").innerHTML = "";
     for (var i = 0; i < openConnections.length; i++) {
         var conn = openConnections[i];
@@ -86,22 +87,22 @@ function listAvailableGames() {
                 setTimeout(function(){
                     var gameListItems = document.getElementsByClassName("gameListItem");
                     for (var i = 0; i < gameListItems.length; i++) {
-                        console.log(gameListItems[i]);
                         gameListItems[i].onclick = function() {
                             joinGame(gameInstances[this.id].conn, gameInstances[this.id].gameId);
                         }
+                        gameListItems[i].style.opacity = 1;
                     }
-                }, 1000);
+                }, 1500); // TODO not nice
             }
         });
     }
+    setTimeout
 }
 
 function joinGame(connection, gameId) {
     var name = byID("name").value;
     var scoreString = byID("scoreStringInput").value;
     setCookie("userName", name, 1000);
-    if (isMobile()) fullScreen(byID("page_"));
     var connections = netManager.getOpenServerConnections()
     for (var i = 0; i < connections; i++) {
         if (connections[i] != connection) connections[i].close();
@@ -135,7 +136,7 @@ function sendAnswer() {
         } else {
             byID("answer").style.backgroundColor = "#fdd";
             byID("answer").placeholder = "Falsch!";
-            byID("answer").value = ""; // bei einer richtigen Antwort bleibt das Ergebnis stehen, bis die nächste Aufgabe kommt
+            byID("answer").value = ""; // bei einer falschen Antwort wird das ergebnis gelöscht, bei einer richtigen Antwort bleibt das Ergebnis stehen, bis die nächste Aufgabe kommt
         }
         setTimeout(function(){
             byID("answer").style.backgroundColor = "#fff";
