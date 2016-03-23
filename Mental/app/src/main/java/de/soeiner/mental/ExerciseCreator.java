@@ -4,7 +4,8 @@ package de.soeiner.mental;
  * Created by sven on 22.03.16.
  */
 public abstract class ExerciseCreator {
-    protected String exerciseString = "ini";
+    protected String exerciseString = "";
+    protected String lastExerciseString = "";
     protected int difficulty = 0;
     protected int exerciseResult = 0;
 
@@ -29,7 +30,18 @@ public abstract class ExerciseCreator {
     }
 
     // erstellt die nächste Aufgabe und setzt exerciseResult sowie exerciseString
-    public abstract String createNext();
+    public abstract String create();
+
+    public String createNext() {
+        String exercise;
+        int retry = 0;
+        do {
+            exercise = create();
+            retry++;
+        } while (retry <= 3 && exercise.equals(lastExerciseString));
+        lastExerciseString = exercise;
+        return exercise;
+    }
 
 
     protected String createSub(int a, int b) {
@@ -52,32 +64,33 @@ public abstract class ExerciseCreator {
 }
 
 class SimpleMultExerciseCreator extends ExerciseCreator {
-    public String createNext() {
+    public String create() {
         int d = difficulty / 2;
         int a = (int) (Math.random() * (10-d)) + d; // Zahlen zwischen d und 10
         int b = (int) (Math.random() * (10-d)) + d;
-        return createMult(a % 10, b % 10);
+        return createMult(a, b);
     }
 }
 
 class MultExerciseCreator extends ExerciseCreator {
-    public String createNext() {
+    public String create() {
         int d = difficulty;
         int a = (int) (Math.random() * (20-d)) + d; // Zahlen zwischen d und 20
         int bmax = 20;
         if (a <= 4) bmax = 100 * d / a;
         int b = (int) (Math.random() * (bmax-d)) + d;
-        return createMult(a % 20, b % bmax);
+        return createMult(a, b);
     }
 }
 
 // neuer Vorschlag, das erhöhen von difficulty schlägt hier mehr ins gewicht
 class MixedExerciseCreator2 extends ExerciseCreator {
-    public String createNext() {
+    public String create() {
         String exercise = "";
         int result = 0;
         int d = difficulty * 5;
-        start: while (exercise.equals("")) {
+        start:
+        while (exercise.equals("")) {
             int temp;
             int a = (int) (Math.random() * 5 * d / 2 + Math.random() * 20);
             int b = (int) (Math.random() * 5 * d / 2 + Math.random() * 20);
@@ -123,7 +136,7 @@ class MixedExerciseCreator2 extends ExerciseCreator {
 }
 
 class MixedExerciseCreator extends ExerciseCreator {
-    public String createNext() {
+    public String create() {
         System.out.println("!!!!!!!!!!!!!!DIFFICULTY:  "+(difficulty+50));
         String exercise = "";
         int result = 0;

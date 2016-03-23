@@ -21,6 +21,7 @@ public class Game implements Runnable {
     public static ArrayList<Game> getGames() {
         return games;
     }
+
     public static JSONArray getGamesJSONArray() {
         try {
             JSONArray jsonGameArray = new JSONArray();
@@ -44,7 +45,7 @@ public class Game implements Runnable {
     private ArrayList<Player> joinedPlayers;
 
     private int EXERCISE_TIMEOUT = 30;
-    private int GAME_TIMEOUT = 30; //für pause zwischen den spielen mit siegerbildschirm
+    private int GAME_TIMEOUT = 20; //für pause zwischen den spielen mit siegerbildschirm
 
     ExerciseCreator exerciseCreator;
     private Score[] scoreboard = new Score[0];
@@ -55,9 +56,9 @@ public class Game implements Runnable {
         games.add(this);
         this.name = name;
         this.exerciseCreator = exerciseCreator;
+        joinedPlayers = new ArrayList<Player>();
         Thread t = new Thread(this);
         t.start();
-        joinedPlayers = new ArrayList<Player>();
     }
 
     public String getName() {
@@ -154,6 +155,7 @@ public class Game implements Runnable {
                     broadcastMessage(player.getName()+" hat die Aufgabe als "+(getRank()+1)+". gelöst!");
                     if (s.getScoreValue() > 100) {
                         broadcastPlayerWon(player.getName());
+                        notify(); // hat einer gewonnen, muss das wait im game loop ebenfalls beendet werden.
                     }
                     player.finished = true;
                     for (int i = 0; i < joinedPlayers.size(); i++) {
@@ -181,7 +183,7 @@ public class Game implements Runnable {
 
     private int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
         //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
-        int points = exerciseCreator.getDifficulty();
+        int points = exerciseCreator.getDifficulty() * 3 / 2; // hab ich bisschen erhöht, da eine Runde ganz schön lange gedauert hat, wenn jeder mal ne Aufgabe löst
         for(int i = 0; i<getRank();i++){
             points = points/2;
         }

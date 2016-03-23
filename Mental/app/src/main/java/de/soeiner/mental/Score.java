@@ -13,6 +13,20 @@ public class Score extends JSONObject{
         setScoreValue(0);
     }
 
+    // quadratische abhängigkeit als vorschlag?
+    private static int calculateLevel(int score) {
+        return (int) Math.sqrt(score/50.0);
+    }
+
+    private static int calculateLevelProgress(int score) {
+        int lastLevelThreshold = (int) (Math.pow(calculateLevel(score), 2) * 50.0); // die letzte schwelle ist das aktuelle level
+        int nextLevelThreshold = (int) (Math.pow(calculateLevel(score) + 1, 2) * 50.0);
+        int diff = nextLevelThreshold - lastLevelThreshold;
+        return (int) (100.0 * (score - lastLevelThreshold) / diff);
+    }
+
+    // das ist die originale version, allerdings gibt es hier kleine fehler wegen des / 500
+    /*
     private static int calculateLevel(int score){
         return (int) ((score/500)+Math.log10((double) score)+1);
     }
@@ -23,6 +37,7 @@ public class Score extends JSONObject{
         level *= 100;
         return (int) level;
     }
+    */
 
     public void updateScore(int plus) {
         int scoreValue = this.getScoreValue() + plus;
@@ -35,7 +50,7 @@ public class Score extends JSONObject{
 
     // ich habe den scoreString mal aus dem konstruktor entfernt, weil wir eher nicht in die situation kommen,
     // einen scoreString zu haben, wenn das Score Objekt noch nicht existiert
-    // stattdessen, kann man jetzt zur Laufzeit einen ScoreString "laden"
+    // stattdessen kann man jetzt zur Laufzeit einen ScoreString "laden"
     public void loadScoreString(String scoreString) {
         int overallScoreValue = 0;
 
