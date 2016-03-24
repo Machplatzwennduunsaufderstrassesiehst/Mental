@@ -50,11 +50,19 @@ function Observer(cmdType, handler) {
     this.handler = handler;
 }
 
+
+var serverConnections = [];
+function getConnectionByHost(host) {
+    for (var i = 0; i < serverConnections.length; i++) {
+        if (serverConnections[i].host == host) return serverConnections[i];
+    }
+}
 // class constructor definition
 /*
  * The "Subject" part of the Observer pattern. 
 */
 function ServerConnection(host, port) {
+    serverConnections.push(this);
     this.host = host;
     var socket = new WebSocket("ws://"+host+":"+String(port));
     var observers = [];
@@ -67,6 +75,9 @@ function ServerConnection(host, port) {
     
     this.close = function() {
         socket.close();
+        // remove this from serverConnections
+        var i = serverConnections.indexOf(self);
+        serverConnections.splice(i);
     }
     
     socket.onclose = function(event) {
@@ -236,6 +247,10 @@ function NetworkManager() {
     
     this.getOpenServerConnections = function() {
         return openServerConnections;
+    }
+    
+    this.popOpenConnection = function() {
+        return openServerConnections.pop();
     }
     
     // kleiner hack um die

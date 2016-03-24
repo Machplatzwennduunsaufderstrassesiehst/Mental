@@ -145,7 +145,6 @@ public class Game implements Runnable {
     }
 
     public boolean playerAnswered(Player player, int answer) {
-        System.out.println("spieler hat geantwortet");
         boolean allFinished = true;
         Score s = player.getScore();
         synchronized (this) {
@@ -246,7 +245,7 @@ public class Game implements Runnable {
             exerciseCreator.resetDifficulty();
             while (joinedPlayers.size() == 0) { //Warten bis spieler das Spiel betreten hat
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                 }
             }

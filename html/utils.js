@@ -26,6 +26,7 @@ function Navigation() {
         if (arguments[0].callee) arguments = arguments[0];
         history.push(arguments);
         show(arguments);
+        byID("back").style.display = "inline";
     }
     this.navigate = navigate;
     
@@ -45,6 +46,11 @@ function Navigation() {
         if (history.length < 2) return;
         history.pop(); // pop the currently shown ids from history
         navigate(history.pop());
+    }
+    
+    this.clearHistory = function() {
+        history = [];
+        byID("back").style.display = "none";
     }
 }
 

@@ -68,7 +68,7 @@ class SimpleMultExerciseCreator extends ExerciseCreator {
         int d = difficulty / 2;
         int a = (int) (Math.random() * (10-d)) + d; // Zahlen zwischen d und 10
         int b = (int) (Math.random() * (10-d)) + d;
-        return createMult(a, b);
+        return createMult(a % 10 + 1, b % 10 + 1);
     }
 }
 
@@ -79,7 +79,7 @@ class MultExerciseCreator extends ExerciseCreator {
         int bmax = 20;
         if (a <= 4) bmax = 100 * d / a;
         int b = (int) (Math.random() * (bmax-d)) + d;
-        return createMult(a, b);
+        return createMult(a % 20 + 1, b % bmax + 1);
     }
 }
 
