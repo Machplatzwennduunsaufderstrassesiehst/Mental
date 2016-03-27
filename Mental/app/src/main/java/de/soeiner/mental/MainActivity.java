@@ -28,8 +28,9 @@ public class MainActivity extends AppCompatActivity {
         httpServer = new PingHttpServer();
         httpServer.start();
 
-        String name = "Mental Game";
-        new Game(name);
+        new Game("Gemischte Aufgaben", new MixedExerciseCreator2());
+        new Game("Kleines 1x1", new SimpleMultExerciseCreator());
+        new Game("Großes 1x1", new MultExerciseCreator());
     }
 
     @Override

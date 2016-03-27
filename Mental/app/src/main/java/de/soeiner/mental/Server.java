@@ -38,6 +38,7 @@ public class Server extends WebSocketServer {
         if (g != null) {
             g.leave(player);
         }
+        System.out.println(player.getName() + " disconnected.");
         player.disconnect();
     }
 

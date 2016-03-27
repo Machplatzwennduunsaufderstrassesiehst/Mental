@@ -6,7 +6,7 @@ var finalScoreboardObserver = new Observer("scoreboard", function(msg) {
         var name = e.playerName;
         var score = e.scoreValue;
         html += "<tr><td>"+(i+1)+"</td><td>"+name+"</td><td>"+score+"</td><td>"+e.overallScoreValue+"</td><td>"+e.playerLevel+"</td>";
-        html += "<td><span class='lvlProgress'><span class='lvlProgressBar' style='width: " + e.playerLevelProgress + "%;'></span></span></td></tr>";
+        html += "<td><span class='lvlProgress'><span class='lvlProgressBar' style='width: " + e.playerLevelProgress*3/5 + "%;'></span></span></td></tr>";
     }
     scoreboardBody.innerHTML = html;
 });

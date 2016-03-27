@@ -7,12 +7,12 @@ var navi = new Navigation();
 
 // DO AFTER HTML LOADED
 window.onload = function() {
-    navi.navigate("welcome");
+    openWelcomeFrame();
     
     // netManager konfigurieren
     netManager.setOnScanReady(function(){setTimeout(listAvailableGames, 1000);});
     
-    // versuche die letzten anmeldedaten aus den cookies zu lesen
+    // versuche die letzten anmeldedaten und scoreString aus den cookies zu lesen
     if (getCookie("userName") != "") byID("name").value = getCookie("userName");
     if (getCookie("ip") != "") byID("ip").value = getCookie("ip");
     if (getCookie("scoreString") != "") byID("scoreStringInput").value = getCookie("scoreString");
@@ -29,13 +29,18 @@ window.onload = function() {
     
     countdown();
     
-    byID("ip").onkeyup = function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();};
-    byID("ip").onfocus = byID("ip").onkeyup;
+    byID("ip").onfocus = function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();};
 }
 
+function openWelcomeFrame() {
+    navi.clearHistory();
+    navi.navigate("welcome");
+    setDoOnEnter(function(){netManager.scanManually(byID('ip').value);openListGamesFrame();});
+}
 
 function openMainFrame() {
     navi.show("mainFrame");
+    navi.clearHistory();
     setDoOnEnter(function(){sendAnswer();});
 }
 
@@ -60,42 +65,42 @@ function numpadDel() {
     byID("answer").value = v.substring(0, v.length-1);
 }
 
+// called once for every open connection stored in the NetworkManager
 function listAvailableGames() {
-    var openConnections = netManager.getOpenServerConnections();
     byID("gamesList").innerHTML = "";
-    for (var i = 0; i < openConnections.length; i++) {
-        var conn = openConnections[i];
-        conn.communicate(makeGetCmd("get_games"), function(msg) {
-            for (var j = 0; j < msg.games.length; j++) {
-                var html = "";
-                var game = msg.games[j];
-                var players = "";
-                for (var k = 0; k < game.players.length; k++) {
-                    players += game.players[k].playerName;
-                    if (k < game.players.length-1) players += ", ";
-                }
-                html += "<div class='gameListItem' id='game"+conn.host+""+game.game_id+"'>";
-                html += "<p>"+game.name+" auf "+conn.host+" - Spieler: "+players+"</p>"
-                html += "</div>";
-                byID("gamesList").innerHTML += html;
-                byID("game"+conn.host+""+game.game_id).onclick = function() {
-                    joinGame(conn, game.game_id);
-                }
-                //setTimeout(new function(conn, game){byID("game"+conn.host+""+game.game_id).onclick = function() {joinGame(conn, game.game_id);}}(conn, game), 20);
+    var connection = netManager.popOpenConnection();
+    connection.communicate(makeGetCmd("get_games"), function(msg) {
+        for (var j = 0; j < msg.games.length; j++) {
+            var html = "";
+            var game = msg.games[j];
+            var players = "";
+            for (var k = 0; k < game.players.length; k++) {
+                players += game.players[k].playerName;
+                if (k < game.players.length-1) players += ", ";
             }
-        });
-    }
+            html += "<div class='gameListItem' onclick='joinGame(getConnectionByHost("+'"'+connection.host+'"'+"), "+game.game_id+");'>";
+            html += "<p>"+game.name+" auf "+connection.host+" - Spieler: "+players+"</p>"
+            html += "</div>";
+            byID("gamesList").innerHTML += html;
+
+            setTimeout(function() {
+            }, 1500); // TODO not nice
+        }
+        if (netManager.getOpenServerConnections().length > 0) listAvailableGames();
+    });
 }
 
 function joinGame(connection, gameId) {
     var name = byID("name").value;
     var scoreString = byID("scoreStringInput").value;
     setCookie("userName", name, 1000);
-    if (isMobile()) fullScreen(byID("page_"));
+    for (var i = 0; i < serverConnections; i++) {
+        if (serverConnections[i] != connection) connections[i].close();
+    }
     serverConnection = connection;
-    serverConnection.send(makeSimpleCmd("join", "game_id", gameId));
     serverConnection.send(makeSetCmd("name", name));
     serverConnection.send(makeSetCmd("score_string", scoreString));
+    serverConnection.send(makeSimpleCmd("join", "game_id", gameId));
     serverConnection.addObserver(playerWonObserver);
     serverConnection.addObserver(exerciseObserver);
     serverConnection.addObserver(timeLeftObserver);
@@ -121,7 +126,7 @@ function sendAnswer() {
         } else {
             byID("answer").style.backgroundColor = "#fdd";
             byID("answer").placeholder = "Falsch!";
-            byID("answer").value = ""; // bei einer richtigen Antwort bleibt das Ergebnis stehen, bis die nächste Aufgabe kommt
+            byID("answer").value = ""; // bei einer falschen Antwort wird das ergebnis gelöscht, bei einer richtigen Antwort bleibt das Ergebnis stehen, bis die nächste Aufgabe kommt
         }
         setTimeout(function(){
             byID("answer").style.backgroundColor = "#fff";
@@ -130,12 +135,12 @@ function sendAnswer() {
 }
 
 function disconnect() {
-    if (serverConnection) {
-        serverConnection.close();
+    for (var i = 0; i < serverConnections.length; i++) {
+        serverConnections[i].close();
     }
     byID("disconnect").style.display = "none";
     byID("back").style.display = "inline";
-    navi.show("welcome");
+    openWelcomeFrame();
 }
 
 function infoBox(message) {

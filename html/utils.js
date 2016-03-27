@@ -26,6 +26,7 @@ function Navigation() {
         if (arguments[0].callee) arguments = arguments[0];
         history.push(arguments);
         show(arguments);
+        byID("back").style.display = "inline";
     }
     this.navigate = navigate;
     
@@ -36,6 +37,8 @@ function Navigation() {
         for (i = 0; i < arguments.length; i++) {
             byID(arguments[i]).style.display = "block";
         }
+    
+        if (isMobile()) hideAddressBar();
     } 
     this.show = show;
     
@@ -43,6 +46,11 @@ function Navigation() {
         if (history.length < 2) return;
         history.pop(); // pop the currently shown ids from history
         navigate(history.pop());
+    }
+    
+    this.clearHistory = function() {
+        history = [];
+        byID("back").style.display = "none";
     }
 }
 
@@ -82,9 +90,8 @@ function displayMessage(message) {
     slide(msgC, -1.45);
     var msgID = "msg" + msgIDCounter;
     msgC.innerHTML = "<span id='"+msgID+"'>" + message + "<br></span>" + msgC.innerHTML;
-    setTimeout(function(){byID(msgID).style.opacity = 0;}, 5000);
-    setTimeout(function(){msgC.removeChild(byID(msgID));
-                if (msgC.innerHTML.length <= 3) msgCD.style.opacity = 0;}, 5500);
+    setTimeout(function(){byID(msgID).style.opacity = 0;if (msgC.children.length <= 1) msgCD.style.opacity = 0;}, 5000);
+    setTimeout(function(){msgC.removeChild(byID(msgID));}, 5500);
     msgIDCounter++;
 }
 var slide = function(msgC, value) {
@@ -105,6 +112,14 @@ function fullScreen(element) {
         element.webkitRequestFullScreen();
     }
 }
+
+function hideAddressBar(){
+  if(document.documentElement.scrollHeight<window.outerHeight/window.devicePixelRatio)
+    document.documentElement.style.height=(window.outerHeight/window.devicePixelRatio)+'px';
+  setTimeout(function(){window.scrollTo(1,1)},0);
+}
+window.addEventListener("load",function(){hideAddressBar();});
+window.addEventListener("orientationchange",hideAddressBar);
 
 Math.signum = function(a) {
     if (a > 0) {

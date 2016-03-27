@@ -21,6 +21,7 @@ public class Game implements Runnable {
     public static ArrayList<Game> getGames() {
         return games;
     }
+
     public static JSONArray getGamesJSONArray() {
         try {
             JSONArray jsonGameArray = new JSONArray();
@@ -42,23 +43,22 @@ public class Game implements Runnable {
     private String name = "";
     private String description = "";
     private ArrayList<Player> joinedPlayers;
-    private int difficulty;
 
     private int EXERCISE_TIMEOUT = 30;
-    private int GAME_TIMEOUT = 30; //für pause zwischen den spielen mit siegerbildschirm
+    private int GAME_TIMEOUT = 20; //für pause zwischen den spielen mit siegerbildschirm
 
-    String exercise = "";
-    private int result = 0;
+    ExerciseCreator exerciseCreator;
     private Score[] scoreboard = new Score[0];
     private Score[] getScoreboard() {return scoreboard;}
     boolean gameIsLive;
 
-    public Game(String name) {
+    public Game(String name, ExerciseCreator exerciseCreator) {
         games.add(this);
         this.name = name;
+        this.exerciseCreator = exerciseCreator;
+        joinedPlayers = new ArrayList<Player>();
         Thread t = new Thread(this);
         t.start();
-        joinedPlayers = new ArrayList<Player>();
     }
 
     public String getName() {
@@ -99,17 +99,19 @@ public class Game implements Runnable {
     }
 
     public void join(Player p) {
-        if (!joinedPlayers.contains(p)) {
-            joinedPlayers.add(p);
+        for (Game g : Game.games) { // den Spieler aus anderen Spielen gegebenenfalls entfernen
+            if (g.joinedPlayers.contains(p)) g.leave(p);
         }
-       // p.updateScore();
-        p.sendExercise(exercise, result);
+        joinedPlayers.add(p);
+        p.sendExercise(exerciseCreator.getExerciseString());
         updateScoreBoardSize();
+        broadcastMessage(p.getName() + " ist beigetreten.");
     }
 
     public void leave(Player p) {
         joinedPlayers.remove(p);
         updateScoreBoardSize();
+        broadcastMessage(p.getName() + " hat das Spiel verlassen.");
     }
 
     public void sendScoreStrings() {
@@ -120,11 +122,11 @@ public class Game implements Runnable {
     }
 
     public void broadcastExercise() {
-        exercise = createExercise();
+        exerciseCreator.createNext();
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             p.finished = false;
-            p.sendExercise(exercise, (int) (Math.log10(result))+1);
+            p.sendExercise(exerciseCreator.getExerciseString());
         }
 
         //der folgende Code schickt allen spielern einen integer (hier 30) um
@@ -142,63 +144,17 @@ public class Game implements Runnable {
         }
     }
 
-
-
-    public String createExercise() {
-        System.out.println("!!!!!!!!!!!!!!DIFFICULTY:  "+(difficulty+50));
-        start: while (true) {
-            int temp;
-            int a = (int) (Math.random() * 5 * (difficulty+50) / 2 + Math.random() * 20);
-            int b = (int) (Math.random() * 5 * (difficulty+50) / 2 + Math.random() * 20);
-
-            if ((difficulty+50) % 5 == 0) {
-                while (a * b < (100 + 8 * (difficulty+50)) - (75 + (difficulty+50))) {
-                    a += b;
-                    b += b;
-                }
-                while (a * b > 100 + 4 * (difficulty+50)) {
-                    if (a >= b)
-                        a = (int) (a / 2);
-                    if (b > a)
-                        b = (int) (b / 2);
-                }
-                result = a * b;
-                return a + " * " + b;
-
-            } else {
-                if (a < (difficulty+50) || b < (difficulty+50)) {
-                    continue start;
-                }
-                if (a - b < (difficulty+50)) {
-                    continue start;
-                }
-                if ((difficulty+50) % 3 == 0) {
-                    if (a < b) {
-                        temp = a;
-                        a = b;
-                        b = temp;
-                    }
-                    result = a - b;
-                    return a + " - " + b;
-                } else {
-                    result = a + b;
-                    return a + " + " + b;
-                }
-            }
-        }
-    }
-
     public boolean playerAnswered(Player player, int answer) {
-        System.out.println("spieler hat geantwortet");
         boolean allFinished = true;
         Score s = player.getScore();
         synchronized (this) {
             if(!player.finished) { // sonst kann man 2x mal punkte absahnen ;; spieler kriegt jetzt keine punkte mehr abgezogen für doppeltes antworten
-                if (answer == result) {
+                if (exerciseCreator.checkAnswer(answer)) {
                     s.updateScore(getPoints());
-                    sendExerciseSolvedMessage(player.getName(), getRank());
+                    broadcastMessage(player.getName()+" hat die Aufgabe als "+(getRank()+1)+". gelöst!");
                     if (s.getScoreValue() > 100) {
-                        sendPlayerWon(player.getName());
+                        broadcastPlayerWon(player.getName());
+                        notify(); // hat einer gewonnen, muss das wait im game loop ebenfalls beendet werden.
                     }
                     player.finished = true;
                     for (int i = 0; i < joinedPlayers.size(); i++) {
@@ -226,7 +182,7 @@ public class Game implements Runnable {
 
     private int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
         //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
-        int points = difficulty;
+        int points = exerciseCreator.getDifficulty() * 3 / 2; // hab ich bisschen erhöht, da eine Runde ganz schön lange gedauert hat, wenn jeder mal ne Aufgabe löst
         for(int i = 0; i<getRank();i++){
             points = points/2;
         }
@@ -245,13 +201,13 @@ public class Game implements Runnable {
         return rank;
     }
 
-    public void sendExerciseSolvedMessage(String playerName, int rang) {
-        String m = playerName+" hat die Aufgabe als "+(rang+1)+". gelöst!";
+    public void broadcastMessage(String message) {
+
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_MESSAGE);
             try {
-                j.put("message", m);
+                j.put("message", message);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -259,7 +215,7 @@ public class Game implements Runnable {
         }
     }
 
-    public void sendPlayerWon(String playerName) { //wird nur aufgerufen wenn Spieler das Spiel gewonnen hat
+    public void broadcastPlayerWon(String playerName) { //wird nur aufgerufen wenn Spieler das Spiel gewonnen hat
         //dem scoreboard können nun auch der zweite und dritte platz entnommen werden
         gameIsLive = false;
         for (int i = 0; i < joinedPlayers.size(); i++) {
@@ -284,13 +240,12 @@ public class Game implements Runnable {
     public void loop() {
         // jetzt gibt es hier so eine art game loop, der die Abfolge managed
         // vllt besser als das immer rekursiv aufzurufen wie ich das anfangs gemacht habe
-        // spaeter dann vllt auch Match management?
         start:
         while(true) {
-            difficulty = 1;
+            exerciseCreator.resetDifficulty();
             while (joinedPlayers.size() == 0) { //Warten bis spieler das Spiel betreten hat
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                 }
             }
@@ -301,7 +256,7 @@ public class Game implements Runnable {
                     continue start; //springe zurück in den Wartezustand
                 } else {
                     broadcastExercise();
-                    difficulty++;
+                    exerciseCreator.increaseDifficulty();
                     synchronized (this) { // ist angefordert damit man wait oder notify nutzen kann
                         try {
                             wait(EXERCISE_TIMEOUT * 1000);
