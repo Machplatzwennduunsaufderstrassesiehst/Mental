@@ -47,7 +47,7 @@ public class Game implements Runnable {
     private int EXERCISE_TIMEOUT = 30;
     private int GAME_TIMEOUT = 30; //für pause zwischen den spielen mit siegerbildschirm
 
-    String exercise = "";
+    private String exercise = "";
     private int result = 0;
     private Score[] scoreboard = new Score[0];
     private Score[] getScoreboard() {return scoreboard;}
@@ -103,7 +103,7 @@ public class Game implements Runnable {
             joinedPlayers.add(p);
         }
        // p.updateScore();
-        p.sendExercise(exercise, result);
+        p.sendExercise(exercise);
         updateScoreBoardSize();
     }
 
@@ -124,7 +124,7 @@ public class Game implements Runnable {
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             p.finished = false;
-            p.sendExercise(exercise, (int) (Math.log10(result))+1);
+            p.sendExercise(exercise);
         }
 
         //der folgende Code schickt allen spielern einen integer (hier 30) um
@@ -297,7 +297,7 @@ public class Game implements Runnable {
             gameIsLive = true;
 
             while (gameIsLive) {
-                if (joinedPlayers.size() == 0) { //wenn keine spieler mehr da sin
+                if (joinedPlayers.size() == 0) { //wenn keine spieler mehr da sind
                     continue start; //springe zurück in den Wartezustand
                 } else {
                     broadcastExercise();
