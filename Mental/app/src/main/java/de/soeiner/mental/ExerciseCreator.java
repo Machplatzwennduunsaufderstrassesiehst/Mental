@@ -4,9 +4,15 @@ package de.soeiner.mental;
  * Created by sven on 22.03.16.
  */
 public abstract class ExerciseCreator {
+
+    public ExerciseCreator(int d){
+        startDifficulty = d;
+    }
+
+    protected int startDifficulty; //damit auf wunsch der Schwierigkeitsgrad eingestellt werden kann
     protected String exerciseString = "";
     protected String lastExerciseString = "";
-    protected int difficulty = 0;
+    protected int difficulty = startDifficulty;
     protected int exerciseResult = 0;
 
     public String getExerciseString() {
@@ -18,7 +24,7 @@ public abstract class ExerciseCreator {
     }
 
     public void resetDifficulty() {
-        difficulty = 1;
+        difficulty = startDifficulty;
     }
 
     public void increaseDifficulty() {
@@ -64,6 +70,11 @@ public abstract class ExerciseCreator {
 }
 
 class SimpleMultExerciseCreator extends ExerciseCreator {
+
+    public SimpleMultExerciseCreator(int d){
+        super(d);
+    }
+
     public String create() {
         int d = difficulty / 2;
         int a = (int) (Math.random() * (10-d)) + d; // Zahlen zwischen d und 10
@@ -73,6 +84,11 @@ class SimpleMultExerciseCreator extends ExerciseCreator {
 }
 
 class MultExerciseCreator extends ExerciseCreator {
+
+    public MultExerciseCreator(int d){
+        super(d);
+    }
+
     public String create() {
         int d = difficulty;
         int a = (int) (Math.random() * (20-d)) + d; // Zahlen zwischen d und 20
@@ -85,6 +101,11 @@ class MultExerciseCreator extends ExerciseCreator {
 
 // neuer Vorschlag, das erhöhen von difficulty schlägt hier mehr ins gewicht
 class MixedExerciseCreator2 extends ExerciseCreator {
+
+    public MixedExerciseCreator2(int d){
+        super(d);
+    }
+
     public String create() {
         String exercise = "";
         int result = 0;
@@ -136,8 +157,12 @@ class MixedExerciseCreator2 extends ExerciseCreator {
 }
 
 class MixedExerciseCreator extends ExerciseCreator {
+
+
+    public MixedExerciseCreator(int d){
+        super(d);
+    }
     public String create() {
-        System.out.println("!!!!!!!!!!!!!!DIFFICULTY:  "+(difficulty+50));
         String exercise = "";
         int result = 0;
         start: while (exercise.equals("")) {

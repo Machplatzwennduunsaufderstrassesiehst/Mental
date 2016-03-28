@@ -9,9 +9,9 @@ import java.util.ArrayList;
 /**
  * Created by malte on 13.02.16.
  */
-public class Game implements Runnable {
+public abstract class Game implements Runnable {
 
-    private static ArrayList<Game> games;
+    protected static ArrayList<Game> games;
 
     static {
         games = new ArrayList<Game>();
@@ -40,17 +40,17 @@ public class Game implements Runnable {
         return new JSONArray();
     }
 
-    private String name = "";
-    private String description = "";
-    private ArrayList<Player> joinedPlayers;
+    protected String name = "";
+    protected String description = "";
+    protected ArrayList<Player> joinedPlayers;
 
-    private int EXERCISE_TIMEOUT = 30;
-    private int GAME_TIMEOUT = 20; //für pause zwischen den spielen mit siegerbildschirm
+    protected int EXERCISE_TIMEOUT = 30;
+    protected int GAME_TIMEOUT = 20; //für pause zwischen den spielen mit siegerbildschirm
 
-    ExerciseCreator exerciseCreator;
-    private Score[] scoreboard = new Score[0];
-    private Score[] getScoreboard() {return scoreboard;}
-    boolean gameIsLive;
+    protected ExerciseCreator exerciseCreator;
+    protected Score[] scoreboard = new Score[0];
+    protected Score[] getScoreboard() {return scoreboard;}
+    protected boolean gameIsLive;
 
     public Game(String name, ExerciseCreator exerciseCreator) {
         games.add(this);
@@ -60,6 +60,7 @@ public class Game implements Runnable {
         Thread t = new Thread(this);
         t.start();
     }
+    
 
     public String getName() {
         return name;
@@ -144,43 +145,9 @@ public class Game implements Runnable {
         }
     }
 
-    public boolean playerAnswered(Player player, int answer) {
-        boolean allFinished = true;
-        Score s = player.getScore();
-        synchronized (this) {
-            if(!player.finished) { // sonst kann man 2x mal punkte absahnen ;; spieler kriegt jetzt keine punkte mehr abgezogen für doppeltes antworten
-                if (exerciseCreator.checkAnswer(answer)) {
-                    s.updateScore(getPoints());
-                    broadcastMessage(player.getName()+" hat die Aufgabe als "+(getRank()+1)+". gelöst!");
-                    if (s.getScoreValue() > 100) {
-                        broadcastPlayerWon(player.getName());
-                        notify(); // hat einer gewonnen, muss das wait im game loop ebenfalls beendet werden.
-                    }
-                    player.finished = true;
-                    for (int i = 0; i < joinedPlayers.size(); i++) {
-                        Player p = joinedPlayers.get(i);
-                        if (!p.finished) {
-                            allFinished = false;
-                        }
-                    }
-                    if (allFinished) {
-                        notify(); // beendet das wait in loop() vorzeitig wenn alle fertig sind
-                    }
-                    broadcastScoreboard();
-                    return true;
-                } else {
-                    if (s.getScoreValue() > 0) {
-                        s.updateScore(-1);
-                        broadcastScoreboard();
-                    }
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
+    public abstract boolean playerAnswered(Player player, int answer);
 
-    private int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
+    protected int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
         //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
         int points = exerciseCreator.getDifficulty() * 3 / 2; // hab ich bisschen erhöht, da eine Runde ganz schön lange gedauert hat, wenn jeder mal ne Aufgabe löst
         for(int i = 0; i<getRank();i++){
@@ -189,7 +156,7 @@ public class Game implements Runnable {
         return points;
     }
 
-    private int getRank(){ //methode berechnet wie viele
+    protected int getRank(){ //methode berechnet wie viele
         // Spieler die Aufgabe schon gelöst haben
         int rank = 0;
         for(int i = 0; i<joinedPlayers.size();i++){
@@ -215,7 +182,7 @@ public class Game implements Runnable {
         }
     }
 
-    public void broadcastPlayerWon(String playerName) { //wird nur aufgerufen wenn Spieler das Spiel gewonnen hat
+    public void broadcastPlayerWon(String playerName, String gameMode) { //wird nur aufgerufen wenn Spieler das Spiel gewonnen hat
         //dem scoreboard können nun auch der zweite und dritte platz entnommen werden
         gameIsLive = false;
         for (int i = 0; i < joinedPlayers.size(); i++) {
@@ -225,6 +192,7 @@ public class Game implements Runnable {
             try {
                 j.put("playerName", playerName);
                 j.put("gameTimeout", GAME_TIMEOUT);
+                j.put("gameMode", gameMode);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -232,50 +200,5 @@ public class Game implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        loop();
-    }
-
-    public void loop() {
-        // jetzt gibt es hier so eine art game loop, der die Abfolge managed
-        // vllt besser als das immer rekursiv aufzurufen wie ich das anfangs gemacht habe
-        start:
-        while(true) {
-            exerciseCreator.resetDifficulty();
-            while (joinedPlayers.size() == 0) { //Warten bis spieler das Spiel betreten hat
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                }
-            }
-            gameIsLive = true;
-
-            while (gameIsLive) {
-                if (joinedPlayers.size() == 0) { //wenn keine spieler mehr da sin
-                    continue start; //springe zurück in den Wartezustand
-                } else {
-                    broadcastExercise();
-                    exerciseCreator.increaseDifficulty();
-                    synchronized (this) { // ist angefordert damit man wait oder notify nutzen kann
-                        try {
-                            wait(EXERCISE_TIMEOUT * 1000);
-                        } catch (InterruptedException e) {
-                        }
-                    }
-                }
-            }
-            try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
-                sendScoreStrings();
-                Thread.sleep(GAME_TIMEOUT * 1000);
-            } catch (InterruptedException e) {
-            }
-
-            // punktestaende fuer alle Spieler zuruecksetzen
-            for (int i = 0; i < joinedPlayers.size(); i++) {
-                Player p = joinedPlayers.get(i);
-                p.getScore().resetScoreValue(); //reset
-            }
-        }
-    }
+    public abstract void run();
 }

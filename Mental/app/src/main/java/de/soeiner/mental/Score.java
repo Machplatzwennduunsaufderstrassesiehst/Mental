@@ -28,11 +28,11 @@ public class Score extends JSONObject{
     // das ist die originale version, allerdings gibt es hier kleine fehler wegen des / 500
     /*
     private static int calculateLevel(int score){
-        return (int) ((score/500)+Math.log10((double) score)+1);
+        return (int) (((double)score/500.0)+Math.log10((double) score)+1.0);
     }
 
     private static int calculateLevelProgress(int score){ //in Prozent
-        double level = ((score/500)+Math.log10((double) score)+1);
+        double level = (()double)score/500.0)+Math.log10((double) score)+1.0);
         level %= 1;
         level *= 100;
         return (int) level;
