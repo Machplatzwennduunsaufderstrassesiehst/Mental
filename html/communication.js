@@ -7,8 +7,8 @@
 // TODO <<<<<<<<<<<<< maybe remove this later
 "use strict";
 
-// sleep time between GUI checks
-var actRate = 500;
+// sleep time between request queue checks
+var actRate = 250;
 var maxWaitTimeout = 2500;
 var gameServerPort = 6382;
 var pingServerPort = 6383;
@@ -155,19 +155,13 @@ function ServerConnection(host, port) {
         commandRequestQueue.splice(index);
     }
     this.removeRequest = removeRequest;
+    
     // scheduler function to schedule the CommandRequests on the Queue
-    
-    
-    //  /\
-    //  ||
-    // add remote functionalities above
-
     function startGetRequestScheduler() {
         if (currentRequest == null && commandRequestQueue.length > 0) {
             // get the first request on the queue and remove it from the queue
             currentRequest = commandRequestQueue.shift();
         }
-        var timeout;
         if (currentRequest != null) {
             if (currentRequest.errorCounter < 3) {
                 send(currentRequest.jsonCmd);
@@ -253,7 +247,7 @@ function NetworkManager() {
         return openServerConnections.pop();
     }
     
-    // kleiner hack um die
+    // kleines workaround um die lokale IP des Users zu ermitteln
     function updateLocalIP(){
         window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;   //compatibility for firefox and chrome
         var pc = new RTCPeerConnection({iceServers:[]}); 
