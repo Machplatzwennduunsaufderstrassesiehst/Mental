@@ -49,7 +49,6 @@ public abstract class Game implements Runnable {
     protected ExerciseCreator exerciseCreator;
     protected Score[] scoreboard = new Score[0];
     protected Score[] getScoreboard() {return scoreboard;}
-    protected boolean gameIsLive;
 
     public Game(ExerciseCreator exerciseCreator) {
         games.add(this);
@@ -129,19 +128,29 @@ public abstract class Game implements Runnable {
             p.finished = false;
             p.sendExercise(exerciseCreator.getExerciseString());
         }
+    }
 
+    // ausgelagert timeout senden + wait()
+    /**
+     * @param timeout ist in sekunden!
+     */
+    public void doWaitTimeout (int timeout) {
         //der folgende Code schickt allen spielern einen integer (hier 30) um
         // einen countdown starten zu können. Dann wird 30 Sekunden gewartet
-
         JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
         try {
-            j.put("time", EXERCISE_TIMEOUT);
+            j.put("time", timeout);
             for (int i = 0; i < joinedPlayers.size(); i++) {
                 Player p = joinedPlayers.get(i);
                 p.makePushRequest(new PushRequest(j));
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        synchronized (this) {
+            try {
+                this.wait(timeout * 1000);
+            } catch (InterruptedException e) {}
         }
     }
 
@@ -184,7 +193,6 @@ public abstract class Game implements Runnable {
 
     public void broadcastPlayerWon(String playerName, String gameMode) { //wird nur aufgerufen wenn Spieler das Spiel gewonnen hat
         //dem scoreboard können nun auch der zweite und dritte platz entnommen werden
-        gameIsLive = false;
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
 

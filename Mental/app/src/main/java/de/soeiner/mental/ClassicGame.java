@@ -6,6 +6,8 @@ package de.soeiner.mental;
 
 public class ClassicGame extends Game{
 
+    protected boolean gameIsLive;
+
     public ClassicGame(ExerciseCreator exerciseCreator){
         super(exerciseCreator); //mit leichtestem schwierigkeitsgrad
     }
@@ -33,12 +35,7 @@ public class ClassicGame extends Game{
                 } else {
                     broadcastExercise();
                     exerciseCreator.increaseDifficulty();
-                    synchronized (this) { // ist angefordert damit man wait oder notify nutzen kann
-                        try {
-                            wait(EXERCISE_TIMEOUT * 1000);
-                        } catch (InterruptedException e) {
-                        }
-                    }
+                    doWaitTimeout(EXERCISE_TIMEOUT); // das senden der restzeit sowie das warten selbst ist jetzt von broadcastExercise nach hier übertragen
                 }
             }
 

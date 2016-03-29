@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class KnockoutGame extends Game{
 
     static String gameMode = "Knockout";
-    private ArrayList<Player> activePlayers;// = new ArrayList<Player>();
+    private ArrayList<Player> activePlayers = new ArrayList<Player>();
     private int minPlayers = 2; //mindest Anzahl Spieler
 
     public KnockoutGame(ExerciseCreator exerciseCreator){
@@ -23,7 +23,7 @@ public class KnockoutGame extends Game{
     public void run() {
         int index = 0;
         while(joinedPlayers.size() < minPlayers){
-            try{Thread.sleep(100);}catch(Exception e){} //Warte auf genügend Spieler
+            try{Thread.sleep(1000);}catch(Exception e){} //Warte auf genügend Spieler
         }
         for(int i = 0; i<joinedPlayers.size();i++){
             Player p = joinedPlayers.get(i);
@@ -32,12 +32,7 @@ public class KnockoutGame extends Game{
         while(activePlayers.size() > 1){
             broadcastExercise();
             exerciseCreator.increaseDifficulty();
-            synchronized (this) { // ist angefordert damit man wait oder notify nutzen kann
-                try {
-                    wait(EXERCISE_TIMEOUT * 100000);
-                } catch (InterruptedException e) {
-                }
-            }
+            doWaitTimeout(EXERCISE_TIMEOUT * 10); // vllt eine eigene Konstante hierfür?
             for(int i = 0; i<activePlayers.size();i++){
                 if(activePlayers.get(i).getScore().getScoreValue() <= activePlayers.get(index).getScore().getScoreValue()){
                     index = i;
@@ -47,11 +42,13 @@ public class KnockoutGame extends Game{
             activePlayers.remove(index);
         }
         broadcastPlayerWon(activePlayers.get(0).getName(), gameMode);
+        sendScoreStrings();
+
         try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
-            sendScoreStrings();
             Thread.sleep(GAME_TIMEOUT * 1000);
-        } catch (InterruptedException e) {
-        }
+        } catch (InterruptedException e) {}
+
+        activePlayers = new ArrayList<Player>(); // die Liste der aktiven Spieler zurücksetzen
     }
 
     public boolean playerAnswered(Player player, int answer) {
