@@ -82,9 +82,6 @@ function listAvailableGames() {
             html += "<p>"+game.name+" auf "+connection.host+" - Spieler: "+players+"</p>"
             html += "</div>";
             byID("gamesList").innerHTML += html;
-
-            setTimeout(function() {
-            }, 1500); // TODO not nice
         }
         if (netManager.getOpenServerConnections().length > 0) listAvailableGames();
     });
@@ -117,14 +114,14 @@ function sendAnswer() {
     console.log("sendAnswer");
     if (alreadyAnswered) {return;}
     alreadyAnswered = true;
-    setTimeout(function(){alreadyAnswered = false;}, 500); // hier lieber ein Timeout, da es ja sein kann, dass keine Antwort kommt (dann waere diese Methode für immer gelockt!)
+    setTimeout(function(){alreadyAnswered = false;}, 1000); // hier lieber ein Timeout, da es ja sein kann, dass keine Antwort vom Server kommt (dann waere diese Methode für immer gelockt!)
     var answer = byID("answer").value;
     serverConnection.communicate(makeSimpleCmd("answer", "answer", Number(answer)), function(msg) {
         if (msg.isCorrect) {
-            byID("answer").style.backgroundColor = "#dfd";
+            byID("answer").style.backgroundColor = "#afa";
             byID("answer").placeholder = "Richtig!";
         } else {
-            byID("answer").style.backgroundColor = "#fdd";
+            byID("answer").style.backgroundColor = "#faa";
             byID("answer").placeholder = "Falsch!";
             byID("answer").value = ""; // bei einer falschen Antwort wird das ergebnis gelöscht, bei einer richtigen Antwort bleibt das Ergebnis stehen, bis die nächste Aufgabe kommt
         }
