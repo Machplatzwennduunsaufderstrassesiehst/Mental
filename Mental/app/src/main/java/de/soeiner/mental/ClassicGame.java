@@ -4,12 +4,15 @@ package de.soeiner.mental;
  * Created by Malte on 28.03.2016.
  */
 
-public class Classic extends Game{
+public class ClassicGame extends Game{
 
-    static String gameMode = "Classic";
+    public ClassicGame(ExerciseCreator exerciseCreator){
+        super(exerciseCreator); //mit leichtestem schwierigkeitsgrad
+    }
 
-    public Classic(String name){
-        super(name, new MixedExerciseCreator2(1)); //mit leichtestem schwierigkeitsgrad
+    @Override
+    protected String getGameModeString() {
+        return "Classic";
     }
 
     public void run() {
@@ -38,8 +41,10 @@ public class Classic extends Game{
                     }
                 }
             }
+
+            sendScoreStrings();
+
             try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
-                sendScoreStrings();
                 Thread.sleep(GAME_TIMEOUT * 1000);
             } catch (InterruptedException e) {
             }
@@ -61,7 +66,8 @@ public class Classic extends Game{
                         s.updateScore(getPoints());
                         broadcastMessage(player.getName()+" hat die Aufgabe als "+(getRank()+1)+". gelöst!");
                         if (s.getScoreValue() > 100) {
-                            broadcastPlayerWon(player.getName(), gameMode);
+                            gameIsLive = false; // schleife in run() beenden
+                            broadcastPlayerWon(player.getName(), getGameModeString());
                             notify(); // hat einer gewonnen, muss das wait im game loop ebenfalls beendet werden.
                         }
                         player.finished = true;

@@ -5,14 +5,19 @@ import java.util.ArrayList;
 /**
  * Created by Malte on 28.03.2016.
  */
-public class Knockout extends Game{
+public class KnockoutGame extends Game{
 
     static String gameMode = "Knockout";
     private ArrayList<Player> activePlayers;// = new ArrayList<Player>();
     private int minPlayers = 2; //mindest Anzahl Spieler
 
-    public Knockout(String name, ExerciseCreator exerciseCreator){
-        super(name, new MixedExerciseCreator2(30));
+    public KnockoutGame(ExerciseCreator exerciseCreator){
+        super(exerciseCreator);
+    }
+
+    @Override
+    protected String getGameModeString() {
+        return "Knockout";
     }
 
     public void run() {

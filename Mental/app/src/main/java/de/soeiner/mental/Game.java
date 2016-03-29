@@ -40,7 +40,6 @@ public abstract class Game implements Runnable {
         return new JSONArray();
     }
 
-    protected String name = "";
     protected String description = "";
     protected ArrayList<Player> joinedPlayers;
 
@@ -52,18 +51,19 @@ public abstract class Game implements Runnable {
     protected Score[] getScoreboard() {return scoreboard;}
     protected boolean gameIsLive;
 
-    public Game(String name, ExerciseCreator exerciseCreator) {
+    public Game(ExerciseCreator exerciseCreator) {
         games.add(this);
-        this.name = name;
         this.exerciseCreator = exerciseCreator;
         joinedPlayers = new ArrayList<Player>();
         Thread t = new Thread(this);
         t.start();
     }
-    
+
+    // zwingt alle erbenden klassen eine Game mode zu definieren
+    protected abstract String getGameModeString();
 
     public String getName() {
-        return name;
+        return exerciseCreator.getName() + " - " + getGameModeString();
     }
 
     public String getDescription() {

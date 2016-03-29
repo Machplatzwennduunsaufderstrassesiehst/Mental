@@ -27,6 +27,10 @@ public abstract class ExerciseCreator {
         difficulty = startDifficulty;
     }
 
+    public void setStartDifficulty(int d) {
+        startDifficulty = d;
+    }
+
     public void increaseDifficulty() {
         difficulty++;
     }
@@ -37,6 +41,9 @@ public abstract class ExerciseCreator {
 
     // erstellt die nächste Aufgabe und setzt exerciseResult sowie exerciseString
     public abstract String create();
+
+    // Zwingt alle exerciseCreator, einen Namen bereitzustellen
+    public abstract String getName();
 
     public String createNext() {
         String exercise;
@@ -71,6 +78,8 @@ public abstract class ExerciseCreator {
 
 class SimpleMultExerciseCreator extends ExerciseCreator {
 
+    public String getName(){return "Kleines 1x1";}
+
     public SimpleMultExerciseCreator(int d){
         super(d);
     }
@@ -84,6 +93,8 @@ class SimpleMultExerciseCreator extends ExerciseCreator {
 }
 
 class MultExerciseCreator extends ExerciseCreator {
+
+    public String getName(){return "Großes 1x1";}
 
     public MultExerciseCreator(int d){
         super(d);
@@ -101,6 +112,8 @@ class MultExerciseCreator extends ExerciseCreator {
 
 // neuer Vorschlag, das erhöhen von difficulty schlägt hier mehr ins gewicht
 class MixedExerciseCreator2 extends ExerciseCreator {
+
+    public String getName(){return "Gemischte Aufgaben";}
 
     public MixedExerciseCreator2(int d){
         super(d);
@@ -158,6 +171,7 @@ class MixedExerciseCreator2 extends ExerciseCreator {
 
 class MixedExerciseCreator extends ExerciseCreator {
 
+    public String getName(){return "Gemischte Aufgaben";}
 
     public MixedExerciseCreator(int d){
         super(d);

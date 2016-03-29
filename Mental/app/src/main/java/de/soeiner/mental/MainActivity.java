@@ -28,9 +28,13 @@ public class MainActivity extends AppCompatActivity {
         httpServer = new PingHttpServer();
         httpServer.start();
 
-        new Game("Gemischte Aufgaben", new MixedExerciseCreator2());
-        new Game("Kleines 1x1", new SimpleMultExerciseCreator());
-        new Game("Großes 1x1", new MultExerciseCreator());
+        new ClassicGame(new MixedExerciseCreator2(1));
+        new ClassicGame(new SimpleMultExerciseCreator(1));
+        new ClassicGame(new MultExerciseCreator(1));
+
+        new KnockoutGame(new MixedExerciseCreator2(30));
+        new KnockoutGame(new SimpleMultExerciseCreator(30));
+        new KnockoutGame(new MultExerciseCreator(30));
     }
 
     @Override
