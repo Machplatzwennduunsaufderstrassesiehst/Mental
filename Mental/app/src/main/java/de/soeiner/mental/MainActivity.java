@@ -2,9 +2,7 @@ package de.soeiner.mental;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
 import org.java_websocket.WebSocketImpl;
-
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {

@@ -73,7 +73,7 @@ public class Score extends JSONObject{
         return 0;
     }
 
-    private int getOverallScoreValue() {
+    public int getOverallScoreValue() {
         try {
             return this.getInt("overallScoreValue");
         } catch (JSONException e) {
@@ -100,8 +100,13 @@ public class Score extends JSONObject{
         }
     }
 
-    public void setScoreValue(int scoreValue) {
-        setInt("scoreValue", scoreValue);
+    public void setScoreValue(int scoreValue) { setInt("scoreValue", scoreValue); }
+
+    public void setTitle(String title) {
+        try{
+            put("title", title);
+        }catch(Exception e){}
+
     }
 
     public void resetScoreValue(){

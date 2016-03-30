@@ -48,6 +48,12 @@ public class KnockoutGame extends Game{
             Thread.sleep(GAME_TIMEOUT * 1000);
         } catch (InterruptedException e) {}
 
+        for(int i = 0; i<joinedPlayers.size();i++){ //Spieler kriegen am Ende Scorepunkte
+            Player p = joinedPlayers.get(i);
+            Score s = p.getScore();
+            s.updateScore(s.getScoreValue()*20);
+            s.resetScoreValue();
+        }
         activePlayers = new ArrayList<Player>(); // die Liste der aktiven Spieler zurücksetzen
     }
 
