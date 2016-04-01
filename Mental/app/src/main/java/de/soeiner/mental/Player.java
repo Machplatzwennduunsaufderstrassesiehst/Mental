@@ -58,9 +58,9 @@ public class Player extends ClientConnection {
         }
     }
 
-    public Score getScore() {
-        return score;
-    }
+    public Score getScore() { return score; }
+
+    public Shop getShop() { return shop; }
 
     public String getName() {
         return name;
