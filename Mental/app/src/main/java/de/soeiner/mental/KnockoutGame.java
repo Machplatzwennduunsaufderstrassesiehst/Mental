@@ -7,7 +7,6 @@ import java.util.ArrayList;
  */
 public class KnockoutGame extends Game{
 
-    static String gameMode = "Knockout";
     private ArrayList<Player> activePlayers = new ArrayList<Player>();
     private int minPlayers = 2; //mindest Anzahl Spieler
 
@@ -32,7 +31,7 @@ public class KnockoutGame extends Game{
         while(activePlayers.size() > 1){
             broadcastExercise();
             exerciseCreator.increaseDifficulty();
-            doWaitTimeout(EXERCISE_TIMEOUT * 10); // vllt eine eigene Konstante hierfür?
+            doWaitTimeout(EXERCISE_TIMEOUT * 100); // vllt eine eigene Konstante hierfür?
             for(int i = 0; i<activePlayers.size();i++){
                 if(activePlayers.get(i).getScore().getScoreValue() <= activePlayers.get(index).getScore().getScoreValue()){
                     index = i;
@@ -41,7 +40,7 @@ public class KnockoutGame extends Game{
             broadcastMessage(activePlayers.get(index).getName()+" wurde eleminiert!");
             activePlayers.remove(index);
         }
-        broadcastPlayerWon(activePlayers.get(0).getName(), gameMode);
+        broadcastPlayerWon(activePlayers.get(0).getName(), "Knockout");
         sendScoreStrings();
 
         try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
@@ -92,5 +91,23 @@ public class KnockoutGame extends Game{
             }
             return true;
         }
+
+    public void leave(Player p) {
+        joinedPlayers.remove(p);
+        if(activePlayers.contains(p)){
+            activePlayers.remove(p);
+        }
+        updateScoreBoardSize();
+        broadcastMessage(p.getName() + " hat das Spiel verlassen.");
     }
+
+    public void updateScoreBoardSize() {
+        scoreboard = new Score[activePlayers.size()];
+        for (int i = 0; i < activePlayers.size(); i++) {
+            Score s = activePlayers.get(i).getScore();
+            scoreboard[i] = s;
+        }
+        broadcastScoreboard();
+    }
+}
 

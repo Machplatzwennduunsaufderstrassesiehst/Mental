@@ -36,6 +36,7 @@ public class Shop extends JSONObject {
             score.setTitle(titles[index]);
             return true;
         }
+
         return false;
     }
 
@@ -46,5 +47,13 @@ public class Shop extends JSONObject {
     //TODO
     private void loadMoneySpent(){
         //String s = score.getScoreString();
+    }
+    
+    public void addMoney(int plus){
+        this.money += plus;
+    }
+
+    public int getMoney(){
+        return money;
     }
 }
