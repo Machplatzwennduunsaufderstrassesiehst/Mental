@@ -130,6 +130,13 @@ public abstract class Game implements Runnable {
         }
     }
 
+    private void broadcastShopItemList(){
+        for(int i = 0; i<joinedPlayers.size();i++){
+            Player p = joinedPlayers.get(i);
+            p.sendShopItemList(p.getShop().getShopItemList());
+        }
+    }
+
     // ausgelagert timeout senden + wait()
     /**
      * @param timeout ist in sekunden!

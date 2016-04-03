@@ -121,6 +121,10 @@ public class Score extends JSONObject{
         setInt("playerLevel", calculateLevel(overallScoreValue));
     }
 
+    public int getPlayerLevel() {
+        return calculateLevel(getOverallScoreValue());
+    }
+
     private void setPlayerLevelProgress(int overallScoreValue) {
         setInt("playerLevelProgress", calculateLevelProgress(overallScoreValue));
     }

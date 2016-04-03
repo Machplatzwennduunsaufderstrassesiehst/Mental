@@ -20,7 +20,7 @@ public class Player extends ClientConnection {
         super(socket);
         name = socket.getRemoteSocketAddress().getAddress().getHostAddress();
         score = new Score(name);
-        shop = new Shop(this.score);
+        shop = new Shop(this);
         connections.add(this);
     }
 
@@ -38,6 +38,18 @@ public class Player extends ClientConnection {
         try {
             JSONArray scoreJSONArray = new JSONArray(playerScores);
             jsonObject.put("scoreboard", scoreJSONArray);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        PushRequest request = new PushRequest(jsonObject);
+        makePushRequest(request);
+    }
+
+    public void sendShopItemList(ShopItem[] shopItemList) {
+        JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_SHOP_ITEM_LIST);
+        try {
+            JSONArray scoreJSONArray = new JSONArray(shopItemList);
+            jsonObject.put("shopItemList", scoreJSONArray);
         } catch(Exception e) {
             e.printStackTrace();
         }
