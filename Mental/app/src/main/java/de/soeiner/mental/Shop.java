@@ -22,9 +22,13 @@ public class Shop extends JSONObject {
     }
 
     private ShopItem[] createShopItemList(){
-        ShopItem item1 = new ShopItem(1, "title1", 100, false, 0);
-        ShopItem item2 = new ShopItem(2, "title1", 500, false, 0);
-        ShopItem item3 = new ShopItem(3, "title1", 1000, false, 0);
+        ShopItem item1 = new ShopItem(1, "uninstall pls", 100, false, 0);
+        ShopItem item2 = new ShopItem(2, "scrub", 500, false, 0);
+        ShopItem item3 = new ShopItem(3, "big noob", 1000, false, 0);
+        ShopItem item4 = new ShopItem(4, "Asiate", 2000, false, 2);
+        ShopItem item5 = new ShopItem(5, "Global Elite", 2500, false, 4);
+        ShopItem item6 = new ShopItem(6, "Marco die Schlange", 5000, false, 8);
+        ShopItem item7 = new ShopItem(7, "Marten", 100000, false, 16);
 
         ShopItem[] s = {item1, item2, item3};
         return s;
@@ -33,8 +37,6 @@ public class Shop extends JSONObject {
     public ShopItem[] getShopItemList(){
         return shopItemList;
     }
-
-
 
     public boolean buyTitle(int index) {
         if(shopItemList[index].getPrice() <= money && !shopItemList[index].getBought() && score.getPlayerLevel() >= shopItemList[index].getLvlUnlock()){ //wenn der titel noch nicht gekauft wurde und genug geld vorhanden ist
@@ -59,11 +61,6 @@ public class Shop extends JSONObject {
 
     public void calculateMoney() {
         money = score.getOverallScoreValue() - moneySpent;
-    }
-
-    //TODO
-    private void loadMoneySpent(){
-        //String s = score.getshopString();
     }
 
     public void addMoney(int plus){
