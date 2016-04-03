@@ -114,10 +114,10 @@ public abstract class Game implements Runnable {
         broadcastMessage(p.getName() + " hat das Spiel verlassen.");
     }
 
-    public void sendScoreStrings() {
+    public void sendGameStrings() {
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
-            p.sendScoreString();
+            p.sendGameString();
         }
     }
 

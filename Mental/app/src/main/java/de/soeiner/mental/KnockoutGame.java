@@ -41,7 +41,7 @@ public class KnockoutGame extends Game{
             activePlayers.remove(index);
         }
         broadcastPlayerWon(activePlayers.get(0).getName(), "Knockout");
-        sendScoreStrings();
+        sendGameStrings();
 
 
         try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?

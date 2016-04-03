@@ -57,12 +57,11 @@ public class Player extends ClientConnection {
         makePushRequest(request);
     }
 
-    public void sendScoreString() {
-        Score s = getScore();
-        String scoreString = s.getScoreString();
-        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SCORE_STRING);
+    public void sendGameString() {
+        String gameString = this.getGameString();
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_GAME_STRING);
         try {
-            j.put("score_string", scoreString);
+            j.put("score_string", gameString);
             makePushRequest(new PushRequest(j));
 
         } catch (JSONException e) {
@@ -117,14 +116,23 @@ public class Player extends ClientConnection {
                 this.name = name;
                 this.score.setPlayerName(name);
             }
-            if (type.equals("set_score_string")) {
-                String s = json.getString("score_string");
-                score.loadScoreString(s);
+            if (type.equals("set_game_string")) { //musst du noch ändern
+                String g = json.getString("game_string");
+                loadGameString(g);
             }
         } catch (Exception e) {
             e.printStackTrace();
             Logger.log(e);
         }
+    }
+
+    public String getGameString(){ //funktioniert nur für scorestrings der länge <= 9
+        return this.getScore().getScoreString()+this.getShop().getshopString()+this.getScore().getScoreString().length(); //gameString besteht aus
+        // scoreString + shopString + länge von scorestring // TODO + anzahl der ziffern der länge von scorestring (für längere Scorestrings)
+    }
+    public void loadGameString(String gameString){ //klappt nur wenn der scoreString <= 9 Zeichen lang ist
+        this.getScore().loadScoreString(gameString.substring(0, Character.getNumericValue(gameString.charAt(gameString.length()-1))));
+        this.getShop().loadShopString(gameString.substring(Character.getNumericValue(gameString.charAt(gameString.length()-1)), gameString.length()-1));
     }
 
 

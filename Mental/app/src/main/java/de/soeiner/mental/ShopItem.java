@@ -1,9 +1,11 @@
 package de.soeiner.mental;
 
+import org.json.JSONObject;
+
 /**
  * Created by Malte on 02.04.2016.
  */
-public class ShopItem {
+public class ShopItem extends JSONObject {
 
     private int nr; //index
     private String name; //Name
@@ -18,10 +20,6 @@ public class ShopItem {
         price = p;
         bought = b;
         lvlUnlock = l;
-    }
-
-    public void buy(){
-        this.bought = true;
     }
 
     public int getPrice() {
@@ -46,4 +44,6 @@ public class ShopItem {
     public int getLvlUnlock() {
         return lvlUnlock;
     }
+
+
 }

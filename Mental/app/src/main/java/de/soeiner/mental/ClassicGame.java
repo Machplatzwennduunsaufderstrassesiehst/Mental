@@ -39,7 +39,7 @@ public class ClassicGame extends Game{
                 }
             }
 
-            sendScoreStrings();
+            sendGameStrings();
 
             try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
                 Thread.sleep(GAME_TIMEOUT * 1000);
