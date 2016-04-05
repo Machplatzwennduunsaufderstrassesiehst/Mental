@@ -45,17 +45,20 @@ public class Shop extends JSONObject {
             shopItemList[index].setBought(true);
             equipTitle(index);
             player.sendShopItemList(getShopItemList()); //wird bei jeder Änderung neu gesendet
+            //player.sendConfirmation(true); wird schon in equip aufgerufen
             return true;
         }
+        player.sendConfirmation(false);
         return false;
     }
 
     public boolean equipTitle(int index){
         if(shopItemList[index].getBought()){
             score.setTitle(shopItemList[index].getName());
+            player.sendConfirmation(true);
             return true;
         }
-
+        player.sendConfirmation(false);
         return false;
     }
 

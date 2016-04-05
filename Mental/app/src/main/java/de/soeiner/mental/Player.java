@@ -57,6 +57,16 @@ public class Player extends ClientConnection {
         makePushRequest(request);
     }
 
+    public void sendConfirmation(boolean sucsess) {
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_CONFIRMATION);
+        try {
+            j.put("sucsess", sucsess);
+            makePushRequest(new PushRequest(j));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendGameString() {
         String gameString = this.getGameString();
         JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_GAME_STRING);
