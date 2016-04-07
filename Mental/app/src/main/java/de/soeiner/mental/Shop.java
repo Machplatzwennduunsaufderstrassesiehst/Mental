@@ -48,17 +48,14 @@ public class Shop extends JSONObject {
             //player.sendConfirmation(true); wird schon in equip aufgerufen
             return true;
         }
-        player.sendConfirmation(false);
         return false;
     }
 
     public boolean equipTitle(int index){
         if(shopItemList[index].getBought()){
             score.setTitle(shopItemList[index].getName());
-            player.sendConfirmation(true);
             return true;
         }
-        player.sendConfirmation(false);
         return false;
     }
 

@@ -50,7 +50,9 @@ public class Game implements Runnable {
     protected ArrayList<Player> spectators;
 
     protected int EXERCISE_TIMEOUT = 30;
-    protected int GAME_TIMEOUT = 20; //für pause zwischen den spielen mit siegerbildschirm
+    protected int GAME_TIMEOUT = 30; //für pause zwischen den spielen mit siegerbildschirm
+    int voteCounter = 0;
+    int revoteCounter = 0;
 
     protected ExerciseCreator exerciseCreator;
     protected Score[] scoreboard = new Score[0];
@@ -235,7 +237,7 @@ public class Game implements Runnable {
     private void roundTimeout(){
         sendGameStrings();
         try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
-            Thread.sleep(GAME_TIMEOUT * 1000);
+            Thread.sleep(GAME_TIMEOUT * 1000); //VOTE_TIMEOUT
         } catch (InterruptedException e) {}
 
         // punktestaende fuer alle Spieler zuruecksetzen
@@ -251,11 +253,14 @@ public class Game implements Runnable {
         doWaitTimeout(EXERCISE_TIMEOUT); // das senden der restzeit sowie das warten selbst ist jetzt von broadcastExercise nach hier übertragen
     }
 
+    @Override
     public void run() {
         start:
         while(true) {
             gameMode.waitForPlayers();
             roundTimeout();
+            createGameModeSuggestions();
+            callVote();
             exerciseCreator.resetDifficulty();
             gameMode.prepareGame();
 
@@ -293,10 +298,46 @@ public class Game implements Runnable {
     }
 
     public void callVote(){ //Abstimmung für nächsten gamemode
-        createGameModeSuggestions();
         for(int i = 0;i<joinedPlayers.size();i++){
             Player p = joinedPlayers.get(i);
             p.sendSuggestions(suggestions);
         }
+    }
+
+    public void receiveVote(int suggestionID, Player p){ //Abstimmung für nächsten gamemode
+        voteCounter++;
+        if(suggestionID == -1){
+            revoteCounter++;
+        }else {
+            for (int i = 0; i < suggestions.length ; i++) {
+                if(suggestions[i].getPlayers().contains(p)){
+                    suggestions[i].downvote(p);
+                }
+            }
+            suggestions[suggestionID].upvote(p);
+        }
+        if(voteCounter == joinedPlayers.size()){
+            int maxIndex = 0;
+            for(int i = 1; i < suggestions.length; i++){
+                if(suggestions[i].getVotes() > suggestions[maxIndex].getVotes()){
+                    maxIndex = i;
+                }
+            }
+            if(revoteCounter > suggestions[maxIndex].getVotes()){
+                voteCounter = 0;
+                revoteCounter = 0;
+                for(int i = 0; i < suggestions.length; i++){
+                    suggestions[i].reset();
+                }
+                createGameModeSuggestions();
+                callVote();
+            }else{
+                Suggestion votedForSuggestion = suggestions[maxIndex];
+                gameMode = votedForSuggestion.gameMode;
+                exerciseCreator = votedForSuggestion.exerciseCreator;
+            }
+
+        }
+        callVote();
     }
 }

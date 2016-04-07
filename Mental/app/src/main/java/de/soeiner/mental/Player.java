@@ -119,7 +119,7 @@ public class Player extends ClientConnection {
             if (type.equals("answer")) {
                 int answer = Integer.parseInt(json.getString("answer"));
                 boolean isCorrect = game.playerAnswered(this, answer);
-                JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_ANSWER_FEEDBACK);
+                JSONObject j = CmdRequest.makeResponseCmd(type);
                 j.put("isCorrect", isCorrect);
                 send(new PushRequest(j));
             }
@@ -131,6 +131,22 @@ public class Player extends ClientConnection {
             if (type.equals("set_game_string")) { //musst du noch ändern
                 String g = json.getString("game_string");
                 loadGameString(g);
+            }
+            if (type.equals("buy_item")) {
+                int index = Integer.parseInt(json.getString("index"));
+                JSONObject j = CmdRequest.makeResponseCmd(type);
+                j.put("success", this.shop.buyTitle(index));
+                send(new PushRequest(j));
+            }
+            if (type.equals("equip_item")) {
+                int index = Integer.parseInt(json.getString("index"));
+                JSONObject j = CmdRequest.makeResponseCmd(type);
+                j.put("success", this.shop.equipTitle(index));
+                send(new PushRequest(j));
+            }
+            if (type.equals("vote")) {
+                int suggestionID = Integer.parseInt(json.getString("suggestionID"));
+                game.receiveVote(suggestionID, this);
             }
         } catch (Exception e) {
             e.printStackTrace();
