@@ -48,8 +48,8 @@ public class Player extends ClientConnection {
     public void sendShopItemList(ShopItem[] shopItemList) {
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_SHOP_ITEM_LIST);
         try {
-            JSONArray scoreJSONArray = new JSONArray(shopItemList);
-            jsonObject.put("shopItemList", scoreJSONArray);
+            JSONArray shopJSONArray = new JSONArray(shopItemList);
+            jsonObject.put("shopItemList", shopJSONArray);
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -57,14 +57,16 @@ public class Player extends ClientConnection {
         makePushRequest(request);
     }
 
-    public void sendConfirmation(boolean sucsess) {
-        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_CONFIRMATION);
+    public void sendSuggestions(Suggestion[] suggestions) {
+        JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_SUGGESTIONS);
         try {
-            j.put("sucsess", sucsess);
-            makePushRequest(new PushRequest(j));
-        } catch (JSONException e) {
+            JSONArray suggestionJSONArray = new JSONArray(suggestions);
+            jsonObject.put("shopItemList", suggestionJSONArray);
+        } catch(Exception e) {
             e.printStackTrace();
         }
+        PushRequest request = new PushRequest(jsonObject);
+        makePushRequest(request);
     }
 
     public void sendGameString() {
@@ -144,7 +146,4 @@ public class Player extends ClientConnection {
         this.getScore().loadScoreString(gameString.substring(0, Character.getNumericValue(gameString.charAt(gameString.length()-1))));
         this.getShop().loadShopString(gameString.substring(Character.getNumericValue(gameString.charAt(gameString.length()-1)), gameString.length()-1));
     }
-
-
-
 }
