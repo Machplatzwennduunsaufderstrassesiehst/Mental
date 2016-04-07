@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by malte on 13.02.16.
  */
-public abstract class Game implements Runnable {
+public class Game implements Runnable {
 
     protected static ArrayList<Game> games;
 
@@ -41,31 +41,40 @@ public abstract class Game implements Runnable {
     }
 
     GameMode gameMode;
+    GameMode[] gameModes = {new ClassicGameMode(this), new KnockoutGameMode(this), new ArenaGameMode(this)};
+    ExerciseCreator[] exerciseCreators = {new MixedExerciseCreator2(), new SimpleMultExerciseCreator(), new MultExerciseCreator()};
+    Suggestion[] suggestions;
     protected String description = "";
     protected ArrayList<Player> joinedPlayers;
     protected ArrayList<Player> activePlayers;
+    protected ArrayList<Player> spectators;
 
     protected int EXERCISE_TIMEOUT = 30;
-    protected int GAME_TIMEOUT = 20; //für pause zwischen den spielen mit siegerbildschirm
+    protected int GAME_TIMEOUT = 30; //für pause zwischen den spielen mit siegerbildschirm
+    int voteCounter = 0;
+    int revoteCounter = 0;
 
     protected ExerciseCreator exerciseCreator;
     protected Score[] scoreboard = new Score[0];
     protected Score[] getScoreboard() {return scoreboard;}
 
-    public Game(ExerciseCreator exerciseCreator) {
+    public Game() {
         games.add(this);
-        this.exerciseCreator = exerciseCreator;
         joinedPlayers = new ArrayList<Player>();
         activePlayers = new ArrayList<Player>();
+        spectators = new ArrayList<Player>();
+        gameMode = gameModes[0];
         Thread t = new Thread(this);
         t.start();
     }
 
     // zwingt alle erbenden klassen eine Game mode zu definieren
-    protected abstract String getGameModeString();
+    protected String getGameModeString(){
+        return gameMode.getGameModeString();
+    }
 
     public String getName() {
-        return exerciseCreator.getName() + " - " + getGameModeString();
+        return "Mental Gamerino";//exerciseCreator.getName() + " - " + getGameModeString();
     }
 
     public String getDescription() {
@@ -77,9 +86,9 @@ public abstract class Game implements Runnable {
     }
 
     public void updateScoreBoardSize() {
-        scoreboard = new Score[joinedPlayers.size()];
-        for (int i = 0; i < joinedPlayers.size(); i++) {
-            Score s = joinedPlayers.get(i).getScore();
+        scoreboard = new Score[activePlayers.size()];
+        for (int i = 0; i < activePlayers.size(); i++) {
+            Score s = activePlayers.get(i).getScore();
             scoreboard[i] = s;
         }
         broadcastScoreboard();
@@ -113,9 +122,14 @@ public abstract class Game implements Runnable {
 
     public void removePlayer(Player p) {
         joinedPlayers.remove(p);
+        if(activePlayers.contains(p)){
+            activePlayers.remove(p);
+        }
+        if(spectators.contains(p)){
+            spectators.remove(p);
+        }
         updateScoreBoardSize();
         broadcastMessage(p.getName() + " hat das Spiel verlassen.");
-        //TODO gameMode.removePlayer(p);
     }
 
     public void sendGameStrings() {
@@ -165,7 +179,9 @@ public abstract class Game implements Runnable {
         }
     }
 
-    public abstract boolean playerAnswered(Player player, int answer);
+    public boolean playerAnswered(Player player, int answer){
+        return gameMode.playerAnswered(player, answer);
+    }
 
     protected int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
         //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
@@ -206,7 +222,6 @@ public abstract class Game implements Runnable {
         //dem scoreboard können nun auch der zweite und dritte platz entnommen werden
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
-
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_PLAYER_WON);
             try {
                 j.put("playerName", playerName);
@@ -222,7 +237,7 @@ public abstract class Game implements Runnable {
     private void roundTimeout(){
         sendGameStrings();
         try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
-            Thread.sleep(GAME_TIMEOUT * 1000);
+            Thread.sleep(GAME_TIMEOUT * 1000); //VOTE_TIMEOUT
         } catch (InterruptedException e) {}
 
         // punktestaende fuer alle Spieler zuruecksetzen
@@ -230,14 +245,99 @@ public abstract class Game implements Runnable {
             Player p = joinedPlayers.get(i);
             p.getScore().resetScoreValue(); //reset
         }
+        activePlayers = new ArrayList<Player>();
+    }
+    private void broadcastAndIncrease(){
+        broadcastExercise();
+        exerciseCreator.increaseDifficulty();
+        doWaitTimeout(EXERCISE_TIMEOUT); // das senden der restzeit sowie das warten selbst ist jetzt von broadcastExercise nach hier übertragen
     }
 
-    public abstract void run();
+    @Override
+    public void run() {
+        start:
+        while(true) {
+            gameMode.waitForPlayers();
+            roundTimeout();
+            createGameModeSuggestions();
+            callVote();
+            exerciseCreator.resetDifficulty();
+            gameMode.prepareGame();
+
+            while (gameMode.getGameIsRunning()) {
+                if (joinedPlayers.size() == 0) { //wenn keine spieler mehr da sind
+                    continue start;
+                } else {
+                    broadcastAndIncrease();
+                    gameMode.loop();
+                }
+
+            }
+        }
+    }
+
+    private void createGameModeSuggestions(){
+
+        ArrayList<ExerciseCreator> tempExerciseCreators = new ArrayList<ExerciseCreator>();
+        ArrayList<GameMode> tempGameModes = new ArrayList<GameMode>();
+        suggestions = new Suggestion[3];
+
+        for (int i = 0; i < exerciseCreators.length; i++) {
+            tempExerciseCreators.add(exerciseCreators[i]);
+        }
+        for (int i = 0; i < gameModes.length; i++) {
+            tempGameModes.add(gameModes[i]);
+        }
+        for (int i = 0; i < suggestions.length; i++) {
+            int eIndex = (int) (Math.random() * tempExerciseCreators.size());
+            int gIndex = (int) (Math.random() * tempGameModes.size());
+            suggestions[i] = new Suggestion(tempGameModes.get(gIndex), tempExerciseCreators.get(eIndex), i);
+            tempGameModes.remove(gIndex);
+            //tempExerciseCreators.remove(eIndex);
+        }
+    }
 
     public void callVote(){ //Abstimmung für nächsten gamemode
         for(int i = 0;i<joinedPlayers.size();i++){
             Player p = joinedPlayers.get(i);
+            p.sendSuggestions(suggestions);
+        }
+    }
+
+    public void receiveVote(int suggestionID, Player p){ //Abstimmung für nächsten gamemode
+        voteCounter++;
+        if(suggestionID == -1){
+            revoteCounter++;
+        }else {
+            for (int i = 0; i < suggestions.length ; i++) {
+                if(suggestions[i].getPlayers().contains(p)){
+                    suggestions[i].downvote(p);
+                }
+            }
+            suggestions[suggestionID].upvote(p);
+        }
+        if(voteCounter == joinedPlayers.size()){
+            int maxIndex = 0;
+            for(int i = 1; i < suggestions.length; i++){
+                if(suggestions[i].getVotes() > suggestions[maxIndex].getVotes()){
+                    maxIndex = i;
+                }
+            }
+            if(revoteCounter > suggestions[maxIndex].getVotes()){
+                voteCounter = 0;
+                revoteCounter = 0;
+                for(int i = 0; i < suggestions.length; i++){
+                    suggestions[i].reset();
+                }
+                createGameModeSuggestions();
+                callVote();
+            }else{
+                Suggestion votedForSuggestion = suggestions[maxIndex];
+                gameMode = votedForSuggestion.gameMode;
+                exerciseCreator = votedForSuggestion.exerciseCreator;
+            }
 
         }
+        callVote();
     }
 }
