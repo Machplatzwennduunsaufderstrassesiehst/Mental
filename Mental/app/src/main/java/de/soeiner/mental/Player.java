@@ -61,7 +61,7 @@ public class Player extends ClientConnection {
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_SUGGESTIONS);
         try {
             JSONArray suggestionJSONArray = new JSONArray(suggestions);
-            jsonObject.put("shopItemList", suggestionJSONArray);
+            jsonObject.put("suggestions", suggestionJSONArray);
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -73,7 +73,7 @@ public class Player extends ClientConnection {
         String gameString = this.getGameString();
         JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_GAME_STRING);
         try {
-            j.put("score_string", gameString);
+            j.put("game_string", gameString);
             makePushRequest(new PushRequest(j));
 
         } catch (JSONException e) {
