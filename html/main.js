@@ -3,7 +3,6 @@
 
 var serverConnection = null;
 var netManager = new NetworkManager();
-var navi = new Navigation();
 
 // DO AFTER HTML LOADED
 window.onload = function() {
@@ -12,11 +11,11 @@ window.onload = function() {
     // netManager konfigurieren
     netManager.setOnScanReady(function(){setTimeout(listAvailableGames, 1000);});
     
-    // versuche die letzten anmeldedaten und scoreString aus den cookies zu lesen
+    // versuche die letzten anmeldedaten und gameString aus den cookies zu lesen
     if (getCookie("userName") != "") byID("name").value = getCookie("userName");
     if (getCookie("ip") != "") byID("ip").value = getCookie("ip");
-    if (getCookie("scoreString") != "") byID("scoreStringInput").value = getCookie("scoreString");
-    if (getCookie("scoreString") != "") byID("scoreString").innerHTML = "Dein Punkte-Code: " + getCookie("scoreString");
+    if (getCookie("gameString") != "") byID("gameStringInput").value = getCookie("gameString");
+    if (getCookie("gameString") != "") byID("gameString").innerHTML = "Alter Spielstand: " + getCookie("gameString");
     
     setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netManager.getLocalIP();},1000);
     setDoOnEnter(function(){byID("connect").click();});
@@ -33,43 +32,69 @@ window.onload = function() {
 }
 
 function openWelcomeFrame() {
-    navi.clearHistory();
-    navi.navigate("welcome");
+    show("welcome");
     setDoOnEnter(function(){netManager.scanManually(byID('ip').value);openListGamesFrame();});
+    byID("disconnect").style.display = "none";
+    byID("leaveGame").style.display = "none";
 }
 
 function openMainFrame() {
-    navi.show("mainFrame");
-    navi.clearHistory();
+    show("mainFrame");
+    byID("answer").focus();
     setDoOnEnter(function(){sendAnswer();});
+    byID("disconnect").style.display = "none";
+    byID("leaveGame").style.display = "inline";
 }
 
 function openScoreboardFrame() {
-    navi.show("scoreboardFrame");
+    show("scoreboardFrame");
     setDoOnEnter(uselessFunction);
-    serverConnection.addObserver(reopenMainFrameObserver);
+    byID("disconnect").style.display = "inline";
+    byID("leaveGame").style.display = "none";
+    byID("blurHack").focus();
 }
 
 function openListGamesFrame() {
-    navi.navigate("listGamesFrame");
+    show("listGamesFrame");
     byID("gamesList").innerHTML = "laden...";
     setDoOnEnter(uselessFunction);
+    byID("disconnect").style.display = "inline";
+    byID("leaveGame").style.display = "none";
+}
+
+function openListServersFrame() {
+    show("listServersFrame");
+    byID("serverList").innerHTML = "laden...";
+    setDoOnEnter(uselessFunction);
+    byID("disconnect").style.display = "inline";
+    byID("leaveGame").style.display = "none";
 }
 
 function numpad(n) {
     byID("answer").value += String(n);
 }
-    
+
 function numpadDel() {
     var v = String(byID("answer").value);
     byID("answer").value = v.substring(0, v.length-1);
 }
 
-// called once for every open connection stored in the NetworkManager
+function listAvailableServers() {
+    byID("serversList").innerHTML = "";
+    while (serverConnections.length > 0) {
+        var c = serverConnections.pop();
+        var html = "";
+        html += "<div class='selectListItem' onclick='joinServer(getConnectionByHost("+'"'+c.host+'"'+"));'>";
+        html += "Trete dem Server auf " + c.host + " bei.";
+        html += "</div>";
+        byID("serversList").innerHTML += html;
+    }
+}
+
 function listAvailableGames() {
+    if (serverConnection == null) return;
     byID("gamesList").innerHTML = "";
-    var connection = netManager.popOpenConnection();
-    connection.communicate(makeGetCmd("get_games"), function(msg) {
+    serverConnection.communicate(makeGetCmd("get_games"), function(msg) {
         for (var j = 0; j < msg.games.length; j++) {
             var html = "";
             var game = msg.games[j];
@@ -78,35 +103,37 @@ function listAvailableGames() {
                 players += game.players[k].playerName;
                 if (k < game.players.length-1) players += ", ";
             }
-            html += "<div class='gameListItem' onclick='joinGame(getConnectionByHost("+'"'+connection.host+'"'+"), "+game.game_id+");'>";
-            html += "<p>"+game.name+" auf "+connection.host+" - Spieler: "+players+"</p>"
+            html += "<div class='selectListItem' onclick='joinGame("+game.game_id+");'>";
+            html += "<p>"+game.name+" auf "+connection.host+" - Spieler: "+players+"</p>";
             html += "</div>";
             byID("gamesList").innerHTML += html;
         }
-        if (netManager.getOpenServerConnections().length > 0) listAvailableGames();
     });
 }
 
-function joinGame(connection, gameId) {
-    var name = byID("name").value;
-    var scoreString = byID("scoreStringInput").value;
-    setCookie("userName", name, 1000);
+function joinServer(connection) {
     for (var i = 0; i < serverConnections; i++) {
         if (serverConnections[i] != connection) connections[i].close();
     }
     serverConnection = connection;
+    openListGamesFrame();
+    listAvailableGames();
+}
+
+function joinGame(gameId) {
+    var name = byID("name").value;
+    var gameString = byID("gameStringInput").value;
+    setCookie("userName", name, 1000);
     serverConnection.send(makeSetCmd("name", name));
-    serverConnection.send(makeSetCmd("score_string", scoreString));
+    serverConnection.send(makeSetCmd("game_string", gameString));
     serverConnection.send(makeSimpleCmd("join", "game_id", gameId));
     serverConnection.addObserver(playerWonObserver);
     serverConnection.addObserver(exerciseObserver);
     serverConnection.addObserver(timeLeftObserver);
     serverConnection.addObserver(messageObserver);
-    serverConnection.addObserver(scoreStringObserver);
+    serverConnection.addObserver(gameStringObserver);
+    serverConnection.addObserver(suggestionsObserver);
     setCookie("ip", connection.host, 1000);
-    byID("back").style.display = "none";
-    byID("disconnect").style.display = "inline";
-    openMainFrame();
 }
         
 var alreadyAnswered = false;
@@ -135,10 +162,16 @@ function disconnect() {
     for (var i = 0; i < serverConnections.length; i++) {
         serverConnections[i].close();
     }
-    byID("disconnect").style.display = "none";
-    byID("back").style.display = "inline";
     openWelcomeFrame();
 }
+
+function vote(suggestionIndex) {
+    serverConnection.send(makeSimpleCmd("vote", "suggestionID", suggestionIndex));
+}
+
+
+
+
 
 function infoBox(message) {
     byID("infoboxContent").innerHTML = message;

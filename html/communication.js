@@ -4,7 +4,6 @@
  * 
  */
 
-// TODO <<<<<<<<<<<<< maybe remove this later
 "use strict";
 
 // sleep time between request queue checks
@@ -14,7 +13,6 @@ var gameServerPort = 6382;
 var pingServerPort = 6383;
 
 
-    
 // class constructor definition
 function GetRequest(jc, hl, eHl) {
     this.jsonCmd = jc; // is an object
@@ -199,7 +197,12 @@ function NetworkManager() {
     
     this.scanManually = function(ip) {
         var s = new ServerConnection(ip, gameServerPort);
-        s.setOnOpen(function(){addServer(s);listAvailableGames();});
+        s.setOnOpen(function() {
+        console.log("scanman");
+            addServer(s);
+            serverConnection = s;
+            listAvailableGames();
+        });
     }
     
     function checkNext(ipArray, isBasic, c) {

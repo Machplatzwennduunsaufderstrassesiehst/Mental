@@ -1,4 +1,5 @@
-var finalScoreboardObserver = new Observer("scoreboard", function(msg) {
+
+var updateScoreboardObserver = new Observer("scoreboard", function(msg) {
     var scoreboardBody = byID("scoreboardBody");
     var html = "";
     for (var i = 0; i < msg.scoreboard.length; i++) {
@@ -15,34 +16,50 @@ var reopenMainFrameObserver = new Observer("exercise", function(msg) {
     openMainFrame();
     setTimeout(openMainFrame, 1000); // to be save...
     serverConnection.removeObserver(reopenMainFrameObserver);
-    serverConnection.removeObserver(finalScoreboardObserver);
+    serverConnection.removeObserver(updateScoreboardObserver);
+    countDownId = "exerciseCountdown";
 });
 
-var playerWonObserver = new Observer("player_won", function(msg) {
-    serverConnection.addObserver(finalScoreboardObserver);
+var openScoreboardObserver = new Observer("showScoreboard", function(msg) {
     openScoreboardFrame();
+    serverConnection.addObserver(reopenMainFrameObserver);
+    serverConnection.addObserver(updateScoreboardObserver);
+}
+
+var playerWonObserver = new Observer("player_won", function(msg) {
     countdownValue = Number(msg.gameTimeout);
     countDownId = "gameTimeoutCountdown";
 });
 
-var scoreStringObserver = new Observer("score_string", function(msg) {
-    setCookie("scoreString", msg.score_string, 1000);
-    byID("scoreStringInput").value = msg.score_string;
-    byID("scoreString").innerHTML = "Dein Punkte-Code: " + msg.score_string;
+var gameStringObserver = new Observer("game_string", function(msg) {
+    setCookie("gameString", msg.game_string, 1000);
+    byID("gameStringInput").value = msg.game_string;
+    byID("gameString").innerHTML = "Dein Spielstand: " + msg.game_string;
 });
 
-var exerciseResultSize = 0;
 var exerciseObserver = new Observer("exercise", function(msg) {
     var ex = msg.exercise;
     byID("exercise").innerHTML = ex + " = ";
     byID("answer").placeholder = "?";
     byID("answer").value = "";
-    exerciseResultSize = msg.length;
 });
 
 var timeLeftObserver = new Observer("time_left", function(msg) {
     countdownValue = msg.time;
-    countDownId = "exerciseCountdown";
+});
+
+var suggestionsObserver = new Observer("suggestions", function(msg) {
+    var s = msg.suggestions;
+    var html = "";
+    for (var i = 0; i < s.length; i++) {
+        var suggestion = s[i];
+        html += "<div class='selectListItem' onclick='vote("+suggestion.suggestionID+");'>";
+        html += "<span style='float:right;border-radius:0.5em;'>"+suggestion.votes+"</span>";
+        html += "<span>Stimme f&uuml;r " + suggestion.gameMode + " (" + suggestion.exerciseCreator + ")</span>";
+        html += "</div>";
+    }
+    byID("voting").innerHTML = html;
 });
 
 var messageObserver = new Observer("message", function(msg){displayMessage(msg.message);});
+

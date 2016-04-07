@@ -16,3 +16,4 @@ function getCookie(cname) {
     }
     return "";
 }
+

@@ -2,7 +2,7 @@
 var uselessFunction = function(){};
 
 var logContent_ = "";
-console = console || (new function() {
+var console = console || (new function() {
     this.log = function(s) {logContent_ += s;}
 });
 
@@ -10,15 +10,10 @@ function byID(id) {
     return window.document.getElementById(id);
 }
 
+// wird nicht wirklich gebraucht, mache ich später wahrscheinlich ganz weg
+/*
 function Navigation() {
     var history = [];
-    
-    function closeAll() {
-        var frames = window.document.getElementsByClassName("frame");
-        for (var i = 0; i < frames.length; i++) {
-            frames[i].style.display = "none";
-        }
-    }
     
     // add to history and show
     function navigate() {
@@ -31,15 +26,6 @@ function Navigation() {
     this.navigate = navigate;
     
     // do not add to history and show
-    function show() {
-        if (arguments[0].callee) arguments = arguments[0];
-        closeAll();
-        for (i = 0; i < arguments.length; i++) {
-            byID(arguments[i]).style.display = "block";
-        }
-    
-        if (isMobile()) hideAddressBar();
-    } 
     this.show = show;
     
     this.back = function() {
@@ -52,6 +38,24 @@ function Navigation() {
         history = [];
         byID("back").style.display = "none";
     }
+}
+*/
+    
+function closeAll() {
+    var frames = window.document.getElementsByClassName("frame");
+    for (var i = 0; i < frames.length; i++) {
+        frames[i].style.display = "none";
+    }
+}
+
+function show() {
+    if (arguments[0].callee) arguments = arguments[0];
+    closeAll();
+    for (i = 0; i < arguments.length; i++) {
+        byID(arguments[i]).style.display = "block";
+    }
+
+    if (isMobile()) hideAddressBar();
 }
 
 var countdownValue = 0;

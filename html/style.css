@@ -20,7 +20,7 @@ body {
     right: 10px;
     border: 1px solid #abf;
     border-radius: 0.5em;
-    width:auto;
+    width: auto;
     display: inline-block;
     padding: 0px 20px;
     background-color: black;
@@ -58,18 +58,20 @@ body {
     background-color: #abf;
 }
 
-.gameListItem {
-    border-radius: 10px;
-    background-color: #555;
+.selectListItem {
+    border-radius: 2px;
+    background-color: #999;
     color: white;
     margin-bottom: 5px;
-    padding: 5px;
-    box-shadow: 0px 0px 0.2em #abf;
+    padding: 2px;
+    box-shadow: 0px 0px 0.5em #abf;
+    border: 1px outset #abf;
     cursor: pointer;
 }
 
-.gameListItem:hover {
+.selectListItem:hover {
     background-color: #333;
+    border: 1px inset #aaa;
 }
 
 #numpadTable .btn {
