@@ -5,31 +5,26 @@ package de.soeiner.mental;
  */
 public abstract class ExerciseCreator {
 
-    public ExerciseCreator(int d){
-        startDifficulty = d;
-    }
 
-    protected int startDifficulty; //damit auf wunsch der Schwierigkeitsgrad eingestellt werden kann
+    protected int startDifficulty = 1; //damit auf wunsch der Schwierigkeitsgrad eingestellt werden kann
     protected String exerciseString = "";
     protected String lastExerciseString = "";
     protected int difficulty = startDifficulty;
     protected int exerciseResult = 0;
 
-    public String getExerciseString() {
-        return exerciseString;
-    }
+    public String getExerciseString() { return exerciseString; }
 
     public int getDifficulty() {
         return difficulty;
     }
 
+    public void setDifficulty(int d){ difficulty = d; }
+
     public void resetDifficulty() {
         difficulty = startDifficulty;
     }
 
-    public void setStartDifficulty(int d) {
-        startDifficulty = d;
-    }
+    public void setStartDifficulty(int d) { startDifficulty = d; }
 
     public void increaseDifficulty() {
         difficulty++;
@@ -80,10 +75,6 @@ class SimpleMultExerciseCreator extends ExerciseCreator {
 
     public String getName(){return "Kleines 1x1";}
 
-    public SimpleMultExerciseCreator(int d){
-        super(d);
-    }
-
     public String create() {
         int d = difficulty / 2;
         int a = (int) (Math.random() * (10-d)) + d; // Zahlen zwischen d und 10
@@ -95,10 +86,6 @@ class SimpleMultExerciseCreator extends ExerciseCreator {
 class MultExerciseCreator extends ExerciseCreator {
 
     public String getName(){return "Großes 1x1";}
-
-    public MultExerciseCreator(int d){
-        super(d);
-    }
 
     public String create() {
         int d = difficulty;
@@ -114,10 +101,6 @@ class MultExerciseCreator extends ExerciseCreator {
 class MixedExerciseCreator2 extends ExerciseCreator {
 
     public String getName(){return "Gemischte Aufgaben";}
-
-    public MixedExerciseCreator2(int d){
-        super(d);
-    }
 
     public String create() {
         String exercise = "";
@@ -173,9 +156,6 @@ class MixedExerciseCreator extends ExerciseCreator {
 
     public String getName(){return "Gemischte Aufgaben";}
 
-    public MixedExerciseCreator(int d){
-        super(d);
-    }
     public String create() {
         String exercise = "";
         int result = 0;

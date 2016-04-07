@@ -16,7 +16,7 @@ public class CmdRequest {
     public static final String SEND_MESSAGE = "{type: 'message'}"; // wird nun allgemein fuer player + broadcast "nachrichten" (human readable!) genutzt, man
     public static final String SEND_GAME_STRING = "{type: 'game_string'}";
     public static final String SEND_SHOP_ITEM_LIST = "{type: 'shop_item_list'}";
-    public static final String SEND_CONFIRMATION = "{type: 'confirmation}";
+    public static final String SEND_SUGGESTIONS = "{type: 'suggestions'}";
 
     private JSONObject cmd;
 
