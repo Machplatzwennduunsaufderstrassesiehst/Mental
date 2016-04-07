@@ -232,6 +232,15 @@ public class Game implements Runnable {
             }
             p.makePushRequest(new PushRequest(j));
         }
+        broadcastShowScoreBoard();
+    }
+
+    public void broadcastShowScoreBoard(){
+        for (int i = 0; i < joinedPlayers.size(); i++) {
+            Player p = joinedPlayers.get(i);
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SHOW_SCOREBOARD);
+            p.makePushRequest(new PushRequest(j));
+        }
     }
 
     private void roundTimeout(){
@@ -258,6 +267,7 @@ public class Game implements Runnable {
         start:
         while(true) {
             gameMode.waitForPlayers();
+            broadcastShowScoreBoard();
             roundTimeout();
             createGameModeSuggestions();
             callVote();
