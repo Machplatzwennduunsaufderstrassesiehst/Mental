@@ -105,7 +105,7 @@ public class Player extends ClientConnection {
             if (type.equals("join")) {
                 int id = Integer.parseInt(json.getString("game_id"));
                 Game g = Game.getGames().get(id);
-                g.join(this);
+                g.addPlayer(this);
                 game = g;
             }
             if (type.equals("create")) {

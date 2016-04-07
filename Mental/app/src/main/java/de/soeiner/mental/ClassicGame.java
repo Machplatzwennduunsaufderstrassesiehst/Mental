@@ -38,19 +38,7 @@ public class ClassicGame extends Game{
                     doWaitTimeout(EXERCISE_TIMEOUT); // das senden der restzeit sowie das warten selbst ist jetzt von broadcastExercise nach hier übertragen
                 }
             }
-
-            sendGameStrings();
-
-            try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
-                Thread.sleep(GAME_TIMEOUT * 1000);
-            } catch (InterruptedException e) {
-            }
-
-            // punktestaende fuer alle Spieler zuruecksetzen
-            for (int i = 0; i < joinedPlayers.size(); i++) {
-                Player p = joinedPlayers.get(i);
-                p.getScore().resetScoreValue(); //reset
-            }
+            //roundTimeout();
         }
     }
 

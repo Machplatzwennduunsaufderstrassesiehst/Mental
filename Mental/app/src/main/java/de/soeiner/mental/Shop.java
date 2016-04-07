@@ -30,7 +30,7 @@ public class Shop extends JSONObject {
         ShopItem item6 = new ShopItem(6, "Marco die Schlange", 5000, false, 8);
         ShopItem item7 = new ShopItem(7, "Marten", 100000, false, 16);
 
-        ShopItem[] s = {item1, item2, item3};
+        ShopItem[] s = {item1, item2, item3, item4, item5, item6, item7};
         return s;
     }
 
@@ -84,7 +84,6 @@ public class Shop extends JSONObject {
 
     public void loadShopString(String shopString) {
         String itemsBought = "";
-
         if (checkShopString(shopString)) {
             shopString = shopString.substring(0, shopString.length() - 1);
             itemsBought = shopString.substring(0, 3);
@@ -100,6 +99,7 @@ public class Shop extends JSONObject {
             setMoneySpent(Integer.parseInt(shopString.substring(3, shopString.length())));
         }
     }
+
 
     public String getshopString(){ //die ersten drei zeichen geben die gekauften Gegenstände an, die darauf folgenden, das ausgegebene Geld
         //000 -> 0000000 = nichts gekauft

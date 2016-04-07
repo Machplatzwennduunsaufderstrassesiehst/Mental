@@ -36,7 +36,7 @@ public class Server extends WebSocketServer {
         Player player = (Player) Player.getBySocket(socket);
         Game g = player.getGame();
         if (g != null) {
-            g.leave(player);
+            g.removePlayer(player);
         }
         System.out.println(player.getName() + " disconnected.");
         player.disconnect();

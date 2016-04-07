@@ -7,7 +7,6 @@ import java.util.ArrayList;
  */
 public class KnockoutGame extends Game{
 
-    private ArrayList<Player> activePlayers = new ArrayList<Player>();
     private int minPlayers = 2; //mindest Anzahl Spieler
 
     public KnockoutGame(ExerciseCreator exerciseCreator){
@@ -41,20 +40,14 @@ public class KnockoutGame extends Game{
             activePlayers.remove(index);
         }
         broadcastPlayerWon(activePlayers.get(0).getName(), "Knockout");
-        sendGameStrings();
-
-
-        try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
-            Thread.sleep(GAME_TIMEOUT * 1000);
-        } catch (InterruptedException e) {}
 
         for(int i = 0; i<joinedPlayers.size();i++){ //Spieler kriegen am Ende Scorepunkte
             Player p = joinedPlayers.get(i);
             Score s = p.getScore();
             s.updateScore(s.getScoreValue()*20);
-            s.resetScoreValue();
         }
         activePlayers = new ArrayList<Player>(); // die Liste der aktiven Spieler zurücksetzen
+        //roundTimeout
     }
 
     public boolean playerAnswered(Player player, int answer) {

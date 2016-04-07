@@ -40,8 +40,10 @@ public abstract class Game implements Runnable {
         return new JSONArray();
     }
 
+    GameMode gameMode;
     protected String description = "";
     protected ArrayList<Player> joinedPlayers;
+    protected ArrayList<Player> activePlayers;
 
     protected int EXERCISE_TIMEOUT = 30;
     protected int GAME_TIMEOUT = 20; //für pause zwischen den spielen mit siegerbildschirm
@@ -54,6 +56,7 @@ public abstract class Game implements Runnable {
         games.add(this);
         this.exerciseCreator = exerciseCreator;
         joinedPlayers = new ArrayList<Player>();
+        activePlayers = new ArrayList<Player>();
         Thread t = new Thread(this);
         t.start();
     }
@@ -98,9 +101,9 @@ public abstract class Game implements Runnable {
         }
     }
 
-    public void join(Player p) {
+    public void addPlayer(Player p) {
         for (Game g : Game.games) { // den Spieler aus anderen Spielen gegebenenfalls entfernen
-            if (g.joinedPlayers.contains(p)) g.leave(p);
+            if (g.joinedPlayers.contains(p)) g.removePlayer(p);
         }
         joinedPlayers.add(p);
         p.sendExercise(exerciseCreator.getExerciseString());
@@ -108,10 +111,11 @@ public abstract class Game implements Runnable {
         broadcastMessage(p.getName() + " ist beigetreten.");
     }
 
-    public void leave(Player p) {
+    public void removePlayer(Player p) {
         joinedPlayers.remove(p);
         updateScoreBoardSize();
         broadcastMessage(p.getName() + " hat das Spiel verlassen.");
+        //TODO gameMode.removePlayer(p);
     }
 
     public void sendGameStrings() {
@@ -215,5 +219,25 @@ public abstract class Game implements Runnable {
         }
     }
 
+    private void roundTimeout(){
+        sendGameStrings();
+        try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
+            Thread.sleep(GAME_TIMEOUT * 1000);
+        } catch (InterruptedException e) {}
+
+        // punktestaende fuer alle Spieler zuruecksetzen
+        for (int i = 0; i < joinedPlayers.size(); i++) {
+            Player p = joinedPlayers.get(i);
+            p.getScore().resetScoreValue(); //reset
+        }
+    }
+
     public abstract void run();
+
+    public void callVote(){ //Abstimmung für nächsten gamemode
+        for(int i = 0;i<joinedPlayers.size();i++){
+            Player p = joinedPlayers.get(i);
+
+        }
+    }
 }

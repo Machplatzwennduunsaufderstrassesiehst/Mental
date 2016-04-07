@@ -8,6 +8,8 @@ import org.json.JSONObject;
  */
 public class Score extends JSONObject{
 
+    String compare = "";
+
     public Score(String playerName) {
         setPlayerName(playerName);
         setScoreValue(0);
@@ -25,20 +27,6 @@ public class Score extends JSONObject{
         return (int) (100.0 * (score - lastLevelThreshold) / diff);
     }
 
-    // das ist die originale version, allerdings gibt es hier kleine fehler wegen des / 500
-    /*
-    private static int calculateLevel(int score){
-        return (int) (((double)score/500.0)+Math.log10((double) score)+1.0);
-    }
-
-    private static int calculateLevelProgress(int score){ //in Prozent
-        double level = (()double)score/500.0)+Math.log10((double) score)+1.0);
-        level %= 1;
-        level *= 100;
-        return (int) level;
-    }
-    */
-
     public void updateScore(int plus) {
         int scoreValue = this.getScoreValue() + plus;
         setScoreValue(scoreValue);
@@ -48,9 +36,6 @@ public class Score extends JSONObject{
         setPlayerLevelProgress(overallScoreValue);
     }
 
-    // ich habe den scoreString mal aus dem konstruktor entfernt, weil wir eher nicht in die situation kommen,
-    // einen scoreString zu haben, wenn das Score Objekt noch nicht existiert
-    // stattdessen kann man jetzt zur Laufzeit einen ScoreString "laden"
     public void loadScoreString(String scoreString) {
         int overallScoreValue = 0;
 
@@ -150,35 +135,16 @@ public class Score extends JSONObject{
         }
         checksum %= 10;
         scoreString = score+""+checksum;
-//		int Value = Integer.parseInt(scoreString);
-//		System.out.println(Value);
-
         return scoreString;
     }
 
-    public static boolean checkScoreString(String scoreString){
-
-        if(scoreString == ""){
-            return false;
-        }
-
-        int k = 0;
-        int a = 0;
-        int checksum = 0;
-        for(int i = 0;i < scoreString.length()-1;i++){
-            a = Character.getNumericValue(scoreString.charAt(i));
-            switch(k%4){
-                case 0 : checksum += 7*a; break;
-                case 1 : checksum += 3*a; break;
-                case 2 : checksum += 5*a; break;
-                case 3 : checksum += 13*a; break;
-            }
-        }
-        checksum %= 10;
-        if(checksum == Character.getNumericValue(scoreString.charAt(scoreString.length()-1))){
+    public boolean checkScoreString(String scoreString){
+        int temp = getOverallScoreValue();
+        this.setOverallScoreValue(Integer.parseInt(scoreString.substring(0,scoreString.length()-1)));
+        if(this.getScoreString().equals(scoreString)){
             return true;
-        }else{
-            return false;
         }
+            this.setOverallScoreValue(temp);
+            return false;
     }
 }
