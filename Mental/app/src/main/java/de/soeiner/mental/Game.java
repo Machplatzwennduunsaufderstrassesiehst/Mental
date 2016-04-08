@@ -128,11 +128,10 @@ public class Game implements Runnable {
             if (g.joinedPlayers.contains(p)) g.removePlayer(p);
         }
         joinedPlayers.add(p);
-        //activePlayers.add(p);
+        updateScoreBoardSize();
+        broadcastScoreboard();
         if(!gameMode.gameIsRunning) {
             broadcastShowScoreBoard();
-            updateScoreBoardSize();
-            broadcastScoreboard();
             callVote();
         }
         broadcastMessage(p.getName() + " ist beigetreten.");
@@ -318,7 +317,7 @@ public class Game implements Runnable {
     private void createGameModeSuggestions(){
         ArrayList<ExerciseCreator> tempExerciseCreators = new ArrayList<ExerciseCreator>();
         ArrayList<GameMode> tempGameModes = new ArrayList<GameMode>();
-        suggestions = new Suggestion[3];
+        suggestions = new Suggestion[4];
 
         for (int i = 0; i < exerciseCreators.length; i++) {
             tempExerciseCreators.add(exerciseCreators[i]);
@@ -326,13 +325,15 @@ public class Game implements Runnable {
         for (int i = 0; i < gameModes.length; i++) {
             tempGameModes.add(gameModes[i]);
         }
-        for (int i = 0; i < suggestions.length; i++) {
+        for (int i = 0; i < suggestions.length-1; i++) {
             int eIndex = (int) (Math.random() * tempExerciseCreators.size());
             int gIndex = (int) (Math.random() * tempGameModes.size());
             suggestions[i] = new Suggestion(tempGameModes.get(gIndex), tempExerciseCreators.get(eIndex), i);
             tempGameModes.remove(gIndex);
             //tempExerciseCreators.remove(eIndex);
         }
+        revoteSuggestion.putName("Neue Vorschl&auml;ge!");
+        suggestions[suggestions.length-1] = revoteSuggestion;
         voteCounter = 0;
     }
 

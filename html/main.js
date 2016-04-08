@@ -180,12 +180,9 @@ function listSuggestions(suggestions) {
         var suggestion = suggestions[i];
         html += "<div style='width:"+scoreboardWidth+"px' class='selectListItem' onclick='vote("+suggestion.suggestionID+");'>";
         html += "<span style='float:right;border-radius:0.5em;'>"+suggestion.votes+"</span>";
-        html += "<span>Stimme f&uuml;r " + suggestion.gameMode + " (" + suggestion.exerciseCreator + ")</span>";
+        html += "<span>"+suggestion.suggestionName+"</span>";
         html += "</div>";
     }
-    html += "<div style='width:"+scoreboardWidth+"px' class='selectListItem' onclick='vote(-1);'>";
-    html += "<span>Neues Abstimmung anfordern!</span>";
-    html += "</div>";
     byID("voting").innerHTML = html;
 }
 

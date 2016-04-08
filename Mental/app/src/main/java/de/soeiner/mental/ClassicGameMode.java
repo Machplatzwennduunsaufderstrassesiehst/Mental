@@ -41,8 +41,8 @@ class ClassicGameMode extends GameMode{
                             game.notify(); // hat einer gewonnen, muss das wait im game loop ebenfalls beendet werden.
                         }
                         player.finished = true;
-                        for (int i = 0; i < game.joinedPlayers.size(); i++) {
-                            Player p = game.joinedPlayers.get(i);
+                        for (int i = 0; i < game.activePlayers.size(); i++) {
+                            Player p = game.activePlayers.get(i);
                             if (!p.finished) {
                                 allFinished = false;
                             }

@@ -25,6 +25,7 @@ public class Suggestion extends JSONObject{
         } catch (JSONException s) {
             s.printStackTrace();
         }
+        putName("Stimme f&uuml;r " + g.getGameModeString() + " (" + e.getName() + ")");
     }
 
     public void upvote(Player p){
@@ -58,6 +59,12 @@ public class Suggestion extends JSONObject{
     }
     public ArrayList<Player> getPlayers(){
         return voters;
+    }
+    public void putName(String suggestionName){
+        if (has("suggestionName")) this.remove("suggestionName");
+        try{
+            this.put("suggestionName", suggestionName);
+        }catch(Exception e){}
     }
 
 }
