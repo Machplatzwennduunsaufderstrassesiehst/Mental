@@ -64,7 +64,7 @@ public class Game implements Runnable {
         activePlayers = new ArrayList<Player>();
         spectators = new ArrayList<Player>();
         exerciseCreator = exerciseCreators[0];
-        gameMode = gameModes[0];
+        gameMode = gameModes[1];
         revoteSuggestion = new Suggestion(this.gameMode, this.exerciseCreator, -1);
         Thread t = new Thread(this);
         t.start();
@@ -285,7 +285,7 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
-        gameMode.waitForPlayers();
+        //gameMode.waitForPlayers();
         start:
         while(true) {
             broadcastShowScoreBoard();
@@ -299,8 +299,7 @@ public class Game implements Runnable {
                     e.printStackTrace();
                 }
             }
-            System.out.println("test1");
-            gameMode.waitForPlayers();
+            //gameMode.waitForPlayers();
             exerciseCreator.resetDifficulty();
             gameMode.prepareGame();
 
@@ -317,8 +316,6 @@ public class Game implements Runnable {
     }
 
     private void createGameModeSuggestions(){
-
-
         ArrayList<ExerciseCreator> tempExerciseCreators = new ArrayList<ExerciseCreator>();
         ArrayList<GameMode> tempGameModes = new ArrayList<GameMode>();
         suggestions = new Suggestion[3];

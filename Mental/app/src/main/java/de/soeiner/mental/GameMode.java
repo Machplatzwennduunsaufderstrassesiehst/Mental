@@ -22,7 +22,6 @@ public abstract class GameMode {
 
     public GameMode(Game g){
         game = g;
-        resetGameMode();
     }
 
     public void resetGameMode(){
