@@ -146,7 +146,11 @@ public class Player extends ClientConnection {
             }
             if (type.equals("vote")) {
                 int suggestionID = Integer.parseInt(json.getString("suggestionID"));
+                System.out.println(game);
                 game.receiveVote(suggestionID, this);
+            }
+            if (type.equals("leave")) {
+                game.removePlayer(this);
             }
         } catch (Exception e) {
             e.printStackTrace();

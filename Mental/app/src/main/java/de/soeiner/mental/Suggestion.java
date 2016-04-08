@@ -30,12 +30,18 @@ public class Suggestion extends JSONObject{
     public void upvote(Player p){
         if(!voters.contains(p)) {
             voters.add(p);
+            try {
+                this.put("votes", voters.size());
+            }catch (Exception e){}
         }
     }
 
     public void downvote(Player p){
         if(voters.contains(p)) {
             voters.remove(p);
+            try {
+                this.put("votes", voters.size());
+            }catch (Exception e){}
         }
     }
 
@@ -43,7 +49,12 @@ public class Suggestion extends JSONObject{
         return voters.size();
     }
     public void reset(){
-        voters = new ArrayList<Player>();
+        for(int i = 0; i<voters.size();i++){
+            voters.remove(0);
+        }
+        try {
+            this.put("votes", voters.size());
+        }catch (Exception e){}
     }
     public ArrayList<Player> getPlayers(){
         return voters;

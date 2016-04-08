@@ -20,6 +20,7 @@ public class ArenaGameMode extends GameMode{
     }
 
     public void prepareGame() {
+        super.prepareGame();
         for(int i = 0; i<2;i++){
             Player p = game.joinedPlayers.get(i);
             game.activePlayers.add(p);
@@ -62,11 +63,13 @@ public class ArenaGameMode extends GameMode{
     public boolean playerAnswered(Player player, int answer) {
 
         if(game.activePlayers.contains(player)){
-            if(game.exerciseCreator.checkAnswer(answer)){
-                Score s = player.getScore();
-                s.updateScore(10);
-                game.broadcastMessage(player.getName()+" hat die "+zaehler+". Runde für sich entschieden!");
-                notify();
+            synchronized (game) {
+                if (game.exerciseCreator.checkAnswer(answer)) {
+                    Score s = player.getScore();
+                    s.updateScore(10);
+                    game.broadcastMessage(player.getName() + " hat die " + zaehler + ". Runde für sich entschieden!");
+                    game.notify();
+                }
             }
         }
         return false;

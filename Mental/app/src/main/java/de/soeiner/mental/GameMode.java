@@ -12,7 +12,9 @@ public abstract class GameMode {
         }
     }
     public abstract void loop();
-    public abstract void prepareGame();
+    public void prepareGame(){
+        resetGameMode();
+    }
     public boolean getGameIsRunning(){ return gameIsRunning; }
     public abstract boolean playerAnswered(Player player, int answer);
     public abstract String getGameModeString();
@@ -20,6 +22,10 @@ public abstract class GameMode {
 
     public GameMode(Game g){
         game = g;
+        resetGameMode();
+    }
+
+    public void resetGameMode(){
         gameIsRunning = true;
     }
 

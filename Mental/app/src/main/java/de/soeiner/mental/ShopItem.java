@@ -1,5 +1,6 @@
 package de.soeiner.mental;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -20,6 +21,15 @@ public class ShopItem extends JSONObject {
         price = p;
         bought = b;
         lvlUnlock = l;
+        try {
+            this.put("nr", nr);
+            this.put("name", name);
+            this.put("price", price);
+            this.put("bought", bought);
+            this.put("lvlUnlock", lvlUnlock);
+        } catch (JSONException s) {
+            s.printStackTrace();
+        }
     }
 
     public int getPrice() {
@@ -39,6 +49,11 @@ public class ShopItem extends JSONObject {
 
     public void setBought(boolean bought) {
         this.bought = bought;
+        try {
+            this.put("bought", bought);
+        } catch (JSONException s) {
+            s.printStackTrace();
+        }
     }
 
     public int getLvlUnlock() {

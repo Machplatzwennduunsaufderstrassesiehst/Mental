@@ -13,6 +13,7 @@ public class Score extends JSONObject{
     public Score(String playerName) {
         setPlayerName(playerName);
         setScoreValue(0);
+        setOverallScoreValue(0);
     }
 
     // quadratische abhängigkeit als vorschlag?

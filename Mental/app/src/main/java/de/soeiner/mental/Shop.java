@@ -5,7 +5,7 @@ import org.json.JSONObject;
 /**
  * Created by Malte on 30.03.2016.
  */
-public class Shop extends JSONObject {
+public class Shop{
 
     private int money;
     private int moneySpent; //müsste noch in den shopString eingebaut werden
