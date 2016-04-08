@@ -64,7 +64,7 @@ public class Game implements Runnable {
         activePlayers = new ArrayList<Player>();
         spectators = new ArrayList<Player>();
         exerciseCreator = exerciseCreators[0];
-        gameMode = gameModes[1];
+        gameMode = gameModes[0];
         revoteSuggestion = new Suggestion(this.gameMode, this.exerciseCreator, -1);
         Thread t = new Thread(this);
         t.start();
@@ -128,9 +128,13 @@ public class Game implements Runnable {
             if (g.joinedPlayers.contains(p)) g.removePlayer(p);
         }
         joinedPlayers.add(p);
-        activePlayers.add(p);
-        if (exerciseCreator != null) p.sendExercise(exerciseCreator.getExerciseString());
-        updateScoreBoardSize();
+        //activePlayers.add(p);
+        if(!gameMode.gameIsRunning) {
+            broadcastShowScoreBoard();
+            updateScoreBoardSize();
+            broadcastScoreboard();
+            callVote();
+        }
         broadcastMessage(p.getName() + " ist beigetreten.");
     }
 
