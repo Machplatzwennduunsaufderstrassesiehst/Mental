@@ -9,7 +9,7 @@ body {
 }
 
 #menu {
-    background-color: #ccccff;
+    background-color: #ccf;
     border-bottom: 2px solid #abf;
     box-shadow: 0px 0.15cm 0.1cm #aabbff;
 }
@@ -59,19 +59,22 @@ body {
 }
 
 .selectListItem {
-    border-radius: 2px;
-    background-color: #999;
-    color: white;
-    margin-bottom: 5px;
+    border-radius: 3px;
+    background-color: #ededed;
+    color: black;
+    margin: auto;
     padding: 2px;
-    box-shadow: 0px 0px 0.5em #abf;
-    border: 1px outset #abf;
+    margin-top: 5px;
     cursor: pointer;
+    text-align: left;
+}
+
+.selectListItem span {
+    text-align: left;
 }
 
 .selectListItem:hover {
-    background-color: #333;
-    border: 1px inset #aaa;
+    background-color: #aaa;
 }
 
 #numpadTable .btn {
@@ -107,13 +110,14 @@ body {
 
 #scoreboard {
     text-align: left;
-    border-radius: 0.5em;
-    background-color: #e9eeef;
+    border-radius: 3px;
+    background-color: #ededed;
+    margin: 6px auto 10px auto;
 }
 
 #scoreboard td {
     border-top: 4px solid white;
-    padding: 5px;
+    padding: 2px;
 }
 #scoreboard td + td { border-left: 2px solid white;margin:0;}
 

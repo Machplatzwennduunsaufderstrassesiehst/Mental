@@ -75,7 +75,7 @@ function ServerConnection(host, port) {
         socket.close();
         // remove this from serverConnections
         var i = serverConnections.indexOf(self);
-        serverConnections.splice(i);
+        serverConnections.splice(i, 1);
     }
     
     socket.onclose = function(event) {
@@ -130,7 +130,7 @@ function ServerConnection(host, port) {
     }
     function removeObserver(observer) {
         var pos = observers.indexOf(observer);
-        observers.splice(pos);
+        observers.splice(pos, 1);
     }
     this.addObserver = addObserver;
     this.removeObserver = removeObserver;
@@ -150,7 +150,7 @@ function ServerConnection(host, port) {
     
     function removeRequest(request) {
         var index = commandRequestQueue.indexOf(request);
-        commandRequestQueue.splice(index);
+        commandRequestQueue.splice(index, 1);
     }
     this.removeRequest = removeRequest;
     
@@ -198,7 +198,6 @@ function NetworkManager() {
     this.scanManually = function(ip) {
         var s = new ServerConnection(ip, gameServerPort);
         s.setOnOpen(function() {
-        console.log("scanman");
             addServer(s);
             serverConnection = s;
             listAvailableGames();

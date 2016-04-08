@@ -52,6 +52,7 @@ function openScoreboardFrame() {
     byID("disconnect").style.display = "inline";
     byID("leaveGame").style.display = "none";
     byID("blurHack").focus();
+    byID("voting").innerHTML = '<p>Das Voting f&uuml;r die n&auml;chste Runde started in <span id="gameTimeoutCountdown"></span>!</p>';
 }
 
 function openListGamesFrame() {
@@ -104,7 +105,7 @@ function listAvailableGames() {
                 if (k < game.players.length-1) players += ", ";
             }
             html += "<div class='selectListItem' onclick='joinGame("+game.game_id+");'>";
-            html += "<p>"+game.name+" auf "+connection.host+" - Spieler: "+players+"</p>";
+            html += "<p>"+game.name+" auf "+serverConnection.host+" - Spieler: "+players+"</p>";
             html += "</div>";
             byID("gamesList").innerHTML += html;
         }
@@ -133,7 +134,8 @@ function joinGame(gameId) {
     serverConnection.addObserver(messageObserver);
     serverConnection.addObserver(gameStringObserver);
     serverConnection.addObserver(suggestionsObserver);
-    setCookie("ip", connection.host, 1000);
+    serverConnection.addObserver(showScoreboardObserver);
+    setCookie("ip", serverConnection.host, 1000);
 }
         
 var alreadyAnswered = false;
@@ -158,11 +160,33 @@ function sendAnswer() {
     });
 }
 
+function leaveGame() {
+    serverConnection.send(makeSimpleCmd("leave", "x", ""));
+    openListGamesFrame();
+    listAvailableGames();
+}
+
 function disconnect() {
     for (var i = 0; i < serverConnections.length; i++) {
         serverConnections[i].close();
     }
     openWelcomeFrame();
+}
+
+function listSuggestions(suggestions) {
+    var html = "";
+    var scoreboardWidth = byID("scoreboard").style.width;
+    for (var i = 0; i < suggestions.length; i++) {
+        var suggestion = suggestions[i];
+        html += "<div style='width:"+scoreboardWidth+"px' class='selectListItem' onclick='vote("+suggestion.suggestionID+");'>";
+        html += "<span style='float:right;border-radius:0.5em;'>"+suggestion.votes+"</span>";
+        html += "<span>Stimme f&uuml;r " + suggestion.gameMode + " (" + suggestion.exerciseCreator + ")</span>";
+        html += "</div>";
+    }
+    html += "<div style='width:"+scoreboardWidth+"px' class='selectListItem' onclick='vote(-1);'>";
+    html += "<span>Neues Abstimmung anfordern!</span>";
+    html += "</div>";
+    byID("voting").innerHTML = html;
 }
 
 function vote(suggestionIndex) {

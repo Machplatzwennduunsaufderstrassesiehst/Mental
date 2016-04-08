@@ -62,6 +62,7 @@ var countdownValue = 0;
 var countDownId = "countdownHack";
 
 function countdown() {
+    setTimeout(function(){countdown();}, 1000);
     if (countdownValue < 0) {
         byID(countDownId).style.display = "none";
     } else {
@@ -69,7 +70,6 @@ function countdown() {
         byID(countDownId).innerHTML = String(countdownValue) + "s";
     }
     countdownValue -= 1;
-    setTimeout(function(){countdown();}, 1000);
 }
 
 

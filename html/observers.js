@@ -20,11 +20,11 @@ var reopenMainFrameObserver = new Observer("exercise", function(msg) {
     countDownId = "exerciseCountdown";
 });
 
-var openScoreboardObserver = new Observer("showScoreboard", function(msg) {
+var showScoreboardObserver = new Observer("showScoreboard", function(msg) {
     openScoreboardFrame();
     serverConnection.addObserver(reopenMainFrameObserver);
     serverConnection.addObserver(updateScoreboardObserver);
-}
+});
 
 var playerWonObserver = new Observer("player_won", function(msg) {
     countdownValue = Number(msg.gameTimeout);
@@ -50,15 +50,7 @@ var timeLeftObserver = new Observer("time_left", function(msg) {
 
 var suggestionsObserver = new Observer("suggestions", function(msg) {
     var s = msg.suggestions;
-    var html = "";
-    for (var i = 0; i < s.length; i++) {
-        var suggestion = s[i];
-        html += "<div class='selectListItem' onclick='vote("+suggestion.suggestionID+");'>";
-        html += "<span style='float:right;border-radius:0.5em;'>"+suggestion.votes+"</span>";
-        html += "<span>Stimme f&uuml;r " + suggestion.gameMode + " (" + suggestion.exerciseCreator + ")</span>";
-        html += "</div>";
-    }
-    byID("voting").innerHTML = html;
+    listSuggestions(s);
 });
 
 var messageObserver = new Observer("message", function(msg){displayMessage(msg.message);});
