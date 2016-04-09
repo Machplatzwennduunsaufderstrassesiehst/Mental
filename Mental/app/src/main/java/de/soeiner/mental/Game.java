@@ -41,36 +41,33 @@ public class Game implements Runnable {
     }
 
     GameMode gameMode;
-    GameMode[] gameModes = {new ClassicGameMode(this), new KnockoutGameMode(this), new ArenaGameMode(this)};
-    ExerciseCreator[] exerciseCreators = {new MixedExerciseCreator2(), new SimpleMultExerciseCreator(), new MultExerciseCreator()};
-    Suggestion[] suggestions;
-    protected String description = "";
-    protected ArrayList<Player> joinedPlayers;
-    protected ArrayList<Player> activePlayers;
-    protected ArrayList<Player> spectators;
+    ExerciseCreator exerciseCreator = null;
+    Voting voting;
 
-    protected int EXERCISE_TIMEOUT = 30;
-    protected int GAME_TIMEOUT = 2; //für pause zwischen den spielen mit siegerbildschirm
-    int voteCounter = 0;
-    protected ExerciseCreator exerciseCreator = null;
+    public String description = "";
+    public Score[] scoreboard = new Score[0];
+    public ArrayList<Player> joinedPlayers;
+    public ArrayList<Player> activePlayers;
+    public ArrayList<Player> spectators;
 
-    Suggestion revoteSuggestion;
-    protected Score[] scoreboard = new Score[0];
-    protected Score[] getScoreboard() {return scoreboard;}
+    public int EXERCISE_TIMEOUT = 30;
+    public int GAME_TIMEOUT = 2; //für pause zwischen den spielen mit siegerbildschirm
+
+
 
     public Game() {
         games.add(this);
         joinedPlayers = new ArrayList<Player>();
         activePlayers = new ArrayList<Player>();
         spectators = new ArrayList<Player>();
-        exerciseCreator = exerciseCreators[0];
-        gameMode = gameModes[1];
-        revoteSuggestion = new Suggestion(this.gameMode, this.exerciseCreator, -1);
+        exerciseCreator = new SimpleMultExerciseCreator();
+        voting = new Voting(this);
+        gameMode = new ClassicGameMode(this);
         Thread t = new Thread(this);
         t.start();
     }
 
-    // zwingt alle erbenden klassen eine Game mode zu definieren
+
     protected String getGameModeString(){
         return gameMode.getGameModeString();
     }
@@ -82,6 +79,8 @@ public class Game implements Runnable {
     public String getDescription() {
         return description;
     }
+
+    public Score[] getScoreboard() {return scoreboard;}
 
     public void destroy() {
         games.remove(this);
@@ -132,7 +131,7 @@ public class Game implements Runnable {
         broadcastScoreboard();
         if(!gameMode.gameIsRunning) {
             broadcastShowScoreBoard();
-            callVote();
+            voting.callVote();
         }
         broadcastMessage(p.getName() + " ist beigetreten.");
     }
@@ -146,6 +145,7 @@ public class Game implements Runnable {
             spectators.remove(p);
         }
         updateScoreBoardSize();
+        voting.checkForCompletion();
         broadcastMessage(p.getName() + " hat das Spiel verlassen.");
     }
 
@@ -289,8 +289,7 @@ public class Game implements Runnable {
         while(true) {
             broadcastShowScoreBoard();
             roundTimeout();
-            createGameModeSuggestions();
-            callVote();
+            voting.createGameModeSuggestions();
             synchronized (voteLock) {
                 try {
                     voteLock.wait();
@@ -312,78 +311,5 @@ public class Game implements Runnable {
 
             }
         }
-    }
-
-    private void createGameModeSuggestions(){
-        ArrayList<ExerciseCreator> tempExerciseCreators = new ArrayList<ExerciseCreator>();
-        ArrayList<GameMode> tempGameModes = new ArrayList<GameMode>();
-        suggestions = new Suggestion[4];
-
-        for (int i = 0; i < exerciseCreators.length; i++) {
-            tempExerciseCreators.add(exerciseCreators[i]);
-        }
-        for (int i = 0; i < gameModes.length; i++) {
-            tempGameModes.add(gameModes[i]);
-        }
-        for (int i = 0; i < suggestions.length-1; i++) {
-            int eIndex = (int) (Math.random() * tempExerciseCreators.size());
-            int gIndex = (int) (Math.random() * tempGameModes.size());
-            suggestions[i] = new Suggestion(tempGameModes.get(gIndex), tempExerciseCreators.get(eIndex), i);
-            tempGameModes.remove(gIndex);
-            //tempExerciseCreators.remove(eIndex);
-        }
-        revoteSuggestion.putName("Neue Vorschl&auml;ge!");
-        suggestions[suggestions.length-1] = revoteSuggestion;
-        voteCounter = 0;
-    }
-
-    public void callVote(){ //Abstimmung für nächsten gamemode
-        for(int i = 0;i<joinedPlayers.size();i++){
-            Player p = joinedPlayers.get(i);
-            p.sendSuggestions(suggestions);
-        }
-    }
-
-    public void receiveVote(int suggestionID, Player p){ //Abstimmung für nächsten gamemode
-        if(suggestionID == -1){
-            revoteSuggestion.upvote(p);
-            if(revoteSuggestion.getPlayers().size() >= joinedPlayers.size()){
-                for (int i = 0; i < suggestions.length; i++) {
-                    suggestions[i].reset();
-                }
-                createGameModeSuggestions();
-                voteCounter = 0;
-                revoteSuggestion.reset();
-            }
-        }else {
-            for (int i = 0; i < suggestions.length ; i++) {
-                if(suggestions[i].getPlayers().contains(p)){
-                    suggestions[i].downvote(p);
-                    voteCounter--;
-                }
-            }
-            voteCounter++;
-            suggestions[suggestionID].upvote(p);
-        }
-        if(voteCounter >= joinedPlayers.size()){
-            int maxIndex = 0;
-            for(int i = 1; i < suggestions.length; i++){
-                if(suggestions[i].getVotes() > suggestions[maxIndex].getVotes()){
-                    maxIndex = i;
-                }
-            }
-            Suggestion votedForSuggestion = suggestions[maxIndex];
-            gameMode = votedForSuggestion.gameMode;
-            exerciseCreator = votedForSuggestion.exerciseCreator;
-            callVote();
-            voteCounter = 0;
-            for(int i = 0; i < suggestions.length; i++){
-                suggestions[i].reset();
-            }
-            synchronized (voteLock) {
-                voteLock.notify();
-            }
-        }
-        callVote();
     }
 }
