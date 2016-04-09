@@ -21,16 +21,21 @@ public class ArenaGameMode extends GameMode{
 
     public void prepareGame() {
         super.prepareGame();
-        for(int i = 0; i<2;i++){
-            Player p = game.joinedPlayers.get(i);
-            game.activePlayers.add(p);
+        if(game.joinedPlayers.size() < 2){
+            gameIsRunning = false;
+            game.broadcastMessage("Zu wenig Spieler um Arena zu starten");
+        }else {
+            for (int i = 0; i < 2; i++) {
+                Player p = game.joinedPlayers.get(i);
+                game.activePlayers.add(p);
+            }
+            for (int i = 2; i < game.joinedPlayers.size(); i++) {
+                Player p = game.joinedPlayers.get(i);
+                game.spectators.add(p);
+            }
+            agreeOnBet();
+            game.broadcastMessage("Das Spiel startet mit einem Einsatz von " + bet + "$");
         }
-        for(int i = 2; i<game.joinedPlayers.size();i++){
-            Player p = game.joinedPlayers.get(i);
-            game.spectators.add(p);
-        }
-        agreeOnBet();
-        game.broadcastMessage("Das Spiel startet mit einem Einsatz von "+bet+"$");
     }
 
 

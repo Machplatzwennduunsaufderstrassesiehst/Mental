@@ -81,6 +81,15 @@ public class Player extends ClientConnection {
         }
     }
 
+    public void sendStatus(int status){
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_BEATBOB);
+        try {
+            j.put("status", status);
+            makePushRequest(new PushRequest(j));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
     public Score getScore() { return score; }
 
     public Shop getShop() { return shop; }
@@ -147,7 +156,7 @@ public class Player extends ClientConnection {
             if (type.equals("vote")) {
                 int suggestionID = Integer.parseInt(json.getString("suggestionID"));
                 System.out.println(game);
-                game.receiveVote(suggestionID, this);
+                game.voting.receiveVote(suggestionID, this);
             }
             if (type.equals("leave")) {
                 game.removePlayer(this);

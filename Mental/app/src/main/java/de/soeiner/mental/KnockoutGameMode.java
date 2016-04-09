@@ -29,12 +29,13 @@ public class KnockoutGameMode extends GameMode{
 
         if(game.activePlayers.size() <= 1) {
             System.out.println("knockout gewonnen");
-            gameIsRunning = false; //eig. nutzlos
+            gameIsRunning = false;
             for (int i = 0; i < game.joinedPlayers.size(); i++) { //Spieler kriegen am Ende Scorepunkte
                 Player p = game.joinedPlayers.get(i);
                 Score s = p.getScore();
                 s.updateScore(s.getScoreValue() * 20);
             }
+            game.broadcastScoreboard();
             game.broadcastPlayerWon(game.activePlayers.get(0).getName(), "Knockout");
         }else {
             int index = 0;

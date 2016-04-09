@@ -17,6 +17,7 @@ public class CmdRequest {
     public static final String SEND_SHOP_ITEM_LIST = "{type: 'shop_item_list'}";
     public static final String SEND_SUGGESTIONS = "{type: 'suggestions'}";
     public static final String SEND_SHOW_SCOREBOARD = "{type: 'showScoreboard'}";
+    public static final String SEND_BEATBOB = "{type: 'beatbob'}";
 
 
     private JSONObject cmd;
