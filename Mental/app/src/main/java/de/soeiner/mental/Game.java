@@ -43,6 +43,7 @@ public class Game implements Runnable {
     GameMode gameMode;
     ExerciseCreator exerciseCreator = null;
     Voting voting;
+    Object voteLock = new Object();
 
     public String description = "";
     public Score[] scoreboard = new Score[0];
@@ -61,8 +62,8 @@ public class Game implements Runnable {
         activePlayers = new ArrayList<Player>();
         spectators = new ArrayList<Player>();
         exerciseCreator = new SimpleMultExerciseCreator();
-        voting = new Voting(this);
         gameMode = new ClassicGameMode(this);
+        voting = new Voting(this);
         Thread t = new Thread(this);
         t.start();
     }
@@ -73,7 +74,7 @@ public class Game implements Runnable {
     }
 
     public String getName() {
-        return "Mental Gamerino";//exerciseCreator.getName() + " - " + getGameModeString();
+        return "Game";
     }
 
     public String getDescription() {
@@ -85,17 +86,6 @@ public class Game implements Runnable {
     public void destroy() {
         games.remove(this);
     }
-
-    /*
-    public void updateScoreBoardSize() {
-        scoreboard = new Score[activePlayers.size()];
-        for (int i = 0; i < activePlayers.size(); i++) {
-            Score s = activePlayers.get(i).getScore();
-            scoreboard[i] = s;
-        }
-        broadcastScoreboard();
-    }
-    */
 
     public void updateScoreBoardSize() {
         scoreboard = new Score[joinedPlayers.size()];
@@ -172,13 +162,8 @@ public class Game implements Runnable {
         }
     }
 
-    // ausgelagert timeout senden + wait()
-    /**
-     * @param timeout ist in sekunden!
-     */
+
     public void doWaitTimeout (int timeout) {
-        //der folgende Code schickt allen spielern einen integer (hier 30) um
-        // einen countdown starten zu können. Dann wird 30 Sekunden gewartet
         JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
         try {
             j.put("time", timeout);
@@ -277,14 +262,18 @@ public class Game implements Runnable {
     private void broadcastAndIncrease(){
         broadcastExercise();
         exerciseCreator.increaseDifficulty();
-        doWaitTimeout(EXERCISE_TIMEOUT); // das senden der restzeit sowie das warten selbst ist jetzt von broadcastExercise nach hier übertragen
+        //doWaitTimeout(EXERCISE_TIMEOUT); // das senden der restzeit sowie das warten selbst ist jetzt von broadcastExercise nach hier übertragen
     }
 
-    Object voteLock = new Object();
+    public void waitForPlayers(int players){
+        this.gameMode = new ClassicGameMode(this);
+        gameMode.minPlayers = players;
+        gameMode.waitForPlayers();
+    }
 
     @Override
     public void run() {
-        //gameMode.waitForPlayers();
+        waitForPlayers(1);
         start:
         while(true) {
             broadcastShowScoreBoard();
@@ -297,7 +286,6 @@ public class Game implements Runnable {
                     e.printStackTrace();
                 }
             }
-            //gameMode.waitForPlayers();
             exerciseCreator.resetDifficulty();
             gameMode.prepareGame();
 
@@ -306,6 +294,7 @@ public class Game implements Runnable {
                     continue start;
                 } else {
                     broadcastAndIncrease();
+                    doWaitTimeout(EXERCISE_TIMEOUT);
                     gameMode.loop();
                 }
 

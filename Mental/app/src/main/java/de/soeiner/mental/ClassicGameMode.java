@@ -6,8 +6,6 @@ package de.soeiner.mental;
 
 class ClassicGameMode extends GameMode{
 
-    protected boolean gameIsLive;
-
     public ClassicGameMode(Game g){
         super(g);
         minPlayers = 1;

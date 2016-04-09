@@ -6,6 +6,7 @@ package de.soeiner.mental;
 public abstract class GameMode {
     boolean gameIsRunning;
     int minPlayers = 2;
+    Game game;
     public void waitForPlayers() {
         while(game.joinedPlayers.size() < minPlayers){
             try{Thread.sleep(1000);}catch(Exception e){} //Warte auf genügend Spieler
@@ -18,10 +19,9 @@ public abstract class GameMode {
     public boolean getGameIsRunning(){ return gameIsRunning; }
     public abstract boolean playerAnswered(Player player, int answer);
     public abstract String getGameModeString();
-    Game game;
 
-    public GameMode(Game g){
-        game = g;
+    public GameMode(Game game){
+        this.game = game;
     }
 
     public void resetGameMode(){

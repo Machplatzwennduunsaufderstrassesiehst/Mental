@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Voting {
 
     Game game;
-    GameMode[] gameModes = {new ClassicGameMode(game), new KnockoutGameMode(game), new ArenaGameMode(game)};
+    GameMode[] gameModes = {new ClassicGameMode(game), new KnockoutGameMode(game), new ArenaGameMode(game), new SpeedGameMode(game)};
     ExerciseCreator[] exerciseCreators = {new MixedExerciseCreator2(), new SimpleMultExerciseCreator(), new MultExerciseCreator()};
     Suggestion[] suggestions;
     int voteCounter = 0;
