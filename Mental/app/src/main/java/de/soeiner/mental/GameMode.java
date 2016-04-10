@@ -20,8 +20,8 @@ public abstract class GameMode {
     public abstract boolean playerAnswered(Player player, int answer);
     public abstract String getGameModeString();
 
-    public GameMode(Game game){
-        this.game = game;
+    public GameMode(Game g){
+        game = g;
     }
 
     public void resetGameMode(){
