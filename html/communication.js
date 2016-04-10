@@ -261,6 +261,7 @@ function NetworkManager() {
             pc.onicecandidate = uselessFunction;
         };
     }
+    this.updateLocalIP = updateLocalIP;
     
     this.getLocalIP = function() {
         return localIP;

@@ -17,7 +17,7 @@ window.onload = function() {
     if (getCookie("gameString") != "") byID("gameStringInput").value = getCookie("gameString");
     if (getCookie("gameString") != "") byID("gameString").innerHTML = "Alter Spielstand: " + getCookie("gameString");
     
-    setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netManager.getLocalIP();},1000);
+    updateLocalIP();
     setDoOnEnter(function(){byID("connect").click();});
     setTimeout(function() {
         byID("answerFormSubmit").parentElement.style.position = "absolute";
@@ -29,6 +29,11 @@ window.onload = function() {
     countdown();
     
     byID("ip").onfocus = function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();};
+}
+
+function updateLocalIP() {
+	netManager.updateLocalIP();
+	setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netManager.getLocalIP();},1000);
 }
 
 function openWelcomeFrame() {
