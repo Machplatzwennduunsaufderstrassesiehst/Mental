@@ -53,6 +53,7 @@ public class Game implements Runnable {
 
     public int EXERCISE_TIMEOUT = 30;
     public int GAME_TIMEOUT = 2; //für pause zwischen den spielen mit siegerbildschirm
+    boolean individualExercises = false;
 
 
 
@@ -121,7 +122,7 @@ public class Game implements Runnable {
         broadcastScoreboard();
         if(!gameMode.gameIsRunning) {
             broadcastShowScoreBoard();
-            voting.callVote();
+            voting.broadcastSuggestions();
         }
         broadcastMessage(p.getName() + " ist beigetreten.");
     }
@@ -159,25 +160,6 @@ public class Game implements Runnable {
         for(int i = 0; i<joinedPlayers.size();i++){
             Player p = joinedPlayers.get(i);
             p.sendShopItemList(p.getShop().getShopItemList());
-        }
-    }
-
-
-    public void doWaitTimeout (int timeout) {
-        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
-        try {
-            j.put("time", timeout);
-            for (int i = 0; i < joinedPlayers.size(); i++) {
-                Player p = joinedPlayers.get(i);
-                p.makePushRequest(new PushRequest(j));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        synchronized (this) {
-            try {
-                this.wait(timeout * 1000);
-            } catch (InterruptedException e) {}
         }
     }
 
@@ -259,10 +241,32 @@ public class Game implements Runnable {
         }
         activePlayers = new ArrayList<Player>();
     }
-    private void broadcastAndIncrease(){
-        broadcastExercise();
-        exerciseCreator.increaseDifficulty();
-        //doWaitTimeout(EXERCISE_TIMEOUT); // das senden der restzeit sowie das warten selbst ist jetzt von broadcastExercise nach hier übertragen
+    private void newExerciseAndWait(){
+        if(individualExercises){
+
+        }else {
+            broadcastExercise();
+            exerciseCreator.increaseDifficulty();
+            doWaitTimeout(EXERCISE_TIMEOUT); // das senden der restzeit sowie das warten selbst ist jetzt von broadcastExercise nach hier übertragen
+        }
+    }
+
+    public void doWaitTimeout (int timeout) {
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
+        try {
+            j.put("time", timeout);
+            for (int i = 0; i < joinedPlayers.size(); i++) {
+                Player p = joinedPlayers.get(i);
+                p.makePushRequest(new PushRequest(j));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        synchronized (this) {
+            try {
+                this.wait(timeout * 1000);
+            } catch (InterruptedException e) {}
+        }
     }
 
     public void waitForPlayers(int players){
@@ -293,8 +297,7 @@ public class Game implements Runnable {
                 if (activePlayers.size() == 0) { //wenn keine spieler mehr da sind
                     continue start;
                 } else {
-                    broadcastAndIncrease();
-                    doWaitTimeout(EXERCISE_TIMEOUT);
+                    newExerciseAndWait();
                     gameMode.loop();
                 }
 

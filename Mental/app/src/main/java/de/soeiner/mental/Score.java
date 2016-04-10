@@ -9,9 +9,11 @@ import org.json.JSONObject;
 public class Score extends JSONObject{
 
     String compare = "";
+    Player player;
 
-    public Score(String playerName) {
-        setPlayerName(playerName);
+    public Score(Player p) {
+        player = p;
+        setPlayerName(player.getName());
         setScoreValue(0);
         setOverallScoreValue(0);
     }
@@ -35,6 +37,7 @@ public class Score extends JSONObject{
         setOverallScoreValue(overallScoreValue);
         setPlayerLevel(overallScoreValue);
         setPlayerLevelProgress(overallScoreValue);
+        player.getShop().calculateMoney();
     }
 
     public void loadScoreString(String scoreString) {

@@ -14,12 +14,13 @@ public class Player extends ClientConnection {
     private Score score;
     private Game game;
     private Shop shop;
+    ExerciseCreator exerciseCreator;
     public boolean finished;
 
     public Player (WebSocket socket) {
         super(socket);
         name = socket.getRemoteSocketAddress().getAddress().getHostAddress();
-        score = new Score(name);
+        score = new Score(this);
         shop = new Shop(this);
         connections.add(this);
     }
