@@ -3,7 +3,7 @@ package de.soeiner.mental;
 /**
  * Created by Malte on 09.04.2016.
  */
-public class SpeedGameMode extends GameMode { //Es empfiehlt sich vll. diesen Modus mit dem kleinem 1x1 zu paaren
+public class SpeedGameMode extends GameMode { //Es empfiehlt sich vll. diesen Modus mit dem kleinem 1x1 zu paaren. Jup, siehe unten
 
     private int EXERCISE_TIMEOUT_OLD;
     private int EXERCISE_TIMEOUT_NEW;
@@ -12,6 +12,12 @@ public class SpeedGameMode extends GameMode { //Es empfiehlt sich vll. diesen Mo
         super(g);
         minPlayers = 1;
         EXERCISE_TIMEOUT_NEW = 5;
+    }
+
+    @Override
+    protected void initializeCompatibleExerciseCreators() {
+        compatibleExerciseCreators.add(SimpleMultExerciseCreator.getUniqueInstance());
+        compatibleExerciseCreators.add(SquareMultExerciseCreator.getUniqueInstance());
     }
 
     public String getGameModeString() {

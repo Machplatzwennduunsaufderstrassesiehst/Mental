@@ -119,12 +119,6 @@ public class Player extends ClientConnection {
                 g.addPlayer(this);
                 game = g;
             }
-            if (type.equals("create")) {
-                // TODO spaeter sollte diese option vllt komplett geloescht werden und create direkt in der Android app erfolgen
-                if (true || socket.getRemoteSocketAddress().getAddress().isLinkLocalAddress()) { // TODO check for local ip
-
-                }
-            }
             if (type.equals("answer")) {
                 int answer = Integer.parseInt(json.getString("answer"));
                 boolean isCorrect = game.playerAnswered(this, answer);
@@ -137,7 +131,7 @@ public class Player extends ClientConnection {
                 this.name = name;
                 this.score.setPlayerName(name);
             }
-            if (type.equals("set_game_string")) { //musst du noch ändern
+            if (type.equals("set_game_string")) {
                 String g = json.getString("game_string");
                 loadGameString(g);
             }

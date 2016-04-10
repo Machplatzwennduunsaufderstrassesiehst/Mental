@@ -5,7 +5,6 @@ package de.soeiner.mental;
  */
 public abstract class ExerciseCreator {
 
-
     protected int startDifficulty = 1; //damit auf wunsch der Schwierigkeitsgrad eingestellt werden kann
     protected String exerciseString = "";
     protected String lastExerciseString = "";
@@ -73,6 +72,13 @@ public abstract class ExerciseCreator {
 
 class SimpleMultExerciseCreator extends ExerciseCreator {
 
+    private static SimpleMultExerciseCreator unique = new SimpleMultExerciseCreator();
+    private SimpleMultExerciseCreator(){}
+
+    public static ExerciseCreator getUniqueInstance() {
+        return unique;
+    }
+
     public String getName(){return "Kleines 1x1";}
 
     public String create() {
@@ -84,6 +90,13 @@ class SimpleMultExerciseCreator extends ExerciseCreator {
 }
 
 class MultExerciseCreator extends ExerciseCreator {
+
+    private static MultExerciseCreator unique = new MultExerciseCreator();
+    private MultExerciseCreator(){}
+
+    public static ExerciseCreator getUniqueInstance() {
+        return unique;
+    }
 
     public String getName(){return "Großes 1x1";}
 
@@ -97,8 +110,34 @@ class MultExerciseCreator extends ExerciseCreator {
     }
 }
 
+class SquareMultExerciseCreator extends ExerciseCreator {
+
+    private static SquareMultExerciseCreator unique = new SquareMultExerciseCreator();
+    private SquareMultExerciseCreator(){}
+
+    public static ExerciseCreator getUniqueInstance() {
+        return unique;
+    }
+
+    public String getName(){return "Quadratzahlen";}
+
+    public String create() {
+        int d = difficulty + 0;
+        int a = (int) (Math.random() * (25-d)) + d; // Zahlen zwischen d und 20
+        return createMult(a, a);
+    }
+
+}
+
 // neuer Vorschlag, das erhöhen von difficulty schlägt hier mehr ins gewicht
-class MixedExerciseCreator2 extends ExerciseCreator {
+class MixedExerciseCreator extends ExerciseCreator {
+
+    private static MixedExerciseCreator unique = new MixedExerciseCreator();
+    private MixedExerciseCreator(){}
+
+    public static ExerciseCreator getUniqueInstance() {
+        return unique;
+    }
 
     public String getName(){return "Gemischte Aufgaben";}
 
@@ -151,7 +190,7 @@ class MixedExerciseCreator2 extends ExerciseCreator {
         return exercise;
     }
 }
-
+/*
 class MixedExerciseCreator extends ExerciseCreator {
 
     public String getName(){return "Gemischte Aufgaben";}
@@ -203,3 +242,4 @@ class MixedExerciseCreator extends ExerciseCreator {
         return exercise;
     }
 }
+*/

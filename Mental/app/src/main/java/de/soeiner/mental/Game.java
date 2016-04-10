@@ -61,7 +61,7 @@ public class Game implements Runnable {
         joinedPlayers = new ArrayList<Player>();
         activePlayers = new ArrayList<Player>();
         spectators = new ArrayList<Player>();
-        exerciseCreator = new SimpleMultExerciseCreator();
+        exerciseCreator = SimpleMultExerciseCreator.getUniqueInstance();
         gameMode = new ClassicGameMode(this);
         voting = new Voting(this);
         Thread t = new Thread(this);
@@ -290,7 +290,7 @@ public class Game implements Runnable {
             gameMode.prepareGame();
 
             while (gameMode.getGameIsRunning()) {
-                if (joinedPlayers.size() == 0) { //wenn keine spieler mehr da sind
+                if (activePlayers.size() == 0) { //wenn keine spieler mehr da sind
                     continue start;
                 } else {
                     broadcastAndIncrease();
