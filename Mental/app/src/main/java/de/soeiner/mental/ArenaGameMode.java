@@ -74,6 +74,7 @@ public class ArenaGameMode extends GameMode{
                     s.updateScore(10);
                     game.broadcastMessage(player.getName() + " hat die " + zaehler + ". Runde für sich entschieden!");
                     answerLock.notify();
+                    return true; // damit die GUI dem Benutzer auch mitteilt, dass er richtig liegt
                 }
             }
         }
