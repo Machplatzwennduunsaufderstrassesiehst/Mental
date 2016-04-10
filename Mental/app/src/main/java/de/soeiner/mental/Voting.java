@@ -41,10 +41,11 @@ public class Voting {
         revoteSuggestion.putName("Neue Vorschl&auml;ge!");
         suggestions[suggestions.length-1] = revoteSuggestion;
         voteCounter = 0;
-        callVote();
+        broadcastSuggestions();
     }
 
-    public void callVote(){ //Abstimmung für nächsten gamemode
+    public void broadcastSuggestions(){ //Abstimmung für nächsten gamemode
+        System.out.println("callvote");
         for(int i = 0;i<game.joinedPlayers.size();i++){
             Player p = game.joinedPlayers.get(i);
             p.sendSuggestions(suggestions);
@@ -52,6 +53,7 @@ public class Voting {
     }
 
     public void receiveVote(int suggestionID, Player p) {
+        System.out.println("receiveVote()");
             for (int i = 0; i < suggestions.length; i++) {
                 if (suggestions[i].getPlayers().contains(p)) {
                     suggestions[i].downvote(p);
@@ -60,9 +62,13 @@ public class Voting {
             }
             voteCounter++;
             suggestions[suggestionID].upvote(p);
+
+        broadcastSuggestions(); //unnötig
+        checkForCompletion();
         }
 
     public void checkForCompletion(){
+        System.out.println("checkForCompletion");
         if(revoteSuggestion.getPlayers().size() >= game.joinedPlayers.size()) {
             for (int i = 0; i < suggestions.length; i++) {
                 suggestions[i].reset();
@@ -81,7 +87,7 @@ public class Voting {
             Suggestion votedForSuggestion = suggestions[maxIndex];
             game.gameMode = votedForSuggestion.gameMode;
             game.exerciseCreator = votedForSuggestion.exerciseCreator;
-            callVote();
+            broadcastSuggestions();
             voteCounter = 0;
             for(int i = 0; i < suggestions.length; i++){
                 suggestions[i].reset();
@@ -90,6 +96,6 @@ public class Voting {
                 game.voteLock.notify();
             }
         }
-        callVote();
+        broadcastSuggestions();
     }
 }

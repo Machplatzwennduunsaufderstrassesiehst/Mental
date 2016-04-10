@@ -122,7 +122,7 @@ public class Game implements Runnable {
         broadcastScoreboard();
         if(!gameMode.gameIsRunning) {
             broadcastShowScoreBoard();
-            voting.callVote();
+            voting.broadcastSuggestions();
         }
         broadcastMessage(p.getName() + " ist beigetreten.");
     }

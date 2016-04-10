@@ -20,7 +20,7 @@ public class SpeedGameMode extends GameMode { //Es empfiehlt sich vll. diesen Mo
 
     public void prepareGame() {
         super.prepareGame();
-        EXERCISE_TIMEOUT_OLD = game.EXERCISE_TIMEOUT;
+        EXERCISE_TIMEOUT_OLD = 30;//game.EXERCISE_TIMEOUT;
         game.EXERCISE_TIMEOUT = EXERCISE_TIMEOUT_NEW; //zeit uum bearbeiten der Aufgabe wird geändert
         for(int i = 0; i<game.joinedPlayers.size();i++){
             Player p = game.joinedPlayers.get(i);
