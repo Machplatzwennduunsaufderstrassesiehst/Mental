@@ -24,7 +24,6 @@ public class KnockoutGameMode extends GameMode{
         }
     }
 
-
     public void loop() {
 
         if (game.activePlayers.size() == 1) {
@@ -56,7 +55,7 @@ public class KnockoutGameMode extends GameMode{
         boolean allFinishedButOne = false;
         int z = 0;
         Score s = player.getScore();
-        synchronized (game) {
+        synchronized (answerLock) {
             if(!player.finished) {
                 if (game.exerciseCreator.checkAnswer(answer)) {
                     s.updateScore(1); //score gibt bei knockout die überlebten runden wieder
@@ -72,7 +71,7 @@ public class KnockoutGameMode extends GameMode{
                         allFinishedButOne = true;
                     }
                     if (allFinishedButOne) {
-                            game.notify();
+                        answerLock.notify();
                     }
                     game.broadcastScoreboard();
                     return true;

@@ -68,12 +68,12 @@ public class ArenaGameMode extends GameMode{
     public boolean playerAnswered(Player player, int answer) {
 
         if(game.activePlayers.contains(player)){
-            synchronized (game) {
+            synchronized (answerLock) {
                 if (game.exerciseCreator.checkAnswer(answer)) {
                     Score s = player.getScore();
                     s.updateScore(10);
                     game.broadcastMessage(player.getName() + " hat die " + zaehler + ". Runde für sich entschieden!");
-                    game.notify();
+                    answerLock.notify();
                 }
             }
         }
