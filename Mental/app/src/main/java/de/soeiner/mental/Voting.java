@@ -16,7 +16,7 @@ public class Voting {
 
     public Voting(Game game){
         this.game = game;
-        revoteSuggestion = new Suggestion(gameModes[0], exerciseCreators[0], suggestions.length-1);
+
     }
 
     public void createGameModeSuggestions(){
@@ -37,6 +37,7 @@ public class Voting {
             tempGameModes.remove(gIndex);
             //tempExerciseCreators.remove(eIndex);
         }
+        revoteSuggestion = new Suggestion(gameModes[0], exerciseCreators[0], suggestions.length-1);
         revoteSuggestion.putName("Neue Vorschl&auml;ge!");
         suggestions[suggestions.length-1] = revoteSuggestion;
         voteCounter = 0;
