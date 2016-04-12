@@ -32,9 +32,6 @@ public class BeatBobGameMode extends GameMode {
 
     public BeatBobGameMode(Game g){
         super(g);
-        bobSolveTime = 10/game.joinedPlayers.size() ; //angenommen ein Spieler benötigt 10 sekunden um eine Aufgabe zu lösen
-        health = 5*game.joinedPlayers.size();
-        playerHeadstart = 5;
     }
 
     public void prepareGame() {
@@ -54,6 +51,13 @@ public class BeatBobGameMode extends GameMode {
             }else{
                 game.activePlayers.get(i).exerciseCreator = new SimpleMultExerciseCreator();
             }
+        }
+        if(game.activePlayers.size() != 0) {
+            bobSolveTime = 10 / game.activePlayers.size(); //angenommen ein Spieler benötigt 10 sekunden um eine Aufgabe zu lösen
+            health = 5 * game.activePlayers.size();
+            playerHeadstart = 5;
+        }else{
+            gameIsRunning = false;
         }
     }
 
