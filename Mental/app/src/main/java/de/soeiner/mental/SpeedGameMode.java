@@ -14,8 +14,8 @@ public class SpeedGameMode extends GameMode { //Es empfiehlt sich vll. diesen Mo
 
     @Override
     protected void initializeCompatibleExerciseCreators() {
-        compatibleExerciseCreators.add(SimpleMultExerciseCreator.getUniqueInstance());
-        compatibleExerciseCreators.add(SquareMultExerciseCreator.getUniqueInstance());
+        compatibleExerciseCreators.add(new SimpleMultExerciseCreator());
+        compatibleExerciseCreators.add(new SquareMultExerciseCreator());
     }
 
     public String getGameModeString() {
@@ -46,7 +46,7 @@ public class SpeedGameMode extends GameMode { //Es empfiehlt sich vll. diesen Mo
                 if (s.getScoreValue() >= 100) {
                     gameIsRunning = false; // schleife in run() beenden
                     game.broadcastPlayerWon(player.getName(), getGameModeString());
-                    game.notify();
+                    answerLock.notify();
                 }
                 answerLock.notify();
                 game.broadcastScoreboard();

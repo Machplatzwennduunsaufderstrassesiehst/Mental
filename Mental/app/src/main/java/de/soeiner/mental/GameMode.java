@@ -26,9 +26,9 @@ public abstract class GameMode {
     }
 
     protected void initializeCompatibleExerciseCreators() {
-        compatibleExerciseCreators.add(MultExerciseCreator.getUniqueInstance());
-        compatibleExerciseCreators.add(MixedExerciseCreator.getUniqueInstance());
-        compatibleExerciseCreators.add(SimpleMultExerciseCreator.getUniqueInstance());
+        compatibleExerciseCreators.add(new MultExerciseCreator());
+        compatibleExerciseCreators.add(new MixedExerciseCreator());
+        compatibleExerciseCreators.add(new SimpleMultExerciseCreator());
     }
 
     public void waitForPlayers() {
@@ -75,5 +75,9 @@ public abstract class GameMode {
                 answerLock.wait(timeout * 1000);
             } catch (InterruptedException e) {}
         }
+    }
+
+    public void newExercise(){
+
     }
 }

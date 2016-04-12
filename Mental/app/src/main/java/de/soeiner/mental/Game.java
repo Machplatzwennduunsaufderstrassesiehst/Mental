@@ -61,7 +61,7 @@ public class Game implements Runnable {
         joinedPlayers = new ArrayList<Player>();
         activePlayers = new ArrayList<Player>();
         spectators = new ArrayList<Player>();
-        exerciseCreator = SimpleMultExerciseCreator.getUniqueInstance();
+        exerciseCreator = new SimpleMultExerciseCreator();
         gameMode = new ClassicGameMode(this);
         voting = new Voting(this);
         Thread t = new Thread(this);
@@ -272,6 +272,8 @@ public class Game implements Runnable {
                 }
             }
             exerciseCreator.resetDifficulty();
+
+
             gameMode.prepareGame();
 
             while (gameMode.getGameIsRunning()) {

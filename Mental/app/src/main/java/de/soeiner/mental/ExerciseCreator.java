@@ -72,13 +72,6 @@ public abstract class ExerciseCreator {
 
 class SimpleMultExerciseCreator extends ExerciseCreator {
 
-    private static SimpleMultExerciseCreator unique = new SimpleMultExerciseCreator();
-    private SimpleMultExerciseCreator(){}
-
-    public static ExerciseCreator getUniqueInstance() {
-        return unique;
-    }
-
     public String getName(){return "Kleines 1x1";}
 
     public String create() {
@@ -90,13 +83,6 @@ class SimpleMultExerciseCreator extends ExerciseCreator {
 }
 
 class MultExerciseCreator extends ExerciseCreator {
-
-    private static MultExerciseCreator unique = new MultExerciseCreator();
-    private MultExerciseCreator(){}
-
-    public static ExerciseCreator getUniqueInstance() {
-        return unique;
-    }
 
     public String getName(){return "Großes 1x1";}
 
@@ -112,13 +98,6 @@ class MultExerciseCreator extends ExerciseCreator {
 
 class SquareMultExerciseCreator extends ExerciseCreator {
 
-    private static SquareMultExerciseCreator unique = new SquareMultExerciseCreator();
-    private SquareMultExerciseCreator(){}
-
-    public static ExerciseCreator getUniqueInstance() {
-        return unique;
-    }
-
     public String getName(){return "Quadratzahlen";}
 
     public String create() {
@@ -131,13 +110,6 @@ class SquareMultExerciseCreator extends ExerciseCreator {
 
 // neuer Vorschlag, das erhöhen von difficulty schlägt hier mehr ins gewicht
 class MixedExerciseCreator extends ExerciseCreator {
-
-    private static MixedExerciseCreator unique = new MixedExerciseCreator();
-    private MixedExerciseCreator(){}
-
-    public static ExerciseCreator getUniqueInstance() {
-        return unique;
-    }
 
     public String getName(){return "Gemischte Aufgaben";}
 
@@ -190,56 +162,3 @@ class MixedExerciseCreator extends ExerciseCreator {
         return exercise;
     }
 }
-/*
-class MixedExerciseCreator extends ExerciseCreator {
-
-    public String getName(){return "Gemischte Aufgaben";}
-
-    public String create() {
-        String exercise = "";
-        int result = 0;
-        start: while (exercise.equals("")) {
-            int temp;
-            int a = (int) (Math.random() * 5 * (difficulty+50) / 2 + Math.random() * 20);
-            int b = (int) (Math.random() * 5 * (difficulty+50) / 2 + Math.random() * 20);
-
-            if ((difficulty+50) % 5 == 0) {
-                while (a * b < (100 + 8 * (difficulty+50)) - (75 + (difficulty+50))) {
-                    a += b;
-                    b += b;
-                }
-                while (a * b > 100 + 4 * (difficulty+50)) {
-                    if (a >= b)
-                        a = (int) (a / 2);
-                    if (b > a)
-                        b = (int) (b / 2);
-                }
-                result = a * b;
-                exercise = a + " * " + b;
-            } else {
-                if (a < (difficulty+50) || b < (difficulty+50)) {
-                    continue start;
-                }
-                if (a - b < (difficulty+50)) {
-                    continue start;
-                }
-                if ((difficulty+50) % 3 == 0) {
-                    if (a < b) {
-                        temp = a;
-                        a = b;
-                        b = temp;
-                    }
-                    result = a - b;
-                    exercise = a + " - " + b;
-                } else {
-                    result = a + b;
-                    exercise = a + " + " + b;
-                }
-            }
-        }
-        exerciseResult = result;
-        exerciseString = exercise;
-        return exercise;
-    }
-}
-*/
