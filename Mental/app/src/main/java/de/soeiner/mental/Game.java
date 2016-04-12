@@ -51,7 +51,7 @@ public class Game implements Runnable {
     public ArrayList<Player> activePlayers;
     public ArrayList<Player> spectators;
 
-    public int GAME_TIMEOUT = 2; //für pause zwischen den spielen mit siegerbildschirm
+    public int GAME_TIMEOUT = 0; //für pause zwischen den spielen mit siegerbildschirm
     boolean individualExercises = false;
 
 
@@ -201,7 +201,7 @@ public class Game implements Runnable {
         }
     }
 
-    public void broadcastPlayerWon(String playerName, String gameMode) { //wird nur aufgerufen wenn Spieler das Spiel gewonnen hat
+    public void broadcastPlayerWon(String playerName, String gameModeString) { //wird nur aufgerufen wenn Spieler das Spiel gewonnen hat
         //dem scoreboard können nun auch der zweite und dritte platz entnommen werden
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
@@ -209,7 +209,7 @@ public class Game implements Runnable {
             try {
                 j.put("playerName", playerName);
                 j.put("gameTimeout", GAME_TIMEOUT);
-                j.put("gameMode", gameMode);
+                j.put("gameMode", gameModeString);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
