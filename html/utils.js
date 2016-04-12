@@ -40,7 +40,7 @@ function Navigation() {
     }
 }
 */
-    
+ 
 function closeAll() {
     var frames = window.document.getElementsByClassName("frame");
     for (var i = 0; i < frames.length; i++) {

@@ -119,7 +119,7 @@ public class Game implements Runnable {
         joinedPlayers.add(p);
         updateScoreBoardSize();
         broadcastScoreboard();
-        if(!gameMode.gameIsRunning) {
+        if(!gameMode.getGameIsRunning()) {
             broadcastShowScoreBoard();
             voting.broadcastSuggestions();
         }
@@ -272,12 +272,11 @@ public class Game implements Runnable {
                 }
             }
             exerciseCreator.resetDifficulty();
-
-
             gameMode.prepareGame();
 
             while (gameMode.getGameIsRunning()) {
                 if (activePlayers.size() == 0) { //wenn keine spieler mehr da sind
+                    gameMode.gameIsRunning = false;
                     continue start;
                 } else {
                     newExercise();
