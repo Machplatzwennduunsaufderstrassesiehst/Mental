@@ -53,6 +53,9 @@ public abstract class GameMode {
 
     public void resetGameMode(){
         gameIsRunning = true;
+        for (Player joinedPlayer : game.joinedPlayers) {
+            joinedPlayer.getScore().resetScoreValue();
+        }
     }
 
     public ArrayList<ExerciseCreator> getCompatibleExerciseCreators() {
