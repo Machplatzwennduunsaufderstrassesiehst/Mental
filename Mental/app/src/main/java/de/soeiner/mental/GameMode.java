@@ -44,6 +44,7 @@ public abstract class GameMode {
     }
 
     public void prepareGame(){
+        game.exerciseCreator.resetDifficulty();
         resetGameMode();
     }
 

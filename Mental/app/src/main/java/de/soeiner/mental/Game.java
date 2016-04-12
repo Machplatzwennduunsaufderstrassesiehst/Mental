@@ -218,6 +218,20 @@ public class Game implements Runnable {
         broadcastShowScoreBoard();
     }
 
+    public void broadcastSendCountdown(int time){
+        for (int i = 0; i < joinedPlayers.size(); i++) {
+            Player p = joinedPlayers.get(i);
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SHOW_SCOREBOARD);
+            try{
+                j.put("time", time);
+            }catch(Exception e){}
+
+            p.makePushRequest(new PushRequest(j));
+        }
+        broadcastScoreboard();
+    }
+
+
     public void broadcastShowScoreBoard(){
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
@@ -226,6 +240,16 @@ public class Game implements Runnable {
         }
         broadcastScoreboard();
     }
+
+    public void broadcastShowExercises(){
+        for (int i = 0; i < joinedPlayers.size(); i++) {
+            Player p = joinedPlayers.get(i);
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SHOW_EXERCISES);
+            p.makePushRequest(new PushRequest(j));
+        }
+        broadcastScoreboard();
+    }
+
 
     private void roundTimeout(){
         sendGameStrings();
@@ -269,8 +293,9 @@ public class Game implements Runnable {
                     e.printStackTrace();
                 }
             }
-            exerciseCreator.resetDifficulty();
+            broadcastSendCountdown(3);
             gameMode.prepareGame();
+            broadcastShowExercises();
 
             while (gameMode.getGameIsRunning()) {
                 if (activePlayers.size() == 0) { //wenn keine spieler mehr da sind
