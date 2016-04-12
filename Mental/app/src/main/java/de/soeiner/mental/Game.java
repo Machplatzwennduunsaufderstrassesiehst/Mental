@@ -245,7 +245,6 @@ public class Game implements Runnable {
         }else {
             broadcastExercise();
             exerciseCreator.increaseDifficulty();
-            // das senden der restzeit sowie das warten selbst --> wird zur Aufgabe von GameModes !!!!!!!!!!
         }
     }
 
