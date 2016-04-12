@@ -5,24 +5,6 @@ package de.soeiner.mental;
  */
 public class BeatBobGameMode extends GameMode {
 
-    /*ich stelle mir das so vor, dass die aktuelle situation über einen int wert (status) dargestellt wird
-       0: ist unentschieden
-      -10: Spieler haben verloren
-       10: Bob hat verloren
-       Anstatt 10 wird ein Wert (health) durch die Anzahl der Spieler ermittelt
-
-       Das Spiel startet bei 0.
-       Bob löst alle x (bobSolveTime) sekunden eine Aufgabe, die Spieler müssen gegenhalten
-     */
-
-    /* mögliche Erweiterungen
-     *   für jeden Statuspunkt den die spieler holen, bekommen sie einen punkt (als Währung)
-      *  von den gewonnen punkten können sie sich dann kleine boni kaufen z.B Bob vorrübergehend ausschalten
-      *  diese boni kann man im shop upgraden (10% bonus (z.B auf cooldown oder Bob vorrübergehend ausschalten) für jeden spieler der das Upgrade gekauft hat und im Spiel ist)
-      *  ein Spieler kann zu beginn des gameModes zum Commander gewählt werden. Dieser muss dann keine Aufgaben lösen sondern managt die upgrades und boni vom erspielten Geld.
-      *  (doppelter Punkte boost für Spieler, Zeit verlangsamen, Bob ausschalten, Bob angreifen (+5 status), bot kaufen der auch in regelmäßigem Abstand aufgaben löst, bot kaufen der Punkte produziert
-      * */
-
     int bobSolveTime;
     int playerHeadstart;
     int health;
@@ -51,42 +33,16 @@ public class BeatBobGameMode extends GameMode {
             }else{
                 game.activePlayers.get(i).exerciseCreator = new SimpleMultExerciseCreator();
             }
+            game.activePlayers.get(i).exerciseCreator.setDifficulty(10);
         }
         if(game.activePlayers.size() != 0) {
-            bobSolveTime = 10 / game.activePlayers.size(); //angenommen ein Spieler benötigt 10 sekunden um eine Aufgabe zu lösen
+            bobSolveTime = 4 / game.activePlayers.size()+2; //angenommen ein Spieler benötigt 10 sekunden um eine Aufgabe zu lösen
             health = 5 * game.activePlayers.size();
             playerHeadstart = 5;
         }else{
             gameIsRunning = false;
         }
     }
-
-    /*
-
-    public void loop() {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    //synchronized (bobLock) {
-                    wait(playerHeadstart * 1000);
-                    while(gameIsRunning){
-                        wait(bobSolveTime * 1000);
-                        updateStatus(-1);
-                    }
-                    //}
-                }catch(Exception e){}
-            }
-        };
-        t = new Thread(r);
-        t.start();
-
-        while(gameIsRunning){
-
-        }
-    }
-
-    */
 
     public void loop() {
         for (int i = 0; i < game.activePlayers.size(); i++) {

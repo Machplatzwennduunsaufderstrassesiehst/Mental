@@ -68,6 +68,15 @@ public class Player extends ClientConnection {
     }
 
     public void sendSuggestions(Suggestion[] suggestions) {
+
+        for(int i = 0; i < suggestions.length;i++){ // richtiger Spieler wird gehilightet
+            if(suggestions[i].votersContain(this)){
+                suggestions[i].setHiglight(true);
+            }else{
+                suggestions[i].setHiglight(false);
+            }
+        }
+
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_SUGGESTIONS);
         try {
             JSONArray suggestionJSONArray = new JSONArray(suggestions);
