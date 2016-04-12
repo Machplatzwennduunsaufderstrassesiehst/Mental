@@ -295,6 +295,7 @@ public class Game implements Runnable {
                     gameMode.gameIsRunning = false;
                     continue start;
                 } else {
+                    gameMode.newExercise();
                     gameMode.newExerciseAndExerciseTimeout();
                     gameMode.loop();
                 }

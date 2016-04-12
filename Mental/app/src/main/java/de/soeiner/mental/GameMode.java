@@ -40,7 +40,7 @@ public abstract class GameMode {
     public abstract void loop();
 
     public void newExerciseAndExerciseTimeout() {
-        newExercise();
+     //   newExercise();
         exerciseTimeout();
     }
 
@@ -87,7 +87,7 @@ public abstract class GameMode {
     }
 
 
-    private void newExercise(){
+    public void newExercise(){
         if(game.individualExercises){
 
         }else {
