@@ -1,5 +1,8 @@
 package de.soeiner.mental;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by sven on 22.03.16.
  */
@@ -7,7 +10,7 @@ public abstract class ExerciseCreator {
 
     protected int startDifficulty = 1; //damit auf wunsch der Schwierigkeitsgrad eingestellt werden kann
     protected String exerciseString = "";
-    protected String lastExerciseString = "";
+    protected ArrayList<Object> previousAnswers = new ArrayList<Object>();
     protected int difficulty = startDifficulty;
     protected int exerciseResult = 0;
 
@@ -40,16 +43,18 @@ public abstract class ExerciseCreator {
     public abstract String getName();
 
     public String createNext() {
-        String exercise;
-        int retry = 0;
-        do {
-            exercise = create();
-            retry++;
-        } while (retry <= 3 && exercise.equals(lastExerciseString));
-        lastExerciseString = exercise;
-        return exercise;
+        while(previousAnswers.contains(exerciseResult)){
+            this.create();
+        }
+        if(previousAnswers.size() >= getFahkinBitchExerciseResetValue()) {
+            previousAnswers.clear();
+        }
+        return exerciseString;
     }
 
+    public int getFahkinBitchExerciseResetValue() {
+        return 10;
+    }
 
     protected String createSub(int a, int b) {
         exerciseString = a + " - " + b;
@@ -101,8 +106,8 @@ class SquareMultExerciseCreator extends ExerciseCreator {
     public String getName(){return "Quadratzahlen";}
 
     public String create() {
-        int d = difficulty + 0;
-        int a = (int) (Math.random() * (25-d)) + d; // Zahlen zwischen d und 20
+        int d = 1;
+        int a = (int) (Math.random() * 20 +1); // Zahlen zwischen d und 20
         return createMult(a, a);
     }
 
