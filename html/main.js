@@ -32,8 +32,8 @@ window.onload = function() {
 }
 
 function updateLocalIP() {
-	netManager.updateLocalIP();
-	setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netManager.getLocalIP();},1000);
+    netManager.updateLocalIP();
+    setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netManager.getLocalIP();},1000);
 }
 
 function openWelcomeFrame() {
@@ -57,7 +57,7 @@ function openScoreboardFrame() {
     byID("disconnect").style.display = "inline";
     byID("leaveGame").style.display = "none";
     byID("blurHack").focus();
-    byID("voting").innerHTML = '<p>Das Voting f&uuml;r die n&auml;chste Runde started in <span id="gameTimeoutCountdown"></span>!</p>';
+    byID("voting").innerHTML = '<p>Voting starten... <span id="gameTimeoutCountdown"></span></p>';
 }
 
 function openListGamesFrame() {
@@ -180,7 +180,7 @@ function disconnect() {
 
 function listSuggestions(suggestions) {
     var html = "";
-    var scoreboardWidth = byID("scoreboard").style.width;
+    var scoreboardWidth = byID("scoreboard").clientWidth;
     for (var i = 0; i < suggestions.length; i++) {
         var suggestion = suggestions[i];
         html += "<div style='width:"+scoreboardWidth+"px' class='selectListItem' onclick='vote("+suggestion.suggestionID+");'>";

@@ -91,13 +91,16 @@ public class BeatBobGameMode extends GameMode {
     public void loop() {
         for (int i = 0; i < game.activePlayers.size(); i++) {
             Player player = game.activePlayers.get(i);
+            player.sendExercise(player.exerciseCreator.createNext());
+        }
+        while(getGameIsRunning()){
             try {
-                wait(playerHeadstart * 1000);
+                Thread.sleep(playerHeadstart * 1000);
                 while(gameIsRunning){
-                    wait(bobSolveTime * 1000);
+                    Thread.sleep(bobSolveTime * 1000);
                     updateStatus(-1);
                 }
-            }catch(Exception e){}
+            }catch(Exception e){e.printStackTrace();}
         }
     }
 
