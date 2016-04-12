@@ -35,6 +35,15 @@ public class Player extends ClientConnection {
     }
 
     public void sendScoreBoard(Score[] playerScores) {
+
+        for(int i = 0; i < playerScores.length;i++){ // richtiger Spieler wird gehilightet
+            if(playerScores[i].attributeOf(this)){
+                playerScores[i].setHiglight(true);
+            }else{
+                playerScores[i].setHiglight(false);
+            }
+        }
+
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_SCOREBOARD);
         try {
             JSONArray scoreJSONArray = new JSONArray(playerScores);
@@ -125,6 +134,7 @@ public class Player extends ClientConnection {
                 boolean isCorrect = game.playerAnswered(this, answer);
                 JSONObject j = CmdRequest.makeResponseCmd(type);
                 j.put("isCorrect", isCorrect);
+                j.put("pointsGained", this.getScore().getPointsGained());
                 send(new PushRequest(j));
             }
             if (type.equals("set_name")) {
