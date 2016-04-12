@@ -221,14 +221,15 @@ public class Game implements Runnable {
     public void broadcastSendCountdown(int time){
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
-            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SHOW_SCOREBOARD);
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_COUNTDOWN);
             try{
                 j.put("time", time);
             }catch(Exception e){}
 
             p.makePushRequest(new PushRequest(j));
         }
-        broadcastScoreboard();
+        Thread t = new Thread();
+        try{ t.wait(time * 1000); }catch(Exception e){}
     }
 
 
@@ -247,7 +248,6 @@ public class Game implements Runnable {
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SHOW_EXERCISES);
             p.makePushRequest(new PushRequest(j));
         }
-        broadcastScoreboard();
     }
 
 
@@ -263,14 +263,7 @@ public class Game implements Runnable {
         }
         activePlayers = new ArrayList<Player>();
     }
-    private void newExercise(){
-        if(individualExercises){
 
-        }else {
-            broadcastExercise();
-            exerciseCreator.increaseDifficulty();
-        }
-    }
 
     public void waitForPlayers(int players){
         this.gameMode = new ClassicGameMode(this);
@@ -302,8 +295,7 @@ public class Game implements Runnable {
                     gameMode.gameIsRunning = false;
                     continue start;
                 } else {
-                    newExercise();
-                    gameMode.exerciseTimeout();
+                    gameMode.newExerciseAndExerciseTimeout();
                     gameMode.loop();
                 }
 
