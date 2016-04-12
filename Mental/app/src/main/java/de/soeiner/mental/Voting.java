@@ -15,7 +15,7 @@ public class Voting {
 
     public Voting(Game game){
         this.game = game;
-        GameMode[] m = {new ClassicGameMode(game), new KnockoutGameMode(game), new ArenaGameMode(game), new SpeedGameMode(game)};
+        GameMode[] m = {new ClassicGameMode(game), new KnockoutGameMode(game), new ArenaGameMode(game), new SpeedGameMode(game), new BeatBobGameMode(game)};
         gameModes = m;
         createGameModeSuggestions();
     }
@@ -66,6 +66,8 @@ public class Voting {
 
     public void checkForCompletion(){
         System.out.println("checkForCompletion");
+        System.out.println(voteCounter);
+        System.out.println(game.joinedPlayers.size());
         if(revoteSuggestion.getPlayers().size() >= game.joinedPlayers.size()) {
             for (int i = 0; i < suggestions.length; i++) {
                 suggestions[i].reset();

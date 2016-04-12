@@ -43,9 +43,9 @@ public abstract class ExerciseCreator {
     public abstract String getName();
 
     public String createNext() {
-        while(previousAnswers.contains(exerciseResult)){
+        do {
             this.create();
-        }
+        } while (previousAnswers.contains(exerciseResult));
         if(previousAnswers.size() >= getFahkinBitchExerciseResetValue()) {
             previousAnswers.clear();
         }
