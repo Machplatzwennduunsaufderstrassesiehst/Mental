@@ -10,8 +10,6 @@ public class BeatBobGameMode extends GameMode {
     int playerHeadstart;
     int health;
     int status = 0;
-    Thread t;
-    Object bobLock = new Object();
 
     public BeatBobGameMode(Game g){
         super(g);
@@ -19,6 +17,7 @@ public class BeatBobGameMode extends GameMode {
 
     public void prepareGame() {
         super.prepareGame();
+        status = 0;
         game.individualExercises = true;
         for(int i = 0; i<game.joinedPlayers.size();i++){
             Player p = game.joinedPlayers.get(i);
