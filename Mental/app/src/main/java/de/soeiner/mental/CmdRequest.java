@@ -9,12 +9,12 @@ public class CmdRequest {
 
     public static final String SEND_EXERCISE = "{type:'exercise'}";
     public static final String SEND_SCOREBOARD = "{type: 'scoreboard'}";
-    public static final String SEND_GAMES = "{type: '_get_games_'}";
-    public static final String SEND_PLAYER_WON = "{type: 'player_won'}";
-    public static final String SEND_TIME_LEFT = "{type: 'time_left'}";
+    public static final String SEND_GAMES = "{type: '_getGames_'}";
+    public static final String SEND_PLAYER_WON = "{type: 'playerWon'}";
+    public static final String SEND_TIME_LEFT = "{type: 'timeLeft'}";
     public static final String SEND_MESSAGE = "{type: 'message'}"; // wird nun allgemein fuer player + broadcast "nachrichten" (human readable!) genutzt, man
-    public static final String SEND_GAME_STRING = "{type: 'game_string'}";
-    public static final String SEND_SHOP_ITEM_LIST = "{type: 'shop_item_list'}";
+    public static final String SEND_GAME_STRING = "{type: 'gameString'}";
+    public static final String SEND_SHOP_ITEM_LIST = "{type: 'shopItemList'}";
     public static final String SEND_SUGGESTIONS = "{type: 'suggestions'}";
     public static final String SEND_SHOW_SCOREBOARD = "{type: 'showScoreboard'}";
     public static final String SEND_SHOW_EXERCISES = "{type: 'showExercises'}";

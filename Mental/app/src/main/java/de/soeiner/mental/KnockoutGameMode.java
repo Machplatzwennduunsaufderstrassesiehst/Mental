@@ -56,7 +56,7 @@ public class KnockoutGameMode extends GameMode{
         int z = 0;
         Score s = player.getScore();
         synchronized (answerLock) {
-            if(!player.finished) {
+            if(!player.finished && gameIsRunning) {
                 if (game.exerciseCreator.checkAnswer(answer)) {
                     s.updateScore(1); //score gibt bei knockout die überlebten runden wieder
                     game.broadcastMessage(player.getName()+" hat die Aufgabe als "+(game.getRank()+1)+". gelöst!");

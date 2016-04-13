@@ -228,8 +228,11 @@ public class Game implements Runnable {
 
             p.makePushRequest(new PushRequest(j));
         }
-        Thread t = new Thread();
-        try{ t.wait(time * 1000); }catch(Exception e){}
+        try {
+            Thread.sleep(time*1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
