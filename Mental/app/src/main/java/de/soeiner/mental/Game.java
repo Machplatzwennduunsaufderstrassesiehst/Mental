@@ -29,7 +29,7 @@ public class Game implements Runnable {
                 Game g = games.get(i);
                 if (g == null) continue;
                 JSONObject jsonGameObject = new JSONObject();
-                jsonGameObject.put("game_id", i);
+                jsonGameObject.put("gameId", i);
                 jsonGameObject.put("name", g.getName());
                 jsonGameObject.put("description", g.getDescription());
                 jsonGameObject.put("players", new JSONArray(g.getScoreboard()));
