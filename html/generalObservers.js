@@ -1,12 +1,42 @@
 
 
-var gameStringObserver = new Observer("game_string", function(msg) {
-    setCookie("gameString", msg.game_string, 1000);
-    byID("gameStringInput").value = msg.game_string;
-    byID("gameString").innerHTML = "Dein Spielstand: " + msg.game_string;
+function configureObservers() {
+    serverConnection.addObserver(playerWonObserver);
+    serverConnection.addObserver(exerciseObserver);
+    serverConnection.addObserver(timeLeftObserver);
+    serverConnection.addObserver(messageObserver);
+    serverConnection.addObserver(gameStringObserver);
+    serverConnection.addObserver(suggestionsObserver);
+    serverConnection.addObserver(showScoreboardObserver);
+    serverConnection.addObserver(countdownObserver);
+    serverConnection.addObserver(reopenMainFrameObserver);
+    serverConnection.addObserver(playerStateObserver);
+    serverConnection.addObserver(shopItemListObserver);
+    serverConnection.addObserver(beatbobObserver);
+}
+
+
+
+
+var gameStringObserver = new Observer("gameString", function(msg) {
+    setCookie("gameString", msg.gameString, 1000);
+    byID("gameStringInput").value = msg.gameString;
+    byID("gameString").innerHTML = "Dein Spielstand: " + msg.gameString;
 });
 
-var timeLeftObserver = new Observer("time_left", function(msg) {
+var timeLeftObserver = new Observer("timeLeft", function(msg) {
     countdownValue = msg.time;
+});
+
+var playerStateObserver = new Observer("scoreboard", function(msg) {
+    for (var i = 0; i < msg.scoreboard.length; i++) {
+        var s = msg.scoreboard[i];
+        if (s.highlight) { // the highlighted player is the user
+            player.scoreValue = s.scoreValue;
+            player.overallScoreValue = s.overallScoreValue;
+            player.level = s.playerLevel;
+            player.levelProgress = s.playerLevelProgress;
+        }
+    }
 });
 

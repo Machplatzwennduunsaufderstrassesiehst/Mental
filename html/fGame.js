@@ -13,7 +13,8 @@ function sendAnswer() {
     console.log("sendAnswer");
     if (alreadyAnswered) {return;}
     alreadyAnswered = true;
-    setTimeout(function(){alreadyAnswered = false;}, 1000); // hier lieber ein Timeout, da es ja sein kann, dass keine Antwort vom Server kommt (dann waere diese Methode für immer gelockt!)
+    console.log(alreadyAnswered);
+    setTimeout(function(){alreadyAnswered = false;console.log("test");}, 1000); // hier lieber ein Timeout, da es ja sein kann, dass keine Antwort vom Server kommt (dann waere diese Methode für immer gelockt!)
     var answer = byID("answer").value;
     serverConnection.communicate(makeSimpleCmd("answer", "answer", Number(answer)), function(msg) {
         if (msg.isCorrect) {
@@ -32,7 +33,7 @@ function sendAnswer() {
 
 // OBSERVERS ===========================================================
 
-var playerWonObserver = new Observer("player_won", function(msg) {
+var playerWonObserver = new Observer("playerWon", function(msg) {
     countdownValue = Number(msg.gameTimeout);
     countDownId = "gameTimeoutCountdown";
 });
@@ -42,6 +43,17 @@ var exerciseObserver = new Observer("exercise", function(msg) {
     byID("exercise").innerHTML = ex + " = ";
     byID("answer").placeholder = "?";
     byID("answer").value = "";
+});
+
+var reopenMainFrameObserver = new Observer("showExercises", function(msg) {
+    openMainFrame();
+    setTimeout(openMainFrame, 1000); // to be save...
+    serverConnection.removeObserver(updateScoreboardObserver);
+    countDownId = "exerciseCountdown";
+});
+
+var beatbobObserver = new Observer("beatbob", function(msg) {
+    
 });
 
 var messageObserver = new Observer("message", function(msg){displayMessage(msg.message);});

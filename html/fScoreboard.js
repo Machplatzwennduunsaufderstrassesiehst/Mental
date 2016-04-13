@@ -36,17 +36,8 @@ var updateScoreboardObserver = new Observer("scoreboard", function(msg) {
     scoreboardBody.innerHTML = html;
 });
 
-var reopenMainFrameObserver = new Observer("exercise", function(msg) {
-    openMainFrame();
-    setTimeout(openMainFrame, 1000); // to be save...
-    serverConnection.removeObserver(reopenMainFrameObserver);
-    serverConnection.removeObserver(updateScoreboardObserver);
-    countDownId = "exerciseCountdown";
-});
-
 var showScoreboardObserver = new Observer("showScoreboard", function(msg) {
     openScoreboardFrame();
-    serverConnection.addObserver(reopenMainFrameObserver);
     serverConnection.addObserver(updateScoreboardObserver);
 });
 
