@@ -31,8 +31,7 @@
             android:text="Spiel beitreten"
             android:id="@+id/buttonJoinGame"
             android:clickable="true"
-            android:enabled="true"
-            android:onClick="buttonOnClick" />
+            android:enabled="true" />
 
         <Button
             android:layout_width="match_parent"
