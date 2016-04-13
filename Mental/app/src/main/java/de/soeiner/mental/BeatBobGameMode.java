@@ -6,6 +6,7 @@ package de.soeiner.mental;
 public class BeatBobGameMode extends GameMode {
 
     int bobSolveTime;
+    int bobStartSolveTime;
     int playerHeadstart;
     int health;
     int status = 0;
@@ -37,6 +38,7 @@ public class BeatBobGameMode extends GameMode {
         }
         if(game.activePlayers.size() != 0) {
             bobSolveTime = 4 / game.activePlayers.size()+2; //angenommen ein Spieler benötigt 10 sekunden um eine Aufgabe zu lösen
+            bobStartSolveTime = bobSolveTime;
             health = 5 * game.activePlayers.size();
             playerHeadstart = 5;
         }else{
@@ -53,6 +55,7 @@ public class BeatBobGameMode extends GameMode {
             try {
                 Thread.sleep(playerHeadstart * 1000);
                 while(gameIsRunning){
+                    balanceBob();
                     Thread.sleep(bobSolveTime * 1000);
                     updateStatus(-1);
                 }
@@ -128,4 +131,22 @@ public class BeatBobGameMode extends GameMode {
     }
 
     public void exerciseTimeout() {}
+
+    private void balanceBob(){
+        if(status < 0) {
+            if(status >= -game.activePlayers.size()){ // Alles im Normalbereich
+                bobSolveTime = bobStartSolveTime;
+            }
+            if (Math.abs(health) - Math.abs(status) <= game.activePlayers.size()) { // player sind am Arsch
+                bobSolveTime *= 2;
+            }
+        }else if(status > 0){
+            if(status <= game.activePlayers.size()){ // Alles im Normalbereich
+                bobSolveTime = bobStartSolveTime;
+            }
+            if (health - status < game.activePlayers.size()){ // Bob ist am Arsch
+                bobSolveTime /= 2;
+            }
+        }
+    }
 }
