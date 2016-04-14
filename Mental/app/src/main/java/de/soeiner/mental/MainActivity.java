@@ -14,11 +14,15 @@ public class MainActivity extends AppCompatActivity {
 
     PingHttpServer httpServer;
     boolean serverIsActive;
+    boolean DEBUG = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         serverIsActive = false;
+        if(DEBUG){
+            debugServerStart();
+        }
     }
 
     public void buttonJoinServer(View v){
@@ -49,6 +53,22 @@ public class MainActivity extends AppCompatActivity {
             btnHost.setText("Spiel beenden");
             serverIsActive = true;
         }
+        httpServer = new PingHttpServer();
+        httpServer.start();
+        new Game();
+    }
+
+    private void debugServerStart(){
+        try {
+            WebSocketImpl.DEBUG = true;
+            int port = 6382;
+            Server s = new Server( port );
+            s.start();
+            System.out.println("Server started on port: " + s.getPort());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         httpServer = new PingHttpServer();
         httpServer.start();
         new Game();
