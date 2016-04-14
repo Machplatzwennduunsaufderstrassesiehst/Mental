@@ -96,6 +96,7 @@ var countDownId = "countdownHack";
 
 function countdown() {
     setTimeout(function(){countdown();}, 1000);
+    if (!byID(countDownId)) return;
     if (countdownValue < 0) {
         byID(countDownId).style.display = "none";
     } else {
