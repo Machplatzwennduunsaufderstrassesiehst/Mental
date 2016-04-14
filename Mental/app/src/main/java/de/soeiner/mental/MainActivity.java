@@ -13,15 +13,24 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     PingHttpServer httpServer;
-
+    boolean serverIsActive;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        serverIsActive = false;
     }
 
-    public void buttonOnClick(View v){
-        System.out.println("Button wird gedrückt.");
+    public void buttonJoinServer(View v){
+        Uri url = Uri.parse("http://www.mentalist.lima-city.de");
+        Intent intent = new Intent(Intent.ACTION_VIEW, url);
+        startActivity(intent);
+    }
+
+    public void buttonStartServer(View v){
+        Button btnJoin = (Button) findViewById(R.id.buttonJoinGame);
+        Button btnHost = (Button) findViewById(R.id.buttonHostGame);
+        btnJoin.setEnabled(true);
         try {
             WebSocketImpl.DEBUG = true;
             int port = 6382;
@@ -32,14 +41,17 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        if(serverIsActive){
+            btnHost.setText("Spiel hosten");
+            btnJoin.setEnabled(false);
+            serverIsActive = false;
+        } else {
+            btnHost.setText("Spiel beenden");
+            serverIsActive = true;
+        }
         httpServer = new PingHttpServer();
         httpServer.start();
-
         new Game();
-
-        Uri url = Uri.parse("http://www.mentalist.lima-city.de");
-        Intent intent = new Intent(Intent.ACTION_VIEW, url);
-        startActivity(intent);
     }
 
     @Override
