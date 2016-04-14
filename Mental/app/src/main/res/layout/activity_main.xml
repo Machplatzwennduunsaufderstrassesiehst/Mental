@@ -31,14 +31,16 @@
             android:text="Spiel beitreten"
             android:id="@+id/buttonJoinGame"
             android:clickable="true"
-            android:enabled="true" />
+            android:enabled="false"
+            android:onClick="buttonJoinServer" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Spiele hosten"
+            android:text="Spiel hosten"
             android:id="@+id/buttonHostGame"
             android:enabled="true"
-            android:clickable="true" />
+            android:clickable="true"
+            android:onClick="buttonStartServer" />
     </LinearLayout>
 </RelativeLayout>

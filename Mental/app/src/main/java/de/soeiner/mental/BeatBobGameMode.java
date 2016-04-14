@@ -5,11 +5,13 @@ package de.soeiner.mental;
  */
 public class BeatBobGameMode extends GameMode {
 
-    int bobSolveTime;
-    int bobStartSolveTime;
-    int playerHeadstart;
-    int health;
-    int status = 0;
+    double bobSolveTime;
+    double bobStartSolveTime;
+    double playerHeadstart;
+    double health;
+    double status = 0;
+    double exercisesSolved = 0;
+    double upTime;
 
     public BeatBobGameMode(Game g){
         super(g);
@@ -39,7 +41,7 @@ public class BeatBobGameMode extends GameMode {
             bobSolveTime = 4 / game.activePlayers.size()+2; //angenommen ein Spieler benötigt 10 sekunden um eine Aufgabe zu lösen
             bobStartSolveTime = bobSolveTime;
             health = 5 * game.activePlayers.size();
-            playerHeadstart = 5;
+            playerHeadstart = game.exerciseCreator.getExpectedSolveTime();
         }else{
             gameIsRunning = false;
         }
@@ -52,36 +54,36 @@ public class BeatBobGameMode extends GameMode {
         }
         while(getGameIsRunning()){
             try {
-                Thread.sleep(playerHeadstart * 1000);
+                Thread.sleep(calculateMilliSeconds(playerHeadstart));
+                upTime += playerHeadstart;
                 while(gameIsRunning){
-                    balanceBob();
-                    Thread.sleep(bobSolveTime * 1000);
+                    Thread.sleep(calculateMilliSeconds(bobSolveTime));
+                    upTime += bobSolveTime;
                     updateStatus(-1);
+                    balanceBob();
                 }
             }catch(Exception e){e.printStackTrace();}
         }
     }
 
     public boolean playerAnswered(Player player, int answer) {
-
-        Score s = player.getScore();
-        synchronized (answerLock) {
-            if (player.exerciseCreator.checkAnswer(answer)) {
-                s.updateScore(5);
-                player.exerciseCreator.createNext();
-                player.sendExercise(player.exerciseCreator.getExerciseString());
-                updateStatus(1);
-                game.broadcastMessage(player.getName() + " hat einen Punkt gewonnen");
-                answerLock.notify();
+            Score s = player.getScore();
+        if (player.exerciseCreator.checkAnswer(answer) || true) { //TODO muss natürlich noch korigiert werden
+            exercisesSolved++;
+            s.updateScore(5);
+            player.exerciseCreator.createNext();
+            player.sendExercise(player.exerciseCreator.getExerciseString());
+            updateStatus(1);
+            //game.broadcastMessage(player.getName() + " hat einen Punkt gewonnen");
+            answerLock.notify();
+            game.broadcastScoreboard();
+            return true;
+        } else {
+            if (s.getScoreValue() > 0) {
+                s.updateScore(-1);
                 game.broadcastScoreboard();
-                return true;
-            } else {
-                if (s.getScoreValue() > 0) {
-                    s.updateScore(-1);
-                    game.broadcastScoreboard();
-                }
-                return false;
             }
+            return false;
         }
     }
 
@@ -117,6 +119,7 @@ public class BeatBobGameMode extends GameMode {
             Player p = game.joinedPlayers.get(i);
             p.sendStatus(status);
         }
+        game.broadcastMessage(status+" ; "+bobSolveTime);
     }
 
     public int getIndex(Player p){ //gibt den index eines spielers in der aktiven liste zurück
@@ -131,21 +134,65 @@ public class BeatBobGameMode extends GameMode {
 
     public void exerciseTimeout() {}
 
+    //============================ KI
+
     private void balanceBob(){
-        if(status < 0) {
-            if(status >= -game.activePlayers.size()){ // Alles im Normalbereich
-                bobSolveTime = bobStartSolveTime;
+        bobSolveTime = calculateSolveTime();
+    }
+
+    private double calculateSolveTime(){
+        return solvetimeBaseFunction() + (calculateRating() % 0.5) * solvetimeBaseFunction();
+    }
+
+    private double solvetimeBaseFunction(){
+
+        double baseTime = 4;
+        double[] f = {0.0, -2, 2}; //x
+        double[] b = {baseTime, 2.5 * baseTime, 0.25 * baseTime, 0, 0, 0};
+        double[][] A = new double[6][6]; //gleichungen
+
+        for (int i = 0; i < 3; i++) {
+            for(double j = 5.0; j >= 0; j--){
+                A[i][5-(int)j] = Math.pow(f[i], j);
             }
-            if (Math.abs(health) - Math.abs(status) <= game.activePlayers.size()) { // player sind am Arsch
-                bobSolveTime *= 2;
-            }
-        }else if(status > 0){
-            if(status <= game.activePlayers.size()){ // Alles im Normalbereich
-                bobSolveTime = bobStartSolveTime;
-            }
-            if (health - status < game.activePlayers.size()){ // Bob ist am Arsch
-                bobSolveTime /= 2;
-            }
+            System.out.println();
         }
+
+        for (int i = 0; i < 3; i++) {
+            for(int j = 5; j > 1; j--){
+                A[3+i][5-(int)j] = (j) * Math.pow(f[i], j);
+            }
+            A[3+i][4] = 1.0;
+            A[3+i][5] = 0;
+        }
+        double[] x = GaussElimination.lsolve(A, b);
+        int value = 0;
+
+        for(int i = 0; i<x.length;i++){
+            value += x[i]*Math.pow(status, 5-i);
+        }
+        return value;
+    }
+
+    private double calculateBaseRep(){
+        return exercisesSolved / (upTime / game.exerciseCreator.getExpectedSolveTime());
+    }
+
+    private double calculateRating(){
+        double baseRep = calculateBaseRep();
+        if(baseRep > 1){
+            if(baseRep%0.5 == 0){ return 0.5;}
+            if(baseRep-1.0 > 0.5){ return 0.5;}
+            return ((baseRep-1.0)%0.5);}
+        if(baseRep == 1){ return 0;}
+        if(baseRep < 1){
+            if(baseRep%0.5 == 0){ return -0.5;}
+            if(1-baseRep > 0.5){ return -0.5;}
+            return -((1.0 - baseRep)%0.5);}
+        return 0.0;
+    }
+
+    private int calculateMilliSeconds(double SolveTime){
+        return (int) (1000*SolveTime);
     }
 }

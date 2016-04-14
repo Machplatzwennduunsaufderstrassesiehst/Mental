@@ -36,7 +36,6 @@ public class Voting {
             tempGameModes.remove(gIndex);
             //tempExerciseCreators.remove(eIndex);
         }
-
         revoteSuggestion = new Suggestion(gameModes[0], new SimpleMultExerciseCreator(), suggestions.length-1);
         revoteSuggestion.putName("Neue Vorschl&auml;ge!");
         suggestions[suggestions.length-1] = revoteSuggestion;
