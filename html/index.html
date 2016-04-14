@@ -44,9 +44,9 @@
                     <input placeholder="Benutzername (frei w&auml;hlbar)" type="text" id="name"/>
                     <input placeholder="Alter Spielstand (optional)" type="text" id="gameStringInput"/>
                     <input placeholder='Server IP ("Info" oben rechts bei Host)' type="text" id="ip"/>
-                    <a style="max-width:12em;" id="connect" href="#" onclick="netManager.scanManually(byID('ip').value);openListGamesFrame();" data-role="button">Server beitreten</a> 
+                    <a style="max-width:12em;" id="connect" href="#" onclick="netManager.scanManually(byID('ip').value);" data-role="button"><span data-icon="account-login"></span>Server beitreten</a> 
                     Oder:<br>
-                    <a style="max-width:12em;" id="scan" href="#" onclick="netManager.scan(listAvailableServers);openListServersFrame();" data-role="button">Server suchen</a> 
+                    <a style="max-width:12em;" id="scan" href="#" onclick="netManager.scan(listAvailableServers);openListServersFrame();" data-role="button"><span data-icon="rss"></span>Server suchen</a> 
                 </p>
                 <p>
                 </p>
@@ -122,25 +122,8 @@
             </div>
             <div id="shoppingFrame" class="frame">
                 
-            </div><!--
-            <div style="display: block;" class="shopItem">
-                <div style="float:right;">
-                    <div style="margin-bottom:5px;"><span class="btn" style="">Buy</span></div>
-                    <div><span class="btn">Equip</span></div>
-                </div>
-                
-                Test <br>Test</td>
             </div>
-            <script>
-                setTimeout(function(){
-                var shopItems = document.getElementsByClassName("shopItem");
-                for (var i = 0; i < shopItems.length; i++) {
-                    var s = shopItems[i];
-                    s.style.height = s.children[0].clientHeight;
-                    console.log(s.children[0].availHeight);
-                }
-                },100);
-            </script>-->
+            <p style="text-align:center;" id="warning">Problem mit JavaScript!!</p>
         </div>
     </div>
 </body>

@@ -36,6 +36,7 @@ function joinServer(connection) {
         if (serverConnections[i] != connection) connections[i].close();
     }
     serverConnection = connection;
+    configureObservers();
     openListGamesFrame();
     listAvailableGames();
 }
@@ -47,7 +48,6 @@ function joinGame(gameId) {
     serverConnection.send(makeSetCmd("name", name));
     serverConnection.send(makeSetCmd("gameString", gameString));
     serverConnection.send(makeSimpleCmd("join", "gameId", gameId));
-    configureObservers();
     setCookie("ip", serverConnection.host, 1000);
 }
 

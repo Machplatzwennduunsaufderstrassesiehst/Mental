@@ -6,6 +6,28 @@ var console = console || (new function() {
     this.log = function(s) {logContent_ += s;}
 });
 
+function createIcon(key, size) {
+    if (!size) size = 2;
+    var size_;
+    if (size < 2) {
+        size_ = "";
+    } else {
+        size_ = "-" + size + "x";
+    }
+    var html = '<img style="margin-bottom:-'+size+'px;" src="graphics/icons/open-iconic-master/png/'+key+size_+'.png" ';
+    html += 'alt="'+key+'">&nbsp;';
+    return html;
+}
+
+function iconize() {
+    var icons = document.getElementsByTagName("span");
+    for (var i = 0; i < icons.length; i++) {
+        var icon = icons[i];
+        if (!icon.hasAttribute("data-icon")) continue;
+        icon.innerHTML = createIcon(icon.getAttribute("data-icon"));
+    }
+}
+
 String.prototype.capitalize = function(){
     var self = this.split('');
     for( var i=0; i < self.length; i++ ){

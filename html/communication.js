@@ -227,8 +227,7 @@ function NetworkManager() {
         var s = new ServerConnection(ip, gameServerPort);
         s.setOnOpen(function() {
             addServer(s);
-            serverConnection = s;
-            listAvailableGames();
+            joinServer(s);
         });
     }
     

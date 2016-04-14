@@ -7,6 +7,9 @@ var player = {};
 
 // DO AFTER HTML LOADED
 window.onload = function() {
+    byID("warning").style.display = "none";
+    iconize();
+    
     openWelcomeFrame();
     
     // netManager konfigurieren
