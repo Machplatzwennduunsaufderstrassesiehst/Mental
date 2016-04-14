@@ -14,6 +14,9 @@ public abstract class ExerciseCreator {
     protected int difficulty = startDifficulty;
     protected int exerciseResult = 0;
 
+
+    public abstract double getExpectedSolveTime(); //in sekunden
+
     public String getExerciseString() { return exerciseString; }
 
     public int getDifficulty() {
@@ -79,6 +82,10 @@ class SimpleMultExerciseCreator extends ExerciseCreator {
 
     public String getName(){return "Kleines 1x1";}
 
+    public double getExpectedSolveTime(){
+        return 2;
+    }
+
     public String create() {
         int d = difficulty / 2;
         int a = (int) (Math.random() * (10-d)) + d; // Zahlen zwischen d und 10
@@ -90,6 +97,10 @@ class SimpleMultExerciseCreator extends ExerciseCreator {
 class MultExerciseCreator extends ExerciseCreator {
 
     public String getName(){return "Großes 1x1";}
+
+    public double getExpectedSolveTime(){
+        return 10;
+    }
 
     public String create() {
         int d = difficulty;
@@ -105,6 +116,10 @@ class SquareMultExerciseCreator extends ExerciseCreator {
 
     public String getName(){return "Quadratzahlen";}
 
+    public double getExpectedSolveTime(){
+        return 3;
+    }
+
     public String create() {
         int d = 1;
         int a = (int) (Math.random() * 20 +1); // Zahlen zwischen d und 20
@@ -117,6 +132,10 @@ class SquareMultExerciseCreator extends ExerciseCreator {
 class MixedExerciseCreator extends ExerciseCreator {
 
     public String getName(){return "Gemischte Aufgaben";}
+
+    public double getExpectedSolveTime(){
+        return 8;
+    }
 
     public String create() {
         String exercise = "";

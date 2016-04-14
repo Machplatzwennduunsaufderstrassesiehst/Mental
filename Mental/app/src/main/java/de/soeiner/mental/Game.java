@@ -276,6 +276,7 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("run()");
         waitForPlayers(1);
         start:
         while(true) {
