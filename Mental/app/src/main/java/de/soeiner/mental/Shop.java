@@ -64,7 +64,8 @@ public class Shop{
     }
 
     public void addMoney(int plus){
-        this.money += plus;
+        this.moneySpent -= plus;
+        calculateMoney();
     }
 
     public int getMoney(){

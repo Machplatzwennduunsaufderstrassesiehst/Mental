@@ -11,7 +11,12 @@
     <script src="cookies.js" type="text/javascript"></script>
     <script src="commandSet.js" type="text/javascript"></script>
     <script src="communication.js" type="text/javascript"></script>
-    <script src="observers.js" type="text/javascript"></script>
+    <script src="generalObservers.js" type="text/javascript"></script>
+    <script src="fCountdown.js" type="text/javascript"></script>
+    <script src="fGame.js" type="text/javascript"></script>
+    <script src="fLobby.js" type="text/javascript"></script>
+    <script src="fScoreboard.js" type="text/javascript"></script>
+    <script src="fShop.js" type="text/javascript"></script>
     <script src="main.js" type="text/javascript"></script>
 </head>
 <body onclick="byID('headerMenu').style.display = 'none';">
@@ -58,6 +63,9 @@
                     
                 </div>
             </div>
+            <div id="countdownFrame" class="frame">
+                <p style="text-align:center; font-size:4em; padding-top:5em;" id="bigCountdown"></p>
+            </div>
             <div id="mainFrame" class="frame" style="text-align:center;">
                 <div id="messageContainerDivision">
                     <p id="messageContainer"></p>
@@ -102,9 +110,7 @@
                             <th>Pos.</th>
                             <th data-priority="3">Name</th>
                             <th data-priority="1">Score</th>
-                            <th data-priority="2">Overall</th>
                             <th>Level</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody id="scoreboardBody">
@@ -114,6 +120,27 @@
                 </table>
                 <div id="voting"></div>
             </div>
+            <div id="shoppingFrame" class="frame">
+                
+            </div><!--
+            <div style="display: block;" class="shopItem">
+                <div style="float:right;">
+                    <div style="margin-bottom:5px;"><span class="btn" style="">Buy</span></div>
+                    <div><span class="btn">Equip</span></div>
+                </div>
+                
+                Test <br>Test</td>
+            </div>
+            <script>
+                setTimeout(function(){
+                var shopItems = document.getElementsByClassName("shopItem");
+                for (var i = 0; i < shopItems.length; i++) {
+                    var s = shopItems[i];
+                    s.style.height = s.children[0].clientHeight;
+                    console.log(s.children[0].availHeight);
+                }
+                },100);
+            </script>-->
         </div>
     </div>
 </body>

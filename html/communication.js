@@ -19,6 +19,8 @@ function GetRequest(jc, hl, eHl) {
     this.handler = hl; // is a function
     this.errorHandler = eHl; // is a function and optional
     this.errorCounter = 0;
+    var sent = false;
+    var failed = false;
     
     // these functions are called by receive() when data is received
     this.ok = function(msg) {
@@ -33,6 +35,19 @@ function GetRequest(jc, hl, eHl) {
     }
     this.data = function(msg) {
         this.handler(msg);
+    }
+    
+    this.notifySent = function(msg) {
+        sent = true;
+        setTimeout(function(){failed = true;}, maxWaitTimeout);
+    }
+    
+    this.hasFailed = function() {
+        return failed;
+    }
+    
+    this.isSent = function() {
+        return sent;
     }
 }
 
@@ -161,10 +176,11 @@ function ServerConnection(host, port) {
             currentRequest = commandRequestQueue.shift();
         }
         if (currentRequest != null) {
-            if (currentRequest.errorCounter < 3) {
+            if (!currentRequest.isSent()) {
                 send(currentRequest.jsonCmd);
-                currentRequest.errorCounter += 1;
-            } else {
+                currentRequest.notifySent();
+            }
+            if (currentRequest.hasFailed()) {
                 currentRequest = null;
             }
         }
@@ -173,6 +189,18 @@ function ServerConnection(host, port) {
     
     startGetRequestScheduler();
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

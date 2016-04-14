@@ -1,14 +1,16 @@
 package de.soeiner.mental;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by sven on 22.03.16.
  */
 public abstract class ExerciseCreator {
 
-
     protected int startDifficulty = 1; //damit auf wunsch der Schwierigkeitsgrad eingestellt werden kann
     protected String exerciseString = "";
-    protected String lastExerciseString = "";
+    protected ArrayList<Object> previousAnswers = new ArrayList<Object>();
     protected int difficulty = startDifficulty;
     protected int exerciseResult = 0;
 
@@ -41,16 +43,18 @@ public abstract class ExerciseCreator {
     public abstract String getName();
 
     public String createNext() {
-        String exercise;
-        int retry = 0;
         do {
-            exercise = create();
-            retry++;
-        } while (retry <= 3 && exercise.equals(lastExerciseString));
-        lastExerciseString = exercise;
-        return exercise;
+            this.create();
+        } while (previousAnswers.contains(exerciseResult));
+        if(previousAnswers.size() >= getFahkinBitchExerciseResetValue()) {
+            previousAnswers.clear();
+        }
+        return exerciseString;
     }
 
+    public int getFahkinBitchExerciseResetValue() {
+        return 10;
+    }
 
     protected String createSub(int a, int b) {
         exerciseString = a + " - " + b;
@@ -97,8 +101,20 @@ class MultExerciseCreator extends ExerciseCreator {
     }
 }
 
+class SquareMultExerciseCreator extends ExerciseCreator {
+
+    public String getName(){return "Quadratzahlen";}
+
+    public String create() {
+        int d = 1;
+        int a = (int) (Math.random() * 20 +1); // Zahlen zwischen d und 20
+        return createMult(a, a);
+    }
+
+}
+
 // neuer Vorschlag, das erhöhen von difficulty schlägt hier mehr ins gewicht
-class MixedExerciseCreator2 extends ExerciseCreator {
+class MixedExerciseCreator extends ExerciseCreator {
 
     public String getName(){return "Gemischte Aufgaben";}
 
@@ -133,58 +149,6 @@ class MixedExerciseCreator2 extends ExerciseCreator {
                     continue start;
                 }
                 if (difficulty % 3 == 0) {
-                    if (a < b) {
-                        temp = a;
-                        a = b;
-                        b = temp;
-                    }
-                    result = a - b;
-                    exercise = a + " - " + b;
-                } else {
-                    result = a + b;
-                    exercise = a + " + " + b;
-                }
-            }
-        }
-        exerciseResult = result;
-        exerciseString = exercise;
-        return exercise;
-    }
-}
-
-class MixedExerciseCreator extends ExerciseCreator {
-
-    public String getName(){return "Gemischte Aufgaben";}
-
-    public String create() {
-        String exercise = "";
-        int result = 0;
-        start: while (exercise.equals("")) {
-            int temp;
-            int a = (int) (Math.random() * 5 * (difficulty+50) / 2 + Math.random() * 20);
-            int b = (int) (Math.random() * 5 * (difficulty+50) / 2 + Math.random() * 20);
-
-            if ((difficulty+50) % 5 == 0) {
-                while (a * b < (100 + 8 * (difficulty+50)) - (75 + (difficulty+50))) {
-                    a += b;
-                    b += b;
-                }
-                while (a * b > 100 + 4 * (difficulty+50)) {
-                    if (a >= b)
-                        a = (int) (a / 2);
-                    if (b > a)
-                        b = (int) (b / 2);
-                }
-                result = a * b;
-                exercise = a + " * " + b;
-            } else {
-                if (a < (difficulty+50) || b < (difficulty+50)) {
-                    continue start;
-                }
-                if (a - b < (difficulty+50)) {
-                    continue start;
-                }
-                if ((difficulty+50) % 3 == 0) {
                     if (a < b) {
                         temp = a;
                         a = b;

@@ -24,10 +24,9 @@ public class KnockoutGameMode extends GameMode{
         }
     }
 
-
     public void loop() {
 
-        if(game.activePlayers.size() <= 1) {
+        if (game.activePlayers.size() == 1) {
             System.out.println("knockout gewonnen");
             gameIsRunning = false;
             for (int i = 0; i < game.joinedPlayers.size(); i++) { //Spieler kriegen am Ende Scorepunkte
@@ -37,7 +36,7 @@ public class KnockoutGameMode extends GameMode{
             }
             game.broadcastScoreboard();
             game.broadcastPlayerWon(game.activePlayers.get(0).getName(), "Knockout");
-        }else {
+        } else {
             int index = 0;
             for (int i = 1; i < game.activePlayers.size(); i++) {
                 if (game.activePlayers.get(i).getScore().getScoreValue() <= game.activePlayers.get(index).getScore().getScoreValue()) {
@@ -56,8 +55,8 @@ public class KnockoutGameMode extends GameMode{
         boolean allFinishedButOne = false;
         int z = 0;
         Score s = player.getScore();
-        synchronized (game) {
-            if(!player.finished) {
+        synchronized (answerLock) {
+            if(!player.finished && gameIsRunning) {
                 if (game.exerciseCreator.checkAnswer(answer)) {
                     s.updateScore(1); //score gibt bei knockout die überlebten runden wieder
                     game.broadcastMessage(player.getName()+" hat die Aufgabe als "+(game.getRank()+1)+". gelöst!");
@@ -72,7 +71,7 @@ public class KnockoutGameMode extends GameMode{
                         allFinishedButOne = true;
                     }
                     if (allFinishedButOne) {
-                            game.notify();
+                        answerLock.notify();
                     }
                     game.broadcastScoreboard();
                     return true;

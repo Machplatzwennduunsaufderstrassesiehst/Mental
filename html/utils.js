@@ -6,6 +6,17 @@ var console = console || (new function() {
     this.log = function(s) {logContent_ += s;}
 });
 
+String.prototype.capitalize = function(){
+    var self = this.split('');
+    for( var i=0; i < self.length; i++ ){
+        if( /^[a-zA-ZäöüßÄÖÜ]+$/.test(self[i]) ){
+            self[i] = self[i].toUpperCase();
+            break;
+        }
+    }
+    return self.join('');
+}
+
 function byID(id) {
     return window.document.getElementById(id);
 }
@@ -40,7 +51,7 @@ function Navigation() {
     }
 }
 */
-    
+ 
 function closeAll() {
     var frames = window.document.getElementsByClassName("frame");
     for (var i = 0; i < frames.length; i++) {

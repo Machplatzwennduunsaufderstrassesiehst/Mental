@@ -67,4 +67,21 @@ public class Suggestion extends JSONObject{
         }catch(Exception e){}
     }
 
+    public boolean votersContain(Player p){ //vergleicht Spieler Objekt mit anderem Spielerobjekt
+        if(voters.contains(p)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public void setHiglight(boolean yeORnaw){
+        if (has("highlight")) this.remove("highlight");
+        try {
+            this.put("highlight", yeORnaw);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

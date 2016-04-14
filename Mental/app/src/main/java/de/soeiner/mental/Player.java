@@ -14,12 +14,13 @@ public class Player extends ClientConnection {
     private Score score;
     private Game game;
     private Shop shop;
+    ExerciseCreator exerciseCreator;
     public boolean finished;
 
     public Player (WebSocket socket) {
         super(socket);
         name = socket.getRemoteSocketAddress().getAddress().getHostAddress();
-        score = new Score(name);
+        score = new Score(this);
         shop = new Shop(this);
         connections.add(this);
     }
@@ -34,6 +35,15 @@ public class Player extends ClientConnection {
     }
 
     public void sendScoreBoard(Score[] playerScores) {
+
+        for(int i = 0; i < playerScores.length;i++){ // richtiger Spieler wird gehilightet
+            if(playerScores[i].attributeOf(this)){
+                playerScores[i].setHiglight(true);
+            }else{
+                playerScores[i].setHiglight(false);
+            }
+        }
+
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_SCOREBOARD);
         try {
             JSONArray scoreJSONArray = new JSONArray(playerScores);
@@ -58,6 +68,15 @@ public class Player extends ClientConnection {
     }
 
     public void sendSuggestions(Suggestion[] suggestions) {
+
+        for(int i = 0; i < suggestions.length;i++){ // richtiger Spieler wird gehilightet
+            if(suggestions[i].votersContain(this)){
+                suggestions[i].setHiglight(true);
+            }else{
+                suggestions[i].setHiglight(false);
+            }
+        }
+
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_SUGGESTIONS);
         try {
             JSONArray suggestionJSONArray = new JSONArray(suggestions);
@@ -73,7 +92,7 @@ public class Player extends ClientConnection {
         String gameString = this.getGameString();
         JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_GAME_STRING);
         try {
-            j.put("game_string", gameString);
+            j.put("gameString", gameString);
             makePushRequest(new PushRequest(j));
 
         } catch (JSONException e) {
@@ -107,47 +126,42 @@ public class Player extends ClientConnection {
         try {
             String type = json.getString("type");
             // TODO switch anstatt if
-            if (type.equals("get_games")) {
+            if (type.equals("getGames")) {
                 JSONArray jsonGameArray = Game.getGamesJSONArray();
                 JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_GAMES);
                 j.put("games", jsonGameArray);
                 send(new PushRequest(j));
             }
             if (type.equals("join")) {
-                int id = Integer.parseInt(json.getString("game_id"));
+                int id = Integer.parseInt(json.getString("gameId"));
                 Game g = Game.getGames().get(id);
                 g.addPlayer(this);
                 game = g;
-            }
-            if (type.equals("create")) {
-                // TODO spaeter sollte diese option vllt komplett geloescht werden und create direkt in der Android app erfolgen
-                if (true || socket.getRemoteSocketAddress().getAddress().isLinkLocalAddress()) { // TODO check for local ip
-
-                }
             }
             if (type.equals("answer")) {
                 int answer = Integer.parseInt(json.getString("answer"));
                 boolean isCorrect = game.playerAnswered(this, answer);
                 JSONObject j = CmdRequest.makeResponseCmd(type);
                 j.put("isCorrect", isCorrect);
+                j.put("pointsGained", this.getScore().getPointsGained());
                 send(new PushRequest(j));
             }
-            if (type.equals("set_name")) {
+            if (type.equals("setName")) {
                 String name = json.getString("name");
                 this.name = name;
                 this.score.setPlayerName(name);
             }
-            if (type.equals("set_game_string")) { //musst du noch ändern
-                String g = json.getString("game_string");
+            if (type.equals("setGameString")) {
+                String g = json.getString("gameString");
                 loadGameString(g);
             }
-            if (type.equals("buy_item")) {
+            if (type.equals("buyItem")) {
                 int index = Integer.parseInt(json.getString("index"));
                 JSONObject j = CmdRequest.makeResponseCmd(type);
                 j.put("success", this.shop.buyTitle(index));
                 send(new PushRequest(j));
             }
-            if (type.equals("equip_item")) {
+            if (type.equals("equipItem")) {
                 int index = Integer.parseInt(json.getString("index"));
                 JSONObject j = CmdRequest.makeResponseCmd(type);
                 j.put("success", this.shop.equipTitle(index));

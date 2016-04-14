@@ -9,9 +9,12 @@ import org.json.JSONObject;
 public class Score extends JSONObject{
 
     String compare = "";
+    int pointsGained;
+    Player player;
 
-    public Score(String playerName) {
-        setPlayerName(playerName);
+    public Score(Player p) {
+        player = p;
+        setPlayerName(player.getName());
         setScoreValue(0);
         setOverallScoreValue(0);
     }
@@ -35,6 +38,8 @@ public class Score extends JSONObject{
         setOverallScoreValue(overallScoreValue);
         setPlayerLevel(overallScoreValue);
         setPlayerLevelProgress(overallScoreValue);
+        player.getShop().calculateMoney();
+        pointsGained = plus;
     }
 
     public void loadScoreString(String scoreString) {
@@ -48,6 +53,23 @@ public class Score extends JSONObject{
         setOverallScoreValue(overallScoreValue);
         setPlayerLevel(overallScoreValue);
         setPlayerLevelProgress(overallScoreValue);
+    }
+
+    public boolean attributeOf(Player p){ //vergleicht Spieler Objekt mit anderem Spielerobjekt
+        if(player.equals(p)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public void setHiglight(boolean yeORnaw){
+        if (has("highlight")) this.remove("highlight");
+        try {
+            this.put("highlight", yeORnaw);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getScoreValue() {
@@ -66,6 +88,19 @@ public class Score extends JSONObject{
             e.printStackTrace();
         }
         return 0;
+    }
+
+    private void setPlayerId(){ //useless
+        if (has("playerId")) this.remove("playerId");
+        try {
+            this.put("playerId", 0);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getPointsGained() {
+        return pointsGained;
     }
 
     public void setPlayerName(String playerName) {
@@ -89,6 +124,7 @@ public class Score extends JSONObject{
     public void setScoreValue(int scoreValue) { setInt("scoreValue", scoreValue); }
 
     public void setTitle(String title) {
+        if (has("title")) this.remove("title");
         try{
             put("title", title);
         }catch(Exception e){}

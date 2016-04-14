@@ -28,7 +28,7 @@ class ClassicGameMode extends GameMode{
     public boolean playerAnswered(Player player, int answer) {
             boolean allFinished = true;
             Score s = player.getScore();
-            synchronized (game) {
+            synchronized (answerLock) {
                 if(!player.finished) { // sonst kann man 2x mal punkte absahnen ;; spieler kriegt jetzt keine punkte mehr abgezogen für doppeltes antworten
                     if (game.exerciseCreator.checkAnswer(answer)) {
                         s.updateScore(game.getPoints());
@@ -36,7 +36,7 @@ class ClassicGameMode extends GameMode{
                         if (s.getScoreValue() > 100) {
                             gameIsRunning = false; // schleife in run() beenden
                             game.broadcastPlayerWon(player.getName(), getGameModeString());
-                            game.notify(); // hat einer gewonnen, muss das wait im game loop ebenfalls beendet werden.
+                            answerLock.notify(); // hat einer gewonnen, muss das wait im game loop ebenfalls beendet werden.
                         }
                         player.finished = true;
                         for (int i = 0; i < game.activePlayers.size(); i++) {
@@ -46,7 +46,7 @@ class ClassicGameMode extends GameMode{
                             }
                         }
                         if (allFinished) {
-                                game.notify();
+                            answerLock.notify();
                         }
                         game.broadcastScoreboard();
                         return true;

@@ -3,6 +3,7 @@
 
 var serverConnection = null;
 var netManager = new NetworkManager();
+var player = {};
 
 // DO AFTER HTML LOADED
 window.onload = function() {
@@ -32,8 +33,8 @@ window.onload = function() {
 }
 
 function updateLocalIP() {
-	netManager.updateLocalIP();
-	setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netManager.getLocalIP();},1000);
+    netManager.updateLocalIP();
+    setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netManager.getLocalIP();},1000);
 }
 
 function openWelcomeFrame() {
@@ -54,10 +55,10 @@ function openMainFrame() {
 function openScoreboardFrame() {
     show("scoreboardFrame");
     setDoOnEnter(uselessFunction);
-    byID("disconnect").style.display = "inline";
-    byID("leaveGame").style.display = "none";
+    byID("disconnect").style.display = "none";
+    byID("leaveGame").style.display = "inline";
     byID("blurHack").focus();
-    byID("voting").innerHTML = '<p>Das Voting f&uuml;r die n&auml;chste Runde started in <span id="gameTimeoutCountdown"></span>!</p>';
+    byID("voting").innerHTML = '<p>Voting starten... <span id="gameTimeoutCountdown"></span></p>';
 }
 
 function openListGamesFrame() {
@@ -76,95 +77,6 @@ function openListServersFrame() {
     byID("leaveGame").style.display = "none";
 }
 
-function numpad(n) {
-    byID("answer").value += String(n);
-}
-
-function numpadDel() {
-    var v = String(byID("answer").value);
-    byID("answer").value = v.substring(0, v.length-1);
-}
-
-function listAvailableServers() {
-    byID("serversList").innerHTML = "";
-    while (serverConnections.length > 0) {
-        var c = serverConnections.pop();
-        var html = "";
-        html += "<div class='selectListItem' onclick='joinServer(getConnectionByHost("+'"'+c.host+'"'+"));'>";
-        html += "Trete dem Server auf " + c.host + " bei.";
-        html += "</div>";
-        byID("serversList").innerHTML += html;
-    }
-}
-
-function listAvailableGames() {
-    if (serverConnection == null) return;
-    byID("gamesList").innerHTML = "";
-    serverConnection.communicate(makeGetCmd("get_games"), function(msg) {
-        for (var j = 0; j < msg.games.length; j++) {
-            var html = "";
-            var game = msg.games[j];
-            var players = "";
-            for (var k = 0; k < game.players.length; k++) {
-                players += game.players[k].playerName;
-                if (k < game.players.length-1) players += ", ";
-            }
-            html += "<div class='selectListItem' onclick='joinGame("+game.game_id+");'>";
-            html += "<p>"+game.name+" auf "+serverConnection.host+" - Spieler: "+players+"</p>";
-            html += "</div>";
-            byID("gamesList").innerHTML += html;
-        }
-    });
-}
-
-function joinServer(connection) {
-    for (var i = 0; i < serverConnections; i++) {
-        if (serverConnections[i] != connection) connections[i].close();
-    }
-    serverConnection = connection;
-    openListGamesFrame();
-    listAvailableGames();
-}
-
-function joinGame(gameId) {
-    var name = byID("name").value;
-    var gameString = byID("gameStringInput").value;
-    setCookie("userName", name, 1000);
-    serverConnection.send(makeSetCmd("name", name));
-    serverConnection.send(makeSetCmd("game_string", gameString));
-    serverConnection.send(makeSimpleCmd("join", "game_id", gameId));
-    serverConnection.addObserver(playerWonObserver);
-    serverConnection.addObserver(exerciseObserver);
-    serverConnection.addObserver(timeLeftObserver);
-    serverConnection.addObserver(messageObserver);
-    serverConnection.addObserver(gameStringObserver);
-    serverConnection.addObserver(suggestionsObserver);
-    serverConnection.addObserver(showScoreboardObserver);
-    setCookie("ip", serverConnection.host, 1000);
-}
-        
-var alreadyAnswered = false;
-function sendAnswer() {
-    console.log("sendAnswer");
-    if (alreadyAnswered) {return;}
-    alreadyAnswered = true;
-    setTimeout(function(){alreadyAnswered = false;}, 1000); // hier lieber ein Timeout, da es ja sein kann, dass keine Antwort vom Server kommt (dann waere diese Methode für immer gelockt!)
-    var answer = byID("answer").value;
-    serverConnection.communicate(makeSimpleCmd("answer", "answer", Number(answer)), function(msg) {
-        if (msg.isCorrect) {
-            byID("answer").style.backgroundColor = "#afa";
-            byID("answer").placeholder = "Richtig!";
-        } else {
-            byID("answer").style.backgroundColor = "#faa";
-            byID("answer").placeholder = "Falsch!";
-            byID("answer").value = ""; // bei einer falschen Antwort wird das ergebnis gelöscht, bei einer richtigen Antwort bleibt das Ergebnis stehen, bis die nächste Aufgabe kommt
-        }
-        setTimeout(function(){
-            byID("answer").style.backgroundColor = "#fff";
-        }, 1000);
-    });
-}
-
 function leaveGame() {
     serverConnection.send(makeSimpleCmd("leave", "x", ""));
     openListGamesFrame();
@@ -176,23 +88,6 @@ function disconnect() {
         serverConnections[i].close();
     }
     openWelcomeFrame();
-}
-
-function listSuggestions(suggestions) {
-    var html = "";
-    var scoreboardWidth = byID("scoreboard").style.width;
-    for (var i = 0; i < suggestions.length; i++) {
-        var suggestion = suggestions[i];
-        html += "<div style='width:"+scoreboardWidth+"px' class='selectListItem' onclick='vote("+suggestion.suggestionID+");'>";
-        html += "<span style='float:right;border-radius:0.5em;'>"+suggestion.votes+"</span>";
-        html += "<span>"+suggestion.suggestionName+"</span>";
-        html += "</div>";
-    }
-    byID("voting").innerHTML = html;
-}
-
-function vote(suggestionIndex) {
-    serverConnection.send(makeSimpleCmd("vote", "suggestionID", suggestionIndex));
 }
 
 
