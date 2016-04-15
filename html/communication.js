@@ -9,7 +9,7 @@
 // sleep time between request queue checks
 var actRate = 250;
 var maxWaitTimeout = 2500;
-var gameServerPort = 6382;
+var gameServerPort = 1297;
 var pingServerPort = 6383;
 
 
@@ -77,7 +77,7 @@ function getConnectionByHost(host) {
 function ServerConnection(host, port) {
     serverConnections.push(this);
     this.host = host;
-    var socket = new WebSocket("ws://"+host+":"+String(port));
+    var socket = new WebSocket("ws://"+host+":"+String(port)+"/");
     var observers = [];
     var onopen = function(){};
     var self = this;
