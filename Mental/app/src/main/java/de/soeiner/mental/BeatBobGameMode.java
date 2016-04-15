@@ -123,9 +123,23 @@ public class BeatBobGameMode extends GameMode {
     public void broadcastStatus(){
         for(int i = 0; i<game.joinedPlayers.size();i++){
             Player p = game.joinedPlayers.get(i);
-            p.sendStatus(status);
+            p.sendStatus(calculatePercentage());
         }
         //game.broadcastMessage(status+" ; "+bobSolveTime);
+    }
+
+    private double calculatePercentage(){
+        double percentage = 0;
+        if(status > 0){
+            return health/status;
+        }
+        if(status < 0){
+           return -health/status;
+        }
+        if(status == 0){
+            return 0;
+        }
+        return 0;
     }
 
     public int getIndex(Player p){ //gibt den index eines spielers in der aktiven liste zurück

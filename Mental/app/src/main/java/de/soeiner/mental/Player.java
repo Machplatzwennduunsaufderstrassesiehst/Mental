@@ -100,10 +100,10 @@ public class Player extends ClientConnection {
         }
     }
 
-    public void sendStatus(double status){
+    public void sendStatus(double status){ //bekommt double e [-1, 1]
         JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_BEATBOB);
         try {
-            j.put("status", (int) status);
+            j.put("status", status);
             makePushRequest(new PushRequest(j));
         } catch (JSONException e) {
             e.printStackTrace();
