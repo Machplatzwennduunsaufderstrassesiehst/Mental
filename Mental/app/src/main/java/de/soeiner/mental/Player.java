@@ -154,17 +154,29 @@ public class Player extends ClientConnection {
             if (type.equals("setGameString")) {
                 String g = json.getString("gameString");
                 loadGameString(g);
+                System.out.println("set game string");
+                Score[] s = new Score[1];
+                s[0] = getScore();
+                sendScoreBoard(s);
             }
             if (type.equals("buyItem")) {
                 int index = Integer.parseInt(json.getString("index"));
                 JSONObject j = CmdRequest.makeResponseCmd(type);
                 j.put("success", this.shop.buyTitle(index));
+                j.put("index", index);
                 send(new PushRequest(j));
             }
             if (type.equals("equipItem")) {
                 int index = Integer.parseInt(json.getString("index"));
                 JSONObject j = CmdRequest.makeResponseCmd(type);
                 j.put("success", this.shop.equipTitle(index));
+                j.put("index", index);
+                send(new PushRequest(j));
+            }
+            if (type.equals("getShopItemList")) {
+                ShopItem[] shopItemList = shop.getShopItemList();
+                JSONObject j = CmdRequest.makeResponseCmd(type);
+                j.put("shopItemList", new JSONArray(shopItemList));
                 send(new PushRequest(j));
             }
             if (type.equals("vote")) {
@@ -182,7 +194,7 @@ public class Player extends ClientConnection {
     }
 
     public String getGameString(){ //funktioniert nur für scorestrings der länge <= 9
-        return this.getScore().getScoreString()+this.getShop().getshopString()+this.getScore().getScoreString().length(); //gameString besteht aus
+        return this.getScore().getScoreString()+this.getShop().getShopString()+this.getScore().getScoreString().length(); //gameString besteht aus
         // scoreString + shopString + länge von scorestring // TODO + anzahl der ziffern der länge von scorestring (für längere Scorestrings)
     }
     public void loadGameString(String gameString){ //klappt nur wenn der scoreString <= 9 Zeichen lang ist

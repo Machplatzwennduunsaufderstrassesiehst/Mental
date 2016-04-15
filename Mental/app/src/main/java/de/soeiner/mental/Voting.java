@@ -63,37 +63,39 @@ public class Voting {
         checkForCompletion();
     }
 
-    public void checkForCompletion(){
+    public void checkForCompletion() {
         System.out.println("checkForCompletion");
         System.out.println(voteCounter);
         System.out.println(game.joinedPlayers.size());
-        if(revoteSuggestion.getPlayers().size() >= game.joinedPlayers.size()) {
-            for (int i = 0; i < suggestions.length; i++) {
-                suggestions[i].reset();
+        if (game.joinedPlayers.size() != 0) {
+            if (revoteSuggestion.getPlayers().size() >= game.joinedPlayers.size()) {
+                for (int i = 0; i < suggestions.length; i++) {
+                    suggestions[i].reset();
+                }
+                createGameModeSuggestions();
+                voteCounter = 0;
+                revoteSuggestion.reset();
             }
-            createGameModeSuggestions();
-            voteCounter = 0;
-            revoteSuggestion.reset();
-        }
-        if(voteCounter >= game.joinedPlayers.size()){
-            int maxIndex = 0;
-            for(int i = 1; i < suggestions.length; i++){
-                if(suggestions[i].getVotes() > suggestions[maxIndex].getVotes()){
-                    maxIndex = i;
+            if (voteCounter >= game.joinedPlayers.size()) {
+                int maxIndex = 0;
+                for (int i = 1; i < suggestions.length; i++) {
+                    if (suggestions[i].getVotes() > suggestions[maxIndex].getVotes()) {
+                        maxIndex = i;
+                    }
+                }
+                Suggestion votedForSuggestion = suggestions[maxIndex];
+                game.gameMode = votedForSuggestion.gameMode;
+                game.exerciseCreator = votedForSuggestion.exerciseCreator;
+                broadcastSuggestions();
+                voteCounter = 0;
+                for (int i = 0; i < suggestions.length; i++) {
+                    suggestions[i].reset();
+                }
+                synchronized (game.voteLock) {
+                    game.voteLock.notify();
                 }
             }
-            Suggestion votedForSuggestion = suggestions[maxIndex];
-            game.gameMode = votedForSuggestion.gameMode;
-            game.exerciseCreator = votedForSuggestion.exerciseCreator;
             broadcastSuggestions();
-            voteCounter = 0;
-            for(int i = 0; i < suggestions.length; i++){
-                suggestions[i].reset();
-            }
-            synchronized (game.voteLock) {
-                game.voteLock.notify();
-            }
         }
-        broadcastSuggestions();
     }
 }

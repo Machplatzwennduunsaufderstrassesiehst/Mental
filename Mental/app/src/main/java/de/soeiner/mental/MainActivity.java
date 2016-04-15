@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
         }
         httpServer = new PingHttpServer();
         httpServer.start();
-        new Game();
+        Game g = new Game();
+        g.setName("Debug Game");
     }
 
     private void debugServerStart(){
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         httpServer = new PingHttpServer();
         httpServer.start();
-        new Game();
+        Game g = new Game();
     }
 
     @Override

@@ -44,6 +44,7 @@ public class Game implements Runnable {
     ExerciseCreator exerciseCreator = null;
     Voting voting;
     Object voteLock = new Object();
+    String name;
 
     public String description = "";
     public Score[] scoreboard = new Score[0];
@@ -64,17 +65,21 @@ public class Game implements Runnable {
         exerciseCreator = new SimpleMultExerciseCreator();
         gameMode = new ClassicGameMode(this);
         voting = new Voting(this);
+        name = "Game";
         Thread t = new Thread(this);
         t.start();
     }
 
+    public void setName(String n){
+        name = n;
+    }
 
     protected String getGameModeString(){
         return gameMode.getGameModeString();
     }
 
     public String getName() {
-        return "Game";
+        return name;
     }
 
     public String getDescription() {

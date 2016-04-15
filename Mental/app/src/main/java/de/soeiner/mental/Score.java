@@ -17,6 +17,7 @@ public class Score extends JSONObject{
         setPlayerName(player.getName());
         setScoreValue(0);
         setOverallScoreValue(0);
+        setTitle("amateur");
     }
 
     // quadratische abhängigkeit als vorschlag?
@@ -38,7 +39,8 @@ public class Score extends JSONObject{
         setOverallScoreValue(overallScoreValue);
         setPlayerLevel(overallScoreValue);
         setPlayerLevelProgress(overallScoreValue);
-        player.getShop().calculateMoney();
+        player.getShop().updateMoney();
+        setMoney(player.getShop().getMoney());
         pointsGained = plus;
     }
 
@@ -149,6 +151,10 @@ public class Score extends JSONObject{
 
     private void setPlayerLevelProgress(int overallScoreValue) {
         setInt("playerLevelProgress", calculateLevelProgress(overallScoreValue));
+    }
+
+    public void setMoney(int money) {
+        setInt("money", money);
     }
 
 

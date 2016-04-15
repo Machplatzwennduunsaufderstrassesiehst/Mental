@@ -83,7 +83,7 @@ class SimpleMultExerciseCreator extends ExerciseCreator {
     public String getName(){return "Kleines 1x1";}
 
     public double getExpectedSolveTime(){
-        return 2;
+        return 3;
     }
 
     public String create() {
@@ -117,7 +117,7 @@ class SquareMultExerciseCreator extends ExerciseCreator {
     public String getName(){return "Quadratzahlen";}
 
     public double getExpectedSolveTime(){
-        return 3;
+        return 4;
     }
 
     public String create() {

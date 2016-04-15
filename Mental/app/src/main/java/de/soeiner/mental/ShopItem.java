@@ -11,21 +11,24 @@ public class ShopItem extends JSONObject {
     private int nr; //index
     private String name; //Name
     private int price; //Kosten
-    private boolean bought; //schon gekauft ?
+    public boolean bought; //schon gekauft ?
+    public boolean equipped; //ausgerüstet ?
     private int lvlUnlock; // benötigtes lvl zum Freischalten
 
 
-    public ShopItem(int n, String na, int p, boolean b, int l){
+    public ShopItem(int n, String na, int p, boolean b, boolean e, int l){
         nr = n;
         name = na;
         price = p;
         bought = b;
+        equipped = e;
         lvlUnlock = l;
         try {
             this.put("nr", nr);
             this.put("name", name);
             this.put("price", price);
             this.put("bought", bought);
+            this.put("equipped", equipped);
             this.put("lvlUnlock", lvlUnlock);
         } catch (JSONException s) {
             s.printStackTrace();
@@ -51,6 +54,15 @@ public class ShopItem extends JSONObject {
         this.bought = bought;
         try {
             this.put("bought", bought);
+        } catch (JSONException s) {
+            s.printStackTrace();
+        }
+    }
+
+    public void setEquipped(boolean equipped) {
+        this.equipped = equipped;
+        try {
+            this.put("equipped", equipped);
         } catch (JSONException s) {
             s.printStackTrace();
         }

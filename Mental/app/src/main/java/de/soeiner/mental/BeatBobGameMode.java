@@ -12,6 +12,7 @@ public class BeatBobGameMode extends GameMode {
     double status = 0;
     double exercisesSolved = 0;
     double upTime;
+    double[] function;
 
     public BeatBobGameMode(Game g){
         super(g);
@@ -38,13 +39,14 @@ public class BeatBobGameMode extends GameMode {
             game.activePlayers.get(i).exerciseCreator.setDifficulty(10);
         }
         if(game.activePlayers.size() != 0) {
-            bobSolveTime = 4 / game.activePlayers.size()+2; //angenommen ein Spieler benötigt 10 sekunden um eine Aufgabe zu lösen
+            bobSolveTime = game.exerciseCreator.getExpectedSolveTime() / game.activePlayers.size()+1; //angenommen ein Spieler benötigt 10 sekunden um eine Aufgabe zu lösen
             bobStartSolveTime = bobSolveTime;
             health = 5 * game.activePlayers.size();
             playerHeadstart = game.exerciseCreator.getExpectedSolveTime();
         }else{
             gameIsRunning = false;
         }
+        function = calculateSolveTimeFunction();
     }
 
     public void loop() {
@@ -57,10 +59,14 @@ public class BeatBobGameMode extends GameMode {
                 Thread.sleep(calculateMilliSeconds(playerHeadstart));
                 upTime += playerHeadstart;
                 while(gameIsRunning){
-                    Thread.sleep(calculateMilliSeconds(bobSolveTime));
-                    upTime += bobSolveTime;
+                    if(game.activePlayers.size() == 0){gameIsRunning = false; }
+                    for(double i = 0; i <= bobSolveTime*10;i++){
+                        bobSolveTime = balanceBob();
+                        Thread.sleep(100);
+                        upTime += 0.1;
+                    }
+                    Thread.sleep(calculateMilliSeconds(bobSolveTime -((int) bobSolveTime))); //zeit nach dem Komma
                     updateStatus(-1);
-                    balanceBob();
                 }
             }catch(Exception e){e.printStackTrace();}
         }
@@ -68,13 +74,13 @@ public class BeatBobGameMode extends GameMode {
 
     public boolean playerAnswered(Player player, int answer) {
             Score s = player.getScore();
-        if (player.exerciseCreator.checkAnswer(answer) || true) { //TODO muss natürlich noch korigiert werden
+        if (player.exerciseCreator.checkAnswer(answer)) { //TODO muss natürlich noch korigiert werden
             exercisesSolved++;
             s.updateScore(5);
             player.exerciseCreator.createNext();
             player.sendExercise(player.exerciseCreator.getExerciseString());
             updateStatus(1);
-            //game.broadcastMessage(player.getName() + " hat einen Punkt gewonnen");
+            game.broadcastMessage(player.getName() + " hat einen Punkt gewonnen");
             answerLock.notify();
             game.broadcastScoreboard();
             return true;
@@ -119,7 +125,7 @@ public class BeatBobGameMode extends GameMode {
             Player p = game.joinedPlayers.get(i);
             p.sendStatus(status);
         }
-        game.broadcastMessage(status+" ; "+bobSolveTime);
+        //game.broadcastMessage(status+" ; "+bobSolveTime);
     }
 
     public int getIndex(Player p){ //gibt den index eines spielers in der aktiven liste zurück
@@ -136,18 +142,29 @@ public class BeatBobGameMode extends GameMode {
 
     //============================ KI
 
-    private void balanceBob(){
+    private double balanceBob(){
         bobSolveTime = calculateSolveTime();
+        return calculateSolveTime();
     }
 
     private double calculateSolveTime(){
-        return solvetimeBaseFunction() + (calculateRating() % 0.5) * solvetimeBaseFunction();
+        System.out.println(solvetimeBaseFunction() +" "+ (-calculateRating() * solvetimeBaseFunction()));
+        return solvetimeBaseFunction() + -calculateRating() * solvetimeBaseFunction();
     }
 
     private double solvetimeBaseFunction(){
 
-        double baseTime = 4;
-        double[] f = {0.0, -2, 2}; //x
+        int value = 0;
+
+        for(int i = 0; i<function.length;i++){
+            value += function[i]*Math.pow(status, 5-i);
+        }
+        return value;
+    }
+
+    private double[] calculateSolveTimeFunction(){
+        double baseTime = bobStartSolveTime;
+        double[] f = {0.0, -health, health}; //x
         double[] b = {baseTime, 2.5 * baseTime, 0.25 * baseTime, 0, 0, 0};
         double[][] A = new double[6][6]; //gleichungen
 
@@ -165,13 +182,7 @@ public class BeatBobGameMode extends GameMode {
             A[3+i][4] = 1.0;
             A[3+i][5] = 0;
         }
-        double[] x = GaussElimination.lsolve(A, b);
-        int value = 0;
-
-        for(int i = 0; i<x.length;i++){
-            value += x[i]*Math.pow(status, 5-i);
-        }
-        return value;
+        return GaussElimination.lsolve(A, b);
     }
 
     private double calculateBaseRep(){

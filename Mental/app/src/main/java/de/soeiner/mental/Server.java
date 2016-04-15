@@ -24,7 +24,7 @@ public class Server extends WebSocketServer {
         String host = newConnection.getRemoteSocketAddress().getAddress().getHostAddress();
         Player player = (Player) Player.getByHost(host);
         if (player == null) {
-            new Player(newConnection);
+            player = new Player(newConnection);
         } else {
             player.newSocket(newConnection);
             System.out.println("new socket");
