@@ -30,7 +30,9 @@ var updateScoreboardObserver = new Observer("scoreboard", function(msg) {
         var e = msg.scoreboard[i];
         var name = e.playerName;
         var score = e.scoreValue;
-        html += "<tr style='"+(e.highlight ? "background-color: #e5ebff;" : "")+"'><td>"+(i+1)+"</td><td>"+name+"</td><td>"+score+"</td><td>"+e.playerLevel+"";
+        html += "<tr style='"+(e.highlight ? "background-color: #e5ebff;" : "")+"'><td>"+(i+1)+"</td> \
+                <td><p style='margin:0px 0px -4px 0px;'>"+name+"</p><span style='font-weight:bold;font-size:0.65em;float:left;'>&#060;"+e.title+"&#062;</span>\
+                </td><td style='text-align:center;'>"+score+"</td><td style='text-align:right;'>"+e.playerLevel+"";
         html += "&nbsp;&nbsp;<span class='lvlProgress'><span class='lvlProgressBar' style='width: " + e.playerLevelProgress*3/5 + "%;"+(e.highlight ? "background-color: #ff3cbf;" : "")+"'></span></span></td></tr>";
     }
     scoreboardBody.innerHTML = html;

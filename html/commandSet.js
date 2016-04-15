@@ -23,6 +23,3 @@ function makeGetCmd(type_) {
     var cmd = JSON.parse(s);
     return cmd;
 }
-
-
-

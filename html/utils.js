@@ -96,7 +96,9 @@ function show() {
     if (arguments[0].callee) arguments = arguments[0];
     closeAll();
     for (i = 0; i < arguments.length; i++) {
+        byID(arguments[i]).style.opacity = 0;
         byID(arguments[i]).style.display = "block";
+        byID(arguments[i]).style.opacity = 1;
     }
 
     if (isMobile()) hideAddressBar();

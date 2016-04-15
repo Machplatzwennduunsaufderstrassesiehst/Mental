@@ -128,12 +128,12 @@ body {
 
 #scoreboard td {
     border-top: 4px solid white;
-    padding: 2px;
+    padding: 2px 4px;
 }
 #scoreboard td + td { border-left: 2px solid white;margin:0;}
 
 #scoreboard th {
-    padding: 5px;
+    padding: 4px;
     margin: 0;
 }
 

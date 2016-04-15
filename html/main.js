@@ -82,7 +82,7 @@ function openListServersFrame() {
 
 function openShoppingFrame() {
     show("shoppingFrame");
-    listShopItems();
+    updateShopItems();
     byID("disconnect").style.display = "none";
     byID("toLobby").style.display = "inline";
     var oldonclick = byID("toLobby").onclick;

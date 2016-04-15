@@ -16,11 +16,21 @@ function buyItem(index) {
 function equipItem(index) {
     serverConnection.communicate(makeSimpleCmd("equipItem", "index", index), function(msg){
         if (msg.success) {
+            for (var i = 0; i < shop.shopItemList.length; i++) byID("equipCheck"+i).style.display = "none"; 
             byID("equipCheck"+index).style.display = "inline";
             backgroundColorAnimate("equipButton"+index, "#afa");
         } else {
             backgroundColorAnimate("equipButton"+index, "#faa");
         }
+    });
+}
+
+function updateShopItems() {
+    byID("shopItemList").innerHTML = "Loading Shop...";
+    byID("shoppingFrame").style.opacity = 0;
+    serverConnection.communicate(makeGetCmd("getShopItemList"), function(msg) {
+        shop.shopItemList = msg.shopItemList;
+        listShopItems();
     });
 }
 
@@ -31,8 +41,8 @@ function listShopItems() {
         var unlocked = item.lvlUnlock <= player.playerLevel;
         var equipPossible = item.bought && !item.equipped;
         var buyPossible = !item.bought && (player.money >= item.price);
-        var ocBuy = (true ? "buyItem("+i+");" : "");
-        var ocEquip = (equipPossible ? "equipItem("+i+");" : "");
+        var ocBuy = (true ? "buyItem("+i+");player.money-="+item.price+";" : "");
+        var ocEquip = (true ? "equipItem("+i+");" : "");
         html += '\
             <div style="display: block;height: auto;" class="shopItem"> \
                 <div style="float:right;"> \
@@ -46,20 +56,16 @@ function listShopItems() {
                 <span style="font-style:italic;">'+(unlocked ? "Buy for "+item.price+" "+createIcon("dollar",2,0) : "Unlocks at level " + item.lvlUnlock)+'</span> \
             </div>';
     }
-    byID("shopItemList").innerHTML = "<div style='padding:10px;'>"+html+"</div>";
+    byID("shopItemList").innerHTML = ""+html+"";
     setTimeout(function() {
         var shopItems = document.getElementsByClassName("shopItem");
         for (var i = 0; i < shopItems.length; i++) {
             var s = shopItems[i];
             s.style.height = s.children[0].clientHeight + "px";
         }
-    },3);
+        byID("shoppingFrame").style.opacity = 1;
+    },100);
 
 }
 
 //OBSERVERS ============================================================
-
-var shopItemListObserver = new Observer("shopItemList", function(msg) {
-    shop.shopItemList = msg.shopItemList;
-    listShopItems();
-});
