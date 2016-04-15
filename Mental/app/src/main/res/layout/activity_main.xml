@@ -13,9 +13,9 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,6 +24,35 @@
             android:text="&quot;Kopfrechnen Wettbewerb - doch Competition findet keine statt wie&apos;n Navi im Provinznest.&quot;"
             android:id="@+id/textView"
             android:layout_weight="0.06" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/editTextName"
+            android:layout_weight="0.06"
+            android:autoText="false"
+            android:hint="Benutzername (frei wählbar)" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/editTextSaves"
+            android:layout_weight="0.06"
+            android:hint="Alter Spielstand (optional)" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/editTextServerIP"
+            android:layout_weight="0.06"
+            android:singleLine="false"
+            android:hint="Server IP" />
 
         <Button
             android:layout_width="match_parent"
@@ -42,5 +71,6 @@
             android:enabled="true"
             android:clickable="true"
             android:onClick="buttonStartServer" />
+
     </LinearLayout>
 </RelativeLayout>
