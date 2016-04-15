@@ -141,7 +141,20 @@ public class Game implements Runnable {
         }
         updateScoreBoardSize();
         voting.checkForCompletion();
+        if (!arePlayersInGame()) interruptGame();
         broadcastMessage(p.getName() + " hat das Spiel verlassen.");
+    }
+
+    public boolean arePlayersInGame() {
+        return (activePlayers.size() >= 1);
+    }
+
+    public void interruptGame() {
+        System.out.println("game interrupt");
+        gameMode.gameIsRunning = false;
+        synchronized (gameMode.answerLock) {
+            gameMode.answerLock.notifyAll();
+        }
     }
 
     public void sendGameStrings() {

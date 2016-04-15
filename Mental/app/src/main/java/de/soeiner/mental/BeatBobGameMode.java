@@ -54,22 +54,20 @@ public class BeatBobGameMode extends GameMode {
             Player player = game.activePlayers.get(i);
             player.sendExercise(player.exerciseCreator.createNext());
         }
-        while(getGameIsRunning()){
-            try {
-                Thread.sleep(calculateMilliSeconds(playerHeadstart));
-                upTime += playerHeadstart;
-                while(gameIsRunning){
-                    if(game.activePlayers.size() == 0){gameIsRunning = false; }
-                    for(double i = 0; i <= bobSolveTime*10;i++){
-                        bobSolveTime = balanceBob();
-                        Thread.sleep(100);
-                        upTime += 0.1;
-                    }
-                    Thread.sleep(calculateMilliSeconds(bobSolveTime -((int) bobSolveTime))); //zeit nach dem Komma
-                    updateStatus(-1);
+        try {
+            Thread.sleep(calculateMilliSeconds(playerHeadstart));
+            upTime += playerHeadstart;
+            while(gameIsRunning){
+                if(game.activePlayers.size() == 0){gameIsRunning = false; }
+                for (double i = 0; (i <= bobSolveTime*10) && gameIsRunning;i++) {
+                    bobSolveTime = balanceBob();
+                    Thread.sleep(100);
+                    upTime += 0.1;
                 }
-            }catch(Exception e){e.printStackTrace();}
-        }
+                Thread.sleep(calculateMilliSeconds(bobSolveTime -((int) bobSolveTime))); //zeit nach dem Komma
+                updateStatus(-1);
+            }
+        }catch(Exception e){e.printStackTrace();System.out.println("BOB FAILED");}
     }
 
     public boolean playerAnswered(Player player, int answer) {
@@ -81,7 +79,9 @@ public class BeatBobGameMode extends GameMode {
             player.sendExercise(player.exerciseCreator.getExerciseString());
             updateStatus(1);
             game.broadcastMessage(player.getName() + " hat einen Punkt gewonnen");
-            answerLock.notify();
+            synchronized (answerLock) {
+                answerLock.notify();
+            }
             game.broadcastScoreboard();
             return true;
         } else {
@@ -123,18 +123,17 @@ public class BeatBobGameMode extends GameMode {
     public void broadcastStatus(){
         for(int i = 0; i<game.joinedPlayers.size();i++){
             Player p = game.joinedPlayers.get(i);
-            p.sendStatus(calculatePercentage());
+            p.sendBeatBobStatus(calculatePercentage());
         }
         //game.broadcastMessage(status+" ; "+bobSolveTime);
     }
 
     private double calculatePercentage(){
-        double percentage = 0;
         if(status > 0){
-            return health/status;
+            return status/health; // die anzeige kommt mit 300% nicht so gut an Xd
         }
         if(status < 0){
-           return -health/status;
+           return status/health;
         }
         if(status == 0){
             return 0;
@@ -162,7 +161,7 @@ public class BeatBobGameMode extends GameMode {
     }
 
     private double calculateSolveTime(){
-        System.out.println(solvetimeBaseFunction() +" "+ (-calculateRating() * solvetimeBaseFunction()));
+        //System.out.println(solvetimeBaseFunction() +" "+ (-calculateRating() * solvetimeBaseFunction()));
         return solvetimeBaseFunction() + -calculateRating() * solvetimeBaseFunction();
     }
 
