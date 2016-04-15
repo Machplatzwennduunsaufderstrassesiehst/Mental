@@ -149,6 +149,7 @@ body {
     width:0%;
     padding:0;
     background-color:#7cf;
+    box-shadow: 0px 0px 3px #888;
     display:block;
     opacity:0.5;
     border-radius:4px;
@@ -190,6 +191,7 @@ body {
     width: 70%;
     margin: 5px 15% 5px 15%;
     padding: auto;
+    display: none;
 }
 
 #beatBobBarLeft {

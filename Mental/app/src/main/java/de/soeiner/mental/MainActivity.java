@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean serverIsActive;
     private Button btnJoin;
     private Button btnHost;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
