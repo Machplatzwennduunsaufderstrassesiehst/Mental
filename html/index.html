@@ -83,6 +83,10 @@
                         <span id="exerciseCountdown"></span>
                     </span>
                 </form>
+                <div id="beatBob" class="lvlProgress">
+                    <span style="width:49.9%;display:block;float:left;"><div id="beatBobBarLeft" style="width:56%" class="lvlProgressBar"></div><div class="lvlProgressBar"></div></span>
+                    <span style="width:49.9%;display:block;float:right;"><div id="beatBobBarRight" style="width:80%" class="lvlProgressBar"></div></span>
+                </div>
                 <table id="numpadTable">
                     <tr>
                         <td><span class="btn" onmousedown="numpad(7)">7</span></td>
@@ -123,8 +127,11 @@
                 </table>
                 <div id="voting"></div>
             </div>
-            <div id="shoppingFrame" class="frame">
-                <div></div>
+            <div id="shoppingFrame" class="frame">                   
+                <div id="shopUserInfo">
+                    <h2>Willkommen, \"<span data-field-key="title"></span>\"</h2>
+                    <p>Du hast $<span data-field-key="money"></span>. Dein Level: <span data-field-key="playerLevel"></span></p>
+                </div>
                 <div style='padding:10px;'>
                     <div id="shopItemList"></div>
                     <p>

@@ -11,7 +11,7 @@ function configureObservers() {
     serverConnection.addObserver(countdownObserver);
     serverConnection.addObserver(reopenMainFrameObserver);
     serverConnection.addObserver(playerStateObserver);
-    serverConnection.addObserver(beatbobObserver);
+    serverConnection.addObserver(beatBobObserver);
 }
 
 

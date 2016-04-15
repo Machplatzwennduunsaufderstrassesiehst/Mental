@@ -36,6 +36,8 @@ function sendAnswer() {
 var playerWonObserver = new Observer("playerWon", function(msg) {
     countdownValue = Number(msg.gameTimeout);
     countDownId = "gameTimeoutCountdown";
+    byID("beatBob").style.opacity = 0;
+    setTimeout(function(){byID("beatBob").style.display = "none";}, 500);
 });
 
 var exerciseObserver = new Observer("exercise", function(msg) {
@@ -52,8 +54,15 @@ var reopenMainFrameObserver = new Observer("showExercises", function(msg) {
     countDownId = "exerciseCountdown";
 });
 
-var beatbobObserver = new Observer("beatbob", function(msg) {
-    
+var beatBobObserver = new Observer("beatbob", function(msg) {
+    byID("beatBob").style.display = "block";
+    setTimeout(function(){byID("beatBob").style.opacity = 1;}, 100);
+    if (msg.status <= 0) {
+        byID("beatBobBarLeft").style.width = (-100 * msg.status) + "%"
+    }
+    if (msg.status >= 0) {
+        byID("beatBobBarRight").style.width = (100 * msg.status) + "%";
+    }
 });
 
 var messageObserver = new Observer("message", function(msg){displayMessage(msg.message);});

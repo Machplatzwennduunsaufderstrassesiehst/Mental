@@ -6,6 +6,18 @@ var console = console || (new function() {
     this.log = function(s) {logContent_ += s;}
 });
 
+function updateDataFields(key, value) {
+    var spans = document.getElementsByTagName("span");
+    for (var i = 0; i < spans.length; i++) {
+        var field = spans[i];
+        if (field.hasAttribute("data-field-key")) {
+            if (key == field.getAttribute("data-field-key")) {
+                field.innerHTML = value;
+            }
+        }
+    }
+}
+
 function backgroundColorAnimate(id, color, fallbackTimeout) {
     if (fallbackTimeout == undefined) fallbackTimeout = 1000;
     var element = byID(id);

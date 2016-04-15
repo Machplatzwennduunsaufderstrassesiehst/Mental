@@ -154,6 +154,15 @@ body {
     height: 0.75em;
 }
 
+#shopUserInfo {
+    color: #444;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 0px 5px #999;
+    font-size: 1.15em;
+    font-weight: bold;
+}
+
 .shopItem {
     border-radius: 5px;
     background-color: #eaeaea;
@@ -174,6 +183,23 @@ body {
 }
 
 
+
+#beatBob {
+    width: 70%;
+    margin: 0% 15% 0% 15%;
+    padding: auto;
+}
+
+#beatBobBarLeft {
+    background-color: #f22;
+    border-radius: 4px 0px 0px 4px;
+    float:right;
+}
+
+#beatBobBarRight {
+    background-color: #2f2;
+    border-radius: 0px 4px 4px 0px;
+}
 
 
 
