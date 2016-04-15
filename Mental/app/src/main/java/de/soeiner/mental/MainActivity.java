@@ -19,8 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean serverIsActive;
     private Button btnJoin;
     private Button btnHost;
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,9 +31,8 @@ public class MainActivity extends AppCompatActivity {
             // so startet man nicht aus Versehen den Server 2x im DEBUG modus
             btnHost.setText("SERVER LÄUFT");
             btnHost.setEnabled(false);
-            btnJoin.setEnabled(false);
             btnHost.setClickable(false);
-            btnJoin.setClickable(false);
+            btnJoin.setEnabled(true);
             serverStart();
         }
     }
