@@ -28,7 +28,7 @@
         <div id="infobox"><p id="infoboxContent">test</p></div>
         <div id="menu" data-role="header">
             <a id="disconnect" style="display:none;" href="#" class="ui-btn-left" onclick="disconnect();">Ende</a>
-            <a id="leaveGame" style="display:none;" href="#" class="ui-btn-left" onclick="leaveGame();">Raus hier</a>
+            <a id="toLobby" style="display:none;" href="#" class="ui-btn-left" onclick="leaveGame();">Raus hier</a>
             <h1>Mental</h1>
             <a href="#" class="ui-btn-right" onclick="setTimeout(function(){byID('headerMenu').style.display = 'inline-block';},50);updateLocalIP();">Info</a>
         </div>
@@ -45,17 +45,20 @@
                     <input placeholder="Alter Spielstand (optional)" type="text" id="gameStringInput"/>
                     <input placeholder='Server IP ("Info" oben rechts bei Host)' type="text" id="ip"/>
                     <a style="max-width:12em;" id="connect" href="#" onclick="netManager.scanManually(byID('ip').value);" data-role="button"><span data-icon="account-login"></span>Server beitreten</a> 
-                    Oder:<br>
-                    <a style="max-width:12em;" id="scan" href="#" onclick="netManager.scan(listAvailableServers);openListServersFrame();" data-role="button"><span data-icon="rss"></span>Server suchen</a> 
+                    <!--Oder:<br>
+                    <a style="max-width:12em;" id="scan" href="#" onclick="netManager.scan(listAvailableServers);openListServersFrame();" data-role="button"><span data-icon="magnifying-glass"></span>Server suchen</a> -->
                 </p>
                 <p>
                 </p>
             </div>
-            <div id="listGamesFrame" class="frame">
-                <h2>Verf&uuml;gbare Spiele</h2>
+            <div id="listGamesFrame" class="frame"><!-- auch das Lobby Frame-->
+                <h2>Lobby</h2>
                 <div id="gamesList">
                     
                 </div>
+                <p>
+                    <a class="btn" data-role="button" href="#" onclick="openShoppingFrame()" style="max-width:12em;"><span data-icon="cart"></span>Zum Shop</a>
+                </p>
             </div>
             <div id="listServersFrame" class="frame">
                 <h2>Verf&uuml;gbare Server</h2>
@@ -121,7 +124,8 @@
                 <div id="voting"></div>
             </div>
             <div id="shoppingFrame" class="frame">
-                
+                <div></div>
+                <div id="shopItemList"></div>
             </div>
             <p style="text-align:center;" id="warning">Problem mit JavaScript!!</p>
         </div>

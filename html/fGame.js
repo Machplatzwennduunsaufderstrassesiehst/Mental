@@ -14,7 +14,7 @@ function sendAnswer() {
     if (alreadyAnswered) {return;}
     alreadyAnswered = true;
     console.log(alreadyAnswered);
-    setTimeout(function(){alreadyAnswered = false;console.log("test");}, 1000); // hier lieber ein Timeout, da es ja sein kann, dass keine Antwort vom Server kommt (dann waere diese Methode für immer gelockt!)
+    setTimeout(function(){alreadyAnswered = false;}, 100); // hier lieber ein Timeout, da es ja sein kann, dass keine Antwort vom Server kommt (dann waere diese Methode für immer gelockt!)
     var answer = byID("answer").value;
     serverConnection.communicate(makeSimpleCmd("answer", "answer", Number(answer)), function(msg) {
         if (msg.isCorrect) {

@@ -6,14 +6,25 @@ var console = console || (new function() {
     this.log = function(s) {logContent_ += s;}
 });
 
-function createIcon(key, size) {
-    if (!size) size = 2;
+function backgroundColorAnimate(id, color, fallbackTimeout) {
+    if (fallbackTimeout == undefined) fallbackTimeout = 1000;
+    var element = byID(id);
+    var oldColor = element.style.backgroundColor;
+    element.style.backgroundColor = color;
+    setTimeout(function(){
+        element.style.backgroundColor = oldColor;
+    }, fallbackTimeout);
+}
+
+function createIcon(key, size, offsetpx) {
+    if (size == undefined) size = 2;
     var size_;
     if (size < 2) {
         size_ = "";
     } else {
         size_ = "-" + size + "x";
     }
+    if (offsetpx != undefined) size = offsetpx;
     var html = '<img style="margin-bottom:-'+size+'px;" src="graphics/icons/open-iconic-master/png/'+key+size_+'.png" ';
     html += 'alt="'+key+'">&nbsp;';
     return html;

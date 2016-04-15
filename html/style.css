@@ -47,12 +47,12 @@ body {
     min-width: 3em;
     text-align: center;
     color: black;
-    text-decoration: none;
     padding: 3px;
     font-size: 0.8em;
     border-radius: 0.5em;
     display:inline-block;
 }
+
 .btn + .btn {
     margin: 0px 3px 3px 0px;
 }
@@ -62,23 +62,30 @@ body {
     background-color: #abf;
 }
 
+.disabled, .disabled:hover {
+    background-color: #ddd;
+    opacity: 0.5;
+    cursor: default;
+}
+
 .selectListItem {
-    border-radius: 3px;
-    background-color: #ededed;
+    border-radius: 4px;
+    background-color: #eaeaea;
     color: black;
     margin: auto;
-    padding: 2px;
+    padding: 4px;
     margin-top: 5px;
     cursor: pointer;
     text-align: left;
 }
 
-.selectListItem span {
-    text-align: left;
+.selectListItem:hover {
+    background-color: #e9e9e9;
+    box-shadow: 0px 0px 0.2em #666;
 }
 
-.selectListItem:hover {
-    background-color: #aaa;
+.selectListItem span {
+    text-align: left;
 }
 
 #numpadTable .btn {
@@ -148,10 +155,12 @@ body {
 }
 
 .shopItem {
-    border-radius: 3px;
-    background-color: #eee;
-    box-shadow: 0px 0px 5px #ddd;
-    padding: 5px;
+    border-radius: 5px;
+    background-color: #eaeaea;
+    box-shadow: 0px 0px 5px #abf;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #abf;
 }
 
 .shopItem td {
@@ -161,6 +170,7 @@ body {
 
 .shopItem .btn {
     padding: 0.5em;
+    width: 5em;
 }
 
 

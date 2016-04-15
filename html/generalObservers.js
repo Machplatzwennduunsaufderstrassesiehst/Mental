@@ -32,10 +32,8 @@ var playerStateObserver = new Observer("scoreboard", function(msg) {
     for (var i = 0; i < msg.scoreboard.length; i++) {
         var s = msg.scoreboard[i];
         if (s.highlight) { // the highlighted player is the user
-            player.scoreValue = s.scoreValue;
-            player.overallScoreValue = s.overallScoreValue;
-            player.level = s.playerLevel;
-            player.levelProgress = s.playerLevelProgress;
+            player = s;
+            break;
         }
     }
 });

@@ -225,6 +225,7 @@ function NetworkManager() {
     
     this.scanManually = function(ip) {
         var s = new ServerConnection(ip, gameServerPort);
+        setCookie("ip", ip, 1000);
         s.setOnOpen(function() {
             addServer(s);
             joinServer(s);

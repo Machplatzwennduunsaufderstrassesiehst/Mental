@@ -44,7 +44,7 @@ function openWelcomeFrame() {
     show("welcome");
     setDoOnEnter(function(){netManager.scanManually(byID('ip').value);openListGamesFrame();});
     byID("disconnect").style.display = "none";
-    byID("leaveGame").style.display = "none";
+    byID("toLobby").style.display = "none";
 }
 
 function openMainFrame() {
@@ -52,14 +52,14 @@ function openMainFrame() {
     byID("answer").focus();
     setDoOnEnter(function(){sendAnswer();});
     byID("disconnect").style.display = "none";
-    byID("leaveGame").style.display = "inline";
+    byID("toLobby").style.display = "inline";
 }
 
 function openScoreboardFrame() {
     show("scoreboardFrame");
     setDoOnEnter(uselessFunction);
     byID("disconnect").style.display = "none";
-    byID("leaveGame").style.display = "inline";
+    byID("toLobby").style.display = "inline";
     byID("blurHack").focus();
     byID("voting").innerHTML = '<p>Voting starten... <span id="gameTimeoutCountdown"></span></p>';
 }
@@ -69,7 +69,7 @@ function openListGamesFrame() {
     byID("gamesList").innerHTML = "laden...";
     setDoOnEnter(uselessFunction);
     byID("disconnect").style.display = "inline";
-    byID("leaveGame").style.display = "none";
+    byID("toLobby").style.display = "none";
 }
 
 function openListServersFrame() {
@@ -77,7 +77,16 @@ function openListServersFrame() {
     byID("serverList").innerHTML = "laden...";
     setDoOnEnter(uselessFunction);
     byID("disconnect").style.display = "inline";
-    byID("leaveGame").style.display = "none";
+    byID("toLobby").style.display = "none";
+}
+
+function openShoppingFrame() {
+    show("shoppingFrame");
+    listShopItems();
+    byID("disconnect").style.display = "none";
+    byID("toLobby").style.display = "inline";
+    var oldonclick = byID("toLobby").onclick;
+    byID("toLobby").onlick = function(){byID("toLobby").onlick = oldonclick;openListGamesFrame();};
 }
 
 function leaveGame() {

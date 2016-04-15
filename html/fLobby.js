@@ -4,8 +4,8 @@ function listAvailableServers() {
     while (serverConnections.length > 0) {
         var c = serverConnections.pop();
         var html = "";
-        html += "<div class='selectListItem' onclick='joinServer(getConnectionByHost("+'"'+c.host+'"'+"));'>";
-        html += "Trete dem Server auf " + c.host + " bei.";
+        html += "<div class='selectListItem btn' onclick='joinServer(getConnectionByHost("+'"'+c.host+'"'+"));'>";
+        html += "Trete Server auf " + c.host + " bei.";
         html += "</div>";
         byID("serversList").innerHTML += html;
     }
@@ -23,8 +23,8 @@ function listAvailableGames() {
                 players += game.players[k].playerName;
                 if (k < game.players.length-1) players += ", ";
             }
-            html += "<div class='selectListItem' onclick='joinGame("+game.gameId+");'>";
-            html += "<p>"+game.name+" auf "+serverConnection.host+" - Spieler: "+players+"</p>";
+            html += "<div style='padding-left: 5px;padding-right: 5px;' class='selectListItem' onclick='joinGame("+game.gameId+");'>";
+            html += "<p>"+createIcon("account-login")+"Joinen: "+game.name+" auf "+serverConnection.host+" - Spieler: "+players+"</p>";
             html += "</div>";
             byID("gamesList").innerHTML += html;
         }
@@ -39,16 +39,15 @@ function joinServer(connection) {
     configureObservers();
     openListGamesFrame();
     listAvailableGames();
-}
-
-function joinGame(gameId) {
     var name = byID("name").value;
     var gameString = byID("gameStringInput").value;
     setCookie("userName", name, 1000);
     serverConnection.send(makeSetCmd("name", name));
     serverConnection.send(makeSetCmd("gameString", gameString));
+}
+
+function joinGame(gameId) {
     serverConnection.send(makeSimpleCmd("join", "gameId", gameId));
-    setCookie("ip", serverConnection.host, 1000);
 }
 
 // OBSERVERS ===========================================================
