@@ -23,6 +23,7 @@ function listAvailableGames() {
                 players += game.players[k].playerName;
                 if (k < game.players.length-1) players += ", ";
             }
+            if (players == "") players = "keine";
             html += "<div style='padding-left: 5px;padding-right: 5px;' class='selectListItem' onclick='joinGame("+game.gameId+");'>";
             html += "<p>"+createIcon("account-login")+"Joinen: "+game.name+" auf "+serverConnection.host+" - Spieler: "+players+"</p>";
             html += "</div>";

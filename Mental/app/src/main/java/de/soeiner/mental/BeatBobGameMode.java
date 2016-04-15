@@ -22,7 +22,7 @@ public class BeatBobGameMode extends GameMode {
         super.prepareGame();
         status = 0;
         game.individualExercises = true;
-        for(int i = 0; i<game.joinedPlayers.size();i++){
+        for(int i = 0; i<game.joinedPlayers.size();i++) {
             Player p = game.joinedPlayers.get(i);
             game.activePlayers.add(p);
         }

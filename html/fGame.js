@@ -31,6 +31,13 @@ function sendAnswer() {
     });
 }
 
+function resetBeatBobBar() {
+    byID("beatBobBarLeft").style.width = 0;
+    byID("beatBobBarRight").style.width = 0;
+    byID("beatBobBarLeft").style.backgroundColor = "#fff";
+    byID("beatBobBarRight").style.backgroundcolor = "#fff";
+}
+
 // OBSERVERS ===========================================================
 
 var playerWonObserver = new Observer("playerWon", function(msg) {
@@ -52,16 +59,22 @@ var reopenMainFrameObserver = new Observer("showExercises", function(msg) {
     setTimeout(openMainFrame, 1000); // to be save...
     serverConnection.removeObserver(updateScoreboardObserver);
     countDownId = "exerciseCountdown";
+    resetBeatBobBar();
 });
 
 var beatBobObserver = new Observer("beatbob", function(msg) {
     byID("beatBob").style.display = "block";
     setTimeout(function(){byID("beatBob").style.opacity = 1;}, 100);
-    if (msg.status <= 0) {
-        byID("beatBobBarLeft").style.width = (-100 * msg.status) + "%"
+    var p = Math.abs(msg.status);
+    var percent = 100 * p;
+    if (msg.status < 0) {
+        byID("beatBobBarLeft").style.width = percent + "%";
+        byID("beatBobBarLeft").style.backgroundColor = 'rgb('+(255-percent)+','+(150*p)+','+(150*p)+')';
     }
-    if (msg.status >= 0) {
-        byID("beatBobBarRight").style.width = (100 * msg.status) + "%";
+    if (msg.status == 0) resetBeatBobBar();
+    if (msg.status > 0) {
+        byID("beatBobBarRight").style.width = percent + "%";
+        byID("beatBobBarLeft").style.backgroundColor = 'rgb('+(150*p)+','+(255-percent)+','+(150*p)+')';
     }
 });
 

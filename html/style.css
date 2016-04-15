@@ -51,6 +51,7 @@ body {
     font-size: 0.8em;
     border-radius: 0.5em;
     display:inline-block;
+    transition: background 0s;
 }
 
 .btn + .btn {
@@ -140,7 +141,7 @@ body {
 .lvlProgress {
     display:inline-block;
     width:60px;
-    background-color:#d5d5d5;
+    background-color:#dadada;
     border-radius:4px;
 }
 
@@ -159,8 +160,9 @@ body {
     border-radius: 5px;
     padding: 10px;
     box-shadow: 0px 0px 5px #999;
-    font-size: 1.15em;
+    font-size: 1.08em;
     font-weight: bold;
+    margin-bottom: 12px;
 }
 
 .shopItem {
@@ -186,7 +188,7 @@ body {
 
 #beatBob {
     width: 70%;
-    margin: 0% 15% 0% 15%;
+    margin: 5px 15% 5px 15%;
     padding: auto;
 }
 
@@ -194,11 +196,13 @@ body {
     background-color: #f22;
     border-radius: 4px 0px 0px 4px;
     float:right;
+    transition: background 2s, width 2s;
 }
 
 #beatBobBarRight {
     background-color: #2f2;
     border-radius: 0px 4px 4px 0px;
+    transition: background 2s, width 2s;
 }
 
 

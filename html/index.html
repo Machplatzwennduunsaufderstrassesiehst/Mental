@@ -74,8 +74,8 @@
                     <p id="messageContainer"></p>
                 </div>
                 <form data-ajax="false" onsubmit="sendAnswer(); return false;" action="#"><!-- return false causes the form not to be submitted-->
-                    <span style="margin: auto auto 15px auto;display:inline-block;">
-                        <span id="exercise" style="margin-bottom: 0.8em;font-size: 1.2em;"></span>
+                    <span style="margin: 0;display:inline-block;">
+                        <span id="exercise" style="font-size: 1.2em;"></span>
                         <input type="number" style="width:8em;display:inline;" placeholder="?" id="answer" onkeydown="document.onkeydown(event);"/>
                         <!-- kleiner hack, einige browser benoetigen den submit button, und auf enter druck fokussieren sie darauf 
                              das hier interpretiert das dann als senden und fokussiert wieder die eingabe -->
@@ -84,8 +84,8 @@
                     </span>
                 </form>
                 <div id="beatBob" class="lvlProgress">
-                    <span style="width:49.9%;display:block;float:left;"><div id="beatBobBarLeft" style="width:56%" class="lvlProgressBar"></div><div class="lvlProgressBar"></div></span>
-                    <span style="width:49.9%;display:block;float:right;"><div id="beatBobBarRight" style="width:80%" class="lvlProgressBar"></div></span>
+                    <span style="width:49.9%;display:block;float:left;border-radius: 4px 0px 0px 4px;" class="lvlProgress"><div id="beatBobBarLeft" style="width:56%" class="lvlProgressBar"></div></span>
+                    <span style="width:49.9%;display:block;float:right;border-radius: 0px 4px 4px 0px;" class="lvlProgress"><div id="beatBobBarRight" style="width:80%" class="lvlProgressBar"></div></span>
                 </div>
                 <table id="numpadTable">
                     <tr>
@@ -127,15 +127,15 @@
                 </table>
                 <div id="voting"></div>
             </div>
-            <div id="shoppingFrame" class="frame">                   
-                <div id="shopUserInfo">
-                    <h2>Willkommen, \"<span data-field-key="title"></span>\"</h2>
-                    <p>Du hast $<span data-field-key="money"></span>. Dein Level: <span data-field-key="playerLevel"></span></p>
-                </div>
+            <div id="shoppingFrame" class="frame">
                 <div style='padding:10px;'>
+                    <div id="shopUserInfo">
+                        <span style="float:right;font-style:italic;"><span data-icon="key"></span>Level <span data-field-key="playerLevel"></span> - $<span data-field-key="money"></span></span>
+                        <span>Willkommen, <span data-field-key="playerName"></span>!</span>
+                    </div>
                     <div id="shopItemList"></div>
                     <p>
-                        <a class="btn" data-role="button" href="#" onclick="byID('toLobby').click();" style="max-width:12em;"><span data-icon="people"></span>Back to Lobby</a>
+                        <a class="btn" data-role="button" href="#" onclick="byID('toLobby').click();" style="max-width:16em;"><span data-icon="people"></span>Back to Lobster</a>
                     </p>
                 </div>
             </div>

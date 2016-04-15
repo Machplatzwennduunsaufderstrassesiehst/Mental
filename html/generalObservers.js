@@ -32,6 +32,10 @@ var playerStateObserver = new Observer("scoreboard", function(msg) {
         var s = msg.scoreboard[i];
         if (s.highlight) { // the highlighted player is the user
             player = s;
+            updateDataFields("money", s.money);
+            updateDataFields("playerName", s.playerName);
+            updateDataFields("title", s.title);
+            updateDataFields("playerLevel", s.playerLevel);
             break;
         }
     }
