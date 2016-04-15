@@ -12,40 +12,41 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    final int PORT = 1297;
-    PingHttpServer httpServer;
-    boolean serverIsActive;
-    boolean DEBUG = true;
+    final static int PORT = 1297;
+    final static boolean DEBUG = true;
+
+    private PingHttpServer httpServer;
+    private boolean serverIsActive;
+    private Button btnJoin;
+    private Button btnHost;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         serverIsActive = false;
-        if(DEBUG){
-            debugServerStart();
+        btnJoin = (Button) findViewById(R.id.buttonJoinGame);
+        btnHost = (Button) findViewById(R.id.buttonHostGame);
+        if(DEBUG) {
+            // so startet man nicht aus Versehen den Server 2x im DEBUG modus
+            btnHost.setText("SERVER LÄUFT");
+            btnHost.setEnabled(false);
+            btnJoin.setEnabled(false);
+            btnHost.setClickable(false);
+            btnJoin.setClickable(false);
+            serverStart();
         }
     }
 
-    public void buttonJoinServer(View v){
+    public void buttonJoinServer(View v) {
         Uri url = Uri.parse("http://www.mentalist.lima-city.de");
         Intent intent = new Intent(Intent.ACTION_VIEW, url);
         startActivity(intent);
     }
 
     public void buttonStartServer(View v) {
-        Button btnJoin = (Button) findViewById(R.id.buttonJoinGame);
-        Button btnHost = (Button) findViewById(R.id.buttonHostGame);
         btnJoin.setEnabled(true);
-        try {
-            WebSocketImpl.DEBUG = true;
-            int port = PORT;
-            Server s = new Server( port );
-            s.start();
-            System.out.println("Server started on port: " + s.getPort());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         if(serverIsActive){
             btnHost.setText("Spiel hosten");
             btnJoin.setEnabled(false);
@@ -54,13 +55,11 @@ public class MainActivity extends AppCompatActivity {
             btnHost.setText("Spiel beenden");
             serverIsActive = true;
         }
-        httpServer = new PingHttpServer();
-        httpServer.start();
-        Game g = new Game();
-        g.setName("Debug Game");
+
+        serverStart();
     }
 
-    private void debugServerStart(){
+    private void serverStart(){
         try {
             WebSocketImpl.DEBUG = true;
             int port = PORT;
@@ -73,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
         httpServer = new PingHttpServer();
         httpServer.start();
-        Game g = new Game();
+
+        new Game();
     }
 
     @Override

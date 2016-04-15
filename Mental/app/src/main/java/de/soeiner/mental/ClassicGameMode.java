@@ -4,7 +4,7 @@ package de.soeiner.mental;
  * Created by Malte on 28.03.2016.
  */
 
-class ClassicGameMode extends GameMode{
+public class ClassicGameMode extends GameMode{
 
     public ClassicGameMode(Game g){
         super(g);
