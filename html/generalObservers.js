@@ -40,4 +40,3 @@ var playerStateObserver = new Observer("scoreboard", function(msg) {
         }
     }
 });
-

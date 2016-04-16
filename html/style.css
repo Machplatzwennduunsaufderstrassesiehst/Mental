@@ -8,6 +8,16 @@ body {
     margin: auto;
 }
 
+#console {
+    border: 2px solid #abf;
+    background-color: white;
+    padding: 10px;
+    font-family: "Ubuntu Mono", "Mono Space", mono;
+    overflow-y: scroll;
+    height: 500px;
+    display: none;
+}
+
 #menu {
     background-color: #ccf;
     border-bottom: 2px solid #abf;

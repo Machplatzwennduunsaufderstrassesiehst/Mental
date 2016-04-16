@@ -2,9 +2,22 @@
 var uselessFunction = function(){};
 
 var logContent_ = "";
-var console = console || (new function() {
+var console = console || new function() {
     this.log = function(s) {logContent_ += s;}
-});
+}
+
+function log(s) {
+    if (DEBUG) {
+        console.log(s);
+        if (DEBUG_ONPAGE) {
+            byID("console").style.display = "block;";
+            byID("console").innerHTML += s + "<br>";
+        }
+        if (DEBUG_ALERT) {
+            alert(s);
+        }
+    }
+}
 
 function updateDataFields(key, value) {
     var spans = document.getElementsByTagName("span");

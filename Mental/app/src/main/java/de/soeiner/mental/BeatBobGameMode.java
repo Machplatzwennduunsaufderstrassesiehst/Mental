@@ -100,18 +100,20 @@ public class BeatBobGameMode extends GameMode {
     }
 
     public void checkObjective(){
-        if (status >= health) { //wenn bob tot ist
-            game.individualExercises = false;
-            gameIsRunning = false; // schleife in run() beenden
-            game.broadcastPlayerWon("die Spieler", getGameModeString());
-            answerLock.notify();
-        }
-        if(status <= -health){ //wenn spieler tot sind
-            game.individualExercises = false;
-            gameIsRunning = false; // schleife in run() beenden
-            game.broadcastMessage("Bob hat gewonnen");
-            game.broadcastPlayerWon("Bob", getGameModeString());
-            answerLock.notify();
+        synchronized (answerLock) {
+            if (status >= health) { //wenn bob tot ist
+                game.individualExercises = false;
+                gameIsRunning = false; // schleife in run() beenden
+                game.broadcastPlayerWon("die Spieler", getGameModeString());
+                answerLock.notify();
+            }
+            if (status <= -health) { //wenn spieler tot sind
+                game.individualExercises = false;
+                gameIsRunning = false; // schleife in run() beenden
+                game.broadcastMessage("Bob hat gewonnen");
+                game.broadcastPlayerWon("Bob", getGameModeString());
+                answerLock.notify();
+            }
         }
     }
 

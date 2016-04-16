@@ -1,5 +1,4 @@
 
-"use strict";
 
 var serverConnection = null;
 var netManager = new NetworkManager();
@@ -21,7 +20,7 @@ window.onload = function() {
     if (getCookie("gameString") != "") byID("gameStringInput").value = getCookie("gameString");
     if (getCookie("gameString") != "") byID("gameString").innerHTML = "Alter Spielstand: " + getCookie("gameString");
     
-    updateLocalIP();
+    setTimeout(function(){updateLocalIP();},100);
     setDoOnEnter(function(){byID("connect").click();});
     setTimeout(function() {
         byID("answerFormSubmit").parentElement.style.position = "absolute";
@@ -120,4 +119,3 @@ function infoBox(message) {
         byID("infobox").style.display = "none";
     }, 3500);
 }
-    

@@ -6,11 +6,15 @@
     <script src="jQuery/jquery-1.8.3.min.js"></script>
     <script src="jQuery/jquery.mobile-1.2.1.min.js"></script>
     
+    <script src="websocketimpl.js"></script>
+    
+    <script src="constants.js" type="text/javascript"></script>
     <script src="utils.js" type="text/javascript"></script>
     <script src="cookies.js" type="text/javascript"></script>
     <script src="commandSet.js" type="text/javascript"></script>
     <script src="communication.js" type="text/javascript"></script>
     <script src="generalObservers.js" type="text/javascript"></script>
+    <script src="fWelcome.js" type="text/javascript"></script>
     <script src="fCountdown.js" type="text/javascript"></script>
     <script src="fGame.js" type="text/javascript"></script>
     <script src="fLobby.js" type="text/javascript"></script>
@@ -37,7 +41,7 @@
             <div id="headerMenu" style="display:none;font-size:0.8em;">
                 <p><span id="localIP"></span><br>
                 <span id="gameString"></span><br>
-                <span style="color:#fff;margin-top:5px;" class="btn">Schlie&szlig;en</span></p>
+                <span style="color:#fff;margin-top:5px;" class="btn" onclick="byID('headerMenu').style.display = 'none';">Schlie&szlig;en</span></p>
             </div>
             <div id="welcome" class="frame">
                 <p>"Kopfrechnen auf Zeit - doch Competition findet keine statt wie'n Navi im Provinznest."</p>
@@ -45,7 +49,7 @@
                     <input placeholder="Benutzername (frei w&auml;hlbar)" type="text" id="name"/>
                     <input placeholder="Alter Spielstand (optional)" type="text" id="gameStringInput"/>
                     <input placeholder='Server IP ("Info" oben rechts bei Host)' type="text" id="ip"/>
-                    <a style="max-width:12em;" id="connect" href="#" onclick="netManager.scanManually(byID('ip').value);" data-role="button"><span data-icon="account-login"></span>Server beitreten</a> 
+                    <a style="max-width:12em;" id="connect" href="#" onclick="onServerJoinClick();" data-role="button"><span data-icon="account-login"></span>Server beitreten</a> 
                     <!--Oder:<br>
                     <a style="max-width:12em;" id="scan" href="#" onclick="netManager.scan(listAvailableServers);openListServersFrame();" data-role="button"><span data-icon="magnifying-glass"></span>Server suchen</a> -->
                 </p>
@@ -141,6 +145,7 @@
                 </div>
             </div>
             <p style="text-align:center;" id="warning">Ernsthavtes Problem mit JawaScriptt!!<br>L&ouml;sche bitte deinen Cache!</p>
+            <div id="console">&nbsp;</div>
         </div>
     </div>
 </body>

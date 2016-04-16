@@ -7,13 +7,13 @@ function numpadDel() {
     var v = String(byID("answer").value);
     byID("answer").value = v.substring(0, v.length-1);
 }
-        
+
 var alreadyAnswered = false;
 function sendAnswer() {
-    console.log("sendAnswer");
+    log("sendAnswer");
     if (alreadyAnswered) {return;}
     alreadyAnswered = true;
-    console.log(alreadyAnswered);
+    log(alreadyAnswered);
     setTimeout(function(){alreadyAnswered = false;}, 100); // hier lieber ein Timeout, da es ja sein kann, dass keine Antwort vom Server kommt (dann waere diese Methode für immer gelockt!)
     var answer = byID("answer").value;
     serverConnection.communicate(makeSimpleCmd("answer", "answer", Number(answer)), function(msg) {

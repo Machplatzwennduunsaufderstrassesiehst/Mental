@@ -8,3 +8,4 @@ var countdownObserver = new Observer("countdown", function(msg) {
     countdownValue = msg.time;
     countDownId = "bigCountdown";
 });
+
