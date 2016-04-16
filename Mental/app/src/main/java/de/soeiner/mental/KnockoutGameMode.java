@@ -16,6 +16,11 @@ public class KnockoutGameMode extends GameMode{
         return "Knockout";
     }
 
+    @Override
+    public void removePlayer(Player p) {
+
+    }
+
     public void prepareGame() {
         super.prepareGame();
         for(int i = 0; i<game.joinedPlayers.size();i++){

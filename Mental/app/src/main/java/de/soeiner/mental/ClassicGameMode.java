@@ -15,6 +15,11 @@ public class ClassicGameMode extends GameMode{
         return "Classic";
     }
 
+    @Override
+    public void removePlayer(Player p) {
+
+    }
+
     public void prepareGame() {
         super.prepareGame();
         for(int i = 0; i<game.joinedPlayers.size();i++){

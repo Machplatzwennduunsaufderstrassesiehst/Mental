@@ -143,6 +143,7 @@ public class Game implements Runnable {
         voting.checkForCompletion();
         if (!arePlayersInGame()) interruptGame();
         broadcastMessage(p.getName() + " hat das Spiel verlassen.");
+        gameMode.removePlayer(p);
     }
 
     public boolean arePlayersInGame() {

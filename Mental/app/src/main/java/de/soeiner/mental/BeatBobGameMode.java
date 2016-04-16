@@ -122,6 +122,11 @@ public class BeatBobGameMode extends GameMode {
         return "beatBob";
     }
 
+    @Override
+    public void removePlayer(Player p) {
+        function = calculateSolveTimeFunction();
+    }
+
     public void broadcastStatus(){
         for(int i = 0; i<game.joinedPlayers.size();i++){
             Player p = game.joinedPlayers.get(i);
@@ -180,7 +185,7 @@ public class BeatBobGameMode extends GameMode {
     private double[] calculateSolveTimeFunction(){
         double baseTime = bobStartSolveTime;
         double[] f = {0.0, -health, health}; //x
-        double[] b = {baseTime, 2.5 * baseTime, 0.25 * baseTime, 0, 0, 0};
+        double[] b = {baseTime, 2 * baseTime, 0.5 * baseTime, 0, 0, 0};
         double[][] A = new double[6][6]; //gleichungen
 
         for (int i = 0; i < 3; i++) {
@@ -201,7 +206,7 @@ public class BeatBobGameMode extends GameMode {
     }
 
     private double calculateBaseRep(){
-        return exercisesSolved / (upTime / game.exerciseCreator.getExpectedSolveTime());
+        return exercisesSolved / (upTime * game.activePlayers.size() / game.exerciseCreator.getExpectedSolveTime());
     }
 
     private double calculateRating(){

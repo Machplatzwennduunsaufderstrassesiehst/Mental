@@ -19,6 +19,11 @@ public class ArenaGameMode extends GameMode{
         return "Arena";
     }
 
+    @Override
+    public void removePlayer(Player p) {
+
+    }
+
     public void prepareGame() {
         super.prepareGame();
         if(game.joinedPlayers.size() < 2){

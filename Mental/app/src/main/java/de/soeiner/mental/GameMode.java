@@ -95,4 +95,6 @@ public abstract class GameMode {
             game.exerciseCreator.increaseDifficulty();
         }
     }
+
+    public abstract void removePlayer(Player p);
 }
