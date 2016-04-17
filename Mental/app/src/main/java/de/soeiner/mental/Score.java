@@ -11,6 +11,7 @@ public class Score extends JSONObject{
     String compare = "";
     int pointsGained;
     Player player;
+    String color;
 
     public Score(Player p) {
         player = p;
@@ -18,6 +19,7 @@ public class Score extends JSONObject{
         setScoreValue(0);
         setOverallScoreValue(0);
         setTitle("amateur");
+        color = "#00000";
     }
 
     // quadratische abhängigkeit als vorschlag?
@@ -129,6 +131,14 @@ public class Score extends JSONObject{
         if (has("title")) this.remove("title");
         try{
             put("title", title);
+        }catch(Exception e){}
+
+    }
+
+    public void setColor(String color) {
+        if (has("color")) this.remove("color");
+        try{
+            put("color", color);
         }catch(Exception e){}
 
     }

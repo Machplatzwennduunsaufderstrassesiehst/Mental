@@ -6,17 +6,19 @@ import org.json.JSONObject;
 /**
  * Created by Malte on 02.04.2016.
  */
-public class ShopItem extends JSONObject {
+public abstract class ShopItem extends JSONObject {
 
-    private int nr; //index
-    private String name; //Name
-    private int price; //Kosten
+    protected int nr; //index
+    protected String name; //Name
+    protected int price; //Kosten
     public boolean bought; //schon gekauft ?
     public boolean equipped; //ausgerüstet ?
-    private int lvlUnlock; // benötigtes lvl zum Freischalten
+    protected int lvlUnlock; // benötigtes lvl zum Freischalten
+    protected Shop shop;
 
 
-    public ShopItem(int n, String na, int p, boolean b, boolean e, int l){
+    public ShopItem(Shop sh, int n, String na, int p, boolean b, boolean e, int l){
+        shop = sh;
         nr = n;
         name = na;
         price = p;
@@ -30,6 +32,7 @@ public class ShopItem extends JSONObject {
             this.put("bought", bought);
             this.put("equipped", equipped);
             this.put("lvlUnlock", lvlUnlock);
+            this.put("type", getType());
         } catch (JSONException s) {
             s.printStackTrace();
         }
@@ -71,6 +74,21 @@ public class ShopItem extends JSONObject {
     public int getLvlUnlock() {
         return lvlUnlock;
     }
+    
+    public abstract String getType();
+    public boolean buy() {
+        if(price <= shop.money && !bought && shop.score.getPlayerLevel() >= lvlUnlock){ //wenn das Item noch nicht gekauft wurde und genug geld vorhanden ist
+            shop.money -= price;
+            shop.moneySpent += price;
+            bought = true;
+            shop.updateMoney();
+            return true;
+        }
+        return false;
+    }
+    public abstract boolean equip();
+    public abstract boolean unEquip();
+    
 
 
 }

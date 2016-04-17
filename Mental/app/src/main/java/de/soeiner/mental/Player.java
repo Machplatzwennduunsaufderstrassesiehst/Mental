@@ -162,14 +162,14 @@ public class Player extends ClientConnection {
             if (type.equals("buyItem")) {
                 int index = Integer.parseInt(json.getString("index"));
                 JSONObject j = CmdRequest.makeResponseCmd(type);
-                j.put("success", this.shop.buyTitle(index));
+                j.put("success", this.shop.buyItem(index));
                 j.put("index", index);
                 send(new PushRequest(j));
             }
             if (type.equals("equipItem")) {
                 int index = Integer.parseInt(json.getString("index"));
                 JSONObject j = CmdRequest.makeResponseCmd(type);
-                j.put("success", this.shop.equipTitle(index));
+                j.put("success", this.shop.equipItem(index));
                 j.put("index", index);
                 send(new PushRequest(j));
             }

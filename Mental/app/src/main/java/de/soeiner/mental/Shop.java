@@ -7,8 +7,8 @@ import org.json.JSONObject;
  */
 public class Shop{
 
-    private int money;
-    private int moneySpent; //müsste noch in den shopString eingebaut werden
+    protected int money;
+    protected int moneySpent; //müsste noch in den shopString eingebaut werden
     Score score;
     Player player;
     ShopItem[] shopItemList;
@@ -21,28 +21,38 @@ public class Shop{
     }
 
     private ShopItem[] createShopItemList(){
-        ShopItem item1 = new ShopItem(1, "uninstall pls", 100, false, false, 0);
-        ShopItem item2 = new ShopItem(2, "scrub", 500, false, false, 1);
-        ShopItem item3 = new ShopItem(3, "big noob", 1000, false, false, 1);
-        ShopItem item4 = new ShopItem(4, "Asiate", 2000, false, false, 2);
-        ShopItem item5 = new ShopItem(5, "Global Elite", 2500, false, false, 4);
-        ShopItem item6 = new ShopItem(6, "Marco die Schlange", 5000, false, false, 8);
-        ShopItem item7 = new ShopItem(7, "Marten", 100000, false, false, 16);
+        ShopItem item1 = new Title(this, 1, "uninstall pls", 100, false, false, 0);
+        ShopItem item2 = new Title(this, 2, "scrub", 500, false, false, 1);
+        ShopItem item3 = new Title(this, 3, "big noob", 1000, false, false, 1);
+        ShopItem item4 = new Title(this, 4, "Asiate", 2000, false, false, 2);
+        ShopItem item5 = new Title(this, 5, "Global Elite", 2500, false, false, 4);
+        ShopItem item6 = new Title(this, 6, "Marco die Schlange", 5000, false, false, 8);
+        ShopItem item7 = new Title(this, 7, "Marten", 100000, false, false, 16);
+        ShopItem item8 = new Color(this, 7, "Rot", 500, false, false, 16, "#ff0033");
+        ShopItem item9 = new Color(this, 7, "Grün", 500, false, false, 16, "#40ff00");
+        ShopItem item10 = new Color(this, 7, "Blau", 500, false, false, 16, "#0900ff");
+        ShopItem item11 = new Color(this, 7, "Türkise", 3000, false, false, 16, "#00eeff");
+        ShopItem item12 = new Color(this, 7, "Gold", 10000, false, false, 16, "#dbd000");
 
-        ShopItem[] s = {item1, item2, item3, item4, item5, item6, item7};
+        ShopItem[] s = {item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12};
         return s;
     }
 
     private ShopItem[] createSpecialShopItemList(){
-        ShopItem item1 = new ShopItem(1, "eine Seele", 100, false, false, 0);
-        ShopItem item2 = new ShopItem(2, "zwei Seelen", 500, false, false, 0);
-        ShopItem item3 = new ShopItem(3, "eine handvoll Seelen", 1000, false, false, 0);
-        ShopItem item4 = new ShopItem(4, "eine asiatische Seele", 2000, false, false, 2);
-        ShopItem item5 = new ShopItem(5, "ein Paket Seelen", 2500, false, false, 4);
-        ShopItem item6 = new ShopItem(6, "Marco die Schlange ihm seine Seele", 5000, false, false, 8);
-        ShopItem item7 = new ShopItem(7, "Martens Seele", 1000000, false, false, 20);
+        ShopItem item1 = new Title(this, 1, "eine Seele", 100, false, false, 0);
+        ShopItem item2 = new Title(this, 2, "zwei Seelen", 500, false, false, 0);
+        ShopItem item3 = new Title(this, 3, "eine handvoll Seelen", 1000, false, false, 0);
+        ShopItem item4 = new Title(this, 4, "eine asiatische Seele", 2000, false, false, 2);
+        ShopItem item5 = new Title(this, 5, "ein Paket Seelen", 2500, false, false, 4);
+        ShopItem item6 = new Title(this, 6, "Marco die Schlange ihm seine Seele", 5000, false, false, 8);
+        ShopItem item7 = new Title(this, 7, "Martens Seele", 1000000, false, false, 20);
+        ShopItem item8 = new Color(this, 7, "seelenrot", 100, false, false, 16, "#ff0033");
+        ShopItem item9 = new Color(this, 7, "seelengrün", 100, false, false, 16, "#40ff00");
+        ShopItem item10 = new Color(this, 7, "seelenblau", 100, false, false, 16, "#0900ff");
+        ShopItem item11 = new Color(this, 7, "seelentürkise", 10000, false, false, 16, "#00eeff");
+        ShopItem item12 = new Color(this, 7, "seelengold", 100000, false, false, 16, "#dbd000");
 
-        ShopItem[] s = {item1, item2, item3, item4, item5, item6, item7};
+        ShopItem[] s = {item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12};
         return s;
     }
 
@@ -50,30 +60,12 @@ public class Shop{
         return shopItemList;
     }
 
-    public boolean buyTitle(int index) {
-        if(shopItemList[index].getPrice() <= money && !shopItemList[index].getBought() && score.getPlayerLevel() >= shopItemList[index].getLvlUnlock()){ //wenn der titel noch nicht gekauft wurde und genug geld vorhanden ist
-            money -= shopItemList[index].getPrice();
-            moneySpent += shopItemList[index].getPrice();
-            shopItemList[index].setBought(true);
-            equipTitle(index);
-            updateMoney();
-            return true;
-        }
-        return false;
+    public boolean buyItem(int index) {
+        return shopItemList[index].buy();
     }
 
-
-    public boolean equipTitle(int index){
-        if(shopItemList[index].getBought()){
-            for(int i = 0; i<shopItemList.length; i++){
-                shopItemList[i].setEquipped(false);
-            }
-            shopItemList[index].setEquipped(true);
-            score.setTitle(shopItemList[index].getName());
-            updateMoney();
-            return true;
-        }
-        return false;
+    public boolean equipItem(int index){
+        return shopItemList[index].equip();
     }
 
     public void calculateMoney() {
@@ -109,7 +101,7 @@ public class Shop{
         System.out.println("loadShopString");
         if (checkShopString(shopString)) {
             shopString = shopString.substring(0, shopString.length() - 1);
-            itemsBought = shopString.substring(0, 3);
+            itemsBought = shopString.substring(0, 4);
             itemsBought = Integer.toBinaryString(Integer.parseInt(itemsBought));
             while(itemsBought.length() < 7){
                 itemsBought = "0"+itemsBought;
@@ -119,7 +111,7 @@ public class Shop{
                     shopItemList[i].setBought(true);
                 }
             }
-            setMoneySpent(Integer.parseInt(shopString.substring(3, shopString.length()-1)));
+            setMoneySpent(Integer.parseInt(shopString.substring(4, shopString.length()-1)));
             shopItemList[Character.getNumericValue(shopString.charAt(shopString.length()-1))].setEquipped(true);
             System.out.println("Titel " + shopString.length() + " wird ausgerüstet");
             updateMoney(); //evtl ohne sendGamestring besser
@@ -132,19 +124,14 @@ public class Shop{
         if(player.getName().contains("marc")){
             shopItemList[5].setBought(true);
             shopItemList[5].setEquipped(true);
-            buyTitle(5);
-            equipTitle(5);
+            buyItem(5);
+            equipItem(5);
         }
     }
 
 
-    public String getShopString(){ //die ersten drei zeichen geben die gekauften Gegenstände an, die darauf folgenden, das ausgegebene Geld
-        //000 -> 0000000 = nichts gekauft
-        //001 -> 0000001 = gegenstand 7 gekauft
-        //002 -> 0000010 = gegenstand 6 gekauft
-        //003 -> 0000011 = gegenstand 7 und 6 gekauft
-        //...
-        //127 -> 1111111 = alle gegenstände gekauft
+    public String getShopString(){ //die ersten vier zeichen geben die gekauften Gegenstände an, die darauf folgenden, das ausgegebene Geld
+        //13 Items Speicherbar
 
         int moneyspent = getMoneySpent();
         int itemEquipped = 0;
@@ -159,9 +146,10 @@ public class Shop{
         }
         int dezInt = Integer.parseInt(itemsBought, 2);
         String dezString = ""+dezInt;
-        while(dezString.length() < 3){
+        while(dezString.length() < 4){
             dezString = "0"+dezString;
         }
+        if(dezString.length() > 4){ throw new RuntimeException("das wird niemals in der konsole auftauchen xD");}
         itemsBought = dezString;
 
         for(int i = 0; i<shopItemList.length;i++){
