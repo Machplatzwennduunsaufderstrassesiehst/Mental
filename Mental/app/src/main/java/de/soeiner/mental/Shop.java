@@ -96,29 +96,33 @@ public class Shop{
         player.sendGameString();
     }
 
-    public void loadShopString(String shopString) {
+    public void loadShopString(String hexShopString) {
+        int parsedResult = (int) Long.parseLong(hexShopString, 16);
+        String shopString = Integer.toString(parsedResult);
         String itemsBought = "";
         System.out.println("loadShopString");
         if (checkShopString(shopString)) {
             shopString = shopString.substring(0, shopString.length() - 1);
-            itemsBought = shopString.substring(0, 4);
+            itemsBought = shopString.substring(0, 8);
             itemsBought = Integer.toBinaryString(Integer.parseInt(itemsBought));
             while(itemsBought.length() < 7){
                 itemsBought = "0"+itemsBought;
             }
             for(int i = 0;i<itemsBought.length();i++){
                 if(itemsBought.charAt(i) == '1'){
-                    shopItemList[i].setBought(true);
+                    shopItemList[i].buy();
+                }
+                if(itemsBought.charAt(i) == '2'){
+                    shopItemList[i].buy();
+                    shopItemList[i].equip();
                 }
             }
-            setMoneySpent(Integer.parseInt(shopString.substring(4, shopString.length()-1)));
-            shopItemList[Character.getNumericValue(shopString.charAt(shopString.length()-1))].setEquipped(true);
-            System.out.println("Titel " + shopString.length() + " wird ausgerüstet");
+            setMoneySpent(Integer.parseInt(shopString.substring(8, shopString.length())));
             updateMoney(); //evtl ohne sendGamestring besser
             score.setTitle(shopItemList[Character.getNumericValue(shopString.charAt(shopString.length()-1))].getName());
 
         }
-        if(player.getName().contains("exlo")){
+        if(player.getName().contains("exlo") || player.getName().contains("ppel")){
             shopItemList = createSpecialShopItemList();
         }
         if(player.getName().contains("marc")){
@@ -130,36 +134,32 @@ public class Shop{
     }
 
 
-    public String getShopString(){ //die ersten vier zeichen geben die gekauften Gegenstände an, die darauf folgenden, das ausgegebene Geld
+    public String getShopString(){ //die ersten acht zeichen geben die gekauften Gegenstände an, die darauf folgenden, das ausgegebene Geld
         //13 Items Speicherbar
+        //Danach Umwandlung in hexadezimal
 
         int moneyspent = getMoneySpent();
         int itemEquipped = 0;
         String itemsBought = "";
 
         for(int i = 0; i<shopItemList.length;i++){
-            if(shopItemList[i].getBought()){
+            if(shopItemList[i].getBought() && shopItemList[i].equipped){
+                itemsBought += '2';
+            }else if(shopItemList[i].getBought()){
                 itemsBought += '1';
             }else{
                 itemsBought += '0';
             }
         }
-        int dezInt = Integer.parseInt(itemsBought, 2);
+        int dezInt = Integer.parseInt(itemsBought, 3);
         String dezString = ""+dezInt;
-        while(dezString.length() < 4){
+        while(dezString.length() < 8){
             dezString = "0"+dezString;
         }
-        if(dezString.length() > 4){ throw new RuntimeException("das wird niemals in der konsole auftauchen xD");}
+        if(dezString.length() > 8){ throw new RuntimeException("das wird niemals in der konsole auftauchen xD");}
         itemsBought = dezString;
 
-        for(int i = 0; i<shopItemList.length;i++){
-            if(shopItemList[i].equipped){
-                itemEquipped = i;
-            }
-        }
-        String iE = itemEquipped+"";
-
-        String shopString = itemsBought+moneyspent+iE;
+        String shopString = itemsBought+moneyspent;
         int k = 0;
         int a = 0;
         int checksum = 0;
@@ -173,9 +173,9 @@ public class Shop{
             }
         }
         checksum %= 10;
-        shopString = itemsBought + moneyspent + iE + checksum;
-        //System.out.println("shopString "+shopString);
-        return shopString;
+        shopString = itemsBought + moneyspent + checksum;
+        int convert = Integer.parseInt(shopString);
+        return Integer.toHexString(convert);
     }
 
     public static boolean checkShopString(String shopString){
