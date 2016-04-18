@@ -97,6 +97,7 @@ public class Shop{
     }
 
     public void loadShopString(String hexShopString) {
+        if(hexShopString.length()< 4){return;}
         int parsedResult = (int) Long.parseLong(hexShopString, 16);
         String shopString = Integer.toString(parsedResult);
         String itemsBought = "";

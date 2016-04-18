@@ -16,10 +16,18 @@ public class Score extends JSONObject{
     public Score(Player p) {
         player = p;
         setPlayerName(player.getName());
-        setScoreValue(0);
+        initialize();
+    }
+
+    private void initialize(){
+        setMoney(0);
         setOverallScoreValue(0);
+        setScoreValue(0);
+        setColor("#00000");
         setTitle("amateur");
-        color = "#00000";
+        setHiglight(false);
+        setPlayerLevel(0);
+        setPlayerLevelProgress(0);
     }
 
     // quadratische abhängigkeit als vorschlag?
@@ -47,6 +55,7 @@ public class Score extends JSONObject{
     }
 
     public void loadScoreString(String scoreString) {
+        if(scoreString.length()< 2){return;}
         int overallScoreValue = 0;
 
         if (checkScoreString(scoreString)) {
