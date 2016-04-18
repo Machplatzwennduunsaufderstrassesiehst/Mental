@@ -10,13 +10,15 @@ function numpadDel() {
 
 var alreadyAnswered = false;
 function sendAnswer() {
-    log("sendAnswer");
     if (alreadyAnswered) {return;}
     alreadyAnswered = true;
     log(alreadyAnswered);
     setTimeout(function(){alreadyAnswered = false;}, 100); // hier lieber ein Timeout, da es ja sein kann, dass keine Antwort vom Server kommt (dann waere diese Methode für immer gelockt!)
     var answer = byID("answer").value;
-    serverConnection.communicate(makeSimpleCmd("answer", "answer", Number(answer)), function(msg) {
+    var cmdObject = {};
+    cmdObject.type = "answer";
+    cmdObject.answer = {value:answer};
+    serverConnection.communicate(cmdObject, function(msg) {
         if (msg.isCorrect) {
             byID("answer").style.backgroundColor = "#afa";
             byID("answer").placeholder = "Richtig!";

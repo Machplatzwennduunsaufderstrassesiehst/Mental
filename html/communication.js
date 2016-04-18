@@ -165,6 +165,7 @@ function ServerConnection(host, port) {
     function notify(msg) {
         var l = observers.length;
         for (var i = 0; i < l; i++) {
+            if (observers[i] == undefined) continue; // TODO lol
             if (observers[i].cmdType == msg.type) {
                 observers[i].handler(msg);
             }
