@@ -96,5 +96,5 @@ public abstract class GameMode {
         }
     }
 
-    public abstract void removePlayer(Player p);
+    public void removePlayer(Player p) {}
 }
