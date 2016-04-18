@@ -137,9 +137,10 @@ public class Player extends ClientConnection {
                 Game g = Game.getGames().get(id);
                 g.addPlayer(this);
                 game = g;
+
             }
             if (type.equals("answer")) {
-                int answer = Integer.parseInt(json.getString("answer"));
+                JSONObject answer = json.getJSONObject("answer");
                 boolean isCorrect = game.playerAnswered(this, answer);
                 JSONObject j = CmdRequest.makeResponseCmd(type);
                 j.put("isCorrect", isCorrect);

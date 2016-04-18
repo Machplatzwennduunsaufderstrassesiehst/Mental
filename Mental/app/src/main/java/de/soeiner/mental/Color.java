@@ -22,12 +22,7 @@ public class Color extends ShopItem {
     @Override
     public boolean equip() {
         if(bought){
-            for(int i = 0; i<shop.shopItemList.length; i++){
-                if(shop.shopItemList[i].getType().equals("Color")){
-                    shop.shopItemList[i].unEquip();
-                }
-            }
-            equipped = true;
+            equipSingleItem();
             shop.score.setColor(rgb);
             shop.updateMoney();
             return true;
@@ -37,7 +32,7 @@ public class Color extends ShopItem {
 
     @Override
     public boolean unEquip() {
-        equipped = false;
+        setEquipped(false);
         shop.score.setColor(black);
         return true;
     }

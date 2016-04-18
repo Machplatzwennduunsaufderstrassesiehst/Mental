@@ -54,6 +54,7 @@ public abstract class ShopItem extends JSONObject {
     }
 
     public void setBought(boolean bought) {
+        if (has("bought")) this.remove("bought");
         this.bought = bought;
         try {
             this.put("bought", bought);
@@ -63,12 +64,22 @@ public abstract class ShopItem extends JSONObject {
     }
 
     public void setEquipped(boolean equipped) {
+        if (has("equipped")) this.remove("equipped");
         this.equipped = equipped;
         try {
             this.put("equipped", equipped);
         } catch (JSONException s) {
             s.printStackTrace();
         }
+    }
+
+    protected void equipSingleItem(){
+        for(int i = 0; i<shop.shopItemList.length; i++){
+            if(shop.shopItemList[i].getType().equals(this.getType())){
+                shop.shopItemList[i].unEquip();
+            }
+        }
+        setEquipped(true);
     }
 
     public int getLvlUnlock() {

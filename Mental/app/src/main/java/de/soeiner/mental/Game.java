@@ -181,8 +181,13 @@ public class Game implements Runnable {
         }
     }
 
-    public boolean playerAnswered(Player player, int answer){
-        return gameMode.playerAnswered(player, answer);
+    public boolean playerAnswered(Player player, JSONObject answer){
+        if(answer.has("value")){
+            try {
+                return gameMode.playerAnswered(player, answer.getInt("value"));
+            }catch(Exception e){}
+        }
+        return false;
     }
 
     protected int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe

@@ -16,12 +16,7 @@ public class Title extends ShopItem {
     @Override
     public boolean equip() {
         if(bought){
-            for(int i = 0; i<shop.shopItemList.length; i++){
-                if(shop.shopItemList[i].getType().equals("Title")){
-                    shop.shopItemList[i].unEquip();
-                }
-            }
-            equipped = true;
+            equipSingleItem();
             shop.score.setTitle(name);
             shop.updateMoney();
             return true;
@@ -31,7 +26,7 @@ public class Title extends ShopItem {
 
     @Override
     public boolean unEquip() {
-        equipped = false;
+        setEquipped(false);
         shop.score.setTitle("no Title");
         return true;
     }

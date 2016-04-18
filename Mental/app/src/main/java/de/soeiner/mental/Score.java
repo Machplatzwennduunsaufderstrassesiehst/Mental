@@ -140,7 +140,6 @@ public class Score extends JSONObject{
         try{
             put("color", color);
         }catch(Exception e){}
-
     }
 
     public void resetScoreValue(){
