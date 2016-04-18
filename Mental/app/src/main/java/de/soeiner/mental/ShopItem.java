@@ -73,11 +73,12 @@ public abstract class ShopItem extends JSONObject {
         }
     }
 
-    protected void equipSingleItem(){
+    protected void equipSingleItem() {
         for(int i = 0; i<shop.shopItemList.length; i++){
-            if(shop.shopItemList[i].getType().equals(this.getType())){
+            System.out.println(shop.shopItemList[i]);
+            /*if(shop.shopItemList[i].getType().equals(this.getType())) {
                 shop.shopItemList[i].unEquip();
-            }
+            }*/
         }
         setEquipped(true);
     }

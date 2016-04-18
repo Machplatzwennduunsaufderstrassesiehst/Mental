@@ -1,5 +1,7 @@
 package de.soeiner.mental;
 
+import org.json.JSONObject;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -35,8 +37,9 @@ public abstract class ExerciseCreator {
         difficulty++;
     }
 
-    public boolean checkAnswer(int playerAnswer) {
-        return (exerciseResult == playerAnswer);
+    public boolean checkAnswer(JSONObject answer) {
+        // Übergangslösung, ich denke, dass wir die ExerciseCreator sowieso nochmal extrem überarbeiten müssen
+        return (exerciseResult == answer.optInt("value"));
     }
 
     // erstellt die nächste Aufgabe und setzt exerciseResult sowie exerciseString

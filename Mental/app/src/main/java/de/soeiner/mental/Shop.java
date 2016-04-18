@@ -104,7 +104,7 @@ public class Shop{
         System.out.println("loadShopString");
         if (checkShopString(shopString)) {
             shopString = shopString.substring(0, shopString.length() - 1);
-            itemsBought = shopString.substring(0, 8);
+            itemsBought = shopString.substring(0, 8); // index out of bounds TODO
             itemsBought = Integer.toBinaryString(Integer.parseInt(itemsBought));
             while(itemsBought.length() < 7){
                 itemsBought = "0"+itemsBought;
@@ -175,8 +175,10 @@ public class Shop{
         }
         checksum %= 10;
         shopString = itemsBought + moneyspent + checksum;
-        int convert = Integer.parseInt(shopString);
-        return Integer.toHexString(convert);
+        shopString = (shopString.length() == 0 ? "0" : shopString);
+        while (shopString.length() > 1 && shopString.charAt(0) == '0') shopString = shopString.substring(1); // vorangehende Nullen entfernen
+        long convert = Long.parseLong(shopString);
+        return Long.toHexString(convert);
     }
 
     public static boolean checkShopString(String shopString){

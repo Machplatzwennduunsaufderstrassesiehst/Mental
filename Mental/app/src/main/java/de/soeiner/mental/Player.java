@@ -141,7 +141,7 @@ public class Player extends ClientConnection {
             }
             if (type.equals("answer")) {
                 JSONObject answer = json.getJSONObject("answer");
-                boolean isCorrect = game.playerAnswered(this, answer);
+                boolean isCorrect = game.gameMode.playerAnswered(this, answer);
                 JSONObject j = CmdRequest.makeResponseCmd(type);
                 j.put("isCorrect", isCorrect);
                 j.put("pointsGained", this.getScore().getPointsGained());

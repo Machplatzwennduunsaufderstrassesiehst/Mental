@@ -1,5 +1,7 @@
 package de.soeiner.mental;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -65,8 +67,7 @@ public class ArenaGameMode extends GameMode{
         }
     }
 
-    public boolean playerAnswered(Player player, int answer) {
-
+    public boolean playerAnswered(Player player, JSONObject answer) {
         if(game.activePlayers.contains(player)){
             synchronized (answerLock) {
                 if (game.exerciseCreator.checkAnswer(answer)) {

@@ -54,7 +54,7 @@ public abstract class GameMode {
     }
 
     public boolean getGameIsRunning(){ return gameIsRunning; }
-    public abstract boolean playerAnswered(Player player, int answer);
+    public abstract boolean playerAnswered(Player player, JSONObject answer);
     public abstract String getGameModeString();
 
     public void resetGameMode(){

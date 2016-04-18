@@ -1,5 +1,7 @@
 package de.soeiner.mental;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -50,8 +52,7 @@ public class KnockoutGameMode extends GameMode{
     }
 
 
-    public boolean playerAnswered(Player player, int answer) {
-
+    public boolean playerAnswered(Player player, JSONObject answer) {
         boolean allFinishedButOne = false;
         int z = 0;
         Score s = player.getScore();

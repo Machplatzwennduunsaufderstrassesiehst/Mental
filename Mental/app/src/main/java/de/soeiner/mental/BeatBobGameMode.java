@@ -1,5 +1,7 @@
 package de.soeiner.mental;
 
+import org.json.JSONObject;
+
 /**
  * Created by Malte on 09.04.2016.
  */
@@ -70,8 +72,8 @@ public class BeatBobGameMode extends GameMode {
         }catch(Exception e){e.printStackTrace();System.out.println("BOB FAILED");}
     }
 
-    public boolean playerAnswered(Player player, int answer) {
-            Score s = player.getScore();
+    public boolean playerAnswered(Player player, JSONObject answer) {
+        Score s = player.getScore();
         if (player.exerciseCreator.checkAnswer(answer)) { //TODO muss natürlich noch korigiert werden
             exercisesSolved++;
             s.updateScore(5);

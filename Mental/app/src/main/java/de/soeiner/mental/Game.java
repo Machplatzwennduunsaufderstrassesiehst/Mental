@@ -181,6 +181,7 @@ public class Game implements Runnable {
         }
     }
 
+    /*
     public boolean playerAnswered(Player player, JSONObject answer){
         if(answer.has("value")){
             try {
@@ -189,6 +190,7 @@ public class Game implements Runnable {
         }
         return false;
     }
+    */
 
     protected int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
         //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
