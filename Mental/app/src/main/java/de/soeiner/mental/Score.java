@@ -179,7 +179,7 @@ public class Score extends JSONObject{
     public String getScoreString(){
         int score = getOverallScoreValue();
         if(score == 0){
-            return "git gud nub";
+            return "";
         }
         String scoreString = Integer.toString(score);
         int k = 0;
