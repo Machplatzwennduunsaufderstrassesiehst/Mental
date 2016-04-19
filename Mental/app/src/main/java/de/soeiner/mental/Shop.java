@@ -183,7 +183,7 @@ public class Shop{
     ShopItem temp;
 
     private ShopItem[] sortCopyById(){  //gibt eine sortierte Kopie der ShopitemList zurück
-	itemList = shopItemList.clone();
+	ShopItem[] itemList = shopItemList.clone();
 	for(int i = 0; i<itemList.length;i++){
 	    for(int j = 1; j<itemList.length;j++){
 		if(itemList[j-1].getId() < itemList[j].getId()){
@@ -196,7 +196,7 @@ public class Shop{
 	return itemList;
     }
 
-    private ShopItem[] getItemById(int id){
+    private ShopItem getItemById(int id){
 	id--; //weil die id zum anzeigen bei 1 anfaengt 
 	for(int i = 0; i < shopItemList.length;i++){
 	    if(shopItemList[i].getId() == id){
@@ -204,7 +204,6 @@ public class Shop{
 	    }
 	}
 	throw new RuntimeException("cant get item for given id");
-	return null;
     }
 
     public static boolean checkShopString(String shopString){
