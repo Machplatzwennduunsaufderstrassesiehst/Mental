@@ -12,6 +12,7 @@ public class Shop{
     Score score;
     Player player;
     ShopItem[] shopItemList;
+    int[] partition = new int[8]; //8 Plätze
 
     public Shop(Player p){
         player = p;
@@ -56,6 +57,19 @@ public class Shop{
         return s;
     }
 
+
+    private void easterEggs() {
+        if (player.getName().contains("exlo") || player.getName().contains("ppel")) {
+            shopItemList = createSpecialShopItemList();
+        }
+        if (player.getName().contains("marc")) {
+            shopItemList[5].setBought(true);
+            shopItemList[5].setEquipped(true);
+            buyItem(5);
+            equipItem(5);
+        }
+    }
+
     public ShopItem[] getShopItemList(){
         return shopItemList;
     }
@@ -96,52 +110,112 @@ public class Shop{
         player.sendGameString();
     }
 
-    public void loadShopString(String hexShopString) {
-        if(hexShopString.length()< 4){return;}
-        int parsedResult = (int) Long.parseLong(hexShopString, 16);
-        String shopString = Integer.toString(parsedResult);
-        String itemsBought = "";
-        System.out.println("loadShopString");
-        if (checkShopString(shopString)) {
-            shopString = shopString.substring(0, shopString.length() - 1);
-            itemsBought = shopString.substring(0, 8); // index out of bounds TODO
-            itemsBought = Integer.toBinaryString(Integer.parseInt(itemsBought));
-            while(itemsBought.length() < 8){
-                itemsBought = "0"+itemsBought;
-            }
-            for(int i = 0;i<itemsBought.length();i++){
-                if(itemsBought.charAt(i) == '1'){
-                    getItemById(i).buy();
-                }
-                if(itemsBought.charAt(i) == '2'){
-                    getItemById(i).buy();
-                    getItemById(i).equip();
-                }
-            }
-            setMoneySpent(Integer.parseInt(shopString.substring(8, shopString.length())));
-            updateMoney(); //evtl ohne sendGamestring besser
-            score.setTitle(shopItemList[Character.getNumericValue(shopString.charAt(shopString.length()-1))].getName());
+    private void loadPartition(String partitionString){
+        for(int i = 0; i<partition.length ; i++){
+           partition[i] = (int) partitionString.charAt(i);
+        }
+    }
 
+    private String addPartitionString(String shopString){
+        for(int i = 0; i<partition.length ; i++){
+            shopString += (char) partition[i];
         }
-        if(player.getName().contains("exlo") || player.getName().contains("ppel")){
-            shopItemList = createSpecialShopItemList();
+        return shopString;
+    }
+
+    public void setPartitionPassage(int passage, int size) {
+        partition[passage] = size;
+    }
+
+    private void loadItems(String itemsBought) {
+        itemsBought = Integer.toString(Integer.parseInt(itemsBought), 3); //Umrechnug ins dreier System
+        while (itemsBought.length() < shopItemList.length) { //nötige nullen werden angehängt (nicht hardgecoded)
+            itemsBought = "0" + itemsBought;
         }
-        if(player.getName().contains("marc")){
-            shopItemList[5].setBought(true);
-            shopItemList[5].setEquipped(true);
-            buyItem(5);
-            equipItem(5);
+        for (int i = 0; i < itemsBought.length(); i++) {
+            if (itemsBought.charAt(i) == '1') {
+                getItemById(i).buy();
+            }
+            if (itemsBought.charAt(i) == '2') {
+                getItemById(i).buy();
+                getItemById(i).equip();
+            }
+        }
+    }
+
+    public void loadShopString(String shopString) {
+
+        if(checkShopString(shopString)) { //Kontrollbit überprüfen
+            shopString = shopString.substring(0, shopString.length()-1); //Kontrollbit abschneiden
+
+            loadPartition(shopString.substring(shopString.length() - 8, shopString.length())); //partition laden
+            shopString = shopString.substring(shopString.length() - 8, shopString.length()); // Partition abschneiden
+            shopString = Integer.toString((int) Long.parseLong(shopString, 16)); // Umwandlung ins Zehnersystem
+
+            for (int passage = partition.length - 1; passage > 0; passage--) { //von hinten angefangen um den String verkleinern zu können
+                String tempString =  shopString.substring(shopString.length() - partition[passage], shopString.length());//aktuell zu behandelnden String wie nach partition vorgesehen isolieren
+                shopString = shopString.substring(0, shopString.length() - partition[passage]); //und abschneiden
+
+                //wenn die Passage einen zweck hat die dafür vorgesehene Methode aufrufen
+                if (passage == 7) {}
+                if (passage == 6) {}
+                if (passage == 5) {}
+                if (passage == 4) {}
+                if (passage == 3) {}
+                if (passage == 2) {}
+                if (passage == 1) {
+                    loadItems(tempString);
+                }
+                if (passage == 0) {
+                    setMoneySpent(Integer.parseInt(tempString));
+                }
+            }
+            updateMoney(); //initialisierung des Geldes mit den gewonnenen Informationen
+            easterEggs(); //Spielereien
         }
     }
 
 
-    public String getShopString(){ //die ersten acht zeichen geben die gekauften Gegenstände an, die darauf folgenden, das ausgegebene Geld
-        //Danach Umwandlung in hexadezimal
+    public String getShopString(){
 
-        int moneyspent = getMoneySpent();
-        int itemEquipped = 0;
-        String itemsBought = "";
+
+
 	ShopItem[] itemList = sortCopyById();
+
+        String shopString = "";
+
+        for (int passage = 0; passage < partition.length; passage++) { //von vorne angefangen um zum String hinzufügen zu können
+            int length = 0; //länge der einzelnen Passagen
+
+            //wenn die Passage einen zweck hat die dafür vorgesehene Methode aufrufen und um den entsprechenden String erweitern
+            if (passage == 0) {
+                length = shopString.length(); //vorherige länge speichern
+                shopString = addItemString(shopString); //passage hinzufügen
+                length = shopString.length() - length; //differenz ermitteln
+            }
+            if (passage == 1) {
+                length = shopString.length(); //vorherige länge speichern
+                shopString = addMoneySpent(shopString); //passage hinzufügen
+                length = shopString.length() - length; //differenz ermitteln
+            }
+            if (passage == 2) {}
+            if (passage == 3) {}
+            if (passage == 4) {}
+            if (passage == 5) {}
+            if (passage == 6) {}
+            if (passage == 7) {}
+
+            setPartitionPassage(passage, length); //länge in Partition reservieren
+        }
+        shopString = Integer.toHexString(Integer.parseInt(shopString)); //Umwandlung in Hexadezimal
+        shopString = addPartitionString(shopString); //anhängen der Partition
+        shopString += calculateCheckBit(shopString); //Kontrollbit anhängen
+        return shopString;
+    }
+
+    private String addItemString(String shopString){
+        String itemsBought = "";
+        ShopItem[] itemList = sortCopyById(); //nach id sortierte liste der Items
 
         for(int i = 0; i<itemList.length;i++){
             if(itemList[i].getBought() && itemList[i].equipped){
@@ -152,48 +226,31 @@ public class Shop{
                 itemsBought += '0';
             }
         }
-        int dezInt = Integer.parseInt(itemsBought, 3);
-        String dezString = ""+dezInt;
-        while(dezString.length() < 8){
-            dezString = "0"+dezString;
+        itemsBought = Integer.toString(Integer.parseInt(itemsBought, 3));
+        while(itemsBought.length() < shopItemList.length){
+            itemsBought = "0"+itemsBought; //nullen anhängen
         }
-        if(dezString.length() > 8){ throw new RuntimeException("das wird niemals in der konsole auftauchen xD");}
-        itemsBought = dezString;
-
-        String shopString = itemsBought+moneyspent;
-        int k = 0;
-        int a = 0;
-        int checksum = 0;
-        for(int i = 0;i < shopString.length();i++){
-            a = Character.getNumericValue(shopString.charAt(i));
-            switch(k%4){
-                case 0 : checksum += 7*a; break;
-                case 1 : checksum += 3*a; break;
-                case 2 : checksum += 5*a; break;
-                case 3 : checksum += 13*a; break;
-            }
-        }
-        checksum %= 10;
-        shopString = itemsBought + moneyspent + checksum;
-        shopString = (shopString.length() == 0 ? "0" : shopString);
-        while (shopString.length() > 1 && shopString.charAt(0) == '0') shopString = shopString.substring(1); // vorangehende Nullen entfernen
-        long convert = Long.parseLong(shopString);
-        return Long.toHexString(convert);
+        return shopString+itemsBought; //itemString anhängen und zurückgeben
     }
-    ShopItem temp;
+
+    private String addMoneySpent(String shopString){
+        return shopString+Integer.toString(moneySpent);
+    }
+
 
     private ShopItem[] sortCopyById(){  //gibt eine sortierte Kopie der ShopitemList zurück
-	ShopItem[] itemList = shopItemList.clone();
-	for(int i = 0; i<itemList.length;i++){
-	    for(int j = 1; j<itemList.length;j++){
-		if(itemList[j-1].getId() < itemList[j].getId()){
-		    temp = itemList[j];
-		    itemList[j] = itemList[j-1];
-		    itemList[j-1] = temp;
-		}
+        ShopItem temp;
+	    ShopItem[] itemList = shopItemList.clone();
+	    for(int i = 0; i<itemList.length;i++){
+	        for(int j = 1; j<itemList.length;j++){
+		    if(itemList[j-1].getId() < itemList[j].getId()){
+		        temp = itemList[j];
+		        itemList[j] = itemList[j-1];
+		        itemList[j-1] = temp;
+		    }
+	        }
 	    }
-	}
-	return itemList;
+	    return itemList;
     }
 
     private ShopItem getItemById(int id){
@@ -230,5 +287,22 @@ public class Shop{
         }else{
             return false;
         }
+    }
+
+    private int calculateCheckBit(String shopString){
+        int k = 0;
+        int a = 0;
+        int checksum = 0;
+        for(int i = 0;i < shopString.length();i++){
+            a = Character.getNumericValue(shopString.charAt(i));
+            switch(k%4){
+                case 0 : checksum += 7*a; break;
+                case 1 : checksum += 3*a; break;
+                case 2 : checksum += 5*a; break;
+                case 3 : checksum += 13*a; break;
+            }
+        }
+        checksum %= 10;
+        return checksum;
     }
 }

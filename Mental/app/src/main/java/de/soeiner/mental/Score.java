@@ -54,20 +54,6 @@ public class Score extends JSONObject{
         pointsGained = plus;
     }
 
-    public void loadScoreString(String scoreString) {
-        if(scoreString.length()< 2){return;}
-        int overallScoreValue = 0;
-
-        if (checkScoreString(scoreString)) {
-            scoreString = scoreString.substring(0,scoreString.length()-1);
-            overallScoreValue = Integer.parseInt(scoreString);
-        }
-
-        setOverallScoreValue(overallScoreValue);
-        setPlayerLevel(overallScoreValue);
-        setPlayerLevelProgress(overallScoreValue);
-    }
-
     public boolean attributeOf(Player p){ //vergleicht Spieler Objekt mit anderem Spielerobjekt
         if(player.equals(p)){
             return true;
@@ -175,6 +161,19 @@ public class Score extends JSONObject{
         setInt("money", money);
     }
 
+    public void loadScoreString(String scoreString) {
+        if(scoreString.length()< 2){return;}
+        int overallScoreValue = 0;
+
+        if (checkScoreString(scoreString)) {
+            scoreString = scoreString.substring(0,scoreString.length()-1);
+            overallScoreValue = Integer.parseInt(scoreString);
+        }
+
+        setOverallScoreValue(overallScoreValue);
+        setPlayerLevel(overallScoreValue);
+        setPlayerLevelProgress(overallScoreValue);
+    }
 
     public String getScoreString(){
         int score = getOverallScoreValue();
