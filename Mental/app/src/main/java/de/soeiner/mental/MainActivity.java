@@ -6,25 +6,31 @@ import android.view.View;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Button;
-
 import org.java_websocket.WebSocketImpl;
+import org.java_websocket.client.WebSocketClient;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
     PingHttpServer httpServer;
     boolean serverIsActive;
-    boolean DEBUG = true;
+    boolean DEBUG = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        serverIsActive = false;
+        serverIsActive = true;
         if(DEBUG){
             debugServerStart();
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        httpServer.stop();
+    }
     public void buttonJoinServer(View v){
         Uri url = Uri.parse("http://www.mentalist.lima-city.de");
         Intent intent = new Intent(Intent.ACTION_VIEW, url);
@@ -59,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         g.setName("Debug Game");
     }
 
+    //=======================Debug==================================================
     private void debugServerStart(){
         try {
             WebSocketImpl.DEBUG = true;
@@ -75,9 +82,5 @@ public class MainActivity extends AppCompatActivity {
         Game g = new Game();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        httpServer.stop();
-    }
+    //===============================================================
 }
