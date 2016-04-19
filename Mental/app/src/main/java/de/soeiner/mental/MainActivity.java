@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void serverStart(){
         try {
-            WebSocketImpl.DEBUG = true;
+            WebSocketImpl.DEBUG = false; // vllt verhindert das den ganzen output von dem Modul
             int port = PORT;
             Server s = new Server( port );
             s.start();
