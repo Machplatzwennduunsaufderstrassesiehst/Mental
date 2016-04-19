@@ -28,11 +28,11 @@ public class Shop{
         ShopItem item5 = new Title(this, 5, "Global Elite", 2500, false, false, 4);
         ShopItem item6 = new Title(this, 6, "Marco die Schlange", 5000, false, false, 8);
         ShopItem item7 = new Title(this, 7, "Marten", 100000, false, false, 16);
-        ShopItem item8 = new Color(this, 7, "Rot", 500, false, false, 16, "#ff0033");
-        ShopItem item9 = new Color(this, 7, "Grün", 500, false, false, 16, "#40ff00");
-        ShopItem item10 = new Color(this, 7, "Blau", 500, false, false, 16, "#0900ff");
-        ShopItem item11 = new Color(this, 7, "Türkise", 3000, false, false, 16, "#00eeff");
-        ShopItem item12 = new Color(this, 7, "Gold", 10000, false, false, 16, "#dbd000");
+        ShopItem item8 = new Color(this, 8, "Rot", 500, false, false, 4, "#ff0033");
+        ShopItem item9 = new Color(this, 9, "Grün", 500, false, false, 4, "#40ff00");
+        ShopItem item10 = new Color(this, 10, "Blau", 500, false, false, 4, "#0900ff");
+        ShopItem item11 = new Color(this, 11, "Türkise", 3000, false, false, 8, "#00eeff");
+        ShopItem item12 = new Color(this, 12, "Gold", 10000, false, false, 16, "#dbd000");
 
         ShopItem[] s = {item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12};
         return s;
@@ -46,11 +46,11 @@ public class Shop{
         ShopItem item5 = new Title(this, 5, "ein Paket Seelen", 2500, false, false, 4);
         ShopItem item6 = new Title(this, 6, "Marco die Schlange ihm seine Seele", 5000, false, false, 8);
         ShopItem item7 = new Title(this, 7, "Martens Seele", 1000000, false, false, 20);
-        ShopItem item8 = new Color(this, 7, "seelenrot", 100, false, false, 16, "#ff0033");
-        ShopItem item9 = new Color(this, 7, "seelengrün", 100, false, false, 16, "#40ff00");
-        ShopItem item10 = new Color(this, 7, "seelenblau", 100, false, false, 16, "#0900ff");
-        ShopItem item11 = new Color(this, 7, "seelentürkise", 10000, false, false, 16, "#00eeff");
-        ShopItem item12 = new Color(this, 7, "seelengold", 100000, false, false, 16, "#dbd000");
+        ShopItem item8 = new Color(this, 8, "seelenrot", 100, false, false, 4, "#ff0033");
+        ShopItem item9 = new Color(this, 9, "seelengrün", 100, false, false, 4, "#40ff00");
+        ShopItem item10 = new Color(this, 10, "seelenblau", 100, false, false, 4, "#0900ff");
+        ShopItem item11 = new Color(this, 11, "seelentürkise", 10000, false, false, 8, "#00eeff");
+        ShopItem item12 = new Color(this, 12, "seelengold", 100000, false, false, 16, "#dbd000");
 
         ShopItem[] s = {item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12};
         return s;
@@ -106,16 +106,16 @@ public class Shop{
             shopString = shopString.substring(0, shopString.length() - 1);
             itemsBought = shopString.substring(0, 8); // index out of bounds TODO
             itemsBought = Integer.toBinaryString(Integer.parseInt(itemsBought));
-            while(itemsBought.length() < 7){
+            while(itemsBought.length() < 8){
                 itemsBought = "0"+itemsBought;
             }
             for(int i = 0;i<itemsBought.length();i++){
                 if(itemsBought.charAt(i) == '1'){
-                    shopItemList[i].buy();
+                    getItemById(i).buy();
                 }
                 if(itemsBought.charAt(i) == '2'){
-                    shopItemList[i].buy();
-                    shopItemList[i].equip();
+                    getItemById(i).buy();
+                    getItemById(i).equip();
                 }
             }
             setMoneySpent(Integer.parseInt(shopString.substring(8, shopString.length())));
@@ -136,17 +136,17 @@ public class Shop{
 
 
     public String getShopString(){ //die ersten acht zeichen geben die gekauften Gegenstände an, die darauf folgenden, das ausgegebene Geld
-        //13 Items Speicherbar
         //Danach Umwandlung in hexadezimal
 
         int moneyspent = getMoneySpent();
         int itemEquipped = 0;
         String itemsBought = "";
+	ShopItem[] itemList = sortCopyById();
 
-        for(int i = 0; i<shopItemList.length;i++){
-            if(shopItemList[i].getBought() && shopItemList[i].equipped){
+        for(int i = 0; i<itemList.length;i++){
+            if(itemList[i].getBought() && itemList[i].equipped){
                 itemsBought += '2';
-            }else if(shopItemList[i].getBought()){
+            }else if(itemList[i].getBought()){
                 itemsBought += '1';
             }else{
                 itemsBought += '0';
@@ -179,6 +179,32 @@ public class Shop{
         while (shopString.length() > 1 && shopString.charAt(0) == '0') shopString = shopString.substring(1); // vorangehende Nullen entfernen
         long convert = Long.parseLong(shopString);
         return Long.toHexString(convert);
+    }
+    ShopItem temp;
+
+    private ShopItem[] sortCopyById(){  //gibt eine sortierte Kopie der ShopitemList zurück
+	itemList = shopItemList.clone();
+	for(int i = 0; i<itemList.length;i++){
+	    for(int j = 1; j<itemList.length;j++){
+		if(itemList[j-1].getId() < itemList[j].getId()){
+		    temp = itemList[j];
+		    itemList[j] = itemList[j-1];
+		    itemList[j-1] = temp;
+		}
+	    }
+	}
+	return itemList;
+    }
+
+    private ShopItem[] getItemById(int id){
+	id--; //weil die id zum anzeigen bei 1 anfaengt 
+	for(int i = 0; i < shopItemList.length;i++){
+	    if(shopItemList[i].getId() == id){
+		return shopItemList[i];
+	    }
+	}
+	throw new RuntimeException("cant get item for given id");
+	return null;
     }
 
     public static boolean checkShopString(String shopString){
