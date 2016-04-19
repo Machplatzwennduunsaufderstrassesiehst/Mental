@@ -178,10 +178,6 @@ public class Shop{
 
     public String getShopString(){
 
-
-
-	ShopItem[] itemList = sortCopyById();
-
         String shopString = "";
 
         for (int passage = 0; passage < partition.length; passage++) { //von vorne angefangen um zum String hinzufügen zu können
@@ -263,30 +259,12 @@ public class Shop{
 	throw new RuntimeException("cant get item for given id");
     }
 
-    public static boolean checkShopString(String shopString){
-
-        if(shopString == ""){
-            return false;
-        }
-
-        int k = 0;
-        int a = 0;
-        int checksum = 0;
-        for(int i = 0;i < shopString.length()-1;i++){
-            a = Character.getNumericValue(shopString.charAt(i));
-            switch(k%4){
-                case 0 : checksum += 7*a; break;
-                case 1 : checksum += 3*a; break;
-                case 2 : checksum += 5*a; break;
-                case 3 : checksum += 13*a; break;
-            }
-        }
-        checksum %= 10;
-        if(checksum == Character.getNumericValue(shopString.charAt(shopString.length()-1))){
+    public boolean checkShopString(String shopString){
+        if(shopString == ""){ return false; }
+        if(Character.getNumericValue(shopString.charAt(shopString.length())) == calculateCheckBit(shopString.substring(0, shopString.length()-1))){
             return true;
-        }else{
-            return false;
         }
+        return true;
     }
 
     private int calculateCheckBit(String shopString){
