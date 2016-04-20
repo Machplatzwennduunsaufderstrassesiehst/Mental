@@ -106,19 +106,18 @@ public class Shop{
     public void updateMoney(){
         calculateMoney();
         player.getScore().setMoney(getMoney());
-
         //player.sendGameString(); //das ist zu langsam, jedes mal das zu senden
     }
 
     private void loadPartition(String partitionString){
         for(int i = 0; i<partition.length ; i++){
-           partition[i] = (int) partitionString.charAt(i);
+           partition[i] = ((int) partitionString.charAt(i))-20; //+20 um nicht lesbare asciis zu vermeiden
         }
     }
 
     private String addPartitionString(String shopString){
         for(int i = 0; i<partition.length ; i++){
-            shopString += (char) partition[i];
+            shopString += (char) (partition[i]+20); //+20 um nicht lesbare asciis zu vermeiden
         }
         return shopString;
     }
