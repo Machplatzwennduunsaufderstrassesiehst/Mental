@@ -53,7 +53,7 @@ public abstract class ShopItem extends JSONObject {
         return bought;
     }
     public int getId(){
-	return nr;
+	return nr-1;
     }
 
     public void setBought(boolean bought) {
@@ -79,9 +79,9 @@ public abstract class ShopItem extends JSONObject {
     protected void equipSingleItem() {
         for(int i = 0; i<shop.shopItemList.length; i++){
             System.out.println(shop.shopItemList[i]);
-            /*if(shop.shopItemList[i].getType().equals(this.getType())) {
+            if(shop.shopItemList[i].getType().equals(this.getType())) {
                 shop.shopItemList[i].unEquip();
-            }*/
+            }
         }
         setEquipped(true);
     }

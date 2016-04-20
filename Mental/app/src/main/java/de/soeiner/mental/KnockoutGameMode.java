@@ -38,7 +38,7 @@ public class KnockoutGameMode extends GameMode{
             }
             game.broadcastScoreboard();
             game.broadcastPlayerWon(game.activePlayers.get(0).getName(), "Knockout");
-        } else {
+        } else if (game.activePlayers.size() > 1) {
             int index = 0;
             for (int i = 1; i < game.activePlayers.size(); i++) {
                 if (game.activePlayers.get(i).getScore().getScoreValue() <= game.activePlayers.get(index).getScore().getScoreValue()) {

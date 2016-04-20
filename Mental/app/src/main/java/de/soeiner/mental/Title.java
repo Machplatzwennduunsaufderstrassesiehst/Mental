@@ -10,7 +10,7 @@ public class Title extends ShopItem {
 
     @Override
     public String getType() {
-        return null;
+        return "Title";
     }
 
     @Override

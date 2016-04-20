@@ -5,6 +5,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 /**
  * Created by sven on 12.02.16.
  */
@@ -152,11 +154,16 @@ public class Player extends ClientConnection {
                 String name = json.getString("name");
                 this.name = name;
                 this.score.setPlayerName(name);
+                this.score.updateScore(10000);
             }
             if (type.equals("setGameString")) {
                 String g = json.getString("gameString");
                 System.out.println(g);
-                loadGameString(g);
+                try {
+                    loadGameString(g);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
                 System.out.println("set game string");
                 Score[] s = new Score[1];
                 s[0] = getScore();
@@ -168,6 +175,7 @@ public class Player extends ClientConnection {
                 j.put("success", this.shop.buyItem(index));
                 j.put("index", index);
                 send(new PushRequest(j));
+                sendGameString();
             }
             if (type.equals("equipItem")) {
                 int index = Integer.parseInt(json.getString("index"));
@@ -175,6 +183,7 @@ public class Player extends ClientConnection {
                 j.put("success", this.shop.equipItem(index));
                 j.put("index", index);
                 send(new PushRequest(j));
+                sendGameString();
             }
             if (type.equals("getShopItemList")) {
                 ShopItem[] shopItemList = shop.getShopItemList();
@@ -188,7 +197,11 @@ public class Player extends ClientConnection {
                 game.voting.receiveVote(suggestionID, this);
             }
             if (type.equals("leave")) {
-                game.removePlayer(this);
+                try {
+                    game.removePlayer(this);
+                } catch (Exception e) {
+                    System.out.println("[processData] [leave] Player already disconnected.");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -211,10 +224,13 @@ public class Player extends ClientConnection {
     public void loadGameString(String gameString) {
 
         if(gameString.length() == 0){return;}
+        System.out.println("loadPartition(gameString.substring(" + gameString.length() + " - " + partition.length + ", " + gameString.length() + "));"); //partition laden
         loadPartition(gameString.substring(gameString.length() - partition.length, gameString.length())); //partition laden
-        gameString = gameString.substring(gameString.length() - partition.length, gameString.length()); // Partition abschneiden
+        gameString = gameString.substring(0, gameString.length() - partition.length); // Partition abschneiden
         //zurückgestellt //gameString = Integer.toString((int) Long.parseLong(gameString, 16)); // Umwandlung ins Zehnersystem
-        for (int passage = partition.length - 1; passage > 0; passage--) { //von hinten angefangen um den String verkleinern zu können
+        System.out.println(Arrays.toString(partition));
+        for (int passage = partition.length - 1; passage >= 0; passage--) { //von hinten angefangen um den String verkleinern zu können
+            System.out.println("String tempString =  gameString.substring("+gameString.length()+" - "+partition[passage]+", "+gameString.length()+");");//aktuell zu behandelnden String wie nach partition vorgesehen isolieren
             String tempString =  gameString.substring(gameString.length() - partition[passage], gameString.length());//aktuell zu behandelnden String wie nach partition vorgesehen isolieren
             gameString = gameString.substring(0, gameString.length() - partition[passage]); //und abschneiden
 
@@ -260,8 +276,8 @@ public class Player extends ClientConnection {
     }
 
     private void loadPartition(String partitionString){
-        for(int i = 0; i<partition.length ; i++){
-            partition[i] = ((int) partitionString.charAt(i))-33; //+20 um nicht lesbare asciis zu vermeiden
+        for(int i = 0; i<partition.length ; i++) {
+            partition[i] = ((int) partitionString.charAt(i)) - 33; //+20 um nicht lesbare asciis zu vermeiden
         }
     }
 
