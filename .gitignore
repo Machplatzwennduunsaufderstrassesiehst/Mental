@@ -3,3 +3,5 @@
 Mental/app/src/androidTest/java/de/soeiner/mental/ClassicTest.java
 
 Mental/app/build 
+Mental/app/src/main/java/de/soeiner/mental/org
+Mental/app/src/main/java/de/soeiner/mental/Main.java

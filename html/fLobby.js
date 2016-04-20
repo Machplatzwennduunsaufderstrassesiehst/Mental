@@ -59,10 +59,11 @@ function joinServer(connection) {
     navigation.openFrames(lobbyFrame);
     listAvailableGames();
     var name = byID("name").value;
-    var gameString = byID("gameStringInput").value;
+    var gameString_ = byID("gameStringInput").value;
     setCookie("userName", name, 1000);
     serverConnection.send(makeSetCmd("name", name));
-    serverConnection.send(makeSetCmd("gameString", gameString));
+    var gameSetCmd = {type:"setGameString", gameString:gameString_}
+    serverConnection.send(gameSetCmd);
 }
 
 function joinGame(gameId) {
