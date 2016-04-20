@@ -52,6 +52,9 @@ public abstract class ShopItem extends JSONObject {
     public boolean getBought(){
         return bought;
     }
+    public int getId(){
+	return nr;
+    }
 
     public void setBought(boolean bought) {
         if (has("bought")) this.remove("bought");
