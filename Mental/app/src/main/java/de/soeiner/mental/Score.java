@@ -201,6 +201,8 @@ public class Score extends JSONObject{
     public boolean checkScoreString(String scoreString){
         int temp = getOverallScoreValue();
         this.setOverallScoreValue(Integer.parseInt(scoreString.substring(0,scoreString.length()-1)));
+        System.out.println(Integer.parseInt(scoreString.substring(0, scoreString.length() - 1)));
+        System.out.println(scoreString);
         if(this.getScoreString().equals(scoreString)){
             return true;
         }

@@ -154,6 +154,7 @@ public class Player extends ClientConnection {
             }
             if (type.equals("setGameString")) {
                 String g = json.getString("gameString");
+                System.out.println(g);
                 loadGameString(g);
                 System.out.println("set game string");
                 Score[] s = new Score[1];
@@ -199,7 +200,7 @@ public class Player extends ClientConnection {
         // scoreString + shopString + länge von scorestring // TODO + anzahl der ziffern der länge von scorestring (für längere Scorestrings)
     }
     public void loadGameString(String gameString){ //klappt nur wenn der scoreString <= 9 Zeichen lang ist
-        if(gameString.length()< 8){return;}
+        if(gameString.length() < 4){return;}
         this.getScore().loadScoreString(gameString.substring(0, Character.getNumericValue(gameString.charAt(gameString.length()-1))));
         this.getShop().loadShopString(gameString.substring(Character.getNumericValue(gameString.charAt(gameString.length()-1)), gameString.length()-1));
     }
