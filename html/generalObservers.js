@@ -1,17 +1,12 @@
 
 
 function configureObservers() {
-    serverConnection.addObserver(playerWonObserver);
-    serverConnection.addObserver(exerciseObserver);
     serverConnection.addObserver(timeLeftObserver);
-    serverConnection.addObserver(messageObserver);
     serverConnection.addObserver(gameStringObserver);
-    serverConnection.addObserver(suggestionsObserver);
     serverConnection.addObserver(showScoreboardObserver);
     serverConnection.addObserver(countdownObserver);
     serverConnection.addObserver(reopenMainFrameObserver);
     serverConnection.addObserver(playerStateObserver);
-    serverConnection.addObserver(beatBobObserver);
 }
 
 

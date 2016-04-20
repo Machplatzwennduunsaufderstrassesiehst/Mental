@@ -1,11 +1,10 @@
 
-
+var countdownFrame = new Frame("countdownFrame");
 
 // OBSERVERS ===========================================================
 
 var countdownObserver = new Observer("countdown", function(msg) {
-    show("countdownFrame");
+    navigation.openFrames(countdownFrame);
     countdownValue = msg.time;
     countDownId = "bigCountdown";
 });
-

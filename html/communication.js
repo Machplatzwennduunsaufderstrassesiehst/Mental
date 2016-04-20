@@ -154,6 +154,7 @@ function ServerConnection(host, port) {
      
     function addObserver(observer) {
         observers.push(observer);
+        console.log(observers);
     }
     function removeObserver(observer) {
         var pos = observers.indexOf(observer);
@@ -240,9 +241,9 @@ function NetworkManager() {
         s.setOnOpen(function() {
             addServer(s);
             joinServer(s);
-        });
-        s.setOnClose(function() {
-            openWelcomeFrame();
+            s.setOnClose(function() {
+                navigation.openFrames(welcomeFrame);
+            });
         });
     }
     

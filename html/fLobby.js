@@ -1,4 +1,22 @@
 
+var lobbyFrame = new Frame("listGamesFrame");
+var serverLobbyFrame = new Frame("listServersFrame");
+
+lobbyFrame.setOnOpen(function() {
+    byID("gamesList").innerHTML = "laden...";
+    setDoOnEnter(uselessFunction);
+    byID("disconnect").style.display = "inline";
+    listAvailableGames();
+});
+
+serverLobbyFrame.setOnOpen(function() {
+    byID("serverList").innerHTML = "laden...";
+    setDoOnEnter(uselessFunction);
+    byID("disconnect").style.display = "inline";
+});
+
+// FUNCTIONALITY =======================================================
+
 function listAvailableServers() {
     byID("serversList").innerHTML = "";
     while (serverConnections.length > 0) {
@@ -38,7 +56,7 @@ function joinServer(connection) {
     }
     serverConnection = connection;
     configureObservers();
-    openListGamesFrame();
+    navigation.openFrames(lobbyFrame);
     listAvailableGames();
     var name = byID("name").value;
     var gameString = byID("gameStringInput").value;
@@ -52,4 +70,6 @@ function joinGame(gameId) {
 }
 
 // OBSERVERS ===========================================================
+
+
 

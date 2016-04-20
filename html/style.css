@@ -39,11 +39,11 @@ body {
 }
 
 #main {
-    padding: 0.3cm;
+    
 }
 
 .frame {
-    display:none;
+    display: none;
 }
 
 .btn, input, a {
@@ -112,9 +112,9 @@ body {
     display: inline-block;
     opacity: 0;
     overflow-y:hidden; 
-    height:1.2em; 
+    height:1.2em;
     background-color: #c1cfff; 
-    padding: 5px; 
+    padding: 5px;
     border-radius: 5px;
 }
 

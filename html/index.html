@@ -2,6 +2,8 @@
 <html encoding="UNICODE">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> 
+    <meta http-equiv="cache-control" content="no-cache"><!-- TODO -->
+    
     <link rel="stylesheet" href="jQuery/jquery.mobile-1.2.1.min.css" />
     <script src="jQuery/jquery-1.8.3.min.js"></script>
     <script src="jQuery/jquery.mobile-1.2.1.min.js"></script>
@@ -51,7 +53,7 @@
                     <input placeholder='Server IP ("Info" oben rechts bei Host)' type="text" id="ip"/>
                     <a style="max-width:12em;" id="connect" href="#" onclick="onServerJoinClick();" data-role="button"><span data-icon="account-login"></span>Server beitreten</a> 
                     <!--Oder:<br>
-                    <a style="max-width:12em;" id="scan" href="#" onclick="netManager.scan(listAvailableServers);openListServersFrame();" data-role="button"><span data-icon="magnifying-glass"></span>Server suchen</a> -->
+                    <a style="max-width:12em;" id="scan" href="#" onclick="netManager.scan(listAvailableServers);navigation.openFrames(serverLobbyFrame);" data-role="button"><span data-icon="magnifying-glass"></span>Server suchen</a> -->
                 </p>
                 <p>
                 </p>
@@ -62,7 +64,7 @@
                     
                 </div>
                 <p>
-                    <a class="btn" data-role="button" href="#" onclick="openShoppingFrame()" style="max-width:12em;"><span data-icon="cart"></span>Zum Shop</a>
+                    <a class="btn" data-role="button" href="#" onclick="navigation.openFrames(shoppingFrame);" style="max-width:12em;"><span data-icon="cart"></span>Zum Shop</a>
                 </p>
             </div>
             <div id="listServersFrame" class="frame">
@@ -74,10 +76,12 @@
             <div id="countdownFrame" class="frame">
                 <p style="text-align:center; font-size:4em; padding-top:5em;" id="bigCountdown"></p>
             </div>
-            <div id="mainFrame" class="frame" style="text-align:center;">
+            <div style="position:absolute;text-align:center;padding:auto;width:100%;">
                 <div id="messageContainerDivision">
                     <p id="messageContainer"></p>
                 </div>
+            </div>
+            <div id="mainFrame" class="frame" style="text-align:center;padding-top:2.3em;">
                 <form data-ajax="false" onsubmit="sendAnswer(); return false;" action="#"><!-- return false causes the form not to be submitted-->
                     <span style="margin: 0;display:inline-block;">
                         <span id="exercise" style="font-size: 1.2em;"></span>

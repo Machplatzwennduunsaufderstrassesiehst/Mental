@@ -1,4 +1,19 @@
 
+var shoppingFrame = new Frame("shoppingFrame");
+
+shoppingFrame.setOnOpen(function() {
+    updateShopItems();
+    byID("toLobby").style.display = "inline";
+    var oldonclick = byID("toLobby").onclick;
+    byID("toLobby").onlick = function(){byID("toLobby").onlick = oldonclick;navigation.openFrames(lobbyFrame);};
+});
+
+shoppingFrame.setOnClose(function() {
+    byID("shopItemList").style.opacity = 0;
+});
+
+// FUNCTIONALITY =======================================================
+
 var shop = {};
 
 function buyItem(index) {
@@ -27,7 +42,6 @@ function equipItem(index) {
 
 function updateShopItems() {
     byID("shopItemList").innerHTML = "Loading Shop...";
-    byID("shoppingFrame").style.opacity = 0;
     serverConnection.communicate(makeGetCmd("getShopItemList"), function(msg) {
         shop.shopItemList = msg.shopItemList;
         listShopItems();
@@ -63,11 +77,10 @@ function listShopItems() {
             var s = shopItems[i];
             s.style.height = s.children[0].clientHeight + "px";
         }
-        byID("shoppingFrame").style.opacity = 1;
-    },100);
+        byID("shopItemList").style.opacity = 1;
+    },50);
 
 }
 
 //OBSERVERS ============================================================
-
 

@@ -9,7 +9,7 @@ window.onload = function() {
     byID("warning").style.display = "none";
     iconize();
     
-    openWelcomeFrame();
+    navigation.openFrames(welcomeFrame);
     
     // netManager konfigurieren
     netManager.setOnScanReady(function(){setTimeout(listAvailableGames, 1000);});
@@ -32,6 +32,9 @@ window.onload = function() {
     countdown();
     
     byID("ip").onfocus = function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();};
+    byID("ip").onkeyup = function(){
+        if (byID("ip").value == "") setTimeout(function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();}, 1000);
+    }
 }
 
 function updateLocalIP() {
@@ -39,66 +42,16 @@ function updateLocalIP() {
     setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netManager.getLocalIP();},1000);
 }
 
-function openWelcomeFrame() {
-    show("welcome");
-    setDoOnEnter(function(){netManager.scanManually(byID('ip').value);openListGamesFrame();});
-    byID("disconnect").style.display = "none";
-    byID("toLobby").style.display = "none";
-}
-
-function openMainFrame() {
-    show("mainFrame");
-    byID("answer").focus();
-    setDoOnEnter(function(){sendAnswer();});
-    byID("disconnect").style.display = "none";
-    byID("toLobby").style.display = "inline";
-}
-
-function openScoreboardFrame() {
-    show("scoreboardFrame");
-    setDoOnEnter(uselessFunction);
-    byID("disconnect").style.display = "none";
-    byID("toLobby").style.display = "inline";
-    byID("blurHack").focus();
-    byID("voting").innerHTML = '<p>Voting starten... <span id="gameTimeoutCountdown"></span></p>';
-}
-
-function openListGamesFrame() {
-    show("listGamesFrame");
-    byID("gamesList").innerHTML = "laden...";
-    setDoOnEnter(uselessFunction);
-    byID("disconnect").style.display = "inline";
-    byID("toLobby").style.display = "none";
-}
-
-function openListServersFrame() {
-    show("listServersFrame");
-    byID("serverList").innerHTML = "laden...";
-    setDoOnEnter(uselessFunction);
-    byID("disconnect").style.display = "inline";
-    byID("toLobby").style.display = "none";
-}
-
-function openShoppingFrame() {
-    show("shoppingFrame");
-    updateShopItems();
-    byID("disconnect").style.display = "none";
-    byID("toLobby").style.display = "inline";
-    var oldonclick = byID("toLobby").onclick;
-    byID("toLobby").onlick = function(){byID("toLobby").onlick = oldonclick;openListGamesFrame();};
-}
-
 function leaveGame() {
     serverConnection.send(makeSimpleCmd("leave", "x", ""));
-    openListGamesFrame();
-    listAvailableGames();
+    navigation.openFrames(lobbyFrame);
 }
 
 function disconnect() {
     for (var i = 0; i < serverConnections.length; i++) {
         serverConnections[i].close();
     }
-    openWelcomeFrame();
+    navigation.openFrames(welcomeFrame);
 }
 
 

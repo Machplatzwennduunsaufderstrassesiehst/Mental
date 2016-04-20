@@ -1,4 +1,33 @@
 
+var mainFrame = new Frame("mainFrame");
+
+mainFrame.setOnOpen(function() {
+    byID("answer").focus();
+    setDoOnEnter(function(){sendAnswer();});
+    byID("disconnect").style.display = "none";
+    byID("toLobby").style.display = "inline";
+    byID("messageContainerDivision").style.opacity = 1;
+    serverConnection.addObserver(beatBobObserver);
+    serverConnection.addObserver(messageObserver);
+    serverConnection.addObserver(exerciseObserver);
+    serverConnection.addObserver(playerWonObserver);
+    resetBeatBobBar();
+});
+
+mainFrame.setOnClose(function() {
+    serverConnection.removeObserver(beatBobObserver);
+    serverConnection.removeObserver(messageObserver);
+    serverConnection.removeObserver(exerciseObserver);
+    serverConnection.removeObserver(playerWonObserver);
+    byID("messageContainerDivision").style.opacity = 0;
+    byID("beatBob").style.opacity = 0;
+    blur();
+});
+
+
+
+// FUNCTIONALITY =======================================================
+
 function numpad(n) {
     byID("answer").value += String(n);
 }
@@ -38,15 +67,16 @@ function resetBeatBobBar() {
     byID("beatBobBarRight").style.width = 0;
     byID("beatBobBarLeft").style.backgroundColor = "#ff0";
     byID("beatBobBarRight").style.backgroundcolor = "#ff0";
+    byID("beatBob").style.opacity = 1;
 }
+
+
 
 // OBSERVERS ===========================================================
 
 var playerWonObserver = new Observer("playerWon", function(msg) {
     countdownValue = Number(msg.gameTimeout);
     countDownId = "gameTimeoutCountdown";
-    byID("beatBob").style.opacity = 0;
-    setTimeout(function(){byID("beatBob").style.opacity = 0;}, 500);
 });
 
 var exerciseObserver = new Observer("exercise", function(msg) {
@@ -57,16 +87,11 @@ var exerciseObserver = new Observer("exercise", function(msg) {
 });
 
 var reopenMainFrameObserver = new Observer("showExercises", function(msg) {
-    openMainFrame();
-    setTimeout(openMainFrame, 1000); // to be save...
-    serverConnection.removeObserver(updateScoreboardObserver);
+    navigation.openFrames(mainFrame);
     countDownId = "exerciseCountdown";
-    resetBeatBobBar();
 });
 
 var beatBobObserver = new Observer("beatbob", function(msg) {
-    byID("beatBob").style.display = "block";
-    setTimeout(function(){byID("beatBob").style.opacity = 1;}, 100);
     var p = Math.abs(msg.status);
     var p_ = 1 - p;
     var percent = 100 * p;
