@@ -41,7 +41,7 @@ public class BeatBobGameMode extends GameMode {
             game.activePlayers.get(i).exerciseCreator.setDifficulty(10);
         }
         if(game.activePlayers.size() != 0) {
-            bobSolveTime = game.exerciseCreator.getExpectedSolveTime() / game.activePlayers.size()+1; //angenommen ein Spieler benötigt 10 sekunden um eine Aufgabe zu lösen
+            bobSolveTime = (game.exerciseCreator.getExpectedSolveTime() - 1) / game.activePlayers.size()+1; //angenommen ein Spieler benötigt 10 sekunden um eine Aufgabe zu lösen
             bobStartSolveTime = bobSolveTime;
             health = 5 * game.activePlayers.size();
             playerHeadstart = game.exerciseCreator.getExpectedSolveTime();
@@ -187,7 +187,7 @@ public class BeatBobGameMode extends GameMode {
     private double[] calculateSolveTimeFunction(){
         double baseTime = bobStartSolveTime;
         double[] f = {0.0, -health, health}; //x
-        double[] b = {baseTime, 2 * baseTime, 0.5 * baseTime, 0, 0, 0};
+        double[] b = {baseTime, 2 * baseTime, 0.3 * baseTime, 0, 0, 0};
         double[][] A = new double[6][6]; //gleichungen
 
         for (int i = 0; i < 3; i++) {

@@ -210,6 +210,7 @@ public class Player extends ClientConnection {
 
     public void loadGameString(String gameString) {
 
+        if(gameString.length() == 0){return;}
         loadPartition(gameString.substring(gameString.length() - partition.length, gameString.length())); //partition laden
         gameString = gameString.substring(gameString.length() - partition.length, gameString.length()); // Partition abschneiden
         //zurückgestellt //gameString = Integer.toString((int) Long.parseLong(gameString, 16)); // Umwandlung ins Zehnersystem
