@@ -154,7 +154,6 @@ public class Player extends ClientConnection {
                 String name = json.getString("name");
                 this.name = name;
                 this.score.setPlayerName(name);
-                this.score.updateScore(10000);
             }
             if (type.equals("setGameString")) {
                 String g = json.getString("gameString");
@@ -173,6 +172,7 @@ public class Player extends ClientConnection {
                 int index = Integer.parseInt(json.getString("index"));
                 JSONObject j = CmdRequest.makeResponseCmd(type);
                 j.put("success", this.shop.buyItem(index));
+                j.put("price", this.shop.shopItemList[index].getPrice());
                 j.put("index", index);
                 send(new PushRequest(j));
                 sendGameString();
@@ -209,25 +209,12 @@ public class Player extends ClientConnection {
         }
     }
 
-    /*
-    public String getGameString(){ //funktioniert nur für scorestrings der länge <= 9
-        return this.getScore().getScoreString()+this.getShop().getShopString()+this.getScore().getScoreString().length(); //gameString besteht aus
-        // scoreString + gameString + länge von scorestring // TODO + anzahl der ziffern der länge von scorestring (für längere Scorestrings)
-    }
-    public void loadGameString(String gameString){ //klappt nur wenn der scoreString <= 9 Zeichen lang ist
-        if(gameString.length() < 4){return;}
-        this.getScore().loadScoreString(gameString.substring(0, Character.getNumericValue(gameString.charAt(gameString.length()-1))));
-        this.getShop().loadShopString(gameString.substring(Character.getNumericValue(gameString.charAt(gameString.length()-1)), gameString.length()-1));
-    }
-    */
-
     public void loadGameString(String gameString) {
 
         if(gameString.length() == 0){return;}
         System.out.println("loadPartition(gameString.substring(" + gameString.length() + " - " + partition.length + ", " + gameString.length() + "));"); //partition laden
         loadPartition(gameString.substring(gameString.length() - partition.length, gameString.length())); //partition laden
         gameString = gameString.substring(0, gameString.length() - partition.length); // Partition abschneiden
-        //zurückgestellt //gameString = Integer.toString((int) Long.parseLong(gameString, 16)); // Umwandlung ins Zehnersystem
         System.out.println(Arrays.toString(partition));
         for (int passage = partition.length - 1; passage >= 0; passage--) { //von hinten angefangen um den String verkleinern zu können
             System.out.println("String tempString =  gameString.substring("+gameString.length()+" - "+partition[passage]+", "+gameString.length()+");");//aktuell zu behandelnden String wie nach partition vorgesehen isolieren
@@ -269,8 +256,6 @@ public class Player extends ClientConnection {
 
             setPartitionPassage(passage, length); //länge in Partition reservieren
         }
-        //hexadezimal stelle ich hier mal zurück, da sonst die Partitionen evtl. probleme machen
-        // gameString = Integer.toHexString(Integer.parseInt(gameString)); //Umwandlung in Hexadezimal
         gameString = addPartitionString(gameString); //anhängen der Partition
         return gameString;
     }
