@@ -265,6 +265,7 @@ public class Game implements Runnable {
     public void broadcastShowScoreBoard(){
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
+            p.sendGameString();
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SHOW_SCOREBOARD);
             p.makePushRequest(new PushRequest(j));
         }

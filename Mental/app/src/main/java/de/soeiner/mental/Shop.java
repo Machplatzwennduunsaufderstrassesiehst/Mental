@@ -93,7 +93,7 @@ public class Shop{
         calculateMoney();
         player.getScore().setMoney(getMoney());
 
-        player.sendGameString();
+        //player.sendGameString(); //das ist zu langsam, jedes mal das zu senden
     }
 
     public void loadShopString(String hexShopString) {
