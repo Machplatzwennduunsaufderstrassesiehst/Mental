@@ -17,7 +17,7 @@ public abstract class ShopItem extends JSONObject {
     protected Shop shop;
 
 
-    public ShopItem(Shop sh, int n, String na, int p, boolean b, boolean e, int l){
+    public ShopItem(Shop sh, int n, String na, int p, boolean b, boolean e, int l) {
         shop = sh;
         nr = n;
         name = na;
@@ -49,11 +49,13 @@ public abstract class ShopItem extends JSONObject {
     public int getNr() {
         return nr;
     }
-    public boolean getBought(){
+
+    public boolean getBought() {
         return bought;
     }
-    public int getId(){
-	return nr-1;
+
+    public int getId() {
+        return nr;
     }
 
     public void setBought(boolean bought) {
@@ -77,9 +79,9 @@ public abstract class ShopItem extends JSONObject {
     }
 
     protected void equipSingleItem() {
-        for(int i = 0; i<shop.shopItemList.length; i++){
+        for (int i = 0; i < shop.shopItemList.length; i++) {
             System.out.println(shop.shopItemList[i]);
-            if(shop.shopItemList[i].getType().equals(this.getType())) {
+            if (shop.shopItemList[i].getType().equals(this.getType())) {
                 shop.shopItemList[i].unEquip();
             }
         }
@@ -89,10 +91,11 @@ public abstract class ShopItem extends JSONObject {
     public int getLvlUnlock() {
         return lvlUnlock;
     }
-    
+
     public abstract String getType();
+
     public boolean buy() {
-        if(price <= shop.money && !bought && shop.score.getPlayerLevel() >= lvlUnlock){ //wenn das Item noch nicht gekauft wurde und genug geld vorhanden ist
+        if (price <= shop.money && !bought && shop.score.getPlayerLevel() >= lvlUnlock) { //wenn das Item noch nicht gekauft wurde und genug geld vorhanden ist
             shop.money -= price;
             shop.moneySpent += price;
             bought = true;
@@ -101,9 +104,8 @@ public abstract class ShopItem extends JSONObject {
         }
         return false;
     }
+
     public abstract boolean equip();
+
     public abstract boolean unEquip();
-    
-
-
 }

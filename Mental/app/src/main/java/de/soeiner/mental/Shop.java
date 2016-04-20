@@ -129,36 +129,42 @@ public class Shop{
     }
 
     private void loadItems(String itemsBought) {
-        System.out.println(itemsBought);
+        System.out.println("loadItems mit String: "+itemsBought);
         itemsBought = Integer.toString(Integer.parseInt(itemsBought), 3); //Umrechnug ins dreier System
-        System.out.println(itemsBought);
+        System.out.println("ins dreier System umrechnen: "+itemsBought);
         while (itemsBought.length() < shopItemList.length) { //nötige nullen werden angehängt (nicht hardgecoded)
             itemsBought = "0" + itemsBought;
         }
-        System.out.println(itemsBought);
+        System.out.println("nötige nullen vorne angehängt: "+itemsBought);
         for (int i = 0; i < itemsBought.length(); i++) {
             if (itemsBought.charAt(i) == '1') {
-                getItemById(i).buy();
+                getItemById(i).setBought(true);
             }
             if (itemsBought.charAt(i) == '2') {
-                getItemById(i).buy();
-                getItemById(i).equip();
+                getItemById(i).setBought(true);
+                getItemById(i).setEquipped(true);
             }
         }
     }
 
     public void loadShopString(String shopString) {
+        System.out.println("Kontrollbit überprüfen: "+shopString);
         if(checkShopString(shopString)) { //Kontrollbit überprüfen
             shopString = shopString.substring(0, shopString.length()-1); //Kontrollbit abschneiden
+            System.out.println("Kontrollbit abschneiden: " + shopString);
 
             loadPartition(shopString.substring(shopString.length() - partition.length, shopString.length())); //partition laden
+            System.out.println("partition laden: " + shopString + " --> " + "Shop partition: " + Arrays.toString(partition));
             shopString = shopString.substring(0, shopString.length() - partition.length); // Partition abschneiden
-            shopString = Integer.toString((int) Long.parseLong(shopString, 16)); // Umwandlung ins Zehnersystem
-            System.out.println(Arrays.toString(partition));
+            System.out.println("Partition abschneiden: "+shopString);
+            //shopString = Integer.toString((int) Long.parseLong(shopString, 16)); // Umwandlung von hex ins Zehnersystem
+            System.out.println("Umwandlung ins Zehnersystem: "+shopString);;
             for (int passage = partition.length - 1; passage >= 0; passage--) { //von hinten angefangen um den String verkleinern zu können
                 System.out.println("String tempString =  shopString.substring("+shopString.length()+" - "+partition[passage]+", "+shopString.length()+");");
                 String tempString =  shopString.substring(shopString.length() - partition[passage], shopString.length());//aktuell zu behandelnden String wie nach partition vorgesehen isolieren
+                System.out.println(passage+". passage: "+tempString);
                 shopString = shopString.substring(0, shopString.length() - partition[passage]); //und abschneiden
+                System.out.println("Shopstring nachdem tempString abgescnitten wurde: "+shopString);
 
                 //wenn die Passage einen zweck hat die dafür vorgesehene Methode aufrufen
                 if (passage == 7) {}
@@ -168,10 +174,12 @@ public class Shop{
                 if (passage == 3) {}
                 if (passage == 2) {}
                 if (passage == 1) {
-                    loadItems(tempString);
+                    System.out.println("setMoneySpent(Integer.parseInt("+tempString+")");
+                    setMoneySpent(Integer.parseInt(tempString));
                 }
                 if (passage == 0) {
-                    setMoneySpent(Integer.parseInt(tempString));
+                    System.out.println("loadItems("+tempString+")");
+                    loadItems(tempString);
                 }
             }
             updateMoney(); //initialisierung des Geldes mit den gewonnenen Informationen
@@ -207,17 +215,24 @@ public class Shop{
 
             setPartitionPassage(passage, length); //länge in Partition reservieren
         }
-        shopString = Long.toHexString(Long.parseLong(shopString)); //Umwandlung in Hexadezimal -- GEÄNDERT ZU LONG
+        System.out.println("getShopString ohne partition in dezimal: "+shopString);
+        //TODO//shopString = Long.toHexString(Long.parseLong(shopString)); //Umwandlung in Hexadezimal -- GEÄNDERT ZU LONG
+        System.out.println("getShopString ohne partition in hexadezimal: "+shopString);
         shopString = addPartitionString(shopString); //anhängen der Partition
+        System.out.println("getShopString mit partition in hexadezimal: "+shopString);
         shopString += calculateCheckBit(shopString); //Kontrollbit anhängen
+        System.out.println("ergebnis von getShopString(): "+shopString);
         return shopString;
     }
 
     private String addItemString(String shopString){
+        System.out.println("addItemsString()");
         String itemsBought = "";
         ShopItem[] itemList = sortCopyById(); //nach id sortierte liste der Items
+        System.out.println(Arrays.toString(itemList));
 
         for(int i = 0; i<itemList.length;i++){
+            System.out.println("i = "+i+", itemsbought: "+itemsBought);
             if(itemList[i].getBought() && itemList[i].equipped){
                 itemsBought += '2';
             }else if(itemList[i].getBought()){
@@ -226,7 +241,9 @@ public class Shop{
                 itemsBought += '0';
             }
         }
+        System.out.println("fertiger itemsBoughtString: "+itemsBought);
         itemsBought = Integer.toString(Integer.parseInt(itemsBought, 3));
+        System.out.println("als dezimalzahl: "+itemsBought);
         /*while(itemsBought.length() < shopItemList.length){
             itemsBought = "0"+itemsBought; //nullen anhängen
         }*/
@@ -243,7 +260,7 @@ public class Shop{
 	    ShopItem[] itemList = shopItemList.clone();
 	    for(int i = 0; i<itemList.length;i++){
 	        for(int j = 1; j<itemList.length;j++){
-		    if(itemList[j-1].getId() < itemList[j].getId()){
+		    if(itemList[j-1].getId() > itemList[j].getId()){
 		        temp = itemList[j];
 		        itemList[j] = itemList[j-1];
 		        itemList[j-1] = temp;
@@ -254,10 +271,11 @@ public class Shop{
     }
 
     private ShopItem getItemById(int id){
-	id--; //weil die id zum anzeigen bei 1 anfaengt 
+	 id++;//weil die id zum anzeigen bei 1 anfaengt
 	for(int i = 0; i < shopItemList.length;i++){
 	    if(shopItemList[i].getId() == id){
-		    return shopItemList[i];
+            System.out.println("das "+i+"te item hat die passende id = "+id);
+            return shopItemList[i];
 	    }
 	}
 	throw new RuntimeException("cant get item for given id: "+id);
