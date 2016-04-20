@@ -123,9 +123,9 @@ public class Score extends JSONObject{
     public void setScoreValue(int scoreValue) { setInt("scoreValue", scoreValue); }
 
     public void setTitle(String title) {
-        if (has("title")) this.remove("title");
+        if (has("playerTitle")) this.remove("playerTitle");
         try{
-            put("title", title);
+            put("playerTitle", title);
         }catch(Exception e){}
 
     }
@@ -158,7 +158,7 @@ public class Score extends JSONObject{
     }
 
     public void setMoney(int money) {
-        setInt("money", money);
+        setInt("playerMoney", money);
     }
 
     public void loadScoreString(String scoreString) {

@@ -27,7 +27,7 @@ public class Shop{
         ShopItem item1 = new Title(this, 1, "uninstall pls", 100, false, false, 0);
         ShopItem item2 = new Title(this, 2, "scrub", 500, false, false, 1);
         ShopItem item3 = new Title(this, 3, "big noob", 1000, false, false, 1);
-        ShopItem item4 = new Title(this, 4, "Asiate", 2000, false, false, 2);
+        ShopItem item4 = new Title(this, 4, "recruit", 2000, false, false, 2);
         ShopItem item5 = new Title(this, 5, "Global Elite", 2500, false, false, 4);
         ShopItem item6 = new Title(this, 6, "Marco die Schlange", 5000, false, false, 8);
         ShopItem item7 = new Title(this, 7, "Marten", 100000, false, false, 16);
@@ -142,7 +142,7 @@ public class Shop{
             }
             if (itemsBought.charAt(i) == '2') {
                 getItemById(i).setBought(true);
-                getItemById(i).setEquipped(true);
+                getItemById(i).equip();
             }
         }
     }
@@ -216,7 +216,7 @@ public class Shop{
             setPartitionPassage(passage, length); //länge in Partition reservieren
         }
         System.out.println("getShopString ohne partition in dezimal: "+shopString);
-        //TODO//shopString = Long.toHexString(Long.parseLong(shopString)); //Umwandlung in Hexadezimal -- GEÄNDERT ZU LONG
+        //shopString = Long.toHexString(Long.parseLong(shopString)); //Umwandlung in Hexadezimal -- GEÄNDERT ZU LONG
         System.out.println("getShopString ohne partition in hexadezimal: "+shopString);
         shopString = addPartitionString(shopString); //anhängen der Partition
         System.out.println("getShopString mit partition in hexadezimal: "+shopString);
