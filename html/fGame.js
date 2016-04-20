@@ -67,7 +67,10 @@ function resetBeatBobBar() {
     byID("beatBobBarRight").style.width = 0;
     byID("beatBobBarLeft").style.backgroundColor = "#ff0";
     byID("beatBobBarRight").style.backgroundcolor = "#ff0";
-    byID("beatBob").style.opacity = 1;
+}
+
+function showBeatBobBar() {
+    
 }
 
 
