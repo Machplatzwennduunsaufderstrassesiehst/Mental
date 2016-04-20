@@ -6,11 +6,11 @@ mainFrame.setOnOpen(function() {
     setDoOnEnter(function(){sendAnswer();});
     byID("disconnect").style.display = "none";
     byID("toLobby").style.display = "inline";
-    byID("messageContainerDivision").style.opacity = 1;
     serverConnection.addObserver(beatBobObserver);
     serverConnection.addObserver(messageObserver);
     serverConnection.addObserver(exerciseObserver);
     serverConnection.addObserver(playerWonObserver);
+    showBeatBobBar();
     resetBeatBobBar();
 });
 
@@ -20,7 +20,7 @@ mainFrame.setOnClose(function() {
     serverConnection.removeObserver(exerciseObserver);
     serverConnection.removeObserver(playerWonObserver);
     byID("messageContainerDivision").style.opacity = 0;
-    byID("beatBob").style.opacity = 0;
+    unshowBeatBobBar();
     blur();
 });
 
@@ -62,6 +62,32 @@ function sendAnswer() {
     });
 }
 
+
+// MESSAGES ============================================================
+
+var msgIDCounter = 0;
+function displayMessage(message) {
+    var i = 0;
+    var msgCD = byID("messageContainerDivision");
+    var msgC = byID("messageContainer");
+    msgCD.style.opacity = 1;
+    slide(msgC, -1.45);
+    var msgID = "msg" + msgIDCounter;
+    msgC.innerHTML = "<span id='"+msgID+"'>" + message + "<br></span>" + msgC.innerHTML;
+    setTimeout(function(){byID(msgID).style.opacity = 0;if (msgC.children.length <= 1) msgCD.style.opacity = 0;}, 5000);
+    setTimeout(function(){msgC.removeChild(byID(msgID));}, 5500);
+    msgIDCounter++;
+}
+var slide = function(msgC, value) {
+    if (value >= 0) {return;}
+    msgC.style.marginTop = String(value) + "em";
+    value += 0.1;
+    setTimeout(function(){slide(msgC, value);}, 25);
+}
+
+
+// BEATBOB =============================================================
+
 function resetBeatBobBar() {
     byID("beatBobBarLeft").style.width = 0;
     byID("beatBobBarRight").style.width = 0;
@@ -70,7 +96,14 @@ function resetBeatBobBar() {
 }
 
 function showBeatBobBar() {
-    
+    byID("beatBob").style.display = "block";
+    byID("beatBob").style.opacity = 0;
+    setTimeout(function(){byID("beatBob").style.opacity = 1;}, 50);
+}
+
+function unshowBeatBobBar() {
+    byID("beatBob").style.display = "none";
+    byID("beatBob").style.opacity = 0;
 }
 
 

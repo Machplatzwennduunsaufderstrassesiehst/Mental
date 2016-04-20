@@ -26,11 +26,10 @@ var playerStateObserver = new Observer("scoreboard", function(msg) {
     for (var i = 0; i < msg.scoreboard.length; i++) {
         var s = msg.scoreboard[i];
         if (s.highlight) { // the highlighted player is the user
-            player = s;
-            updateDataFields("money", s.money);
-            updateDataFields("playerName", s.playerName);
-            updateDataFields("title", s.title);
-            updateDataFields("playerLevel", s.playerLevel);
+            var copy = ["playerMoney", "playerName", "playerTitle", "playerLevel"];
+            for (var i = 0; i < copy.length; i++) {
+                player.set_(copy[i], s[copy[i]]);
+            }
             break;
         }
     }

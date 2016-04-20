@@ -22,6 +22,7 @@ function buyItem(index) {
             byID("boughtCheck"+index).style.display = "inline";
             backgroundColorAnimate("buyButton"+index, "#afa");
             byID("equipButton"+index).classList.remove("disabled");
+            player.update_("money", -msg.price);
         } else {
             backgroundColorAnimate("buyButton"+index, "#faa");
         }
@@ -53,7 +54,7 @@ function listShopItems() {
     for (var i = 0; i < shop.shopItemList.length; i++) {
         var item = shop.shopItemList[i];
         var unlocked = item.lvlUnlock <= player.playerLevel;
-        var equipPossible = item.bought && !item.equipped;
+        var equipPossible = item.bought;// && !item.equipped;
         var buyPossible = !item.bought && (player.money >= item.price);
         var ocBuy = (true ? "buyItem("+i+");player.money-="+item.price+";" : "");
         var ocEquip = (true ? "equipItem("+i+");" : "");

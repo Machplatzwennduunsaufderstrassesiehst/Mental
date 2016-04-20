@@ -83,19 +83,26 @@ function ServerConnection(host, port) {
     this.host = host;
     var socket = new WebSocket("ws://"+host+":"+String(port));
     log("Connecting to " + "ws://"+host+":"+String(port));
+    showLoader();
     var observers = [];
     var onopen = function(){};
     var onclose = uselessFunction;
     var self = this;
     
     socket.onopen = function(event) {
+        unshowLoader();
         onopen();
         log("Socket opened");
     }
     
     socket.onclose = function(event) {
+        unshowLoader();
         onclose();
         log("Socket closed");
+    }
+    
+    socket.onerror = function(event) {
+        unshowLoader();
     }
     
     this.setOnOpen = function(func) {

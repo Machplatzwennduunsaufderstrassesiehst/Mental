@@ -2,7 +2,6 @@
 
 var serverConnection = null;
 var netManager = new NetworkManager();
-var player = {};
 
 // DO AFTER HTML LOADED
 window.onload = function() {

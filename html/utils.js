@@ -41,28 +41,6 @@ function backgroundColorAnimate(id, color, fallbackTimeout) {
     }, fallbackTimeout);
 }
 
-function createIcon(key, size, offsetpx) {
-    if (size == undefined) size = 2;
-    var size_;
-    if (size < 2) {
-        size_ = "";
-    } else {
-        size_ = "-" + size + "x";
-    }
-    if (offsetpx != undefined) size = offsetpx;
-    var html = '<img style="margin-bottom:-'+size+'px;" src="graphics/icons/open-iconic-master/png/'+key+size_+'.png" ';
-    html += 'alt="'+key+'">&nbsp;';
-    return html;
-}
-
-function iconize() {
-    var icons = document.getElementsByTagName("span");
-    for (var i = 0; i < icons.length; i++) {
-        var icon = icons[i];
-        if (!icon.hasAttribute("data-icon")) continue;
-        icon.innerHTML = createIcon(icon.getAttribute("data-icon"));
-    }
-}
 
 String.prototype.capitalize = function(){
     var self = this.split('');
@@ -78,136 +56,6 @@ String.prototype.capitalize = function(){
 function byID(id) {
     return window.document.getElementById(id);
 }
-
-function Frame(id_) {
-    var id = this.id = id_;
-    var onopen = function(){};
-    var onclose = function(){};
-    var transitionTime = this.transitionTime = 200;
-    var smoothLock = new Lock(); // lock for smoothClose and smoothOpen
-    window.addEventListener("load", function() {
-        byID(id).style.transitionDuration = (transitionTime / 1000) + "s";
-    });
-    
-    var isOpen = false;
-    
-    this.setOnOpen  = function(func) {
-        onopen = func;
-    }
-    
-    this.setOnClose = function(func) {
-        onclose = func;
-    }
-    
-    var notifyOpen = this.notifyOpen = function() {
-        if (isOpen) return;
-        isOpen = true;
-        onopen();    
-    }
-    
-    var notifyClose = this.notifyClose = function() {
-        if (!isOpen) return;
-        isOpen = false;
-        onclose();    
-    }
-
-    var smoothClose = this.smoothClose = function() {
-        var element = byID(id);
-        element.style.display = "none";
-        element.style.opacity = 0;
-        return;
-        if (element.style.display == "none") return;
-        if (!smoothLock.acquire(smoothClose)) return;
-        console.log(element);
-        console.log("close");
-        element.setAttribute("data-old-style-display", element.style.display);
-        element.style.opacity = 0;
-        setTimeout(function(){element.style.display = "none";smoothLock.release();isVisible = false;}, transitionTime);
-    }
-
-    var smoothOpen = this.smoothOpen = function() {
-        var element = byID(id);
-        element.style.display = "block";
-        element.style.opacity = 0;
-        setTimeout(function(){element.style.opacity = 1;},50);
-        return;
-        if (!smoothLock.acquire(smoothOpen)) return;
-        console.log(element);
-        console.log("open");
-        var d = element.getAttribute("data-old-style-display");
-        if (d == null || d == "none" || d == "") d = "block";
-        element.style.display = d;
-        setTimeout(function(){element.style.opacity = 1;smoothLock.release();isVisible = true;}, transitionTime);
-    }
-    
-    navigation.registerFrame(this);
-}
-
-// hat wieder einen Sinn
-function Navigation() {
-    var frames = []; // list with <Frame> objects
-    
-    this.registerFrame = function(frame) {
-        window.addEventListener("load", function() {
-            var frameId = frame.id;
-            frames.push(frame);
-        });
-    }
-    
-    var closeAll = this.closeAll = function() {
-        closeFrames(frames);
-        byID("disconnect").style.display = "none";
-        byID("toLobby").style.display = "none";
-    }
-    
-    var openFrames = this.openFrames = function() {
-        if (arguments.length < 1) return;
-        if (!arguments[0].id) arguments = arguments[0];
-        closeAll();
-        var frames_ = arguments; // (arguments.length ? arguments : [arguments]);
-        for (i = 0; i < frames_.length; i++) {
-            var f = frames_[i];
-            f.smoothOpen();
-            f.notifyOpen();
-        }
-
-        if (isMobile()) hideAddressBar();
-    }
-    
-    // takes frames as arguments
-    var closeFrames = this.closeFrames = function() {
-        if (arguments.length < 1) return;
-        if (!arguments[0].id) arguments = arguments[0];
-        for (i = 0; i < arguments.length; i++) {
-            var f = arguments[i];
-            f.notifyClose();
-            f.smoothClose();
-        }
-    }
-}
-// man braucht davon nur eine instanz
-var navigation = new Navigation();
-
-/*
-function closeAll() {
-    var frames = window.document.getElementsByClassName("frame");
-    for (var i = 0; i < frames.length; i++) {
-        frames[i].style.display = "none";
-    }
-}
-
-function show() {
-    if (arguments[0].callee) arguments = arguments[0];
-    closeAll();
-    for (i = 0; i < arguments.length; i++) {
-        byID(arguments[i]).style.opacity = 0;
-        byID(arguments[i]).style.display = "block";
-        byID(arguments[i]).style.opacity = 1;
-    }
-
-    if (isMobile()) hideAddressBar();
-}
-*/
 
 var countdownValue = 0;
 var countDownId = "countdownHack";
@@ -235,26 +83,6 @@ document.onkeydown = function(event) {
 
 function setDoOnEnter(f) {
     doOnEnter = f;
-}
-
-var msgIDCounter = 0;
-function displayMessage(message) {
-    var i = 0;
-    var msgCD = byID("messageContainerDivision");
-    var msgC = byID("messageContainer");
-    msgCD.style.opacity = 1;
-    slide(msgC, -1.45);
-    var msgID = "msg" + msgIDCounter;
-    msgC.innerHTML = "<span id='"+msgID+"'>" + message + "<br></span>" + msgC.innerHTML;
-    setTimeout(function(){byID(msgID).style.opacity = 0;if (msgC.children.length <= 1) msgCD.style.opacity = 0;}, 5000);
-    setTimeout(function(){msgC.removeChild(byID(msgID));}, 5500);
-    msgIDCounter++;
-}
-var slide = function(msgC, value) {
-    if (value >= 0) {return;}
-    msgC.style.marginTop = String(value) + "em";
-    value += 0.1;
-    setTimeout(function(){slide(msgC, value);}, 25);
 }
 
 function fullScreen(element) {
