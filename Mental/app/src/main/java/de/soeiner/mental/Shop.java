@@ -124,7 +124,7 @@ public class Shop{
         return shopString;
     }
 
-    public void setPartitionPassage(int passage, int size) {
+    private void setPartitionPassage(int passage, int size) {
         partition[passage] = size;
     }
 
@@ -145,23 +145,15 @@ public class Shop{
     }
 
     public void loadShopString(String shopString) {
-        System.out.println("String entgegengenommen: "+shopString);
-        System.out.println("Kontrollbit prüfen");
         if(checkShopString(shopString)) { //Kontrollbit überprüfen
-            System.out.println("Kontrollbit richtig");
             shopString = shopString.substring(0, shopString.length()-1); //Kontrollbit abschneiden
-            System.out.println("Kontrollbit abgeschnitten: "+shopString);
 
-            loadPartition(shopString.substring(shopString.length() - 8, shopString.length())); //partition laden
-            System.out.println("Partition laden: " + Arrays.toString(partition));
-            shopString = shopString.substring(shopString.length() - 8, shopString.length()); // Partition abschneiden
-            System.out.println("Partition abschneiden: "+shopString);
+            loadPartition(shopString.substring(shopString.length() - partition.length, shopString.length())); //partition laden
+            shopString = shopString.substring(shopString.length() - partition.length, shopString.length()); // Partition abschneiden
             shopString = Integer.toString((int) Long.parseLong(shopString, 16)); // Umwandlung ins Zehnersystem
-            System.out.println("Umwandlung ins ZehnerSystem: "+shopString);
             for (int passage = partition.length - 1; passage > 0; passage--) { //von hinten angefangen um den String verkleinern zu können
                 String tempString =  shopString.substring(shopString.length() - partition[passage], shopString.length());//aktuell zu behandelnden String wie nach partition vorgesehen isolieren
                 shopString = shopString.substring(0, shopString.length() - partition[passage]); //und abschneiden
-                System.out.println("passage "+passage+" abscheniden: "+shopString);
 
                 //wenn die Passage einen zweck hat die dafür vorgesehene Methode aufrufen
                 if (passage == 7) {}
@@ -172,11 +164,9 @@ public class Shop{
                 if (passage == 2) {}
                 if (passage == 1) {
                     loadItems(tempString);
-                    System.out.println("items laden mit: "+tempString);
                 }
                 if (passage == 0) {
                     setMoneySpent(Integer.parseInt(tempString));
-                    System.out.println("MoneySpent setzten mit: " + tempString);
                 }
             }
             updateMoney(); //initialisierung des Geldes mit den gewonnenen Informationen
