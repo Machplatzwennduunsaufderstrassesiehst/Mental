@@ -15,6 +15,7 @@ public class Player extends ClientConnection {
     private Game game;
     private Shop shop;
     ExerciseCreator exerciseCreator;
+    int[] partition = new int[4]; //4 Plätze
     public boolean finished;
 
     public Player (WebSocket socket) {
@@ -195,13 +196,82 @@ public class Player extends ClientConnection {
         }
     }
 
+    /*
     public String getGameString(){ //funktioniert nur für scorestrings der länge <= 9
         return this.getScore().getScoreString()+this.getShop().getShopString()+this.getScore().getScoreString().length(); //gameString besteht aus
-        // scoreString + shopString + länge von scorestring // TODO + anzahl der ziffern der länge von scorestring (für längere Scorestrings)
+        // scoreString + gameString + länge von scorestring // TODO + anzahl der ziffern der länge von scorestring (für längere Scorestrings)
     }
     public void loadGameString(String gameString){ //klappt nur wenn der scoreString <= 9 Zeichen lang ist
         if(gameString.length() < 4){return;}
         this.getScore().loadScoreString(gameString.substring(0, Character.getNumericValue(gameString.charAt(gameString.length()-1))));
         this.getShop().loadShopString(gameString.substring(Character.getNumericValue(gameString.charAt(gameString.length()-1)), gameString.length()-1));
+    }
+    */
+
+    public void loadGameString(String gameString) {
+
+        loadPartition(gameString.substring(gameString.length() - partition.length, gameString.length())); //partition laden
+        gameString = gameString.substring(gameString.length() - partition.length, gameString.length()); // Partition abschneiden
+        //zurückgestellt //gameString = Integer.toString((int) Long.parseLong(gameString, 16)); // Umwandlung ins Zehnersystem
+        for (int passage = partition.length - 1; passage > 0; passage--) { //von hinten angefangen um den String verkleinern zu können
+            String tempString =  gameString.substring(gameString.length() - partition[passage], gameString.length());//aktuell zu behandelnden String wie nach partition vorgesehen isolieren
+            gameString = gameString.substring(0, gameString.length() - partition[passage]); //und abschneiden
+
+            //wenn die Passage einen zweck hat die dafür vorgesehene Methode aufrufen
+            if (passage == 3) {}
+            if (passage == 2) {}
+            if (passage == 1) {
+                shop.loadShopString(tempString);
+            }
+            if (passage == 0) {
+                score.loadScoreString(tempString);
+            }
+        }
+    }
+
+    public String getGameString(){
+
+        String gameString = "";
+
+        for (int passage = 0; passage < partition.length; passage++) { //von vorne angefangen um zum String hinzufügen zu können
+            int length = 0; //länge der einzelnen Passagen
+
+            //wenn die Passage einen zweck hat die dafür vorgesehene Methode aufrufen und um den entsprechenden String erweitern
+            if (passage == 0) {
+                length = gameString.length(); //vorherige länge speichern
+                gameString += score.getScoreString(); //passage hinzufügen
+                length = gameString.length() - length; //differenz ermitteln
+            }
+            if (passage == 1) {
+                length = gameString.length(); //vorherige länge speichern
+                gameString += shop.getShopString(); //passage hinzufügen
+                length = gameString.length() - length; //differenz ermitteln
+            }
+            if (passage == 2) {}
+            if (passage == 3) {}
+
+            setPartitionPassage(passage, length); //länge in Partition reservieren
+        }
+        //hexadezimal stelle ich hier mal zurück, da sonst die Partitionen evtl. probleme machen
+        // gameString = Integer.toHexString(Integer.parseInt(gameString)); //Umwandlung in Hexadezimal
+        gameString = addPartitionString(gameString); //anhängen der Partition
+        return gameString;
+    }
+
+    private void loadPartition(String partitionString){
+        for(int i = 0; i<partition.length ; i++){
+            partition[i] = ((int) partitionString.charAt(i))-33; //+20 um nicht lesbare asciis zu vermeiden
+        }
+    }
+
+    private String addPartitionString(String gameString){
+        for(int i = 0; i<partition.length ; i++){
+            gameString += (char) (partition[i]+33); //+20 um nicht lesbare asciis zu vermeiden
+        }
+        return gameString;
+    }
+
+    public void setPartitionPassage(int passage, int size) {
+        partition[passage] = size;
     }
 }
