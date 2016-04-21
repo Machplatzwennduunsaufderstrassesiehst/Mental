@@ -69,7 +69,7 @@ function joinGame(gameId) {
     navigation.closeFrames(lobbyFrame);
     byID("toLobby").style.display = "inline";
     serverConnection.send(makeSimpleCmd("join", "gameId", gameId));
-    showMsgBox("Warten auf andere Spieler...");
+    showMsgBox("Warten auf Spieler...");
 }
 
 // OBSERVERS ===========================================================

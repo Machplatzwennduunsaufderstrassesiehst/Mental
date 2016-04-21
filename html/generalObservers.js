@@ -19,10 +19,6 @@ var gameStringObserver = new Observer("gameString", function(msg) {
     byID("gameString").innerHTML = "Dein Spielstand: " + gs;
 });
 
-var timeLeftObserver = new Observer("timeLeft", function(msg) {
-    countdownValue = msg.time;
-});
-
 var playerStateObserver = new Observer("scoreboard", function(msg) {
     for (var i = 0; i < msg.scoreboard.length; i++) {
         var s = msg.scoreboard[i];

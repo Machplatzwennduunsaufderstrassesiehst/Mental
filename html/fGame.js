@@ -111,8 +111,7 @@ function unshowBeatBobBar() {
 // OBSERVERS ===========================================================
 
 var playerWonObserver = new Observer("playerWon", function(msg) {
-    countdownValue = Number(msg.gameTimeout);
-    countDownId = "gameTimeoutCountdown";
+    countdown("gameTimeoutCountdown", Number(msg.gameTimeout), true);
 });
 
 var exerciseObserver = new Observer("exercise", function(msg) {
@@ -124,7 +123,6 @@ var exerciseObserver = new Observer("exercise", function(msg) {
 
 var reopenMainFrameObserver = new Observer("showExercises", function(msg) {
     navigation.openFrames(mainFrame);
-    countDownId = "exerciseCountdown";
 });
 
 var beatBobObserver = new Observer("beatbob", function(msg) {
@@ -144,6 +142,10 @@ var beatBobObserver = new Observer("beatbob", function(msg) {
         byID("beatBobBarRight").style.backgroundColor = c;
         byID("beatBobBarRight").style.boxShadow = "0px 0px 3px " + c;
     }
+});
+
+var timeLeftObserver = new Observer("timeLeft", function(msg) {
+    exerciseCountdownValue = msg.time;
 });
 
 var messageObserver = new Observer("message", function(msg){displayMessage(msg.message);});

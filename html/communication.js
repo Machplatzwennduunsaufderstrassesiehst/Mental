@@ -83,7 +83,7 @@ function getConnectionByHost(host) {
 function ServerConnection(host, port) {
     serverConnections.push(this);
     this.host = host;
-    var socket = new WebSocket("ws://"+host+":"+String(port));
+    var socket = new WebSocket("ws://"+host+":"+String(port), "blob");
     log("Connecting to " + "ws://"+host+":"+String(port));
     var observers = [];
     var onopen = function(){};

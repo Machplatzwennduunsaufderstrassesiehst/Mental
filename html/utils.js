@@ -58,20 +58,26 @@ function byID(id) {
     return window.document.getElementById(id);
 }
 
-var countdownValue = 0;
-var countDownId = "countdownHack";
+var exerciseCountdownValue = 0;
 
-function countdown() {
-    setTimeout(function(){countdown();}, 1000);
-    if (!byID(countDownId)) return;
-    if (countdownValue < 0) {
-        byID(countDownId).style.display = "none";
-    } else {
-        byID(countDownId).style.display = "inline";
-        byID(countDownId).innerHTML = String(countdownValue) + "s";
+function countdown(countdownId, value, recall, onCountdown, template) {
+    if (!template) template = "#s";
+    var e = byID(countdownId);
+    if (!e) {
+        e = {style:{}};
+        log("countdown: element not found: " + countdownId);
     }
-    countdownValue -= 1;
+    if (value < 0) {
+        e.style.display = "none";
+    } else {
+        e.style.display = "inline";
+        e.innerHTML = template.replace("#", String(value));
+        if (recall) setTimeout(function(){countdown(countdownId, Number(value)-1, true, onCountdown, template);}, 1000);
+        if (onCountdown) onCountdown(e, value);
+    }
 }
+
+setInterval(function(){countdown("exerciseCountdown", exerciseCountdownValue, false);exerciseCountdownValue--;}, 1000);
 
 
 var doOnEnter = uselessFunction;

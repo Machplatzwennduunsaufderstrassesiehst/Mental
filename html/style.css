@@ -105,6 +105,7 @@ body {
     width: 2em;
     margin: 0 0.6em 0.6em 0;
     font-weight: bold;
+    opacity:0;
 }
 
 #messageContainerDivision {
