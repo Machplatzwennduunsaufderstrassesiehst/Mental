@@ -13,9 +13,10 @@ function configureObservers() {
 
 
 var gameStringObserver = new Observer("gameString", function(msg) {
-    setCookie("gameString", msg.gameString, 1000);
-    byID("gameStringInput").value = msg.gameString;
-    byID("gameString").innerHTML = "Dein Spielstand: " + msg.gameString;
+    var gs = btoa(msg.gameString); // base64 encode
+    setCookie("gameString", gs, 1000);
+    byID("gameStringInput").value = gs;
+    byID("gameString").innerHTML = "Dein Spielstand: " + gs;
 });
 
 var timeLeftObserver = new Observer("timeLeft", function(msg) {
