@@ -111,6 +111,7 @@ public class BeatBobGameMode extends GameMode {
                 answerLock.notify();
             }
             if (status <= -health) { //wenn spieler tot sind
+                try { new Thread().sleep(3000); }catch(Exception e){}
                 game.individualExercises = false;
                 gameIsRunning = false; // schleife in run() beenden
                 game.broadcastMessage("Bob hat gewonnen");

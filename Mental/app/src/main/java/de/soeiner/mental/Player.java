@@ -59,6 +59,62 @@ public class Player extends ClientConnection {
         makePushRequest(request);
     }
 
+    public void sendTrainMap(JSONObject[][] trainMap) {
+
+        JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_TRAINMAP);
+        try {
+            JSONArray[] trainJSONArray = new JSONArray[trainMap.length]; //erstellt eigenes 2d JSON array
+            for(int i = 0; i<trainMap.length;i++){
+                JSONObject[] temp = new JSONObject[trainMap[i].length];
+                for (int j = 0; j < temp.length; j++) {
+                    temp[j] = trainMap[i][j];
+                }
+                JSONArray tempArray = new JSONArray(temp);
+                trainJSONArray[i] = tempArray;
+            }
+            jsonObject.put("trainMap", trainJSONArray);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        PushRequest request = new PushRequest(jsonObject);
+        makePushRequest(request);
+    }
+
+    public void sendSwitchChange(TrainTrack changedSwitch){
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SWITCHCHANGE);
+            try {
+                j.put("switchChange", changedSwitch);
+                makePushRequest(new PushRequest(j));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+    }
+
+    public void sendTrainDecision(int trainId, int switchId, int switchedTo){
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TRAINDECISION);
+        try {
+            j.put("trainId", trainId);
+            j.put("switchId", switchId);
+            j.put("switchedTo", switchedTo);
+            makePushRequest(new PushRequest(j));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendNewTrain(Train train){
+        int trainId = train.getId();
+        String color = train.getColor();
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_NEWTRAIN);
+        try {
+            j.put("trainId", trainId);
+            j.put("color", color);
+            makePushRequest(new PushRequest(j));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendShopItemList(ShopItem[] shopItemList) {
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_SHOP_ITEM_LIST);
         try {

@@ -58,6 +58,10 @@ public abstract class ExerciseCreator {
         return exerciseString;
     }
 
+    public TrainTrack[][] createTrainMap(){
+        return null;
+    }
+
     public int getFahkinBitchExerciseResetValue() {
         return 10;
     }
