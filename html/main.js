@@ -5,11 +5,15 @@ var netManager = new NetworkManager();
 
 // DO AFTER HTML LOADED
 window.onload = function() {
-    byID("warning").style.display = "none";
+    navigation.openFrames(welcomeFrame);
     iconize();
     
-    navigation.openFrames(welcomeFrame);
-    
+    var dimension = byID('ip').getClientRects()[0];
+    byID('welcome').innerHTML += '\
+        <span style="text-align:right;position:absolute;top:'+dimension.y+'px;right:0px;width:10%;padding:0;">\
+            <span class="btnInput" onclick="byID('+"'ip'"+').value = netManager.getLocalIPSub();">'+createIcon('reload')+'</span>\
+        </span>';
+        
     // netManager konfigurieren
     netManager.setOnScanReady(function(){setTimeout(listAvailableGames, 1000);});
     
@@ -30,10 +34,13 @@ window.onload = function() {
     
     countdown();
     
-    byID("ip").onfocus = function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();};
+    setTimeout(function(){if (!byID('ip').value.contains(netManager.getLocalIPSub())) byID('ip').value = netManager.getLocalIPSub();}, 1000);
+    /*byID("ip").onfocus = function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();};
     byID("ip").onkeyup = function(){
-        if (byID("ip").value == "") setTimeout(function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();}, 1000);
-    }
+        if (byID("ip").value == "") setTimeout(function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();}, 2000);
+    }*/ // weiß nicht, das kann auch echt nervig sein
+    
+    byID("warning").style.display = "none";
 }
 
 function updateLocalIP() {

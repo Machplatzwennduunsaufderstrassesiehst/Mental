@@ -1,4 +1,4 @@
-* {transition: top 1s, width 0.5s, height 0.5s, opacity 0.5s, color 0.5s, background 0.5s, box-shadow 0.5s;}
+* {transition: font-size 0.5s, padding 0.5s, top 1s, width 0.5s, height 0.5s, opacity 0.5s, color 0.5s, background 0.5s, box-shadow 0.5s;}
 
 table {border: none; margin:auto;} table * {border:none}
 
@@ -53,6 +53,14 @@ body {
     border: 1px solid #abf;
 }
 
+.btnInput {
+    float:right;
+    margin-right:18px;
+    margin-top:2px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
 .btn {
     min-width: 3em;
     text-align: center;
@@ -99,6 +107,24 @@ body {
     text-align: left;
 }
 
+.exerciseUI {
+    box-shadow: 0px 0px 5px #bbb;
+    border-radius: 8px;
+    display:inline-block;
+}
+
+.exerciseUI * {
+    padding:5px;
+    background-color:white;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    margin:0;
+    height:auto;
+    font-size: 1em;
+    min-width: 100px;
+}
+
 #numpadTable .btn {
     min-width: 0;
     padding: 1.8em;
@@ -115,7 +141,7 @@ body {
     overflow-y:hidden; 
     height:1.2em;
     background-color: #c1cfff; 
-    padding: 5px;
+    padding: 0px 5px 5px 5px;
     border-radius: 5px;
 }
 
@@ -123,6 +149,28 @@ body {
     display: none;
     padding-left: 0.4cm;
     font-weight: bold;
+}
+
+
+
+#beatBob {
+    width: 70%;
+    margin: 10px 15% 5px 15%;
+    padding: auto;
+    display: none;
+}
+
+#beatBobBarLeft {
+    background-color: #f22;
+    border-radius: 4px 0px 0px 4px;
+    float:right;
+    transition: background 2s, width 2s;
+}
+
+#beatBobBarRight {
+    background-color: #2f2;
+    border-radius: 0px 4px 4px 0px;
+    transition: background 2s, width 2s;
 }
 
 
@@ -175,6 +223,9 @@ body {
     height: 0.75em;
 }
 
+
+
+
 #shopUserInfo {
     color: #444;
     border-radius: 5px;
@@ -193,6 +244,7 @@ body {
     padding: 10px;
     margin-bottom: 12px;
     border: 1px solid #abf;
+    transition-duration: 0;
 }
 
 .shopItem td {
@@ -203,28 +255,6 @@ body {
 .shopItem .btn {
     padding: 0.5em;
     width: 6.5em;
-}
-
-
-
-#beatBob {
-    width: 70%;
-    margin: 5px 15% 5px 15%;
-    padding: auto;
-    display: none;
-}
-
-#beatBobBarLeft {
-    background-color: #f22;
-    border-radius: 4px 0px 0px 4px;
-    float:right;
-    transition: background 2s, width 2s;
-}
-
-#beatBobBarRight {
-    background-color: #2f2;
-    border-radius: 0px 4px 4px 0px;
-    transition: background 2s, width 2s;
 }
 
 

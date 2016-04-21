@@ -10,7 +10,6 @@ mainFrame.setOnOpen(function() {
     serverConnection.addObserver(messageObserver);
     serverConnection.addObserver(exerciseObserver);
     serverConnection.addObserver(playerWonObserver);
-    showBeatBobBar();
     resetBeatBobBar();
 });
 
@@ -126,6 +125,7 @@ var reopenMainFrameObserver = new Observer("showExercises", function(msg) {
 });
 
 var beatBobObserver = new Observer("beatbob", function(msg) {
+    showBeatBobBar();
     var p = Math.abs(msg.status);
     var p_ = 1 - p;
     var percent = 100 * p;
