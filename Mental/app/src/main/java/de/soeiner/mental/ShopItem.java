@@ -99,6 +99,7 @@ public abstract class ShopItem extends JSONObject {
             shop.money -= price;
             shop.moneySpent += price;
             bought = true;
+            setBought(true);
             shop.updateMoney();
             return true;
         }

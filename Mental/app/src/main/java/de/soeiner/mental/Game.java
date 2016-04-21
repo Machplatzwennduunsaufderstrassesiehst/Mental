@@ -33,6 +33,7 @@ public class Game implements Runnable {
                 jsonGameObject.put("name", g.getName());
                 jsonGameObject.put("description", g.getDescription());
                 jsonGameObject.put("players", new JSONArray(g.getScoreboard()));
+                jsonGameObject.put("gameIsRunning", g.gameMode.gameIsRunning);
                 jsonGameArray.put(jsonGameObject);
             }
             return jsonGameArray;

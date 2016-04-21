@@ -167,7 +167,9 @@ public class Score extends JSONObject{
 
         if (checkScoreString(scoreString)) {
             scoreString = scoreString.substring(0,scoreString.length()-1);
+            System.out.println("Setze overallScoreValue mit String: "+scoreString);
             overallScoreValue = Integer.parseInt(scoreString);
+            System.out.println("overallscoreValue ist nun: "+overallScoreValue);
         }
 
         setOverallScoreValue(overallScoreValue);
@@ -206,7 +208,7 @@ public class Score extends JSONObject{
         if(this.getScoreString().equals(scoreString)){
             return true;
         }
-            this.setOverallScoreValue(temp);
-            return false;
+        this.setOverallScoreValue(temp);
+        return false;
     }
 }

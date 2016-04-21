@@ -41,7 +41,7 @@ public class BeatBobGameMode extends GameMode {
             game.activePlayers.get(i).exerciseCreator.setDifficulty(10);
         }
         if(game.activePlayers.size() != 0) {
-            bobSolveTime = (game.exerciseCreator.getExpectedSolveTime() - 1) / game.activePlayers.size()+1; //angenommen ein Spieler benötigt 10 sekunden um eine Aufgabe zu lösen
+            bobSolveTime = (game.exerciseCreator.getExpectedSolveTime()) / game.activePlayers.size()+1; //angenommen ein Spieler benötigt 10 sekunden um eine Aufgabe zu lösen
             bobStartSolveTime = bobSolveTime;
             health = 5 * game.activePlayers.size();
             playerHeadstart = game.exerciseCreator.getExpectedSolveTime();
@@ -104,6 +104,7 @@ public class BeatBobGameMode extends GameMode {
     public void checkObjective(){
         synchronized (answerLock) {
             if (status >= health) { //wenn bob tot ist
+                giveReward();
                 game.individualExercises = false;
                 gameIsRunning = false; // schleife in run() beenden
                 game.broadcastPlayerWon("die Spieler", getGameModeString());
@@ -122,6 +123,16 @@ public class BeatBobGameMode extends GameMode {
 
     public String getGameModeString() {
         return "beatBob";
+    }
+
+    private void giveReward(){ //TODO
+        game.broadcastMessage("Bob got rekt!");
+        for(int i = 0; i<game.activePlayers.size();i++){
+            game.activePlayers.get(i).getShop().addMoney(50);
+        }
+        try {
+            new Thread().sleep(3000);
+        }catch(Exception e){}
     }
 
     @Override

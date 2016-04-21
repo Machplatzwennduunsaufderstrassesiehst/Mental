@@ -84,6 +84,10 @@ public class Shop{
         return shopItemList[index].equip();
     }
 
+    public boolean unequipItem(int index){
+        return shopItemList[index].unEquip();
+    }
+
     public void calculateMoney() {
         money = score.getOverallScoreValue() - moneySpent;
     }
@@ -113,13 +117,13 @@ public class Shop{
 
     private void loadPartition(String partitionString){
         for(int i = 0; i<partition.length ; i++){
-           partition[i] = ((int) partitionString.charAt(i))-33; //+20 um nicht lesbare asciis zu vermeiden
+           partition[i] = ((int) partitionString.charAt(i))-35; //+20 um nicht lesbare asciis zu vermeiden
         }
     }
 
     private String addPartitionString(String shopString){
         for(int i = 0; i<partition.length ; i++){
-            shopString += (char) (partition[i]+33); //+20 um nicht lesbare asciis zu vermeiden
+            shopString += (char) (partition[i]+35); //+20 um nicht lesbare asciis zu vermeiden
         }
         return shopString;
     }
@@ -152,7 +156,7 @@ public class Shop{
         if(checkShopString(shopString)) { //Kontrollbit überprüfen
             shopString = shopString.substring(0, shopString.length()-1); //Kontrollbit abschneiden
             System.out.println("Kontrollbit abschneiden: " + shopString);
-
+            score.updateScore(0);
             loadPartition(shopString.substring(shopString.length() - partition.length, shopString.length())); //partition laden
             System.out.println("partition laden: " + shopString + " --> " + "Shop partition: " + Arrays.toString(partition));
             shopString = shopString.substring(0, shopString.length() - partition.length); // Partition abschneiden
@@ -184,7 +188,7 @@ public class Shop{
             }
             updateMoney(); //initialisierung des Geldes mit den gewonnenen Informationen
             easterEggs(); //Spielereien
-        }
+       }
     }
 
 
@@ -220,7 +224,7 @@ public class Shop{
         System.out.println("getShopString ohne partition in hexadezimal: "+shopString);
         shopString = addPartitionString(shopString); //anhängen der Partition
         System.out.println("getShopString mit partition in hexadezimal: "+shopString);
-        shopString += calculateCheckBit(shopString); //Kontrollbit anhängen
+        shopString += calculateCheckBit(shopString); //Kontrollbit anhängen //TODO
         System.out.println("ergebnis von getShopString(): "+shopString);
         return shopString;
     }
@@ -296,13 +300,15 @@ public class Shop{
         for(int i = 0;i < shopString.length();i++){
             a = Character.getNumericValue(shopString.charAt(i));
             switch(k%4){
-                case 0 : checksum += 7*a; break;
-                case 1 : checksum += 3*a; break;
-                case 2 : checksum += 5*a; break;
-                case 3 : checksum += 13*a; break;
+                case 0 : checksum += 7*a % 10; break;
+                case 1 : checksum += 3*a % 10; break;
+                case 2 : checksum += 5*a % 10; break;
+                case 3 : checksum += 13*a % 10; break;
             }
         }
         checksum %= 10;
+        checksum = Math.abs(checksum);
+        System.out.println("CHECKSUM: "+checksum);
         return checksum;
     }
 }

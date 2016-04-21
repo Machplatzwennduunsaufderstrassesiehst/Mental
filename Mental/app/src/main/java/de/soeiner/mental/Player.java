@@ -39,6 +39,7 @@ public class Player extends ClientConnection {
 
     public void sendScoreBoard(Score[] playerScores) {
 
+        shop.updateMoney(); //TODO CARE
         for(int i = 0; i < playerScores.length;i++){ // richtiger Spieler wird gehilightet
             if(playerScores[i].attributeOf(this)){
                 playerScores[i].setHiglight(true);
@@ -92,15 +93,17 @@ public class Player extends ClientConnection {
     }
 
     public void sendGameString() {
-        String gameString = this.getGameString();
-        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_GAME_STRING);
-        try {
-            j.put("gameString", gameString);
-            makePushRequest(new PushRequest(j));
+       // if(!(shop.money == 0/* && score.getOverallScoreValue() == 0*/)) { //wenn daten zur speicherung vorhanden sind
+            String gameString = this.getGameString();
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_GAME_STRING);
+            try {
+                j.put("gameString", gameString);
+                makePushRequest(new PushRequest(j));
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+       // }
     }
 
     public void sendBeatBobStatus(double status){ //bekommt double e [-1, 1]
@@ -182,6 +185,15 @@ public class Player extends ClientConnection {
                 JSONObject j = CmdRequest.makeResponseCmd(type);
                 j.put("success", this.shop.equipItem(index));
                 j.put("index", index);
+                j.put("itemType", shop.shopItemList[index].getType());
+                send(new PushRequest(j));
+                sendGameString();
+            }
+            if (type.equals("unequipItem")) {
+                int index = Integer.parseInt(json.getString("index"));
+                JSONObject j = CmdRequest.makeResponseCmd(type);
+                j.put("success", this.shop.unequipItem(index));
+                j.put("index", index);
                 send(new PushRequest(j));
                 sendGameString();
             }
@@ -225,9 +237,12 @@ public class Player extends ClientConnection {
             if (passage == 3) {}
             if (passage == 2) {}
             if (passage == 1) {
+                //if(!shop.checkShopString(tempString)){ return; } //Wenn der shopString manipuliert wurde, abbrechen
                 shop.loadShopString(tempString);
-            }
+           }
             if (passage == 0) {
+                //if(!score.checkScoreString(tempString)){ return; } //Wenn der scoreString manipuliert wurde, abbrechen
+                System.out.println("loadScoreString()");
                 score.loadScoreString(tempString);
             }
         }
@@ -262,13 +277,13 @@ public class Player extends ClientConnection {
 
     private void loadPartition(String partitionString){
         for(int i = 0; i<partition.length ; i++) {
-            partition[i] = ((int) partitionString.charAt(i)) - 33; //+20 um nicht lesbare asciis zu vermeiden
+            partition[i] = ((int) partitionString.charAt(i)) - 35; //+20 um nicht lesbare asciis zu vermeiden
         }
     }
 
     private String addPartitionString(String gameString){
         for(int i = 0; i<partition.length ; i++){
-            gameString += (char) (partition[i]+33); //+20 um nicht lesbare asciis zu vermeiden
+            gameString += (char) (partition[i]+35); //+20 um nicht lesbare asciis zu vermeiden
         }
         return gameString;
     }

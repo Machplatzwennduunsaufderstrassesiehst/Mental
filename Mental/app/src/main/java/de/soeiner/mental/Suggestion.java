@@ -25,7 +25,7 @@ public class Suggestion extends JSONObject{
         } catch (JSONException s) {
             s.printStackTrace();
         }
-        putName("Stimme f&uuml;r " + g.getGameModeString() + " (" + e.getName() + ")");
+        putName(g.getGameModeString() + " (" + e.getName() + ")");
     }
 
     public void upvote(Player p){
