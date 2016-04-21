@@ -10,10 +10,12 @@ var maxWaitTimeout = 2500;
 var gameServerPort = 1297;
 var pingServerPort = 6383;
 
-if (window.WebkitWebSocket) {
-    window.WebSocket = WebkitWebSocket;
-} else if (window.MozWebSocket) {
-    window.WebSocket = MozWebSocket;
+if (!window.WebSocket) {
+    if (window.WebkitWebSocket) {
+        window.WebSocket = window.WebkitWebSocket;
+    } else if (window.MozWebSocket) {
+        window.WebSocket = window.MozWebSocket;
+    }
 }
 
 // class constructor definition
@@ -83,26 +85,33 @@ function ServerConnection(host, port) {
     this.host = host;
     var socket = new WebSocket("ws://"+host+":"+String(port));
     log("Connecting to " + "ws://"+host+":"+String(port));
-    showLoader();
     var observers = [];
     var onopen = function(){};
     var onclose = uselessFunction;
     var self = this;
     
+    showMsgBox();
+    
     socket.onopen = function(event) {
-        unshowLoader();
+        unshowMsgBox();
         onopen();
         log("Socket opened");
     }
     
     socket.onclose = function(event) {
-        unshowLoader();
+        unshowMsgBox();
         onclose();
         log("Socket closed");
+        console.log(event);
+        if (event.code == 1005) return;
+        showMsgBox("Verbindung zum Server geschlossen (oder nicht moeglich): Code: "+event.code+", Phase: " + event.eventPhase, "e");
+        setTimeout(function(){unshowMsgBox();}, 5000);
     }
     
     socket.onerror = function(event) {
-        unshowLoader();
+        unshowMsgBox();
+        showMsgBox("Fehler beim Verbinden mit Server: Code: "+event.code+", Phase: "+event.eventPhase, "e");
+        setTimeout(function(){unshowMsgBox();}, 5000);
     }
     
     this.setOnOpen = function(func) {

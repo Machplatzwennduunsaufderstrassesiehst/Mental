@@ -34,10 +34,11 @@ function updateDataFields(key, value) {
 function backgroundColorAnimate(id, color, fallbackTimeout) {
     if (fallbackTimeout == undefined) fallbackTimeout = 1000;
     var element = byID(id);
-    var oldColor = element.style.backgroundColor;
+    if (!element.hasAttribute("data-plain-background-color")) element.setAttribute("data-plain-background-color", element.style.backgroundColor);
+    var plainColor = element.getAttribute("data-plain-background-color");
     element.style.backgroundColor = color;
     setTimeout(function(){
-        element.style.backgroundColor = oldColor;
+        element.style.backgroundColor = plainColor;
     }, fallbackTimeout);
 }
 

@@ -4,7 +4,7 @@ var serverLobbyFrame = new Frame("listServersFrame");
 
 lobbyFrame.setOnOpen(function() {
     byID("gamesList").innerHTML = "laden...";
-    setDoOnEnter(uselessFunction);
+    setDoOnEnter(function(){joinGame(0);});
     byID("disconnect").style.display = "inline";
     listAvailableGames();
 });
@@ -67,7 +67,10 @@ function joinServer(connection) {
 }
 
 function joinGame(gameId) {
+    navigation.closeFrames(lobbyFrame);
+    byID("toLobby").style.display = "inline";
     serverConnection.send(makeSimpleCmd("join", "gameId", gameId));
+    showMsgBox("Warten auf andere Spieler...");
 }
 
 // OBSERVERS ===========================================================

@@ -84,7 +84,7 @@ body {
     background-color: #eaeaea;
     color: black;
     margin: auto;
-    padding: 4px;
+    padding: 6px;
     margin-top: 5px;
     cursor: pointer;
     text-align: left;
@@ -130,6 +130,10 @@ body {
     text-align: center;
 }
 
+#voting {
+    font-size: 0.9em;
+}
+
 #scoreboard {
     text-align: left;
     border-radius: 3px;
@@ -139,12 +143,16 @@ body {
 
 #scoreboard td {
     border-top: 4px solid white;
-    padding: 2px 4px;
+    padding: 12px;
+    padding-top:0px;
+    padding-bottom:0px;
 }
 #scoreboard td + td { border-left: 2px solid white;margin:0;}
 
 #scoreboard th {
-    padding: 4px;
+    padding: 12px;
+    padding-top:0px;
+    padding-bottom:0px;
     margin: 0;
 }
 
@@ -193,7 +201,7 @@ body {
 
 .shopItem .btn {
     padding: 0.5em;
-    width: 5em;
+    width: 6.5em;
 }
 
 
