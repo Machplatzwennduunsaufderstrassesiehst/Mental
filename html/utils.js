@@ -58,6 +58,14 @@ function byID(id) {
     return window.document.getElementById(id);
 }
 
+function byTag(id) {
+    return window.document.getElementsByTagName(id);
+}
+
+function byClass(id) {
+    return window.document.getElementsByClassName(id);
+}
+
 var exerciseCountdownValue = 0;
 
 function countdown(countdownId, value, recall, onCountdown, template) {

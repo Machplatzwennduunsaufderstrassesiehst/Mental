@@ -1,18 +1,27 @@
 
-function showMsgBox(message, theme) {
-    var t = theme || "b";
-    var m = message || "Bitte Warten...";
-    $.mobile.loading( 'show', {
-        text: m,
-        textVisible: true,
-        theme: t,
-        textonly: true,
-        html: ""
-    });
+function showMsgBox(message, extra) {
+    var m = byID("msgBox");
+    while (m.classList.length > 0) m.classList.remove(m.classList[0]);
+    m.classList.add("msgBox");
+    if (extra) m.classList.add(extra);
+    var pageHeight = byID("page_").clientHeight;
+    var pageWidth = byID("page_").clientWidth;
+    m.innerHTML = message;
+    m.style.opacity = 0;
+    m.style.display = "block";
+    setTimeout(function(){
+        m.style.top = (pageHeight / 2 - 100) + "px";
+        m.style.left = (pageWidth / 2 - m.clientWidth / 2) + "px";
+        m.style.opacity = 0.7;
+    }, 10);
 }
 
 function unshowMsgBox() {
-    $.mobile.loading( "hide" );
+    var m = byID("msgBox");
+    m.style.opacity = 0;
+    setTimeout(function(){
+        m.style.display = "none";
+    }, 500);
 }
 
 function Frame(id_) {
@@ -49,31 +58,31 @@ function Frame(id_) {
 
     var smoothClose = this.smoothClose = function() {
         var element = byID(id);
-        element.style.display = "none";
         element.style.opacity = 0;
+        element.style.display = "none";
         return;
-        if (element.style.display == "none") return;
+        /*if (element.style.display == "none") return;
         if (!smoothLock.acquire(smoothClose)) return;
         console.log(element);
         console.log("close");
         element.setAttribute("data-old-style-display", element.style.display);
         element.style.opacity = 0;
-        setTimeout(function(){element.style.display = "none";smoothLock.release();isVisible = false;}, transitionTime);
+        setTimeout(function(){element.style.display = "none";smoothLock.release();isVisible = false;}, transitionTime);*/
     }
 
     var smoothOpen = this.smoothOpen = function() {
         var element = byID(id);
         element.style.display = "block";
         element.style.opacity = 0;
-        setTimeout(function(){element.style.opacity = 1;},50);
+        setTimeout(function(){element.style.opacity = 1;},10);
         return;
-        if (!smoothLock.acquire(smoothOpen)) return;
+        /*if (!smoothLock.acquire(smoothOpen)) return;
         console.log(element);
         console.log("open");
         var d = element.getAttribute("data-old-style-display");
         if (d == null || d == "none" || d == "") d = "block";
         element.style.display = d;
-        setTimeout(function(){element.style.opacity = 1;smoothLock.release();isVisible = true;}, transitionTime);
+        setTimeout(function(){element.style.opacity = 1;smoothLock.release();isVisible = true;}, transitionTime);*/
     }
     
     navigation.registerFrame(this);
@@ -91,6 +100,7 @@ function Navigation() {
         });
     }
     
+    // does not close the frames given by parameters
     var closeAll = this.closeAll = function() {
         closeFrames(frames);
         byID("disconnect").style.display = "none";
@@ -101,8 +111,8 @@ function Navigation() {
         if (arguments.length < 1) return;
         if (!arguments[0].id) arguments = arguments[0];
         closeAll();
-        var frames_ = arguments; // (arguments.length ? arguments : [arguments]);
-        for (i = 0; i < frames_.length; i++) {
+        var frames_ = arguments;
+        for (var i = 0; i < frames_.length; i++) {
             var f = frames_[i];
             f.smoothOpen();
             f.notifyOpen();

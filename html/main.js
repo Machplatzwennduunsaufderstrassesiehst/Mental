@@ -9,10 +9,10 @@ window.onload = function() {
     iconize();
     
     var dimension = byID('ip').getClientRects()[0];
-    byID('welcome').innerHTML += '\
+    /*byID('welcome').innerHTML += '\
         <span style="text-align:right;position:absolute;top:'+dimension.y+'px;right:0px;width:10%;padding:0;">\
             <span class="btnInput" onclick="byID('+"'ip'"+').value = netManager.getLocalIPSub();">'+createIcon('reload')+'</span>\
-        </span>';
+        </span>';*/
         
     // netManager konfigurieren
     netManager.setOnScanReady(function(){setTimeout(listAvailableGames, 1000);});
@@ -34,7 +34,7 @@ window.onload = function() {
     
     countdown();
     
-    setTimeout(function(){if (!byID('ip').value.contains(netManager.getLocalIPSub())) byID('ip').value = netManager.getLocalIPSub();}, 1000);
+    setTimeout(function(){if (!byID('ip').value.contains(netManager.getLocalIPSub()) && byID('ip').value != "localhost") byID('ip').value = netManager.getLocalIPSub();}, 1000);
     /*byID("ip").onfocus = function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();};
     byID("ip").onkeyup = function(){
         if (byID("ip").value == "") setTimeout(function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();}, 2000);

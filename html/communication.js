@@ -90,7 +90,7 @@ function ServerConnection(host, port) {
     var onclose = uselessFunction;
     var self = this;
     
-    showMsgBox();
+    showMsgBox("Verbindung zum Server wird hergestellt...");
     
     socket.onopen = function(event) {
         unshowMsgBox();
@@ -99,18 +99,18 @@ function ServerConnection(host, port) {
     }
     
     socket.onclose = function(event) {
-        unshowMsgBox();
+        //unshowMsgBox();
         onclose();
         log("Socket closed");
         console.log(event);
-        if (event.code == 1005) return;
-        showMsgBox("Verbindung zum Server geschlossen (oder nicht moeglich): Code: "+event.code+", Phase: " + event.eventPhase, "e");
+        if (event.code == 1005) return; // normal socket close
+        showMsgBox("Verbindung zum Server geschlossen (oder nicht moeglich): Code: "+event.code+", Phase: " + event.eventPhase, "msgBoxError");
         setTimeout(function(){unshowMsgBox();}, 5000);
     }
     
     socket.onerror = function(event) {
-        unshowMsgBox();
-        showMsgBox("Fehler beim Verbinden mit Server: Code: "+event.code+", Phase: "+event.eventPhase, "e");
+        //unshowMsgBox();
+        showMsgBox("Fehler beim Verbinden mit Server: Code: "+event.code+", Phase: "+event.eventPhase, "msgBoxError");
         setTimeout(function(){unshowMsgBox();}, 5000);
     }
     
