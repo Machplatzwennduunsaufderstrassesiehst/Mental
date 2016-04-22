@@ -58,6 +58,10 @@ public abstract class ExerciseCreator {
         return exerciseString;
     }
 
+    public TrainTrack[][] createTrainMap(){
+        return null;
+    }
+
     public int getFahkinBitchExerciseResetValue() {
         return 10;
     }
@@ -187,5 +191,20 @@ class MixedExerciseCreator extends ExerciseCreator {
         exerciseResult = result;
         exerciseString = exercise;
         return exercise;
+    }
+}
+class TrainMapCreator extends ExerciseCreator{
+
+    public double getExpectedSolveTime() { return 0; }
+    public String create() {return null;}
+
+    public String getName() {
+        return "Casual Train Map";
+    }
+
+    @Override
+    public TrainTrack[][] createTrainMap() { //TODO
+        TrainTrack[][] map = new TrainTrack[10][10];
+        return map;
     }
 }

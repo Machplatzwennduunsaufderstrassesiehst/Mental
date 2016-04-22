@@ -118,6 +118,18 @@ public class Game implements Runnable {
         }
     }
 
+    public void broadcastTrainMap(TrainTrack[][] m){
+        JSONObject[][] map = new JSONObject[m[0].length][m.length];
+        for(int i = 0; i<map[0].length; i++){
+            for (int j = 0; j < map.length; j++) {
+                map[i][j] = m[i][j];
+            }
+        }
+        for (Player p : activePlayers) {
+            p.sendTrainMap(map);
+        }
+    }
+
     public void addPlayer(Player p) {
         for (Game g : Game.games) { // den Spieler aus anderen Spielen gegebenenfalls entfernen
             if (g.joinedPlayers.contains(p)) g.removePlayer(p);

@@ -20,6 +20,10 @@ public class CmdRequest {
     public static final String SEND_SHOW_EXERCISES = "{type: 'showExercises'}";
     public static final String SEND_COUNTDOWN = "{type: 'countdown'}";
     public static final String SEND_BEATBOB = "{type: 'beatbob'}";
+    public static final String SEND_TRAINMAP = "{type: 'trainMap'}";
+    public static final String SEND_NEWTRAIN = "{type: 'newTrain'}";
+    public static final String SEND_SWITCHCHANGE = "{type: 'switchChange'}";
+    public static final String SEND_TRAINDECISION = "{type: 'trainDecision'}";
 
 
     private JSONObject cmd;
