@@ -44,7 +44,7 @@ public class Voting {
     }
 
     public void broadcastSuggestions(){ //Abstimmung für nächsten gamemode
-        System.out.println("callvote");
+        System.out.println("broadcastSuggestions");
         for(int i = 0;i<game.joinedPlayers.size();i++){
             Player p = game.joinedPlayers.get(i);
             p.sendSuggestions(suggestions);
@@ -67,6 +67,7 @@ public class Voting {
         System.out.println("checkForCompletion");
         System.out.println(voteCounter);
         System.out.println(game.joinedPlayers.size());
+        System.out.println(revoteSuggestion.getPlayers().size());
         if (game.joinedPlayers.size() != 0) {
             if (revoteSuggestion.getPlayers().size() >= game.joinedPlayers.size()) {
                 for (int i = 0; i < suggestions.length; i++) {
