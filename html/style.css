@@ -22,7 +22,7 @@ body {
     background-color: #ccf;
     border-bottom: 2px solid #abf;
     box-shadow: 0px 0.15cm 0.1cm #aabbff;
-    position: fixed;
+    /*position: fixed;*/
     width: 100%;
 }
 
@@ -41,7 +41,7 @@ body {
 }
 
 #main {
-    padding-top: 3em;
+    /*padding-top: 3em;*/
 }
 
 .msgBox {

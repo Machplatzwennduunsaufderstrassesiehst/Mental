@@ -104,7 +104,7 @@ function ServerConnection(host, port) {
         log("Socket closed");
         console.log(event);
         if (event.code == 1005) return; // normal socket close
-        showMsgBox("Verbindung zum Server geschlossen (oder nicht moeglich): Code: "+event.code+", Phase: " + event.eventPhase, "msgBoxError");
+        showMsgBox("Verbindung zum Server geschlossen (oder nicht möglich): Code: "+event.code+", Phase: " + event.eventPhase, "msgBoxError");
         setTimeout(function(){unshowMsgBox();}, 5000);
     }
     

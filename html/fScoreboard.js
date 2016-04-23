@@ -18,7 +18,7 @@ scoreboardFrame.setOnClose(function() {
 // FUNCTIONALITY =======================================================
 
 function listSuggestions(suggestions) {
-    var html = "";
+    var html = "<p class='suggestion' style='padding:6px;margin:0px auto;'>Was möchtest du als nächstes spielen?</p>";
     for (var i = 0; i < suggestions.length; i++) {
         var suggestion = suggestions[i];
         html += "<div style='"+(suggestion.highlight ? "background-color: #aaa;" : "")+"' class='selectListItem suggestion' onclick='vote("+suggestion.suggestionID+");'>";

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="jQuery/jquery.mobile-1.2.1.min.css" />
     <script src="jQuery/jquery-1.8.3.min.js"></script>
     <script src="jQuery/jquery.mobile-1.2.1.min.js"></script>
+    <script src="autobahn/autobahn.min.js"></script>
     
     <script src="constants.js" type="text/javascript"></script>
     <script src="utils.js" type="text/javascript"></script>
@@ -93,7 +94,7 @@
                     <span style="margin: 0;display:inline-block;">
                         <p class="exerciseUI">
                             <span id="exercise" class="exerciseUI" style="border-radius: 8px 0px 0px 8px;text-align:right;">5 + 4 = 
-                            </span><input class="exerciseUI" type="number" style="border-radius: 0px 8px 8px 0px;" data-role="none" placeholder="?" id="answer" onkeydown="document.onkeydown(event);"/>
+                            </span><input class="exerciseUI" type="number" style="border-radius: 0px 8px 8px 0px;max-width:4.5em;" data-role="none" placeholder="?" id="answer" onkeydown="document.onkeydown(event);"/>
                         </p>
                         <!-- kleiner hack, einige browser benoetigen den submit button, und auf enter druck fokussieren sie darauf 
                              das hier interpretiert das dann als senden und fokussiert wieder die eingabe -->
