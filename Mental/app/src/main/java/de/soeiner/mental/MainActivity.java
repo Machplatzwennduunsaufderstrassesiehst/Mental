@@ -6,9 +6,10 @@ import android.view.View;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Button;
-
-import org.java_websocket.WebSocketImpl;
 import java.io.IOException;
+
+import de.soeiner.mental.communication.PingHttpServer;
+import de.soeiner.mental.communication.Server;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,11 +60,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void serverStart(){
         try {
-            WebSocketImpl.DEBUG = false; // vllt verhindert das den ganzen output von dem Modul
             int port = PORT;
             Server s = new Server( port );
-            s.start();
-            System.out.println("Server started on port: " + s.getPort());
+            System.out.println("Server started: " + s.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }

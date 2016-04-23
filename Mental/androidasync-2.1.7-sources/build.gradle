@@ -1,0 +1,2 @@
+configurations.create("default")
+artifacts.add("default", file('androidasync-2.1.7-sources.jar'))

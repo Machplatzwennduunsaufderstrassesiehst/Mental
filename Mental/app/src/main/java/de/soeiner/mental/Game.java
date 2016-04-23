@@ -6,6 +6,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import de.soeiner.mental.communication.CmdRequest;
+
 /**
  * Created by malte on 13.02.16.
  */
