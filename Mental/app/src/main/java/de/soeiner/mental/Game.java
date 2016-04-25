@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
+import de.soeiner.mental.exerciseCreators.ExerciseCreator;
+import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
 
 /**
  * Created by malte on 13.02.16.
@@ -120,8 +122,8 @@ public class Game implements Runnable {
             p.sendScoreBoard(scoreboard);
         }
     }
-
-    public void broadcastTrainMap(TrainTrack[][] m){
+/*
+    public void broadcastTrainMap(JSONObject[][] m){ // <--------------------------------------- TODO
         JSONObject[][] map = new JSONObject[m[0].length][m.length];
         for(int i = 0; i<map[0].length; i++){
             for (int j = 0; j < map.length; j++) {
@@ -132,7 +134,7 @@ public class Game implements Runnable {
             p.sendTrainMap(map);
         }
     }
-
+*/
     public void addPlayer(Player p) {
         for (Game g : Game.games) { // den Spieler aus anderen Spielen gegebenenfalls entfernen
             if (g.joinedPlayers.contains(p)) g.removePlayer(p);
@@ -182,11 +184,11 @@ public class Game implements Runnable {
     }
 
     public void broadcastExercise() {
-        exerciseCreator.createNext();
+        exerciseCreator.next();
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             p.finished = false;
-            p.sendExercise(exerciseCreator.getExerciseString());
+            p.sendExercise(exerciseCreator.getExerciseObject());
         }
     }
 
@@ -257,7 +259,6 @@ public class Game implements Runnable {
             }
             p.makePushRequest(new PushRequest(j));
         }
-        broadcastShowScoreBoard();
     }
 
     public void broadcastSendCountdown(int time){

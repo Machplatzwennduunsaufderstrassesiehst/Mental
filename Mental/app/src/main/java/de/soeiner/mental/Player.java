@@ -11,6 +11,7 @@ import java.util.Arrays;
 import de.soeiner.mental.communication.ClientConnection;
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
+import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 
 /**
  * Created by sven on 12.02.16.
@@ -34,7 +35,7 @@ public class Player extends ClientConnection {
         connections.add(this);
     }
 
-    public void sendExercise(String ex) {
+    public void sendExercise(JSONObject ex) {
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_EXERCISE);
         try {
             jsonObject.put("exercise", ex);
@@ -64,7 +65,7 @@ public class Player extends ClientConnection {
         PushRequest request = new PushRequest(jsonObject);
         makePushRequest(request);
     }
-
+/*
     public void sendTrainMap(JSONObject[][] trainMap) {
 
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_TRAINMAP);
@@ -85,7 +86,7 @@ public class Player extends ClientConnection {
         PushRequest request = new PushRequest(jsonObject);
         makePushRequest(request);
     }
-
+*/
     public void sendSwitchChange(TrainTrack changedSwitch){
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SWITCHCHANGE);
             try {

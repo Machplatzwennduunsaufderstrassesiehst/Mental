@@ -114,10 +114,19 @@ var playerWonObserver = new Observer("playerWon", function(msg) {
 });
 
 var exerciseObserver = new Observer("exercise", function(msg) {
-    var ex = msg.exercise;
-    byID("exercise").innerHTML = ex + " = ";
-    byID("answer").placeholder = "?";
-    byID("answer").value = "";
+    if (msg.exercise.type == "arithmetic") {
+        var ex = msg.exercise.exerciseString;
+        log("got arithmetic exercise");
+        byID("exercise").innerHTML = ex + " = ";
+        byID("answer").placeholder = "?";
+        byID("answer").value = "";
+    } else if (msg.exercise.type == undefined) { // backwards compatibility
+        var ex = msg.exercise;
+        byID("exercise").innerHTML = ex + " = ";
+        byID("answer").placeholder = "?";
+        byID("answer").value = "";
+    }
+    
 });
 
 var reopenMainFrameObserver = new Observer("showExercises", function(msg) {

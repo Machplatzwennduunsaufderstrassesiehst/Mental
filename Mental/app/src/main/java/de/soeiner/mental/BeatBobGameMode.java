@@ -2,6 +2,10 @@ package de.soeiner.mental;
 
 import org.json.JSONObject;
 
+import de.soeiner.mental.exerciseCreators.MixedExerciseCreator;
+import de.soeiner.mental.exerciseCreators.MultExerciseCreator;
+import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
+
 /**
  * Created by Malte on 09.04.2016.
  */
@@ -54,7 +58,7 @@ public class BeatBobGameMode extends GameMode {
     public void loop() {
         for (int i = 0; i < game.activePlayers.size(); i++) {
             Player player = game.activePlayers.get(i);
-            player.sendExercise(player.exerciseCreator.createNext());
+            player.sendExercise(player.exerciseCreator.next());
         }
         try {
             Thread.sleep(calculateMilliSeconds(playerHeadstart));
@@ -77,8 +81,8 @@ public class BeatBobGameMode extends GameMode {
         if (player.exerciseCreator.checkAnswer(answer)) { //TODO muss natürlich noch korigiert werden
             exercisesSolved++;
             s.updateScore(5);
-            player.exerciseCreator.createNext();
-            player.sendExercise(player.exerciseCreator.getExerciseString());
+            player.exerciseCreator.next();
+            player.sendExercise(player.exerciseCreator.getExerciseObject());
             updateStatus(1);
             game.broadcastMessage(player.getName() + " hat einen Punkt gewonnen");
             synchronized (answerLock) {

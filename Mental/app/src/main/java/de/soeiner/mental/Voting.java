@@ -2,6 +2,9 @@ package de.soeiner.mental;
 
 import java.util.ArrayList;
 
+import de.soeiner.mental.exerciseCreators.ExerciseCreator;
+import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
+
 /**
  * Created by Malte on 09.04.2016.
  */
@@ -33,7 +36,7 @@ public class Voting {
             ArrayList<ExerciseCreator> possibleExerciseCreators = tempGameModes.get(gIndex).getCompatibleExerciseCreators();
             int eIndex = (int) (Math.random() * possibleExerciseCreators.size());
             suggestions[i] = new Suggestion(tempGameModes.get(gIndex), possibleExerciseCreators.get(eIndex), i);
-            tempGameModes.remove(gIndex);
+            if (tempGameModes.size() > 1) tempGameModes.remove(gIndex);
             //tempExerciseCreators.remove(eIndex);
         }
         revoteSuggestion = new Suggestion(gameModes[0], new SimpleMultExerciseCreator(), suggestions.length-1);

@@ -7,6 +7,10 @@ import java.util.ArrayList;
 
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
+import de.soeiner.mental.exerciseCreators.ExerciseCreator;
+import de.soeiner.mental.exerciseCreators.MixedExerciseCreator;
+import de.soeiner.mental.exerciseCreators.MultExerciseCreator;
+import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
 
 /**
  * Created by Malte on 07.04.2016.

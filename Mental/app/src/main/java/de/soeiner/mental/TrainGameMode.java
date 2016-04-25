@@ -1,6 +1,7 @@
 package de.soeiner.mental;
 
 import org.json.JSONObject;
+import de.soeiner.mental.exerciseCreators.TrainMapCreator;
 
 /**
  * Created by Malte on 21.04.2016.
@@ -8,6 +9,11 @@ import org.json.JSONObject;
 public class TrainGameMode extends GameMode {
 
     TrainTrack[][] trainMap;
+
+    protected void initializeCompatibleExerciseCreators() {
+        compatibleExerciseCreators.add(new TrainMapCreator());
+    }
+
 
     public TrainGameMode(Game game) {
         super(game);
@@ -19,8 +25,9 @@ public class TrainGameMode extends GameMode {
         for(int i = 0; i<game.joinedPlayers.size();i++){
             game.activePlayers.add(game.joinedPlayers.get(i));
         }
-        trainMap = game.exerciseCreator.createTrainMap();
-        game.broadcastTrainMap(trainMap);
+        game.broadcastExercise();
+        TrainMapCreator trainMapCreator = (TrainMapCreator) game.exerciseCreator;
+        trainMap = trainMapCreator.getTrainMap();
     }
 
     @Override

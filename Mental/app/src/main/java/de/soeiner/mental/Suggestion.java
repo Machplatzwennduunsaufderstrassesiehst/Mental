@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import de.soeiner.mental.exerciseCreators.ExerciseCreator;
+
 /**
  * Created by Malte on 07.04.2016.
  */
