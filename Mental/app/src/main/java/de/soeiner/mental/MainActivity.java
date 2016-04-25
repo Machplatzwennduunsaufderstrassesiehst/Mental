@@ -6,16 +6,15 @@ import android.view.View;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Button;
-
-import org.java_websocket.WebSocketImpl;
 import java.io.IOException;
+
+import de.soeiner.mental.communication.PingHttpServer;
+import de.soeiner.mental.communication.Server;
 
 public class MainActivity extends AppCompatActivity {
 
     final static int PORT = 1297;
     final static boolean DEBUG = true;
-
-    private PingHttpServer httpServer;
     private boolean serverIsActive;
     private Button btnJoin;
     private Button btnHost;
@@ -59,17 +58,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void serverStart(){
         try {
-            WebSocketImpl.DEBUG = false; // vllt verhindert das den ganzen output von dem Modul
             int port = PORT;
             Server s = new Server( port );
-            s.start();
-            System.out.println("Server started on port: " + s.getPort());
+            System.out.println("Server started: " + s.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        httpServer = new PingHttpServer();
-        httpServer.start();
 
         new Game();
     }
@@ -77,6 +71,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        httpServer.stop();
     }
 }

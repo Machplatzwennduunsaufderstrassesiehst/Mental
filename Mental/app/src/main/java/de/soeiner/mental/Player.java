@@ -1,11 +1,16 @@
 package de.soeiner.mental;
 
-import org.java_websocket.WebSocket;
+import com.koushikdutta.async.http.WebSocket;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+
+import de.soeiner.mental.communication.ClientConnection;
+import de.soeiner.mental.communication.CmdRequest;
+import de.soeiner.mental.communication.PushRequest;
 
 /**
  * Created by sven on 12.02.16.
@@ -22,7 +27,8 @@ public class Player extends ClientConnection {
 
     public Player (WebSocket socket) {
         super(socket);
-        name = socket.getRemoteSocketAddress().getAddress().getHostAddress();
+        //name = socket.getRemoteSocketAddress().getAddress().getHostAddress();
+        name = "New Player";
         score = new Score(this);
         shop = new Shop(this);
         connections.add(this);
