@@ -9,6 +9,7 @@ var actRate = 250;
 var maxWaitTimeout = 2500;
 var gameServerPort = 1297;
 var pingServerPort = 6383;
+var httpDirectory = "/mental";
 
 if (!window.WebSocket) {
     if (window.WebkitWebSocket) {
@@ -83,12 +84,13 @@ function getConnectionByHost(host) {
 function ServerConnection(host, port) {
     serverConnections.push(this);
     this.host = host;
-    var socket = new WebSocket("ws://"+host+":"+String(port), "blob");
-    log("Connecting to " + "ws://"+host+":"+String(port));
+    var socket = new WebSocket("ws://"+host+":"+String(port) + httpDirectory);
+    log("Connecting to " + "ws://"+host+":"+String(port) + httpDirectory);
     var observers = [];
     var onopen = function(){};
     var onclose = uselessFunction;
     var self = this;
+    var manuallyClosed = false;
     
     showMsgBox("Verbindung zum Server wird hergestellt...");
     
@@ -103,7 +105,7 @@ function ServerConnection(host, port) {
         onclose();
         log("Socket closed");
         console.log(event);
-        if (event.code == 1005) return; // normal socket close
+        if (manuallyClosed) return; // normal socket close
         showMsgBox("Verbindung zum Server geschlossen (oder nicht möglich): Code: "+event.code+", Phase: " + event.eventPhase, "msgBoxError");
         setTimeout(function(){unshowMsgBox();}, 5000);
     }
@@ -127,6 +129,8 @@ function ServerConnection(host, port) {
         // remove this from serverConnections
         var i = serverConnections.indexOf(self);
         serverConnections.splice(i, 1);
+        manuallyClosed = true;
+        setTimeout(function(){manuallyClosed = false;}, 2000);
     }
     
     socket.onmessage = function(event) {

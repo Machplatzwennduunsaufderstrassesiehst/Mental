@@ -15,8 +15,6 @@ public class MainActivity extends AppCompatActivity {
 
     final static int PORT = 1297;
     final static boolean DEBUG = true;
-
-    private PingHttpServer httpServer;
     private boolean serverIsActive;
     private Button btnJoin;
     private Button btnHost;
@@ -67,15 +65,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        httpServer = new PingHttpServer();
-        httpServer.start();
-
         new Game();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        httpServer.stop();
     }
 }

@@ -60,60 +60,31 @@ class WebSocketRequestHandler implements AsyncHttpServer.WebSocketRequestCallbac
 public class Server {
 
     private AsyncHttpServer asyncServer;
+    private PingHttpServer httpServer;
     private WebSocketRequestHandler webSocketRequestHandler;
+    private int port;
 
     public Server( int port ) throws UnknownHostException {
+        this.port = port;
+        initialize();
+    }
+
+    public void initialize() {
         asyncServer = new AsyncHttpServer();
         webSocketRequestHandler = new WebSocketRequestHandler();
-        asyncServer.websocket("/", webSocketRequestHandler);
+        asyncServer.websocket("/mental", webSocketRequestHandler);
         System.out.println("test");
         asyncServer.listen(port);
+        System.out.println(asyncServer.getListenCallback());
+
+        httpServer = new PingHttpServer();
+        httpServer.start();
     }
 
-    // TODO add stopping funtionality
-
-
-/*
-    @Override
-    public void onOpen(WebSocket newConnection, ClientHandshake handshake) {
-        String host = newConnection.getRemoteSocketAddress().getAddress().getHostAddress();
-        Player player = (Player) Player.getByHost(host);
-        if (player == null) {
-        } else {
-            player.newSocket(newConnection);
-            System.out.println("new socket");
-        }
+    public void stop() {
+        asyncServer.stop();
+        httpServer.stop();
     }
-
-    @Override
-    public void onClose( WebSocket socket, int code, String reason, boolean remote ) {
-    }
-
-    @Override
-    public void onMessage( WebSocket socket, String message ) {
-    }
-
-    @Override
-    public void onFragment( WebSocket conn, Framedata fragment ) {
-        System.out.println("received fragment: " + fragment);
-    }
-
-    @Override
-    public void onError( WebSocket conn, Exception ex ) {
-        ex.printStackTrace();
-        if( conn != null ) {
-            // some errors like port binding failed may not be assignable to a specific websocket
-        }
-    }
-
-    public void sendToAll( String text ) {
-        Collection<WebSocket> con = connections();
-        synchronized ( con ) {
-            for( WebSocket c : con ) {
-                c.send( text );
-            }
-        }
-    }*/
 
 
 }

@@ -1,4 +1,5 @@
-package de.soeiner.mental;
+package de.soeiner.mental.communication;
+
 /**
  * Created by sven on 12.02.16.
  */

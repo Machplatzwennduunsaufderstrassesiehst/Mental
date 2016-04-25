@@ -6,10 +6,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import de.soeiner.mental.GetRequest;
 import de.soeiner.mental.Logger;
-import de.soeiner.mental.PushRequest;
-import de.soeiner.mental.RequestAnswerObserver;
 
 /**
  * Created by sven on 25.02.16.

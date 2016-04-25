@@ -1,4 +1,4 @@
-package de.soeiner.mental;
+package de.soeiner.mental.communication;
 
 import org.json.JSONObject;
 
