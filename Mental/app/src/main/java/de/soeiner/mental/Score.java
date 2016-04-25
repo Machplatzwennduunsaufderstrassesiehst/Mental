@@ -101,6 +101,9 @@ public class Score extends JSONObject{
     public int getPointsGained() {
         return pointsGained;
     }
+    public void setPointsGained(int p) {
+        pointsGained = p;
+    }
 
     public void setPlayerName(String playerName) {
         if (has("playerName")) this.remove("playerName");
