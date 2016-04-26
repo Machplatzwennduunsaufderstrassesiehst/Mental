@@ -2,6 +2,7 @@ package de.soeiner.mental;
 
 import org.json.JSONObject;
 import de.soeiner.mental.exerciseCreators.TrainMapCreator;
+import de.soeiner.mental.trainTracks.TrainTrack;
 
 /**
  * Created by Malte on 21.04.2016.

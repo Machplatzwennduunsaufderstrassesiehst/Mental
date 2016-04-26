@@ -27,7 +27,6 @@ public class BeatBobGameMode extends GameMode {
     public void prepareGame() {
         super.prepareGame();
         status = 0;
-        game.individualExercises = true;
         for(int i = 0; i<game.joinedPlayers.size();i++) {
             Player p = game.joinedPlayers.get(i);
             game.activePlayers.add(p);
@@ -54,6 +53,9 @@ public class BeatBobGameMode extends GameMode {
         }
         function = calculateSolveTimeFunction();
     }
+
+    @Override
+    public void newExercise() {}
 
     public void loop() {
         for (int i = 0; i < game.activePlayers.size(); i++) {
@@ -112,14 +114,12 @@ public class BeatBobGameMode extends GameMode {
         synchronized (answerLock) {
             if (status >= health) { //wenn bob tot ist
                 giveReward();
-                game.individualExercises = false;
                 gameIsRunning = false; // schleife in run() beenden
                 game.broadcastPlayerWon("die Spieler", getGameModeString());
                 answerLock.notify();
             }
             if (status <= -health) { //wenn spieler tot sind
                 try { Thread.sleep(3000); }catch(Exception e){}
-                game.individualExercises = false;
                 gameIsRunning = false; // schleife in run() beenden
                 game.broadcastMessage("Bob hat gewonnen");
                 game.broadcastPlayerWon("Bob", getGameModeString());
