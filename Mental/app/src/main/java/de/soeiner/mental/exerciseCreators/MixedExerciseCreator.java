@@ -13,10 +13,9 @@ public class MixedExerciseCreator extends ArithmeticExerciseCreator {
     }
 
     public String create() {
-        String exercise = "";
         int d = difficulty * 5;
         start:
-        while (exercise.equals("")) {
+        for (int i = 0; i < getFahkinBitchExerciseResetValue(); i++) { // number of retrys: getFahkinBitchExerciseResetValue
             int temp;
             int a = (int) (Math.random() * 5 * d / 2 + Math.random() * 20);
             int b = (int) (Math.random() * 5 * d / 2 + Math.random() * 20);
@@ -32,7 +31,7 @@ public class MixedExerciseCreator extends ArithmeticExerciseCreator {
                     if (b > a)
                         b = (int) (b / 2);
                 }
-                createMult(a,b);
+                return createMult(a,b);
             } else {
                 if (a < d || b < d) {
                     continue start;
@@ -46,12 +45,13 @@ public class MixedExerciseCreator extends ArithmeticExerciseCreator {
                         a = b;
                         b = temp;
                     }
-                    createSub(a,b);
+                    return createSub(a,b);
                 } else {
-                    createAdd(a,b);
+                    return createAdd(a,b);
                 }
             }
         }
-        return exercise;
+        System.out.println("Mixed Exercise not created.");
+        return "";
     }
 }

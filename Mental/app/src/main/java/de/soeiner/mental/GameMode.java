@@ -90,12 +90,8 @@ public abstract class GameMode {
 
 
     public void newExercise(){
-        if(game.individualExercises){
-
-        }else {
-            game. broadcastExercise();
-            game.exerciseCreator.increaseDifficulty();
-        }
+        game.broadcastExercise();
+        game.exerciseCreator.increaseDifficulty();
     }
 
     public void removePlayer(Player p) {}

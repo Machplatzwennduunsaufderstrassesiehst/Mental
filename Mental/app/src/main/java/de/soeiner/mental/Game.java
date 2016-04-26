@@ -59,8 +59,6 @@ public class Game implements Runnable {
     public ArrayList<Player> spectators;
 
     public int GAME_TIMEOUT = 0; //für pause zwischen den spielen mit siegerbildschirm
-    boolean individualExercises = false;
-
 
 
     public Game() {
@@ -184,9 +182,10 @@ public class Game implements Runnable {
     }
 
     public void broadcastExercise() {
+        System.out.println("broadcastExercise()");
         exerciseCreator.next();
-        for (int i = 0; i < joinedPlayers.size(); i++) {
-            Player p = joinedPlayers.get(i);
+        for (int i = 0; i < activePlayers.size(); i++) {
+            Player p = activePlayers.get(i);
             p.finished = false;
             p.sendExercise(exerciseCreator.getExerciseObject());
         }
@@ -339,7 +338,7 @@ public class Game implements Runnable {
             broadcastShowExercises();
             System.out.println("broadcastedShowEx");
             gameMode.prepareGame();
-            System.out.println("game prepared");
+            System.out.println("game prepared: " + gameMode.getGameModeString());
 
             while (gameMode.getGameIsRunning()) {
                 System.out.println("[Game.run] while-Schleife anfang");
@@ -349,8 +348,11 @@ public class Game implements Runnable {
                     continue start;
                 } else {
                     try {
+                        System.out.println("[Game.run] gameMode.newExercise()");
                         gameMode.newExercise();
+                        System.out.println("[Game.run] gameMode.exerciseTimeout()");
                         gameMode.exerciseTimeout();
+                        System.out.println("[Game.run] gameMode.loop()");
                         gameMode.loop();
                     } catch (Exception e) {
                         e.printStackTrace();

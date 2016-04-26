@@ -12,6 +12,7 @@ import de.soeiner.mental.communication.ClientConnection;
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
+import de.soeiner.mental.trainTracks.TrainTrack;
 
 /**
  * Created by sven on 12.02.16.
@@ -36,6 +37,7 @@ public class Player extends ClientConnection {
     }
 
     public void sendExercise(JSONObject ex) {
+        System.out.println("Player.sendExercise()");
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_EXERCISE);
         try {
             jsonObject.put("exercise", ex);
