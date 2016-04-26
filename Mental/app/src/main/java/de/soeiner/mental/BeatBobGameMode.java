@@ -93,6 +93,7 @@ public class BeatBobGameMode extends GameMode {
             game.broadcastScoreboard();
             return true;
         } else {
+            player.getScore().setPointsGained(-1);
             if (s.getScoreValue() > 0) {
                 s.updateScore(-1);
                 game.broadcastScoreboard();
@@ -145,6 +146,10 @@ public class BeatBobGameMode extends GameMode {
     @Override
     public void removePlayer(Player p) {
         function = calculateSolveTimeFunction();
+        checkObjective();
+        if(game.activePlayers.size() == 0){
+            gameIsRunning = false;
+        }
     }
 
     public void broadcastStatus(){
