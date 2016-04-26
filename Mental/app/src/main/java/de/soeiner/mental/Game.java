@@ -335,17 +335,22 @@ public class Game implements Runnable {
                 }
             }
             broadcastSendCountdown(3);
-            gameMode.prepareGame();
+            System.out.println("Countdown sent");
             broadcastShowExercises();
+            System.out.println("broadcastedShowEx");
+            gameMode.prepareGame();
+            System.out.println("game prepared");
 
             while (gameMode.getGameIsRunning()) {
+                System.out.println("[Game.run] while-Schleife anfang");
                 if (activePlayers.size() == 0) { //wenn keine spieler mehr da sind
                     gameMode.gameIsRunning = false;
+                    System.out.println("[Game.run] continue start, no players left");
                     continue start;
                 } else {
                     try {
                         gameMode.newExercise();
-                        gameMode.newExerciseAndExerciseTimeout();
+                        gameMode.exerciseTimeout();
                         gameMode.loop();
                     } catch (Exception e) {
                         e.printStackTrace();

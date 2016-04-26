@@ -46,18 +46,13 @@ public abstract class GameMode {
 
     public abstract void loop();
 
-    public void newExerciseAndExerciseTimeout() {
-     //   newExercise();
-        exerciseTimeout();
-    }
-
     public void exerciseTimeout() {
         doWaitTimeout(EXERCISE_TIMEOUT);
     }
 
     public void prepareGame(){
-        game.exerciseCreator.resetDifficulty();
         resetGameMode();
+        game.exerciseCreator.resetDifficulty();
     }
 
     public boolean getGameIsRunning(){ return gameIsRunning; }

@@ -64,8 +64,10 @@ public class BeatBobGameMode extends GameMode {
             Thread.sleep(calculateMilliSeconds(playerHeadstart));
             upTime += playerHeadstart;
             while(gameIsRunning){
+                System.out.println("[BeatBob.loop]");
                 if(game.activePlayers.size() == 0){gameIsRunning = false; }
                 for (double i = 0; (i <= bobSolveTime*10) && gameIsRunning;i++) {
+                    System.out.println("[BeatBob.loop] for-Schleife");
                     bobSolveTime = balanceBob();
                     Thread.sleep(100);
                     upTime += 0.1;
