@@ -174,7 +174,6 @@ function ServerConnection(host, port) {
      
     function addObserver(observer) {
         observers.push(observer);
-        console.log(observers);
     }
     function removeObserver(observer) {
         var pos = observers.indexOf(observer);
