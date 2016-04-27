@@ -21,4 +21,9 @@ public class MultExerciseCreator extends ArithmeticExerciseCreator {
         int b = (int) (Math.random() * (bmax-d)) + d;
         return createMult(a % 20 + 1, b % bmax + 1);
     }
+
+    @Override
+    public ExerciseCreator copy() {
+        return new MultExerciseCreator();
+    }
 }

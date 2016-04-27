@@ -32,15 +32,7 @@ public class BeatBobGameMode extends GameMode {
             game.activePlayers.add(p);
         }
         for (int i = 0; i < game.activePlayers.size(); i++) {
-            if(game.exerciseCreator instanceof SimpleMultExerciseCreator) {
-                game.activePlayers.get(i).exerciseCreator = new SimpleMultExerciseCreator();
-            }else if (game.exerciseCreator instanceof MultExerciseCreator) {
-                game.activePlayers.get(i).exerciseCreator = new MultExerciseCreator();
-            } else if (game.exerciseCreator instanceof MixedExerciseCreator) {
-                game.activePlayers.get(i).exerciseCreator = new MixedExerciseCreator();
-            }else{
-                game.activePlayers.get(i).exerciseCreator = new SimpleMultExerciseCreator();
-            }
+            game.activePlayers.get(i).exerciseCreator = game.exerciseCreator.copy();
             game.activePlayers.get(i).exerciseCreator.setDifficulty(10);
         }
         if(game.activePlayers.size() != 0) {

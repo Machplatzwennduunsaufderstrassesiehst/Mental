@@ -49,4 +49,6 @@ public abstract class ExerciseCreator {
 
     // Zwingt alle exerciseCreator, einen Namen bereitzustellen
     public abstract String getName();
+
+    public abstract ExerciseCreator copy();
 }

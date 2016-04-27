@@ -6,6 +6,11 @@ package de.soeiner.mental.exerciseCreators;
 // neuer Vorschlag, das erhöhen von difficulty schlägt hier mehr ins gewicht
 public class MixedExerciseCreator extends ArithmeticExerciseCreator {
 
+    @Override
+    public ExerciseCreator copy() {
+        return new MixedExerciseCreator();
+    }
+
     public String getName(){return "Gemischte Aufgaben";}
 
     public double getExpectedSolveTime(){

@@ -18,4 +18,8 @@ public class SimpleMultExerciseCreator extends ArithmeticExerciseCreator {
         int b = (int) (Math.random() * (10-d)) + d;
         return createMult(a % 10 + 1, b % 10 + 1);
     }
+
+    public ExerciseCreator copy() {
+        return new SimpleMultExerciseCreator();
+    }
 }

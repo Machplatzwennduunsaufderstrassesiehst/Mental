@@ -16,4 +16,8 @@ public class SquareMultExerciseCreator extends ArithmeticExerciseCreator {
         return createMult(a, a);
     }
 
+    @Override
+    public ExerciseCreator copy() {
+        return new SquareMultExerciseCreator();
+    }
 }

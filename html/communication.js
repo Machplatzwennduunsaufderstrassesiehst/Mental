@@ -23,7 +23,7 @@ if (!window.WebSocket) {
 function GetRequest(jc, hl, eHl) {
     this.jsonCmd = jc; // is an object
     this.handler = hl; // is a function
-    this.errorHandler = eHl; // is a function and optional
+    var errorHandler = this.errorHandler = eHl; // is a function and optional
     this.errorCounter = 0;
     var sent = false;
     var failed = false;
@@ -34,7 +34,7 @@ function GetRequest(jc, hl, eHl) {
     }
     this.notok = function(msg) {
         if (errorHandler != null) {
-            this.errorHandler(msg);
+            errorHandler(msg);
         } else {
             
         }
@@ -185,7 +185,7 @@ function ServerConnection(host, port) {
     function notify(msg) {
         var l = observers.length;
         for (var i = 0; i < l; i++) {
-            if (observers[i] == undefined) continue; // TODO lol
+            if (observers[i] == undefined) continue; // behalte ich für alle Fälle
             if (observers[i].cmdType == msg.type) {
                 observers[i].handler(msg);
             }
@@ -193,7 +193,7 @@ function ServerConnection(host, port) {
     }
     
     
-    var commandRequestQueue = new Array();
+    var commandRequestQueue = [];
     var currentRequest = null;
     
     function removeRequest(request) {

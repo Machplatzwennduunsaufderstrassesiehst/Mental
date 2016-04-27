@@ -24,7 +24,6 @@ mainFrame.setOnClose(function() {
 });
 
 
-
 // FUNCTIONALITY =======================================================
 
 function numpad(n) {

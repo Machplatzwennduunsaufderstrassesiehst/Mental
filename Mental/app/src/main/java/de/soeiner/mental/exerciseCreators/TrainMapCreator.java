@@ -15,6 +15,11 @@ public class TrainMapCreator extends ExerciseCreator {
     private TrainTrack[][] trainMap;
 
     @Override
+    public ExerciseCreator copy() {
+        return new TrainMapCreator();
+    }
+
+    @Override
     JSONObject createNext() {
         createTrainMap();
         JSONObject j = new JSONObject();
