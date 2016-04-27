@@ -25,6 +25,11 @@ public class BlockedTrack extends TrainTrack {
 
     @Override
     public String getType() {
-        return null;
+        return "blocked";
+    }
+
+    @Override
+    public void setSuccessor(TrainTrack s) {
+        throw new RuntimeException("can't assign Succesor to blocked track");
     }
 }

@@ -24,6 +24,11 @@ public class Track extends TrainTrack {
 
     @Override
     public String getType() {
-        return null;
+        return "track";
+    }
+
+    @Override
+    public void setSuccessor(TrainTrack s){
+        successor = s;
     }
 }

@@ -34,7 +34,7 @@ public class Shop{
         ShopItem item8 = new Color(this, 8, "Rot", 500, false, false, 4, "#ff0033");
         ShopItem item9 = new Color(this, 9, "Grün", 500, false, false, 4, "#40ff00");
         ShopItem item10 = new Color(this, 10, "Blau", 500, false, false, 4, "#0900ff");
-        ShopItem item11 = new Color(this, 11, "Türkise", 3000, false, false, 8, "#00eeff");
+        ShopItem item11 = new Color(this, 11, "Türkis", 3000, false, false, 8, "#00eeff");
         ShopItem item12 = new Color(this, 12, "Gold", 10000, false, false, 16, "#dbd000");
 
         ShopItem[] s = {item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12};
@@ -52,7 +52,7 @@ public class Shop{
         ShopItem item8 = new Color(this, 8, "seelenrot", 100, false, false, 4, "#ff0033");
         ShopItem item9 = new Color(this, 9, "seelengrün", 100, false, false, 4, "#40ff00");
         ShopItem item10 = new Color(this, 10, "seelenblau", 100, false, false, 4, "#0900ff");
-        ShopItem item11 = new Color(this, 11, "seelentürkise", 10000, false, false, 8, "#00eeff");
+        ShopItem item11 = new Color(this, 11, "seelentürkis", 10000, false, false, 8, "#00eeff");
         ShopItem item12 = new Color(this, 12, "seelengold", 100000, false, false, 16, "#dbd000");
 
         ShopItem[] s = {item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12};

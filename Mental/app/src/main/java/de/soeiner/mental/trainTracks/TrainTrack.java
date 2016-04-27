@@ -5,13 +5,13 @@ package de.soeiner.mental.trainTracks;
  */
 public abstract class TrainTrack {
 
-    private TrainTrack successor;
-    private TrainTrack predecessor;
-    private int id;
-    private int from;
-    private int to;
-    private int switchTo;
-    private int value = 0;
+    protected TrainTrack successor;
+    protected TrainTrack predecessor;
+    protected int id;
+    protected int from;
+    protected int to;
+    protected int switchTo;
+    protected int value = 0;
 
     public abstract int getFrom();
     public abstract int getTo();
@@ -28,9 +28,7 @@ public abstract class TrainTrack {
         return id;
     }
 
-    public void setSuccessor(TrainTrack s){
-        successor = s;
-    }
+    public abstract void setSuccessor(TrainTrack s);
     public void setPredecessor(TrainTrack p){
         predecessor = p;
     }

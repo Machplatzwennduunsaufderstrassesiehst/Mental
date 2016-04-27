@@ -41,6 +41,9 @@ public class TrainMapCreator extends ExerciseCreator {
     TrainTrack[][] map;
     private int x = 0;
     private int y = 0;
+    private TrainTrack[] succesors;
+    private TrainTrack[] predeccesors;
+
 
     public TrainTrack[][] createTrainMap(){
         map = new TrainTrack[size][size];
@@ -70,6 +73,18 @@ public class TrainMapCreator extends ExerciseCreator {
                 coordinates = getStartingPoint();
                 x = coordinates[0];
                 y = coordinates[1];
+                //koordinaten auf neuen Startpunkt gesetzt
+
+                coordinates = getStartingPointConnection(); //anknüpfung an startpunkt finden
+
+                TrainTrack successorTemp = map[coordinates[0]][coordinates[1]].getSuccessor(); //aktueller
+                TrainTrack predecessorTemp = map[coordinates[0]][coordinates[1]].getPredecessor(); //aktueller
+                map[coordinates[0]][coordinates[1]] = new Switch();
+                map[coordinates[0]][coordinates[1]].setPredecessor(predecessorTemp);
+                map[coordinates[0]][coordinates[1]].setSuccessor(successorTemp);
+                map[coordinates[0]][coordinates[1]].setSuccessor(map[x][y]);
+                map[x][y].setPredecessor(map[coordinates[0]][coordinates[1]]);
+                // anknüpfung mit startpunkt verbinden
                 map[x][y].setValue(pathNumber);
             }
             continuePossible = true;
@@ -129,15 +144,15 @@ public class TrainMapCreator extends ExerciseCreator {
         return map;
     }
 
-    private int[] getStartingPoint(){
-        int[] coordinates = {1,1};
-        switch(pathNumber % 2){
+    private int[] getStartingPoint() {
+        int[] coordinates = {1, 1};
+        switch (pathNumber % 2) {
             case 0:
-                for(int i = size-1; i>=0;i--){
-                    for(int j = 0; j<size;j++){
-                        if(map[i][j].getValue() == 0){
-                            if(checkSurroundingPreciselyTarget(i, j, 3) || checkSurroundingPreciselyTarget(i, j, 2)
-                                    && !checkSurroundingTarget(i, j, 3) && !checkSurroundingTarget(i, j, 2)){
+                for (int i = size - 1; i >= 0; i--) {
+                    for (int j = 0; j < size; j++) {
+                        if (map[i][j].getValue() == 0) {
+                            if (checkSurroundingPreciselyTarget(i, j, 3) || checkSurroundingPreciselyTarget(i, j, 2)
+                                    && !checkSurroundingTarget(i, j, 3) && !checkSurroundingTarget(i, j, 2)) {
                                 coordinates[0] = i;
                                 coordinates[1] = j;
                             }
@@ -146,11 +161,11 @@ public class TrainMapCreator extends ExerciseCreator {
                 }
                 break;
             case 1:
-                for(int i = size-1; i>=0;i--){
-                    for(int j = size-1; j>=0; j--){
-                        if(map[i][j].getValue() == 0){
-                            if(checkSurroundingPreciselyTarget(i, j, 3) || checkSurroundingPreciselyTarget(i, j, 2)
-                                    && !checkSurroundingTarget(i, j, 3) && !checkSurroundingTarget(i, j, 2)){
+                for (int i = size - 1; i >= 0; i--) {
+                    for (int j = size - 1; j >= 0; j--) {
+                        if (map[i][j].getValue() == 0) {
+                            if (checkSurroundingPreciselyTarget(i, j, 3) || checkSurroundingPreciselyTarget(i, j, 2)
+                                    && !checkSurroundingTarget(i, j, 3) && !checkSurroundingTarget(i, j, 2)) {
                                 coordinates[0] = i;
                                 coordinates[1] = j;
                             }
@@ -159,10 +174,21 @@ public class TrainMapCreator extends ExerciseCreator {
                 }
                 break;
         }
-        if(coordinates[0] == 1 && coordinates[1] == 1){
-            while(map[coordinates[0]][coordinates[1]].getValue() != 0){
-                coordinates[0] = (int) ((Math.random()*size-1)+1);
-                coordinates[1] = (int) ((Math.random()*size-1)+1);
+        if (coordinates[0] == 1 && coordinates[1] == 1) {
+            while (map[coordinates[0]][coordinates[1]].getValue() != 0) {
+                coordinates[0] = (int) ((Math.random() * size - 1) + 1);
+                coordinates[1] = (int) ((Math.random() * size - 1) + 1);
+            }
+        }
+        return coordinates;
+    }
+
+    private int[] getStartingPointConnection() {
+        int[] coordinates = new int[2];
+        for(int i = 0; i<4; i++){
+            if(map[x+xT[i]][y+yT[i]].getValue() != 0 && map[x+xT[i]][y+yT[i]].getValue() != BLOCK_VALUE){
+                coordinates[0] = (x+xT[i]);
+                coordinates[1] = (y+yT[i]);
             }
         }
         return coordinates;

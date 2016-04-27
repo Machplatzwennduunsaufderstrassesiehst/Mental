@@ -12,6 +12,7 @@ import de.soeiner.mental.communication.ClientConnection;
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
+import de.soeiner.mental.trainTracks.Switch;
 
 /**
  * Created by sven on 12.02.16.
@@ -87,7 +88,7 @@ public class Player extends ClientConnection {
         makePushRequest(request);
     }
 */
-    public void sendSwitchChange(TrainTrack changedSwitch){
+    public void sendSwitchChange(Switch changedSwitch){
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SWITCHCHANGE);
             try {
                 j.put("switchChange", changedSwitch);
