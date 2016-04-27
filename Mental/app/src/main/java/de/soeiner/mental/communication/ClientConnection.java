@@ -81,6 +81,7 @@ public abstract class ClientConnection implements RequestAnswerObserver {
     protected void send(CmdRequest r) {
         try {
             socket.send(r.toString());
+            Logger.log("Sent: " + r.toString());
         } catch (Exception e) {
             Logger.log("Can't send to Connection " + this.host + "! Socket not connected.");
         }

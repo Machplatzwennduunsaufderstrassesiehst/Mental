@@ -36,8 +36,10 @@ function backgroundColorAnimate(id, color, fallbackTimeout) {
     var element = byID(id);
     if (!element.hasAttribute("data-plain-background-color")) element.setAttribute("data-plain-background-color", element.style.backgroundColor);
     var plainColor = element.getAttribute("data-plain-background-color");
+    element.style.transitionDuration = "0.2s";
     element.style.backgroundColor = color;
     setTimeout(function(){
+        element.style.transitionDuration = "1s";
         element.style.backgroundColor = plainColor;
     }, fallbackTimeout);
 }

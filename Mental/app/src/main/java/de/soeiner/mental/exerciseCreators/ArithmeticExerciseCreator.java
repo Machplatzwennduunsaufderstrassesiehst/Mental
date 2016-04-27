@@ -45,7 +45,7 @@ public abstract class ArithmeticExerciseCreator extends ExerciseCreator {
         do {
             this.create();
             System.out.println("create()");
-        } while (previousResults.contains(exerciseResult));
+        } while (previousResults.contains(exerciseResult) && previousResults.size() < getFahkinBitchExerciseResetValue());
         if(previousResults.size() >= getFahkinBitchExerciseResetValue()) {
             previousResults.clear();
         }

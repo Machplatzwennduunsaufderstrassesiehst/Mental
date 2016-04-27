@@ -40,19 +40,21 @@ body {
     color: white;
 }
 
-#main {
-    /*padding-top: 3em;*/
+#page_ {
+    background-color: #fcfcfc;
 }
 
 .msgBox {
     display: none;
+    transition: top 0s, opacity 0.5s;
     padding: 10px;
     color: #000;
     text-align: center;
     position: absolute;
     left:0px;
     margin:auto;
-    width: 25%;
+    width: 60%;
+    max-width: 25em;
     min-height: 10%;
     border-radius: 10px;
     opacity: 0.7;
@@ -134,21 +136,24 @@ body {
 }
 
 .exerciseUI {
-    box-shadow: 0px 0px 5px #bbb;
-    border-radius: 8px;
-    display:inline-block;
-}
-
-.exerciseUI * {
     padding:5px;
     background-color:white;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
+    border:0;
     margin:0;
     height:auto;
+    box-shadow: none;
     font-size: 1em;
     min-width: 100px;
+    display:inline-block;
+}
+.exerciseUI:hover, .exerciseUI:focus {border:0;box-shadow:0;}
+
+#exerciseCountdown {
+    display: none;
+    font-weight: bold;
+    font-size:1em;
+    padding: 5px;
+    padding-left: 10px;
 }
 
 #numpadTable .btn {
@@ -171,10 +176,12 @@ body {
     border-radius: 5px;
 }
 
-#exerciseCountdown {
-    display: none;
-    padding-left: 0.4cm;
-    font-weight: bold;
+#pointGained {
+    animation: pointsGainedAnimation;
+}
+
+@keyframes pointsGainedAnimation {
+    
 }
 
 
@@ -207,6 +214,8 @@ body {
 
 #voting {
     font-size: 0.9em;
+    transition-duration: 0s;
+    transition: width 0s;
 }
 
 #scoreboard {
@@ -303,3 +312,5 @@ body {
     border-radius: 0.15cm;
     padding: 0.1cm 0.1cm 0.1cm 0.1cm;
 }
+
+

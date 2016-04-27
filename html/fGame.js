@@ -38,12 +38,14 @@ function numpadDel() {
 
 var alreadyAnswered = false;
 function sendAnswer() {
-    if (alreadyAnswered) {return;}
+    var answer = byID("answer").value;
+    byID("answer").value = "";
+    var cmdObject = {};
+    if (answer === "" || answer === " ") return;
+    if (alreadyAnswered) return;
     alreadyAnswered = true;
     log(alreadyAnswered);
     setTimeout(function(){alreadyAnswered = false;}, 100); // hier lieber ein Timeout, da es ja sein kann, dass keine Antwort vom Server kommt (dann waere diese Methode für immer gelockt!)
-    var answer = byID("answer").value;
-    var cmdObject = {};
     cmdObject.type = "answer";
     cmdObject.answer = {value:answer};
     serverConnection.communicate(cmdObject, function(msg) {
@@ -84,6 +86,13 @@ var slide = function(msgC, value) {
     setTimeout(function(){slide(msgC, value);}, 25);
 }
 
+function displayArithmeticExercise (exerciseString) {
+        byID("exercise").innerHTML = exerciseString;
+        byID("answer").placeholder = "?";
+        byID("answer").value = "";
+        backgroundColorAnimate("exercise", "#ffa", 1000);
+}
+
 
 // BEATBOB =============================================================
 
@@ -117,20 +126,17 @@ var exerciseObserver = new Observer("exercise", function(msg) {
     if (msg.exercise.type == "arithmetic") {
         var ex = msg.exercise.exerciseString;
         log("got arithmetic exercise");
-        byID("exercise").innerHTML = ex + " = ";
-        byID("answer").placeholder = "?";
-        byID("answer").value = "";
+        displayArithmeticExercise(ex + " = ");
     } else if (msg.exercise.type == undefined) { // backwards compatibility
         var ex = msg.exercise;
-        byID("exercise").innerHTML = ex + " = ";
-        byID("answer").placeholder = "?";
-        byID("answer").value = "";
+        displayArithmeticExercise(ex + " = ");
     }
     
 });
 
 var reopenMainFrameObserver = new Observer("showExercises", function(msg) {
     navigation.openFrames(mainFrame);
+    displayArithmeticExercise("Bitte warten..");
 });
 
 var beatBobObserver = new Observer("beatbob", function(msg) {

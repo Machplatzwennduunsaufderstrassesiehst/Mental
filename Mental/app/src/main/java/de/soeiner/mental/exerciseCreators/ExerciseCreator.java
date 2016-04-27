@@ -40,6 +40,7 @@ public abstract class ExerciseCreator {
     // erstellt die nächste Aufgabe
     public final JSONObject next() {
         exerciseObject = createNext();
+        System.out.println("ExerciseObject: " + exerciseObject.toString());
         return exerciseObject;
     }
 

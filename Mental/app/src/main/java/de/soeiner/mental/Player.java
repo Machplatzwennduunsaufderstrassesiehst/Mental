@@ -37,6 +37,7 @@ public class Player extends ClientConnection {
     }
 
     public void sendExercise(JSONObject ex) {
+        System.out.println("Player.sendExercise()");
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_EXERCISE);
         try {
             jsonObject.put("exercise", ex);

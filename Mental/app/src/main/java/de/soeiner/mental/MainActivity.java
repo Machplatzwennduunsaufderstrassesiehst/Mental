@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btnJoin;
     private Button btnHost;
 
+    private Server server;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
     private void serverStart(){
         try {
             int port = PORT;
-            Server s = new Server( port );
-            System.out.println("Server started: " + s.toString());
+            server = new Server( port );
+            System.out.println("Server started: " + server.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -71,5 +73,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        server.stop();
     }
 }
