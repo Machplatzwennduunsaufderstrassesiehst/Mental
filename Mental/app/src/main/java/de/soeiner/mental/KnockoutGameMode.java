@@ -1,5 +1,7 @@
 package de.soeiner.mental;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -36,7 +38,7 @@ public class KnockoutGameMode extends GameMode{
             }
             game.broadcastScoreboard();
             game.broadcastPlayerWon(game.activePlayers.get(0).getName(), "Knockout");
-        } else {
+        } else if (game.activePlayers.size() > 1) {
             int index = 0;
             for (int i = 1; i < game.activePlayers.size(); i++) {
                 if (game.activePlayers.get(i).getScore().getScoreValue() <= game.activePlayers.get(index).getScore().getScoreValue()) {
@@ -50,8 +52,7 @@ public class KnockoutGameMode extends GameMode{
     }
 
 
-    public boolean playerAnswered(Player player, int answer) {
-
+    public boolean playerAnswered(Player player, JSONObject answer) {
         boolean allFinishedButOne = false;
         int z = 0;
         Score s = player.getScore();

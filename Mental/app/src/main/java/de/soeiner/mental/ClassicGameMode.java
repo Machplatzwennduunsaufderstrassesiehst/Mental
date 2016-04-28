@@ -1,10 +1,12 @@
 package de.soeiner.mental;
 
+import org.json.JSONObject;
+
 /**
  * Created by Malte on 28.03.2016.
  */
 
-class ClassicGameMode extends GameMode{
+public class ClassicGameMode extends GameMode{
 
     public ClassicGameMode(Game g){
         super(g);
@@ -25,7 +27,7 @@ class ClassicGameMode extends GameMode{
 
     public void loop() {}
 
-    public boolean playerAnswered(Player player, int answer) {
+    public boolean playerAnswered(Player player, JSONObject answer) {
             boolean allFinished = true;
             Score s = player.getScore();
             synchronized (answerLock) {

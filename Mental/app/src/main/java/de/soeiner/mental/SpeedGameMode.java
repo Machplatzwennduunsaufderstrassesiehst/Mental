@@ -1,5 +1,10 @@
 package de.soeiner.mental;
 
+import org.json.JSONObject;
+
+import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
+import de.soeiner.mental.exerciseCreators.SquareMultExerciseCreator;
+
 /**
  * Created by Malte on 09.04.2016.
  */
@@ -37,7 +42,7 @@ public class SpeedGameMode extends GameMode { //Es empfiehlt sich vll. diesen Mo
 
     public void loop() {}
 
-    public boolean playerAnswered(Player player, int answer) {
+    public boolean playerAnswered(Player player, JSONObject answer) {
         Score s = player.getScore();
         synchronized (answerLock) {
             if (game.exerciseCreator.checkAnswer(answer)) {

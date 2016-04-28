@@ -1,17 +1,19 @@
 
-"use strict";
 
 var serverConnection = null;
 var netManager = new NetworkManager();
-var player = {};
 
 // DO AFTER HTML LOADED
 window.onload = function() {
-    byID("warning").style.display = "none";
+    navigation.openFrames(welcomeFrame);
     iconize();
     
-    openWelcomeFrame();
-    
+    var dimension = byID('ip').getClientRects()[0];
+    /*byID('welcome').innerHTML += '\
+        <span style="text-align:right;position:absolute;top:'+dimension.y+'px;right:0px;width:10%;padding:0;">\
+            <span class="btnInput" onclick="byID('+"'ip'"+').value = netManager.getLocalIPSub();">'+createIcon('reload')+'</span>\
+        </span>';*/
+        
     // netManager konfigurieren
     netManager.setOnScanReady(function(){setTimeout(listAvailableGames, 1000);});
     
@@ -21,7 +23,7 @@ window.onload = function() {
     if (getCookie("gameString") != "") byID("gameStringInput").value = getCookie("gameString");
     if (getCookie("gameString") != "") byID("gameString").innerHTML = "Alter Spielstand: " + getCookie("gameString");
     
-    updateLocalIP();
+    setTimeout(function(){updateLocalIP();},100);
     setDoOnEnter(function(){byID("connect").click();});
     setTimeout(function() {
         byID("answerFormSubmit").parentElement.style.position = "absolute";
@@ -32,7 +34,13 @@ window.onload = function() {
     
     countdown();
     
-    byID("ip").onfocus = function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();};
+    setTimeout(function(){if (!byID('ip').value.contains(netManager.getLocalIPSub()) && byID('ip').value != "localhost") byID('ip').value = netManager.getLocalIPSub();}, 1000);
+    /*byID("ip").onfocus = function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();};
+    byID("ip").onkeyup = function(){
+        if (byID("ip").value == "") setTimeout(function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();}, 2000);
+    }*/ // weiß nicht, das kann auch echt nervig sein
+    
+    byID("warning").style.display = "none";
 }
 
 function updateLocalIP() {
@@ -40,66 +48,16 @@ function updateLocalIP() {
     setTimeout(function(){byID("localIP").innerHTML = "Deine lokale IP: " + netManager.getLocalIP();},1000);
 }
 
-function openWelcomeFrame() {
-    show("welcome");
-    setDoOnEnter(function(){netManager.scanManually(byID('ip').value);openListGamesFrame();});
-    byID("disconnect").style.display = "none";
-    byID("toLobby").style.display = "none";
-}
-
-function openMainFrame() {
-    show("mainFrame");
-    byID("answer").focus();
-    setDoOnEnter(function(){sendAnswer();});
-    byID("disconnect").style.display = "none";
-    byID("toLobby").style.display = "inline";
-}
-
-function openScoreboardFrame() {
-    show("scoreboardFrame");
-    setDoOnEnter(uselessFunction);
-    byID("disconnect").style.display = "none";
-    byID("toLobby").style.display = "inline";
-    byID("blurHack").focus();
-    byID("voting").innerHTML = '<p>Voting starten... <span id="gameTimeoutCountdown"></span></p>';
-}
-
-function openListGamesFrame() {
-    show("listGamesFrame");
-    byID("gamesList").innerHTML = "laden...";
-    setDoOnEnter(uselessFunction);
-    byID("disconnect").style.display = "inline";
-    byID("toLobby").style.display = "none";
-}
-
-function openListServersFrame() {
-    show("listServersFrame");
-    byID("serverList").innerHTML = "laden...";
-    setDoOnEnter(uselessFunction);
-    byID("disconnect").style.display = "inline";
-    byID("toLobby").style.display = "none";
-}
-
-function openShoppingFrame() {
-    show("shoppingFrame");
-    updateShopItems();
-    byID("disconnect").style.display = "none";
-    byID("toLobby").style.display = "inline";
-    var oldonclick = byID("toLobby").onclick;
-    byID("toLobby").onlick = function(){byID("toLobby").onlick = oldonclick;openListGamesFrame();};
-}
-
 function leaveGame() {
     serverConnection.send(makeSimpleCmd("leave", "x", ""));
-    openListGamesFrame();
-    listAvailableGames();
+    navigation.openFrames(lobbyFrame);
 }
 
 function disconnect() {
     for (var i = 0; i < serverConnections.length; i++) {
         serverConnections[i].close();
     }
-    openWelcomeFrame();
+    navigation.openFrames(welcomeFrame);
 }
 
 
@@ -120,4 +78,3 @@ function infoBox(message) {
         byID("infobox").style.display = "none";
     }, 3500);
 }
-    

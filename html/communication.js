@@ -4,20 +4,26 @@
  * 
  */
 
-"use strict";
-
 // sleep time between request queue checks
 var actRate = 250;
 var maxWaitTimeout = 2500;
-var gameServerPort = 6382;
+var gameServerPort = 1297;
 var pingServerPort = 6383;
+var httpDirectory = "/mental";
 
+if (!window.WebSocket) {
+    if (window.WebkitWebSocket) {
+        window.WebSocket = window.WebkitWebSocket;
+    } else if (window.MozWebSocket) {
+        window.WebSocket = window.MozWebSocket;
+    }
+}
 
 // class constructor definition
 function GetRequest(jc, hl, eHl) {
     this.jsonCmd = jc; // is an object
     this.handler = hl; // is a function
-    this.errorHandler = eHl; // is a function and optional
+    var errorHandler = this.errorHandler = eHl; // is a function and optional
     this.errorCounter = 0;
     var sent = false;
     var failed = false;
@@ -28,7 +34,7 @@ function GetRequest(jc, hl, eHl) {
     }
     this.notok = function(msg) {
         if (errorHandler != null) {
-            this.errorHandler(msg);
+            errorHandler(msg);
         } else {
             
         }
@@ -50,6 +56,7 @@ function GetRequest(jc, hl, eHl) {
         return sent;
     }
 }
+
 
 
 // class constructor definition
@@ -77,13 +84,44 @@ function getConnectionByHost(host) {
 function ServerConnection(host, port) {
     serverConnections.push(this);
     this.host = host;
-    var socket = new WebSocket("ws://"+host+":"+String(port));
+    var socket = new WebSocket("ws://"+host+":"+String(port) + httpDirectory);
+    log("Connecting to " + "ws://"+host+":"+String(port) + httpDirectory);
     var observers = [];
     var onopen = function(){};
+    var onclose = uselessFunction;
     var self = this;
+    var manuallyClosed = false;
+    
+    showMsgBox("Verbindung zum Server wird hergestellt...");
     
     socket.onopen = function(event) {
+        unshowMsgBox();
         onopen();
+        log("Socket opened");
+    }
+    
+    socket.onclose = function(event) {
+        //unshowMsgBox();
+        onclose();
+        log("Socket closed");
+        console.log(event);
+        if (manuallyClosed) return; // normal socket close
+        showMsgBox("Verbindung zum Server geschlossen (oder nicht möglich): Code: "+event.code+", Phase: " + event.eventPhase, "msgBoxError");
+        setTimeout(function(){unshowMsgBox();}, 5000);
+    }
+    
+    socket.onerror = function(event) {
+        //unshowMsgBox();
+        showMsgBox("Fehler beim Verbinden mit Server: Code: "+event.code+", Phase: "+event.eventPhase, "msgBoxError");
+        setTimeout(function(){unshowMsgBox();}, 5000);
+    }
+    
+    this.setOnOpen = function(func) {
+        onopen = func;
+    }
+    
+    this.setOnClose = function(func) {
+        onclose = func;
     }
     
     this.close = function() {
@@ -91,21 +129,15 @@ function ServerConnection(host, port) {
         // remove this from serverConnections
         var i = serverConnections.indexOf(self);
         serverConnections.splice(i, 1);
-    }
-    
-    socket.onclose = function(event) {
-        
-    }
-    
-    this.setOnOpen = function(func) {
-        onopen = func;
+        manuallyClosed = true;
+        setTimeout(function(){manuallyClosed = false;}, 2000);
     }
     
     socket.onmessage = function(event) {
         var msg = "";
         try {
             msg = JSON.parse(event.data);
-            console.log("Received: " + event.data);
+            log("Received: " + event.data);
             if (currentRequest != null && "_"+currentRequest.jsonCmd.type+"_" == msg.type) {
                 removeRequest(currentRequest);
                 currentRequest.handler(msg);
@@ -114,7 +146,7 @@ function ServerConnection(host, port) {
                 notify(msg);
             }
         } catch (e) {
-            console.log(e);
+            log(e);
         }
     }
     
@@ -132,10 +164,10 @@ function ServerConnection(host, port) {
         try {
             jsonStr = JSON.stringify(jsonCmd);
         } catch (e) {
-            console.log(e);
+            log(e);
         }
         socket.send(jsonStr);
-        console.log("Sent: " + jsonStr);
+        log("Sent: " + jsonStr);
     }
     
     this.send = send;
@@ -153,6 +185,7 @@ function ServerConnection(host, port) {
     function notify(msg) {
         var l = observers.length;
         for (var i = 0; i < l; i++) {
+            if (observers[i] == undefined) continue; // behalte ich für alle Fälle
             if (observers[i].cmdType == msg.type) {
                 observers[i].handler(msg);
             }
@@ -160,7 +193,7 @@ function ServerConnection(host, port) {
     }
     
     
-    var commandRequestQueue = new Array();
+    var commandRequestQueue = [];
     var currentRequest = null;
     
     function removeRequest(request) {
@@ -203,13 +236,11 @@ function ServerConnection(host, port) {
 
 
 
-
 function NetworkManager() {
     var openServerConnections = [];
     var localIP = false;
     var scanning = false;
     var onScanReady = false;
-    updateLocalIP();
     
     // basic scan: nur 4. stelle der ip
     // leider viel zu langsam für scan auf 3. und 4. stelle, habe noch keinen besseren Ansatz...
@@ -229,6 +260,9 @@ function NetworkManager() {
         s.setOnOpen(function() {
             addServer(s);
             joinServer(s);
+            s.setOnClose(function() {
+                navigation.openFrames(welcomeFrame);
+            });
         });
     }
     
@@ -238,11 +272,11 @@ function NetworkManager() {
         tryPing(ip);
         ipArray[3] = ipArray[3] + 1;
         if (ipArray[3] >= 255) {
-            if (isBasic) {setTimeout(onScanReady,100);console.log("scan ready");return;}
+            if (isBasic) {setTimeout(onScanReady,100);log("scan ready");return;}
             ipArray[3] = 0;
             var diff = ipArray[2] - localIP[2];
             ipArray[2] -= (diff * 2 + Math.signum(diff)/2);
-            console.log(ip);
+            log(ip);
         }
         setTimeout(function(){checkNext(ipArray, isBasic, c+1);}, 20);
     }
@@ -256,7 +290,7 @@ function NetworkManager() {
     }
     
     function tryConnect(ip) {
-        console.log(ip);
+        log(ip);
         var s = new ServerConnection(ip, gameServerPort);
         s.setOnOpen(function(){addServer(s);});
     }
@@ -280,6 +314,7 @@ function NetworkManager() {
     // kleines workaround um die lokale IP des Users zu ermitteln
     function updateLocalIP(){
         window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;   //compatibility for firefox and chrome
+        if (window.RTCPeerConnection == undefined) return;
         var pc = new RTCPeerConnection({iceServers:[]}); 
         pc.createDataChannel("");    //create a bogus data channel
         pc.createOffer(pc.setLocalDescription.bind(pc), uselessFunction);    // create offer and set local description

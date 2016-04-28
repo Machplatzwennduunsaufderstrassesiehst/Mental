@@ -1,39 +1,33 @@
 
 
 function configureObservers() {
-    serverConnection.addObserver(playerWonObserver);
-    serverConnection.addObserver(exerciseObserver);
     serverConnection.addObserver(timeLeftObserver);
-    serverConnection.addObserver(messageObserver);
     serverConnection.addObserver(gameStringObserver);
-    serverConnection.addObserver(suggestionsObserver);
     serverConnection.addObserver(showScoreboardObserver);
     serverConnection.addObserver(countdownObserver);
     serverConnection.addObserver(reopenMainFrameObserver);
     serverConnection.addObserver(playerStateObserver);
-    serverConnection.addObserver(beatbobObserver);
 }
 
 
 
 
 var gameStringObserver = new Observer("gameString", function(msg) {
-    setCookie("gameString", msg.gameString, 1000);
-    byID("gameStringInput").value = msg.gameString;
-    byID("gameString").innerHTML = "Dein Spielstand: " + msg.gameString;
-});
-
-var timeLeftObserver = new Observer("timeLeft", function(msg) {
-    countdownValue = msg.time;
+    var gs = btoa(msg.gameString); // base64 encode
+    setCookie("gameString", gs, 1000);
+    byID("gameStringInput").value = gs;
+    byID("gameString").innerHTML = "Dein Spielstand: " + gs;
 });
 
 var playerStateObserver = new Observer("scoreboard", function(msg) {
     for (var i = 0; i < msg.scoreboard.length; i++) {
         var s = msg.scoreboard[i];
         if (s.highlight) { // the highlighted player is the user
-            player = s;
+            var copy = ["playerMoney", "playerName", "playerTitle", "playerLevel"];
+            for (var i = 0; i < copy.length; i++) {
+                player.set_(copy[i], s[copy[i]]);
+            }
             break;
         }
     }
 });
-

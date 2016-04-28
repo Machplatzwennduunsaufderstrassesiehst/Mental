@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import de.soeiner.mental.exerciseCreators.ExerciseCreator;
+
 /**
  * Created by Malte on 07.04.2016.
  */
@@ -25,7 +27,7 @@ public class Suggestion extends JSONObject{
         } catch (JSONException s) {
             s.printStackTrace();
         }
-        putName("Stimme f&uuml;r " + g.getGameModeString() + " (" + e.getName() + ")");
+        putName(g.getGameModeString() + " (" + e.getName() + ")");
     }
 
     public void upvote(Player p){

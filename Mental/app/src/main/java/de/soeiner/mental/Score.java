@@ -11,13 +11,23 @@ public class Score extends JSONObject{
     String compare = "";
     int pointsGained;
     Player player;
+    String color;
 
     public Score(Player p) {
         player = p;
         setPlayerName(player.getName());
-        setScoreValue(0);
+        initialize();
+    }
+
+    private void initialize(){
+        setMoney(0);
         setOverallScoreValue(0);
+        setScoreValue(0);
+        setColor("#00000");
         setTitle("amateur");
+        setHiglight(false);
+        setPlayerLevel(0);
+        setPlayerLevelProgress(0);
     }
 
     // quadratische abhängigkeit als vorschlag?
@@ -42,19 +52,6 @@ public class Score extends JSONObject{
         player.getShop().updateMoney();
         setMoney(player.getShop().getMoney());
         pointsGained = plus;
-    }
-
-    public void loadScoreString(String scoreString) {
-        int overallScoreValue = 0;
-
-        if (checkScoreString(scoreString)) {
-            scoreString = scoreString.substring(0,scoreString.length()-1);
-            overallScoreValue = Integer.parseInt(scoreString);
-        }
-
-        setOverallScoreValue(overallScoreValue);
-        setPlayerLevel(overallScoreValue);
-        setPlayerLevelProgress(overallScoreValue);
     }
 
     public boolean attributeOf(Player p){ //vergleicht Spieler Objekt mit anderem Spielerobjekt
@@ -104,6 +101,9 @@ public class Score extends JSONObject{
     public int getPointsGained() {
         return pointsGained;
     }
+    public void setPointsGained(int p) {
+        pointsGained = p;
+    }
 
     public void setPlayerName(String playerName) {
         if (has("playerName")) this.remove("playerName");
@@ -126,11 +126,18 @@ public class Score extends JSONObject{
     public void setScoreValue(int scoreValue) { setInt("scoreValue", scoreValue); }
 
     public void setTitle(String title) {
-        if (has("title")) this.remove("title");
+        if (has("playerTitle")) this.remove("playerTitle");
         try{
-            put("title", title);
+            put("playerTitle", title);
         }catch(Exception e){}
 
+    }
+
+    public void setColor(String color) {
+        if (has("color")) this.remove("color");
+        try{
+            put("color", color);
+        }catch(Exception e){}
     }
 
     public void resetScoreValue(){
@@ -154,14 +161,29 @@ public class Score extends JSONObject{
     }
 
     public void setMoney(int money) {
-        setInt("money", money);
+        setInt("playerMoney", money);
     }
 
+    public void loadScoreString(String scoreString) {
+        if(scoreString.length()< 2){return;}
+        int overallScoreValue = 0;
+
+        if (checkScoreString(scoreString)) {
+            scoreString = scoreString.substring(0,scoreString.length()-1);
+            System.out.println("Setze overallScoreValue mit String: "+scoreString);
+            overallScoreValue = Integer.parseInt(scoreString);
+            System.out.println("overallscoreValue ist nun: "+overallScoreValue);
+        }
+
+        setOverallScoreValue(overallScoreValue);
+        setPlayerLevel(overallScoreValue);
+        setPlayerLevelProgress(overallScoreValue);
+    }
 
     public String getScoreString(){
         int score = getOverallScoreValue();
         if(score == 0){
-            return "git gud nub";
+            return "";
         }
         String scoreString = Integer.toString(score);
         int k = 0;
@@ -184,10 +206,12 @@ public class Score extends JSONObject{
     public boolean checkScoreString(String scoreString){
         int temp = getOverallScoreValue();
         this.setOverallScoreValue(Integer.parseInt(scoreString.substring(0,scoreString.length()-1)));
+        System.out.println(Integer.parseInt(scoreString.substring(0, scoreString.length() - 1)));
+        System.out.println(scoreString);
         if(this.getScoreString().equals(scoreString)){
             return true;
         }
-            this.setOverallScoreValue(temp);
-            return false;
+        this.setOverallScoreValue(temp);
+        return false;
     }
 }

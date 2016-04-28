@@ -2,6 +2,9 @@ package de.soeiner.mental;
 
 import java.util.ArrayList;
 
+import de.soeiner.mental.exerciseCreators.ExerciseCreator;
+import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
+
 /**
  * Created by Malte on 09.04.2016.
  */
@@ -33,7 +36,7 @@ public class Voting {
             ArrayList<ExerciseCreator> possibleExerciseCreators = tempGameModes.get(gIndex).getCompatibleExerciseCreators();
             int eIndex = (int) (Math.random() * possibleExerciseCreators.size());
             suggestions[i] = new Suggestion(tempGameModes.get(gIndex), possibleExerciseCreators.get(eIndex), i);
-            tempGameModes.remove(gIndex);
+            if (tempGameModes.size() > 1) tempGameModes.remove(gIndex);
             //tempExerciseCreators.remove(eIndex);
         }
         revoteSuggestion = new Suggestion(gameModes[0], new SimpleMultExerciseCreator(), suggestions.length-1);
@@ -44,7 +47,7 @@ public class Voting {
     }
 
     public void broadcastSuggestions(){ //Abstimmung für nächsten gamemode
-        System.out.println("callvote");
+        System.out.println("broadcastSuggestions");
         for(int i = 0;i<game.joinedPlayers.size();i++){
             Player p = game.joinedPlayers.get(i);
             p.sendSuggestions(suggestions);
@@ -67,6 +70,7 @@ public class Voting {
         System.out.println("checkForCompletion");
         System.out.println(voteCounter);
         System.out.println(game.joinedPlayers.size());
+        System.out.println(revoteSuggestion.getPlayers().size());
         if (game.joinedPlayers.size() != 0) {
             if (revoteSuggestion.getPlayers().size() >= game.joinedPlayers.size()) {
                 for (int i = 0; i < suggestions.length; i++) {

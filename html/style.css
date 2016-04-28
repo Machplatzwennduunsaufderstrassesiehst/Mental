@@ -1,4 +1,4 @@
-* {transition: top 1s, width 0.5s, height 0.5s, opacity 0.5s, color 0.5s, background 0.5s, box-shadow 0.5s;}
+* {transition: font-size 0.5s, padding 0.5s, top 1.5s, left 0.5s, width 0.5s, height 0.5s, opacity 0.5s, color 0.5s, background 0.5s, box-shadow 0.5s;text-shadow:none;}
 
 table {border: none; margin:auto;} table * {border:none}
 
@@ -8,10 +8,22 @@ body {
     margin: auto;
 }
 
+#console {
+    border: 2px solid #abf;
+    background-color: white;
+    padding: 10px;
+    font-family: "Ubuntu Mono", "Mono Space", mono;
+    overflow-y: scroll;
+    height: 500px;
+    display: none;
+}
+
 #menu {
     background-color: #ccf;
     border-bottom: 2px solid #abf;
     box-shadow: 0px 0.15cm 0.1cm #aabbff;
+    /*position: fixed;*/
+    width: 100%;
 }
 
 #headerMenu {
@@ -28,12 +40,38 @@ body {
     color: white;
 }
 
-#main {
-    padding: 0.3cm;
+#page_ {
+    background-color: #fcfcfc;
+}
+
+.msgBox {
+    display: none;
+    transition: top 0s, opacity 0.5s;
+    padding: 10px;
+    color: #000;
+    text-align: center;
+    position: absolute;
+    left:0px;
+    margin:auto;
+    width: 60%;
+    max-width: 25em;
+    min-height: 10%;
+    border-radius: 10px;
+    opacity: 0.7;
+    background-color: #ddd;
+    background: -moz-linear-gradient(top, #ddd 0%, #eee 50%, #ddd 100%);
+    background: linear-gradient(top, #ddd 0%, #eee 50%, #ddd 100%);
+    box-shadow: 0px 0px 5px #999;
+}
+
+.msgBoxError {
+    background-color: #fdd;
+    background: -moz-linear-gradient(top, #eaa 0%, #fcc 50%, #eaa 100%);
+    background: linear-gradient(top, #eaa 0%, #fcc 50%, #eaa 100%);
 }
 
 .frame {
-    display:none;
+    display: none;
 }
 
 .btn, input, a {
@@ -41,6 +79,14 @@ body {
     border-radius: 0.1em;
     display: inline-block;
     border: 1px solid #abf;
+}
+
+.btnInput {
+    float:right;
+    margin-right:18px;
+    margin-top:2px;
+    border-radius:10px;
+    cursor:pointer;
 }
 
 .btn {
@@ -51,6 +97,7 @@ body {
     font-size: 0.8em;
     border-radius: 0.5em;
     display:inline-block;
+    transition: background 0s;
 }
 
 .btn + .btn {
@@ -73,7 +120,7 @@ body {
     background-color: #eaeaea;
     color: black;
     margin: auto;
-    padding: 4px;
+    padding: 6px;
     margin-top: 5px;
     cursor: pointer;
     text-align: left;
@@ -88,12 +135,34 @@ body {
     text-align: left;
 }
 
+.exerciseUI {
+    padding:5px;
+    background-color:white;
+    border:0;
+    margin:0;
+    height:auto;
+    box-shadow: none;
+    font-size: 1em;
+    min-width: 100px;
+    display:inline-block;
+}
+.exerciseUI:hover, .exerciseUI:focus {border:0;box-shadow:0;}
+
+#exerciseCountdown {
+    display: none;
+    font-weight: bold;
+    font-size:1em;
+    padding: 5px;
+    padding-left: 10px;
+}
+
 #numpadTable .btn {
     min-width: 0;
     padding: 1.8em;
     width: 2em;
     margin: 0 0.6em 0.6em 0;
     font-weight: bold;
+    opacity:0;
 }
 
 #messageContainerDivision {
@@ -101,22 +170,52 @@ body {
     display: inline-block;
     opacity: 0;
     overflow-y:hidden; 
-    height:1.2em; 
+    height:1.2em;
     background-color: #c1cfff; 
-    padding: 5px; 
+    padding: 0px 5px 5px 5px;
     border-radius: 5px;
 }
 
-#exerciseCountdown {
+#pointGained {
+    animation: pointsGainedAnimation;
+}
+
+@keyframes pointsGainedAnimation {
+    
+}
+
+
+
+#beatBob {
+    width: 70%;
+    margin: 10px 15% 5px 15%;
+    padding: auto;
     display: none;
-    padding-left: 0.4cm;
-    font-weight: bold;
+}
+
+#beatBobBarLeft {
+    background-color: #f22;
+    border-radius: 4px 0px 0px 4px;
+    float:right;
+    transition: background 2s, width 2s;
+}
+
+#beatBobBarRight {
+    background-color: #2f2;
+    border-radius: 0px 4px 4px 0px;
+    transition: background 2s, width 2s;
 }
 
 
 
 #scoreboardFrame {
     text-align: center;
+}
+
+#voting {
+    font-size: 0.9em;
+    transition-duration: 0s;
+    transition: width 0s;
 }
 
 #scoreboard {
@@ -128,19 +227,23 @@ body {
 
 #scoreboard td {
     border-top: 4px solid white;
-    padding: 2px 4px;
+    padding: 12px;
+    padding-top:0px;
+    padding-bottom:0px;
 }
 #scoreboard td + td { border-left: 2px solid white;margin:0;}
 
 #scoreboard th {
-    padding: 4px;
+    padding: 12px;
+    padding-top:0px;
+    padding-bottom:0px;
     margin: 0;
 }
 
 .lvlProgress {
     display:inline-block;
     width:60px;
-    background-color:#d5d5d5;
+    background-color:#dadada;
     border-radius:4px;
 }
 
@@ -148,10 +251,25 @@ body {
     width:0%;
     padding:0;
     background-color:#7cf;
+    box-shadow: 0px 0px 3px #888;
     display:block;
     opacity:0.5;
     border-radius:4px;
     height: 0.75em;
+}
+
+
+
+
+#shopUserInfo {
+    color: #444;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 0px 5px #999;
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 12px;
+    transition: height 0s;
 }
 
 .shopItem {
@@ -161,6 +279,7 @@ body {
     padding: 10px;
     margin-bottom: 12px;
     border: 1px solid #abf;
+    transition-duration: 0;
 }
 
 .shopItem td {
@@ -170,10 +289,8 @@ body {
 
 .shopItem .btn {
     padding: 0.5em;
-    width: 5em;
+    width: 6.5em;
 }
-
-
 
 
 
@@ -195,3 +312,5 @@ body {
     border-radius: 0.15cm;
     padding: 0.1cm 0.1cm 0.1cm 0.1cm;
 }
+
+

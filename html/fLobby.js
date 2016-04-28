@@ -1,4 +1,22 @@
 
+var lobbyFrame = new Frame("listGamesFrame");
+var serverLobbyFrame = new Frame("listServersFrame");
+
+lobbyFrame.setOnOpen(function() {
+    byID("gamesList").innerHTML = "laden...";
+    setDoOnEnter(function(){joinGame(0);});
+    byID("disconnect").style.display = "inline";
+    listAvailableGames();
+});
+
+serverLobbyFrame.setOnOpen(function() {
+    byID("serverList").innerHTML = "laden...";
+    setDoOnEnter(uselessFunction);
+    byID("disconnect").style.display = "inline";
+});
+
+// FUNCTIONALITY =======================================================
+
 function listAvailableServers() {
     byID("serversList").innerHTML = "";
     while (serverConnections.length > 0) {
@@ -23,6 +41,7 @@ function listAvailableGames() {
                 players += game.players[k].playerName;
                 if (k < game.players.length-1) players += ", ";
             }
+            if (players == "") players = "keine";
             html += "<div style='padding-left: 5px;padding-right: 5px;' class='selectListItem' onclick='joinGame("+game.gameId+");'>";
             html += "<p>"+createIcon("account-login")+"Joinen: "+game.name+" auf "+serverConnection.host+" - Spieler: "+players+"</p>";
             html += "</div>";
@@ -37,19 +56,23 @@ function joinServer(connection) {
     }
     serverConnection = connection;
     configureObservers();
-    openListGamesFrame();
+    navigation.openFrames(lobbyFrame);
     listAvailableGames();
     var name = byID("name").value;
-    var gameString = byID("gameStringInput").value;
+    var gameString_ = atob(byID("gameStringInput").value); // base64 decode
     setCookie("userName", name, 1000);
     serverConnection.send(makeSetCmd("name", name));
-    serverConnection.send(makeSetCmd("gameString", gameString));
+    serverConnection.send(makeSetCmd("gameString", gameString_));
 }
 
 function joinGame(gameId) {
+    navigation.closeFrames(lobbyFrame);
+    byID("toLobby").style.display = "inline";
     serverConnection.send(makeSimpleCmd("join", "gameId", gameId));
+    showMsgBox("Warten auf Spieler...");
 }
 
 // OBSERVERS ===========================================================
+
 
 

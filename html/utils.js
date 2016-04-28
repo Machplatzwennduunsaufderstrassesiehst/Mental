@@ -2,42 +2,48 @@
 var uselessFunction = function(){};
 
 var logContent_ = "";
-var console = console || (new function() {
+var console = console || new function() {
     this.log = function(s) {logContent_ += s;}
-});
+}
+
+function log(s) {
+    if (DEBUG) {
+        console.log(s);
+        if (DEBUG_ONPAGE) {
+            byID("console").style.display = "block;";
+            byID("console").innerHTML += s + "<br>";
+        }
+        if (DEBUG_ALERT) {
+            alert(s);
+        }
+    }
+}
+
+function updateDataFields(key, value) {
+    var spans = document.getElementsByTagName("span");
+    for (var i = 0; i < spans.length; i++) {
+        var field = spans[i];
+        if (field.hasAttribute("data-field-key")) {
+            if (key == field.getAttribute("data-field-key")) {
+                field.innerHTML = value;
+            }
+        }
+    }
+}
 
 function backgroundColorAnimate(id, color, fallbackTimeout) {
     if (fallbackTimeout == undefined) fallbackTimeout = 1000;
     var element = byID(id);
-    var oldColor = element.style.backgroundColor;
+    if (!element.hasAttribute("data-plain-background-color")) element.setAttribute("data-plain-background-color", element.style.backgroundColor);
+    var plainColor = element.getAttribute("data-plain-background-color");
+    element.style.transitionDuration = "0.2s";
     element.style.backgroundColor = color;
     setTimeout(function(){
-        element.style.backgroundColor = oldColor;
+        element.style.transitionDuration = "1s";
+        element.style.backgroundColor = plainColor;
     }, fallbackTimeout);
 }
 
-function createIcon(key, size, offsetpx) {
-    if (size == undefined) size = 2;
-    var size_;
-    if (size < 2) {
-        size_ = "";
-    } else {
-        size_ = "-" + size + "x";
-    }
-    if (offsetpx != undefined) size = offsetpx;
-    var html = '<img style="margin-bottom:-'+size+'px;" src="graphics/icons/open-iconic-master/png/'+key+size_+'.png" ';
-    html += 'alt="'+key+'">&nbsp;';
-    return html;
-}
-
-function iconize() {
-    var icons = document.getElementsByTagName("span");
-    for (var i = 0; i < icons.length; i++) {
-        var icon = icons[i];
-        if (!icon.hasAttribute("data-icon")) continue;
-        icon.innerHTML = createIcon(icon.getAttribute("data-icon"));
-    }
-}
 
 String.prototype.capitalize = function(){
     var self = this.split('');
@@ -54,70 +60,34 @@ function byID(id) {
     return window.document.getElementById(id);
 }
 
-// wird nicht wirklich gebraucht, mache ich später wahrscheinlich ganz weg
-/*
-function Navigation() {
-    var history = [];
-    
-    // add to history and show
-    function navigate() {
-        // compatibility: you can also put arguments as an array 
-        if (arguments[0].callee) arguments = arguments[0];
-        history.push(arguments);
-        show(arguments);
-        byID("back").style.display = "inline";
-    }
-    this.navigate = navigate;
-    
-    // do not add to history and show
-    this.show = show;
-    
-    this.back = function() {
-        if (history.length < 2) return;
-        history.pop(); // pop the currently shown ids from history
-        navigate(history.pop());
-    }
-    
-    this.clearHistory = function() {
-        history = [];
-        byID("back").style.display = "none";
-    }
-}
-*/
- 
-function closeAll() {
-    var frames = window.document.getElementsByClassName("frame");
-    for (var i = 0; i < frames.length; i++) {
-        frames[i].style.display = "none";
-    }
+function byTag(id) {
+    return window.document.getElementsByTagName(id);
 }
 
-function show() {
-    if (arguments[0].callee) arguments = arguments[0];
-    closeAll();
-    for (i = 0; i < arguments.length; i++) {
-        byID(arguments[i]).style.opacity = 0;
-        byID(arguments[i]).style.display = "block";
-        byID(arguments[i]).style.opacity = 1;
-    }
-
-    if (isMobile()) hideAddressBar();
+function byClass(id) {
+    return window.document.getElementsByClassName(id);
 }
 
-var countdownValue = 0;
-var countDownId = "countdownHack";
+var exerciseCountdownValue = 0;
 
-function countdown() {
-    setTimeout(function(){countdown();}, 1000);
-    if (!byID(countDownId)) return;
-    if (countdownValue < 0) {
-        byID(countDownId).style.display = "none";
+function countdown(countdownId, value, recall, onCountdown, template) {
+    if (!template) template = "#s";
+    var e = byID(countdownId);
+    if (!e) {
+        e = {style:{}};
+        log("countdown: element not found: " + countdownId);
+    }
+    if (value < 0) {
+        e.style.display = "none";
     } else {
-        byID(countDownId).style.display = "inline";
-        byID(countDownId).innerHTML = String(countdownValue) + "s";
+        e.style.display = "inline";
+        e.innerHTML = template.replace("#", String(value));
+        if (recall) setTimeout(function(){countdown(countdownId, Number(value)-1, true, onCountdown, template);}, 1000);
+        if (onCountdown) onCountdown(e, value);
     }
-    countdownValue -= 1;
 }
+
+setInterval(function(){countdown("exerciseCountdown", exerciseCountdownValue, false);exerciseCountdownValue--;}, 1000);
 
 
 var doOnEnter = uselessFunction;
@@ -130,26 +100,6 @@ document.onkeydown = function(event) {
 
 function setDoOnEnter(f) {
     doOnEnter = f;
-}
-
-var msgIDCounter = 0;
-function displayMessage(message) {
-    var i = 0;
-    var msgCD = byID("messageContainerDivision");
-    var msgC = byID("messageContainer");
-    msgCD.style.opacity = 1;
-    slide(msgC, -1.45);
-    var msgID = "msg" + msgIDCounter;
-    msgC.innerHTML = "<span id='"+msgID+"'>" + message + "<br></span>" + msgC.innerHTML;
-    setTimeout(function(){byID(msgID).style.opacity = 0;if (msgC.children.length <= 1) msgCD.style.opacity = 0;}, 5000);
-    setTimeout(function(){msgC.removeChild(byID(msgID));}, 5500);
-    msgIDCounter++;
-}
-var slide = function(msgC, value) {
-    if (value >= 0) {return;}
-    msgC.style.marginTop = String(value) + "em";
-    value += 0.1;
-    setTimeout(function(){slide(msgC, value);}, 25);
 }
 
 function fullScreen(element) {
@@ -179,6 +129,38 @@ Math.signum = function(a) {
         return -1;
     }
     return 1;
+}
+
+function blur() {byID("blurHack").focus();}
+
+function Lock() {
+    var acquired = false;
+    var onrelease = [];
+    
+    var acquire = this.acquire = function(doOnRelease) {
+        if (acquired) {
+            if (doOnRelease) onrelease.push(doOnRelease);
+            return false;
+        } else {
+            acquired = true;
+            return true;
+        }
+    }
+    
+    var release = this.release = function() {
+        if (acquired) {
+            acquired = false;
+            while (onrelease.length > 0) {
+                var queued = onrelease.shift();
+                console.log(queued);
+                queued();
+            }
+            onrelease = [];
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 window.isMobile = function() {
