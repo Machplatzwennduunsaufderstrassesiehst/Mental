@@ -1,49 +1,70 @@
 package AppClient;
+import android.util.Log;
+import android.os.Build;
+import android.widget.TextView;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_10;
+import org.java_websocket.drafts.Draft_75;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import de.soeiner.mental.R;
+import de.soeiner.mental.Server;
 
 
 /**
  * Created by Appel on 19.04.2016.
  */
-public class AppClientWebSocket extends WebSocketClient {
+public class AppClientWebSocket {
 
-    public AppClientWebSocket (URI serverUri, Draft draft){
-        super(serverUri, draft);
+    WebSocketClient clientSocket;
+    String location;
+
+    public AppClientWebSocket(String location){
+        this.location = location;
+        connectWebSocket();
     }
 
-    public AppClientWebSocket(URI serverURI) {
-        super(serverURI);
-    }
+    public void connectWebSocket() {
+        URI uri;
+        try {
+            uri = new URI(location);
+            System.out.println(location);
+            clientSocket = new WebSocketClient(uri, new Draft_75()) {
+                public void onMessage(String message ) {
+                    System.out.println(message);
+                    try {
+                        JSONObject j = new JSONObject(message);
+                        String type = j.getString("type");
+                        switch (type) {
+                            case "message":
+                                String textMessage = j.getString("message");
+                                break;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-    public static void main(String[] args) throws URISyntaxException {
-        WebSocketClient client = new AppClientWebSocket(new URI("ws://localhost:8887"), new Draft_10());
-        //WebSocketClient client = new AppClientWebSocket(new URI("ttp://www.mentalist.lima-city.de"));
-        client.connect();
-    }
+                public void onOpen(ServerHandshake handshake) {
+                    System.out.println("Client Socket opened");
+                }
 
-    @Override
-    public void onOpen(ServerHandshake handshakedata) {
-        System.out.println("new connection opened");
-    }
+                public void onClose(int code, String reason, boolean remote) {
 
-    @Override
-    public void onClose(int code, String reason, boolean remote) {
-        System.out.println("closed with exit code " + code + " additional info: " + reason);
-    }
+                }
 
-    @Override
-    public void onMessage(String message) {
-        System.out.println("received message: " + message);
-    }
+                public void onError(Exception e) {
 
-    @Override
-    public void onError(Exception ex) {
-        System.err.println("an error occurred:" + ex);
+                }
+            };
+            clientSocket.connect();
+            clientSocket.send("{type:'setName', 'name':'Appel'}");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
-
 }

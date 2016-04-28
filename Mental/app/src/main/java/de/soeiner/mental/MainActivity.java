@@ -7,20 +7,23 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.Button;
 import org.java_websocket.WebSocketImpl;
-import org.java_websocket.client.WebSocketClient;
 import java.io.IOException;
+
+import AppClient.AppClientWebSocket;
+
 
 public class MainActivity extends AppCompatActivity {
 
     PingHttpServer httpServer;
-    boolean serverIsActive;
+    boolean serverIsActive = false;
     boolean DEBUG = false;
+    AppClientWebSocket socket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        serverIsActive = true;
+        serverIsActive = false;
         if(DEBUG){
             debugServerStart();
         }
@@ -31,11 +34,16 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         httpServer.stop();
     }
+
+    //=============================Join Button=====================================
+
     public void buttonJoinServer(View v){
-        Uri url = Uri.parse("http://www.mentalist.lima-city.de");
-        Intent intent = new Intent(Intent.ACTION_VIEW, url);
-        startActivity(intent);
+        //Uri url = Uri.parse("http://www.mentalist.lima-city.de");
+        //Intent intent = new Intent(Intent.ACTION_VIEW, url);
+        //startActivity(intent);
+        socket = new AppClientWebSocket("ws://localhost:"+1297);
     }
+    //=============================Host Button=====================================
 
     public void buttonStartServer(View v){
         Button btnJoin = (Button) findViewById(R.id.buttonJoinGame);
@@ -43,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         btnJoin.setEnabled(true);
         try {
             WebSocketImpl.DEBUG = true;
-            int port = 6382;
+            int port = 1297;
             Server s = new Server( port );
             s.start();
             System.out.println("Server started on port: " + s.getPort());
@@ -66,10 +74,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //=======================Debug==================================================
+
     private void debugServerStart(){
         try {
             WebSocketImpl.DEBUG = true;
-            int port = 6382;
+            int port = 1297;
             Server s = new Server( port );
             s.start();
             System.out.println("Server started on port: " + s.getPort());
@@ -82,5 +91,5 @@ public class MainActivity extends AppCompatActivity {
         Game g = new Game();
     }
 
-    //===============================================================
+
 }
