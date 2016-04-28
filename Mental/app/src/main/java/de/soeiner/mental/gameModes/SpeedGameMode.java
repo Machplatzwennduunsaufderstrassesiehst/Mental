@@ -21,7 +21,7 @@ public class SpeedGameMode extends GameMode { //Es empfiehlt sich vll. diesen Mo
     }
 
     @Override
-    protected void initializeCompatibleExerciseCreators() {
+    public void initializeCompatibleExerciseCreators() {
         compatibleExerciseCreators.add(new SimpleMultExerciseCreator());
         compatibleExerciseCreators.add(new SquareMultExerciseCreator());
     }
