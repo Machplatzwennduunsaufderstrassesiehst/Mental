@@ -9,8 +9,8 @@ import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 
 import java.net.UnknownHostException;
 
-import de.soeiner.mental.Game;
-import de.soeiner.mental.Player;
+import de.soeiner.mental.gameFundamentals.Game;
+import de.soeiner.mental.gameFundamentals.Player;
 
 
 class WebSocketRequestHandler implements AsyncHttpServer.WebSocketRequestCallback {

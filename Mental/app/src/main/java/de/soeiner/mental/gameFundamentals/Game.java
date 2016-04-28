@@ -1,4 +1,4 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameFundamentals;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,13 +10,15 @@ import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
+import de.soeiner.mental.gameModes.ClassicGameMode;
+import de.soeiner.mental.gameModes.GameMode;
 
 /**
  * Created by malte on 13.02.16.
  */
 public class Game implements Runnable {
 
-    protected static ArrayList<Game> games;
+    public static ArrayList<Game> games;
 
     static {
         games = new ArrayList<Game>();
@@ -46,8 +48,8 @@ public class Game implements Runnable {
         return new JSONArray();
     }
 
-    GameMode gameMode;
-    ExerciseCreator exerciseCreator = null;
+    public GameMode gameMode;
+    public ExerciseCreator exerciseCreator = null;
     Voting voting;
     Object voteLock = new Object();
     String name;
@@ -78,7 +80,7 @@ public class Game implements Runnable {
         name = n;
     }
 
-    protected String getGameModeString(){
+    public String getGameModeString(){
         return gameMode.getGameModeString();
     }
 
@@ -209,7 +211,7 @@ public class Game implements Runnable {
     }
     */
 
-    protected int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
+    public int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
         //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
         int points = exerciseCreator.getDifficulty() * 3 / 2; // hab ich bisschen erhöht, da eine Runde ganz schön lange gedauert hat, wenn jeder mal ne Aufgabe löst
         for(int i = 0; i<getRank();i++){
@@ -218,7 +220,7 @@ public class Game implements Runnable {
         return points;
     }
 
-    protected int getRank(){ //methode berechnet wie viele
+    public int getRank(){ //methode berechnet wie viele
         // Spieler die Aufgabe schon gelöst haben
         int rank = 0;
         for(int i = 0; i<joinedPlayers.size();i++){

@@ -1,13 +1,15 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameModes;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import de.soeiner.mental.gameFundamentals.Game;
+import de.soeiner.mental.gameFundamentals.Player;
+import de.soeiner.mental.gameFundamentals.Score;
 
 /**
  * Created by Malte on 02.04.2016.
  */
-public class ArenaGameMode extends GameMode{
+public class ArenaGameMode extends GameMode {
 
     private int bet;
     private int zaehler = 0;

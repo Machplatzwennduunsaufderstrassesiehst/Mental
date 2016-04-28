@@ -1,4 +1,4 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameFundamentals;
 
 import com.koushikdutta.async.http.WebSocket;
 
@@ -8,6 +8,9 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import de.soeiner.mental.shop.Shop;
+import de.soeiner.mental.shop.shopItems.ShopItem;
+import de.soeiner.mental.gameModes.Train;
 import de.soeiner.mental.communication.ClientConnection;
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
@@ -23,7 +26,7 @@ public class Player extends ClientConnection {
     private Score score;
     private Game game;
     private Shop shop;
-    ExerciseCreator exerciseCreator;
+    public ExerciseCreator exerciseCreator;
     int[] partition = new int[4]; //4 Plätze
     public boolean finished;
 

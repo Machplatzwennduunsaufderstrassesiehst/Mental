@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import de.soeiner.mental.Logger;
+import de.soeiner.mental.gameFundamentals.Logger;
 
 /**
  * Created by sven on 25.02.16.

@@ -1,4 +1,4 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameModes;
 
 /**
  * Created by Malte on 21.04.2016.

@@ -1,9 +1,9 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameModes;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
+import de.soeiner.mental.gameFundamentals.Game;
+import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.exerciseCreators.TrainMapCreator;
 import de.soeiner.mental.trainTracks.TrainTrack;
 

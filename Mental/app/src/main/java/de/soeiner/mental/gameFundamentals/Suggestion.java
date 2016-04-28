@@ -1,4 +1,4 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameFundamentals;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
+import de.soeiner.mental.gameModes.GameMode;
 
 /**
  * Created by Malte on 07.04.2016.
