@@ -6,59 +6,47 @@ import android.view.View;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Button;
-import org.java_websocket.WebSocketImpl;
 import java.io.IOException;
 
-import AppClient.AppClientWebSocket;
-
+import de.soeiner.mental.communication.PingHttpServer;
+import de.soeiner.mental.communication.Server;
 
 public class MainActivity extends AppCompatActivity {
 
-    PingHttpServer httpServer;
-    boolean serverIsActive = false;
-    boolean DEBUG = false;
-    AppClientWebSocket socket;
+    final static int PORT = 1297;
+    final static boolean DEBUG = true;
+    private boolean serverIsActive;
+    private Button btnJoin;
+    private Button btnHost;
+
+    private Server server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         serverIsActive = false;
-        if(DEBUG){
-            debugServerStart();
+        btnJoin = (Button) findViewById(R.id.buttonJoinGame);
+        btnHost = (Button) findViewById(R.id.buttonHostGame);
+        if(DEBUG) {
+            // so startet man nicht aus Versehen den Server 2x im DEBUG modus
+            btnHost.setText("SERVER LÄUFT");
+            btnHost.setEnabled(false);
+            btnHost.setClickable(false);
+            btnJoin.setEnabled(true);
+            serverStart();
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        httpServer.stop();
-    }
-
-    //=============================Join Button=====================================
-
-    public void buttonJoinServer(View v){
-        //Uri url = Uri.parse("http://www.mentalist.lima-city.de");
-        //Intent intent = new Intent(Intent.ACTION_VIEW, url);
-        //startActivity(intent);
-        socket = new AppClientWebSocket("ws://localhost:"+1297);
+    public void buttonJoinServer(View v) {
+        Uri url = Uri.parse("http://www.mentalist.lima-city.de");
+        Intent intent = new Intent(Intent.ACTION_VIEW, url);
+        startActivity(intent);
     }
     //=============================Host Button=====================================
 
-    public void buttonStartServer(View v){
-        Button btnJoin = (Button) findViewById(R.id.buttonJoinGame);
-        Button btnHost = (Button) findViewById(R.id.buttonHostGame);
+    public void buttonStartServer(View v) {
         btnJoin.setEnabled(true);
-        try {
-            WebSocketImpl.DEBUG = true;
-            int port = 1297;
-            Server s = new Server( port );
-            s.start();
-            System.out.println("Server started on port: " + s.getPort());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         if(serverIsActive){
             btnHost.setText("Spiel hosten");
             btnJoin.setEnabled(false);
@@ -67,29 +55,25 @@ public class MainActivity extends AppCompatActivity {
             btnHost.setText("Spiel beenden");
             serverIsActive = true;
         }
-        httpServer = new PingHttpServer();
-        httpServer.start();
-        Game g = new Game();
-        g.setName("Debug Game");
+
+        serverStart();
     }
 
-    //=======================Debug==================================================
-
-    private void debugServerStart(){
+    private void serverStart(){
         try {
-            WebSocketImpl.DEBUG = true;
-            int port = 1297;
-            Server s = new Server( port );
-            s.start();
-            System.out.println("Server started on port: " + s.getPort());
+            int port = PORT;
+            server = new Server( port );
+            System.out.println("Server started: " + server.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        httpServer = new PingHttpServer();
-        httpServer.start();
-        Game g = new Game();
+        new Game();
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        server.stop();
+    }
 }
