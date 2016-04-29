@@ -5,8 +5,9 @@ package de.soeiner.mental.trainTracks;
  */
 public class BlockedTrack extends TrainTrack {
 
-    public BlockedTrack(int value){
-        this.setValue(value);
+
+    public BlockedTrack(int x, int y, int v) {
+        super(x, y, v);
     }
 
     public int getFrom() {

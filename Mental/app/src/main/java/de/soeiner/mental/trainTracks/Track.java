@@ -4,9 +4,11 @@ package de.soeiner.mental.trainTracks;
  * Created by Malte on 26.04.2016.
  */
 public class Track extends TrainTrack {
-    public Track(int value){
-        this.setValue(value);
+
+    public Track(int x, int y, int v) {
+        super(x, y, v);
     }
+
     @Override
     public int getFrom() {
         return 0;

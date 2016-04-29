@@ -70,28 +70,7 @@ public class Player extends ClientConnection {
         PushRequest request = new PushRequest(jsonObject);
         makePushRequest(request);
     }
-/*
-    public void sendTrainMap(JSONObject[][] trainMap) {
 
-        JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_TRAINMAP);
-        try {
-            JSONArray[] trainJSONArray = new JSONArray[trainMap.length]; //erstellt eigenes 2d JSON array
-            for(int i = 0; i<trainMap.length;i++){
-                JSONObject[] temp = new JSONObject[trainMap[i].length];
-                for (int j = 0; j < temp.length; j++) {
-                    temp[j] = trainMap[i][j];
-                }
-                JSONArray tempArray = new JSONArray(temp);
-                trainJSONArray[i] = tempArray;
-            }
-            jsonObject.put("trainMap", trainJSONArray);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        PushRequest request = new PushRequest(jsonObject);
-        makePushRequest(request);
-    }
-*/
     public void sendSwitchChange(Switch changedSwitch){
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SWITCHCHANGE);
             try {

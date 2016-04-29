@@ -54,7 +54,7 @@ public class TrainMapCreator extends ExerciseCreator {
         map = new TrainTrack[size][size];
         for(int i = 0; i<size; i++){
             for(int j = 0; j<size; j++){
-                map[i][j] = new Track(0);
+                map[i][j] = new Track(i, j, 0);
             }
         }
         boolean continuePossible = true;
@@ -62,14 +62,14 @@ public class TrainMapCreator extends ExerciseCreator {
 
         for(int i = 0; i<4; i++){ //ränder setzen
             for(int j = 0; j<size-1;j++){
-                map[x][y] = new BlockedTrack(BLOCK_VALUE);
+                map[x][y] = new BlockedTrack(x, y, BLOCK_VALUE);
                 x += xT[i];
                 y += yT[i];
             }
         }
         x = 1;
         y = 1;
-        map[x][y] = new Track(1);
+        map[x][y] = new Track(x, y, 1);
         int[] coordinates = new int[2];
         int z = 0;
         while(pathNumber < 7){
@@ -84,7 +84,7 @@ public class TrainMapCreator extends ExerciseCreator {
 
                 TrainTrack successorTemp = map[coordinates[0]][coordinates[1]].getSuccessor(); //aktueller
                 TrainTrack predecessorTemp = map[coordinates[0]][coordinates[1]].getPredecessor(); //aktueller
-                map[coordinates[0]][coordinates[1]] = new Switch();
+                map[coordinates[0]][coordinates[1]] = new Switch(coordinates[0], coordinates[1], 9);
                 map[coordinates[0]][coordinates[1]].setPredecessor(predecessorTemp);
                 map[coordinates[0]][coordinates[1]].setSuccessor(successorTemp);
                 map[coordinates[0]][coordinates[1]].setSuccessor(map[x][y]);
@@ -142,6 +142,14 @@ public class TrainMapCreator extends ExerciseCreator {
                     }
                 }
 
+            }
+        }
+
+        for(int i = 0; i<map.length; i++){
+            for (int j = 0; j < map.length; j++) {
+                if(map[i][j].getType().equals("track") && map[i][j].getSuccessor().equals(null)){ //goals werden identifiziert
+                    map[i][j] = new Goal(i, j, map[i][j].getValue()); //und gesetzt
+                }
             }
         }
         ausgabe();

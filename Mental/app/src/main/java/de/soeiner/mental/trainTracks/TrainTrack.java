@@ -12,6 +12,13 @@ public abstract class TrainTrack {
     protected int to;
     protected int switchTo;
     protected int value = 0;
+    protected int[] coordinates = new int[2];
+
+    public TrainTrack(int x, int y, int v){
+        coordinates[0] = x;
+        coordinates[1] = y;
+        setValue(v);
+    }
 
     public abstract int getFrom();
     public abstract int getTo();
@@ -38,5 +45,10 @@ public abstract class TrainTrack {
     public int getValue(){
         return value;
     }
-
+    public void setCoordinates(int x, int y){
+        coordinates[0] = x;
+        coordinates[1] = y;
+    }
+    public int getX(){return coordinates[0];}
+    public int getY(){return coordinates[1];}
 }
