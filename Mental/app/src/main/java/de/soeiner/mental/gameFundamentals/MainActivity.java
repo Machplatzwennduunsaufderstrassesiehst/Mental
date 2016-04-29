@@ -1,4 +1,4 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameFundamentals;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,8 +8,9 @@ import android.net.Uri;
 import android.widget.Button;
 import java.io.IOException;
 
-import de.soeiner.mental.communication.PingHttpServer;
+import de.soeiner.mental.R;
 import de.soeiner.mental.communication.Server;
+import de.soeiner.mental.gameFundamentals.Game;
 
 public class MainActivity extends AppCompatActivity {
 

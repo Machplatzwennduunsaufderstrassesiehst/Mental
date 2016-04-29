@@ -1,12 +1,16 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameModes;
 
 import org.json.JSONObject;
+
+import de.soeiner.mental.gameFundamentals.Game;
+import de.soeiner.mental.gameFundamentals.Player;
+import de.soeiner.mental.gameFundamentals.Score;
 
 /**
  * Created by Malte on 28.03.2016.
  */
 
-public class ClassicGameMode extends GameMode{
+public class ClassicGameMode extends GameMode {
 
     public ClassicGameMode(Game g){
         super(g);

@@ -1,19 +1,21 @@
-package de.soeiner.mental;
+package de.soeiner.mental.shop;
 
-import org.json.JSONObject;
-
-import java.util.Arrays;
+import de.soeiner.mental.shop.shopItems.Color;
+import de.soeiner.mental.gameFundamentals.Score;
+import de.soeiner.mental.shop.shopItems.ShopItem;
+import de.soeiner.mental.shop.shopItems.Title;
+import de.soeiner.mental.gameFundamentals.Player;
 
 /**
  * Created by Malte on 30.03.2016.
  */
 public class Shop{
 
-    protected int money;
-    protected int moneySpent; //müsste noch in den shopString eingebaut werden
-    Score score;
+    public int money;
+    public int moneySpent; //müsste noch in den shopString eingebaut werden
+    public Score score;
     Player player;
-    ShopItem[] shopItemList;
+    public ShopItem[] shopItemList;
     int[] partition = new int[8]; //8 Plätze
 
     public Shop(Player p){

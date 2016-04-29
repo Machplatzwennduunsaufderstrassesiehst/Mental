@@ -1,4 +1,4 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameFundamentals;
 
 /**
  * Created by sven on 25.02.16.

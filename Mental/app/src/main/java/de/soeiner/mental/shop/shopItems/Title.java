@@ -1,4 +1,6 @@
-package de.soeiner.mental;
+package de.soeiner.mental.shop.shopItems;
+
+import de.soeiner.mental.shop.Shop;
 
 /**
  * Created by Malte on 17.04.2016.

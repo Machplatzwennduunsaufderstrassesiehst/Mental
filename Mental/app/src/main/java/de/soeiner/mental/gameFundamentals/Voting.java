@@ -1,9 +1,15 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameFundamentals;
 
 import java.util.ArrayList;
 
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
+import de.soeiner.mental.gameModes.ArenaGameMode;
+import de.soeiner.mental.gameModes.BeatBobGameMode;
+import de.soeiner.mental.gameModes.ClassicGameMode;
+import de.soeiner.mental.gameModes.GameMode;
+import de.soeiner.mental.gameModes.KnockoutGameMode;
+import de.soeiner.mental.gameModes.SpeedGameMode;
 
 /**
  * Created by Malte on 09.04.2016.

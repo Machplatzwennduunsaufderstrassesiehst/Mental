@@ -1,13 +1,15 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameModes;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import de.soeiner.mental.gameFundamentals.Game;
+import de.soeiner.mental.gameFundamentals.Player;
+import de.soeiner.mental.gameFundamentals.Score;
 
 /**
  * Created by Malte on 28.03.2016.
  */
-public class KnockoutGameMode extends GameMode{
+public class KnockoutGameMode extends GameMode {
 
     public KnockoutGameMode(Game g) {
         super(g);

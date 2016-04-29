@@ -1,4 +1,4 @@
-package de.soeiner.mental;
+package de.soeiner.mental.util;
 
 /**
  * Created by Malte on 13.04.2016.

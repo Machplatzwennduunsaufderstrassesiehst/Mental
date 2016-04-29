@@ -1,10 +1,12 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameModes;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import de.soeiner.mental.gameFundamentals.Game;
+import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
@@ -19,20 +21,20 @@ public abstract class GameMode {
 
     ArrayList<ExerciseCreator> compatibleExerciseCreators = new ArrayList<>();
 
-    protected static final int EXERCISE_TIMEOUT = 30;
+    public static final int EXERCISE_TIMEOUT = 30;
 
     public boolean gameIsRunning;
     public int minPlayers = 2;
-    protected Game game;
+    public Game game;
 
-    protected final Object answerLock = new Object();
+    public final Object answerLock = new Object();
 
     public GameMode(Game game){
         this.game = game;
         initializeCompatibleExerciseCreators();
     }
 
-    protected void initializeCompatibleExerciseCreators() {
+    public void initializeCompatibleExerciseCreators() {
         compatibleExerciseCreators.add(new MultExerciseCreator());
         compatibleExerciseCreators.add(new MixedExerciseCreator());
         compatibleExerciseCreators.add(new SimpleMultExerciseCreator());
@@ -70,7 +72,7 @@ public abstract class GameMode {
         return compatibleExerciseCreators;
     }
 
-    protected void doWaitTimeout (int timeout) {
+    public void doWaitTimeout (int timeout) {
         JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
         try {
             j.put("time", timeout);

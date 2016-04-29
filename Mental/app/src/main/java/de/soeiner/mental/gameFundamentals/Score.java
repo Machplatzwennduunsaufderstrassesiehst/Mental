@@ -1,7 +1,9 @@
-package de.soeiner.mental;
+package de.soeiner.mental.gameFundamentals;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import de.soeiner.mental.gameFundamentals.Player;
 
 /**
  * Created by sven on 16.02.16.
