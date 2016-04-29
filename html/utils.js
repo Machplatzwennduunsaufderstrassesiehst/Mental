@@ -45,6 +45,13 @@ function backgroundColorAnimate(id, color, fallbackTimeout) {
 }
 
 
+Array.prototype.remove = function(element) {
+    var index = this.indexOf(element);
+    if (index < 0) return false; // element not found in array
+    this.splice(index, 1);
+    return true;
+}
+
 String.prototype.capitalize = function(){
     var self = this.split('');
     for( var i=0; i < self.length; i++ ){

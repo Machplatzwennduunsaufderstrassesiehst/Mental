@@ -127,8 +127,7 @@ function ServerConnection(host, port) {
     this.close = function() {
         socket.close();
         // remove this from serverConnections
-        var i = serverConnections.indexOf(self);
-        serverConnections.splice(i, 1);
+        serverConnections.remove(self);
         manuallyClosed = true;
         setTimeout(function(){manuallyClosed = false;}, 2000);
     }
@@ -176,8 +175,7 @@ function ServerConnection(host, port) {
         observers.push(observer);
     }
     function removeObserver(observer) {
-        var pos = observers.indexOf(observer);
-        observers.splice(pos, 1);
+        observers.remove(observer);
     }
     this.addObserver = addObserver;
     this.removeObserver = removeObserver;
@@ -197,8 +195,7 @@ function ServerConnection(host, port) {
     var currentRequest = null;
     
     function removeRequest(request) {
-        var index = commandRequestQueue.indexOf(request);
-        commandRequestQueue.splice(index, 1);
+        commandRequestQueue.remove(request);
     }
     this.removeRequest = removeRequest;
     
