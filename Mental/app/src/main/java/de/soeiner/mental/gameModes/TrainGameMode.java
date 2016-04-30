@@ -19,6 +19,7 @@ public class TrainGameMode extends GameMode {
     private final double MAX_SPEED = 3.0;
     private final double MIN_SPEED = 0.5;
     private int TRAIN_SPAWN_INTERVAL = 500; //in milllisekunden
+    private final int TRAIN_ARRIVED_REWARD = 10;
     public void initializeCompatibleExerciseCreators() {
         compatibleExerciseCreators.add(new TrainMapCreator());
     }
@@ -111,20 +112,39 @@ public class TrainGameMode extends GameMode {
         if(answer.has("switch")){
             try {
                 switches[answer.getInt("switch")].changeSwitch();
+                for (int i = 0; i < game.activePlayers.size(); i++) {
+                    game.activePlayers.get(i).sendSwitchChange(switches[answer.getInt("switch")]);
+                }
             }catch (Exception e){e.printStackTrace();}
             return true;
         }
         return false;
     }
 
-    public void trainArrived(){ //TODO
-        //reward
-        //nachtricht an client
-        //sendTrainArrived(trainId)
+    public void trainArrived(int trainId, int goalId, boolean succsess){
+        game.broadcastMessage("Zug hat sein Ziel erreicht!");
+        for(int i = 0; i<game.activePlayers.size();i++){
+            if(succsess) {
+                game.activePlayers.get(i).getScore().updateScore(TRAIN_ARRIVED_REWARD);
+            }
+            game.activePlayers.get(i).sendTrainArrived(trainId, goalId, succsess);
+        }
+    }
+
+    public void broadcastNewTrain(JSONObject train){
+        for (int i = 0; i < game.activePlayers.size(); i++) {
+            game.activePlayers.get(i).sendNewTrain(train);
+        }
     }
 
     @Override
     public String getGameModeString() {
         return "Train Game";
+    }
+
+    public void broadcastTrainDecision(int trainId, int switchId, int direction){
+        for (int i = 0; i < game.activePlayers.size(); i++) {
+            game.activePlayers.get(i).sendTrainDecision(trainId, switchId, direction);
+        }
     }
 }

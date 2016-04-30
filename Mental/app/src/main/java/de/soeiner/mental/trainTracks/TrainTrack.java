@@ -1,9 +1,11 @@
 package de.soeiner.mental.trainTracks;
 
+import org.json.JSONObject;
+
 /**
  * Created by Malte on 26.04.2016.
  */
-public abstract class TrainTrack {
+public abstract class TrainTrack extends JSONObject{ //TODO: set attributes
 
     protected TrainTrack successor;
     protected TrainTrack predecessor;

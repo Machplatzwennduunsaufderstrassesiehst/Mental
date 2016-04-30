@@ -1,5 +1,8 @@
 package de.soeiner.mental.gameModes;
 
+import org.json.JSONObject;
+
+import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.trainTracks.*;
 
 /**
@@ -19,6 +22,14 @@ public class Train implements Runnable{
         destinationId = d;
         speed = s;
         traingame = tg;
+        JSONObject train = CmdRequest.makeCmd(CmdRequest.SEND_NEWTRAIN);;
+        try{
+            train.put("trainId", id);
+            train.put("color", c);
+            train.put("destinationId", destinationId);
+            train.put("speed", s);
+        }catch(Exception e){ e.printStackTrace();}
+        traingame.broadcastNewTrain(train);
         x = y = 1;
         Thread t = new Thread(this);
         t.start();
@@ -39,19 +50,15 @@ public class Train implements Runnable{
             }catch(Exception e){}
             if(traingame.trainMap[x][y].getType().equals("goal")){
                 Goal tempGoal = (Goal) traingame.trainMap[x][y]; //TODO possible breaking point
-                if(id == tempGoal.getGoalId()){
-                    traingame.trainArrived();
+                if(destinationId == tempGoal.getGoalId()){
+                    traingame.trainArrived(id, tempGoal.getGoalId(), true);
+                }else{
+                    traingame.trainArrived(id, tempGoal.getGoalId(), false);
                 }
                 /* sicherere möglichkeit: if(id == traingame.trainMap[x][y].getValue()){ traingame.trainArrived(); } */
                 moving = false; //beende thread
             }
         }
-
-        //while unterwegs
-            //zeit bis zum nächsten switch ausrechen
-            //so lange warten
-        //end while
-        //wenn richtiges ziel erreicht, benrachrichtigen
     }
 
     private int calculateTimeToDestination(){ //in millisek
@@ -59,31 +66,22 @@ public class Train implements Runnable{
         Switch s = null;
         int direction = 0; //0 oben, 1 rechts, 2 unten, 3 links
         do{
-            if(distance == 0){
+            if(distance == 0 && traingame.trainMap[x][y].getType().equals("switch")){
                 s = (Switch) traingame.trainMap[x][y];
             }
             x = traingame.trainMap[x][y].getSuccessor().getX();
             y = traingame.trainMap[x][y].getSuccessor().getY();
-            if(distance == 0){
-                switch (s.getX() - x){
-                    case -1: switch (s.getY() - y){
-                        case -1: break;
-                        case  0: break;
-                        case  1: break;
-                    }break;
-                    case  0: switch (s.getY() - y){
-                        case -1: break;
-                        case  0: break;
-                        case  1: break;
-                    }break;
-                    case  1: switch (s.getY() - y){
-                        case -1: break;
-                        case  0: break;
-                        case  1: break;
-                    }break;
-                }
-                //traingame.broadcastTrainDecision(id, s.getSwitchId(), traingame.trainMap[x][y], direction);
+            if(distance == 0 && traingame.trainMap[x][y].getType().equals("switch")){
+                switch (x - s.getX()){
+                    case -1: direction = 3; break;
+                    case  0: switch (y - s.getY()){
+                                case -1: direction = 0; break;
+                                case  1: direction = 2; break;
+                             }break;
+                    case  1: direction = 1; break;
+                }break;
             }
+            traingame.broadcastTrainDecision(id, s.getSwitchId(), direction);
             distance++;
         }while(!(traingame.trainMap[x][y].getType().equals("switch") || traingame.trainMap[x][y].getType().equals("goal")));
         return (int) (distance/speed * 1000);

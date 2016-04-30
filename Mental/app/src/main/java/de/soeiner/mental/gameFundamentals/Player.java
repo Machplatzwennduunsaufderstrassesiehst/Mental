@@ -93,15 +93,22 @@ public class Player extends ClientConnection {
         }
     }
 
-    public void sendNewTrain(Train train){
-        int trainId = train.getId();
-        String color = train.getColor();
-        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_NEWTRAIN);
+    public void sendTrainArrived(int trainId, int goalId, boolean succsess){
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TRAIN_ARRIVED);
         try {
             j.put("trainId", trainId);
-            j.put("color", color);
+            j.put("goalId", goalId);
+            j.put("succsess", succsess);
             makePushRequest(new PushRequest(j));
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendNewTrain(JSONObject train){
+        try {
+            makePushRequest(new PushRequest(train));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
