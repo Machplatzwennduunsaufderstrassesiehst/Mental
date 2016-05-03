@@ -1,8 +1,10 @@
 
+var gameGraphics = new GameGraphics();
 
 function GameGraphics() {
     var graphicObjects = [];
     var running = false;
+    
     var renderer = new PIXI.autoDetectRenderer(
         window.innerWidth, window.innerHeight,
         {antialias:true,resolution: window.innerWidth / window.innerHeight,}
@@ -24,7 +26,8 @@ function GameGraphics() {
     }
     
     function removeGraphicObject(graphicObject) {
-        
+        graphicObjects.remove(graphicObject);
+        stage.removeChild(graphicObject.sprite);
     }
     
     // You can use either `new PIXI.WebGLRenderer`, `new PIXI.CanvasRenderer`, or `PIXI.autoDetectRenderer`
@@ -64,8 +67,9 @@ function GameGraphics() {
         // start the timer for the next animation loop
         requestAnimationFrame(animate);
 
-        // each frame we spin the bunny around a bit
-        bunny.rotation += 0.001;
+        for (var i = 0; i < graphicObjects.length; i++) {
+            graphicObjects[i].move();
+        }
 
         // this is the main render call that makes pixi draw your container and its children.
         renderer.render(stage);

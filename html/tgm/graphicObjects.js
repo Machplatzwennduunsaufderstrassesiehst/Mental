@@ -1,10 +1,10 @@
 
 
 // sprite can also be a container
-function GraphicObject(sprite) {
+function GraphicObject(sprite_) {
     var positions = [];
     
-    var sprite = {}; 
+    var sprite = sprite_;
     
     /**
      * @param degrees in radian - for left, + for right turn
@@ -13,7 +13,7 @@ function GraphicObject(sprite) {
         var frames = calculateFrameAmount(time);
         var currentRotation = startPos.rotation;
         var desiredRotation = currentRotation + degrees;
-        var stepWide = Math.abs(desiredRotation - currentRotation) / frames;
+        var stepWide = (desiredRotation - currentRotation) / frames;
         var x, y, p;
         for (var r = currentRotation; r < desiredRotation; r += stepWide) {
             x = startPos.x + (Movement.cos(r) * radius - Movement.cos(currentRotation) * radius);
@@ -31,8 +31,8 @@ function GraphicObject(sprite) {
             y = startPos.y, 
             p;
         for (var f = 0; f < frames; f++) {
-            x += 1 / frames * dx;
-            y += 1 / frames * dy;
+            x += dx / frames;
+            y += dy / frames;
             p = new Position(x, y, startPos.rotation);
             positions.unshift(p);
         }
@@ -46,13 +46,33 @@ function GraphicObject(sprite) {
     // pop the next position on the position queue and return it
     // called by render loop
     this.move = function() {
-        return positions.pop();
+        var p = positions.pop();
+        if (sprite == undefined) {
+            console.log("GO.move: sprite still undefined");
+            return;
+        }
+        if (positions.length == 0) positions.push(p);
+        sprite.position.x = p.x;
+        sprite.position.y = p.y;
+        sprite.rotation = p.rotation;
+        return p;
+    }
+    
+    this.setSprite(sprite_) {
+        sprite = sprite_;
     }
 }
 
-
-function makeSprite() {
-    
+function createPNGObject(png) {
+    var g = new GraphicObject();
+    gameGraphics.addGraphicObject(g);
+    PIXI.loader
+        .add(png)
+        .load(function(loader, resources){
+            var sprite = new PIXI.Sprite(resources[png].texture);
+            stage.addChild(sprite);
+            g.setSprite(sprite);
+        });
 }
 
 
