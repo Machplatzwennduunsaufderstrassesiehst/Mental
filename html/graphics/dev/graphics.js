@@ -7,7 +7,7 @@ window.onload = function() {
 // which will try to choose the best renderer for the environment you are in.
 var renderer = new PIXI.autoDetectRenderer(
     window.innerWidth, window.innerHeight,
-    {antialias:false,resolution: window.innerWidth / window.innerHeight,}
+    {antialias:true,resolution: window.innerWidth / window.innerHeight,}
 );
 
 // The renderer will create a canvas element for you that you can then insert into the DOM.
@@ -25,11 +25,13 @@ PIXI.loader.add('bunny', 'bunny.png').load(function (loader, resources) {
     bunny = new PIXI.Sprite(resources.bunny.texture);
 
     // Setup the position and scale of the bunny
-    bunny.position.x = 200;
-    bunny.position.y = 200;
+    bunny.position.x = 600;
+    bunny.position.y = 500;
 
     bunny.scale.x = 0.5;
     bunny.scale.y = 0.5;
+    
+    bunny.rotation = Math.PI / 2;
 
     // Add the bunny to the scene we are building.
     stage.addChild(bunny);
@@ -43,7 +45,7 @@ function animate() {
     requestAnimationFrame(animate);
 
     // each frame we spin the bunny around a bit
-    bunny.rotation += 0.000;
+    bunny.rotation += 0.001;
 
     // this is the main render call that makes pixi draw your container and its children.
     renderer.render(stage);
