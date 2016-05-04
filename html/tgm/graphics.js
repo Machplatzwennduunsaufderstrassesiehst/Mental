@@ -1,5 +1,5 @@
 
-var gameGraphics = new GameGraphics();
+var trainGameGraphics = new GameGraphics();
 
 function GameGraphics() {
     var graphicObjects = [];
@@ -10,6 +10,10 @@ function GameGraphics() {
         {antialias:true,resolution: window.innerWidth / window.innerHeight,}
     );
     var stage = new PIXI.Container();
+    
+    this.getStage = function() {
+        return stage;
+    }
     
     function start() {
         running = true;

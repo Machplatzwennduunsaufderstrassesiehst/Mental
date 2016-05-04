@@ -63,7 +63,8 @@ function GraphicObject(sprite_) {
     }
 }
 
-function createPNGObject(png) {
+function createPNGObject(png, container) {
+    if (container == undefined) container = trainGameGraphics.getStage();
     var g = new GraphicObject();
     gameGraphics.addGraphicObject(g);
     PIXI.loader
@@ -73,6 +74,7 @@ function createPNGObject(png) {
             stage.addChild(sprite);
             g.setSprite(sprite);
         });
+    return g;
 }
 
 
