@@ -18,8 +18,9 @@ public class TrainGameMode extends GameMode {
     String[] colors = {"#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"};
     private final double MAX_SPEED = 3.0;
     private final double MIN_SPEED = 0.5;
-    private int TRAIN_SPAWN_INTERVAL = 500; //in milllisekunden
+    private int TRAIN_SPAWN_INTERVAL = 3000; //in milllisekunden
     private final int TRAIN_ARRIVED_REWARD = 10;
+
     public void initializeCompatibleExerciseCreators() {
         compatibleExerciseCreators.add(new TrainMapCreator());
     }
@@ -36,6 +37,8 @@ public class TrainGameMode extends GameMode {
             game.activePlayers.add(game.joinedPlayers.get(i));
         }
         TrainMapCreator trainMapCreator = (TrainMapCreator) game.exerciseCreator;
+        //trainMapCreator.createTrainMap();
+        game.broadcastExercise();
         trainMap = trainMapCreator.getTrainMap();
         switches = getSwitches();
         goals = getGoals();
@@ -45,7 +48,6 @@ public class TrainGameMode extends GameMode {
         for (int i = 0; i < goals.length; i++) {
             goals[i].setGoalId(i);
         }
-        game.broadcastExercise();
     }
 
     private Switch[] getSwitches() {
@@ -102,7 +104,7 @@ public class TrainGameMode extends GameMode {
             new Train(idcounter, colors[destinationId], destinationId, speed, this); //zug spawnen
             idcounter++;
             try{
-                Thread.sleep(500); //waten
+                Thread.sleep(TRAIN_SPAWN_INTERVAL); //warten
             }catch(Exception e){e.printStackTrace();}
         }
 
@@ -147,4 +149,7 @@ public class TrainGameMode extends GameMode {
             game.activePlayers.get(i).sendTrainDecision(trainId, switchId, direction);
         }
     }
+    @Override
+    public void doWaitTimeout (int timeout){} //es soll kein timeout stattfinden
+
 }

@@ -41,6 +41,5 @@ public class Goal extends TrainTrack{
     @Override
     public void setSuccessor(TrainTrack s) {
         throw new RuntimeException("there is no succesor to a goal");
-        //setSuccessor(null);
     }
 }

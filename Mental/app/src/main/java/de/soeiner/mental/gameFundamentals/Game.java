@@ -326,7 +326,7 @@ public class Game implements Runnable {
             broadcastSendCountdown(3);
             System.out.println("Countdown sent");
             broadcastShowExercises();
-            System.out.println("broadcastedShowEx");
+            System.out.println("broadcastedShowExercise");
             gameMode.prepareGame();
             System.out.println("game prepared: " + gameMode.getGameModeString());
 

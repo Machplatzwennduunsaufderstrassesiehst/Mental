@@ -93,12 +93,12 @@ public class Player extends ClientConnection {
         }
     }
 
-    public void sendTrainArrived(int trainId, int goalId, boolean succsess){
+    public void sendTrainArrived(int trainId, int goalId, boolean success){
         JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TRAIN_ARRIVED);
         try {
             j.put("trainId", trainId);
             j.put("goalId", goalId);
-            j.put("succsess", succsess);
+            j.put("success", success);
             makePushRequest(new PushRequest(j));
         } catch (JSONException e) {
             e.printStackTrace();

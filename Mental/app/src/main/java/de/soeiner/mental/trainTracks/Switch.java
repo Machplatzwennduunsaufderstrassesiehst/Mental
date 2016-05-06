@@ -1,5 +1,7 @@
 package de.soeiner.mental.trainTracks;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 /**
@@ -11,7 +13,7 @@ public class Switch extends TrainTrack {
     ArrayList<Boolean> activeSuccessors = new ArrayList<Boolean>();
     int switchId;
 
-    public Switch(int x, int y, int v) {
+    public Switch(int x, int y, int v){
         super(x, y, v);
     }
 
@@ -55,7 +57,7 @@ public class Switch extends TrainTrack {
         for(int i = 0; i<successors.size(); i++){ //alle nachfolger auf wahr setzen
             activeSuccessors.set(i, new Boolean(true));
         }
-        activeSuccessors.set(active, new Boolean(false)); //vorher aktiven nachfolger auf wahr setzen
+        activeSuccessors.set(active, new Boolean(false)); //vorher aktiven nachfolger auf false setzen
         for (int i = 0; i < successors.size(); i++) {
             if(activeSuccessors.get(i) == true){
                 successor = successors.get(i);
