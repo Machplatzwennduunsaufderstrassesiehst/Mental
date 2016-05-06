@@ -46,8 +46,8 @@ public class Train implements Runnable{
         boolean moving = true;
         while(moving){
             try {
-                this.wait(calculateTimeToDestination());
-            }catch(Exception e){}
+                Thread.sleep(calculateTimeToDestination());
+            }catch(Exception e){e.printStackTrace();}
             if(traingame.trainMap[x][y].getType().equals("goal")){
                 Goal tempGoal = (Goal) traingame.trainMap[x][y]; //TODO possible breaking point
                 if(destinationId == tempGoal.getGoalId()){
@@ -62,16 +62,19 @@ public class Train implements Runnable{
     }
 
     private int calculateTimeToDestination(){ //in millisek
+        if(traingame.trainMap[x][y].getType().equals("goal")){return 0;}
         double distance = 0;
+        boolean broadcast = false;
         Switch s = null;
         int direction = 0; //0 oben, 1 rechts, 2 unten, 3 links
         do{
             if(distance == 0 && traingame.trainMap[x][y].getType().equals("switch")){
                 s = (Switch) traingame.trainMap[x][y];
+                broadcast = true;
             }
             x = traingame.trainMap[x][y].getSuccessor().getX();
             y = traingame.trainMap[x][y].getSuccessor().getY();
-            if(distance == 0 && traingame.trainMap[x][y].getType().equals("switch")){
+            if(broadcast){
                 switch (x - s.getX()){
                     case -1: direction = 3; break;
                     case  0: switch (y - s.getY()){
@@ -79,9 +82,10 @@ public class Train implements Runnable{
                                 case  1: direction = 2; break;
                              }break;
                     case  1: direction = 1; break;
-                }break;
+                }
+                traingame.broadcastTrainDecision(id, s.getSwitchId(), direction);
+                broadcast = false;
             }
-            traingame.broadcastTrainDecision(id, s.getSwitchId(), direction);
             distance++;
         }while(!(traingame.trainMap[x][y].getType().equals("switch") || traingame.trainMap[x][y].getType().equals("goal")));
         return (int) (distance/speed * 1000);
