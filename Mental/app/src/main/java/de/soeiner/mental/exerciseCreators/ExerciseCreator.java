@@ -50,5 +50,8 @@ public abstract class ExerciseCreator {
     // Zwingt alle exerciseCreator, einen Namen bereitzustellen
     public abstract String getName();
 
+    // jeder exerciseCreator muss einen Typen haben, damit ein passendes frame geöffnet werden kann (in JS)
+    public abstract String getType();
+
     public abstract ExerciseCreator copy();
 }
