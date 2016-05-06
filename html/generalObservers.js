@@ -5,7 +5,7 @@ function configureObservers() {
     serverConnection.addObserver(gameStringObserver);
     serverConnection.addObserver(showScoreboardObserver);
     serverConnection.addObserver(countdownObserver);
-    serverConnection.addObserver(reopenMainFrameObserver);
+    serverConnection.addObserver(openMainFrameObserver);
     serverConnection.addObserver(playerStateObserver);
 }
 
@@ -31,3 +31,15 @@ var playerStateObserver = new Observer("scoreboard", function(msg) {
         }
     }
 });
+
+// opens game frames on exercise ---- TODO temporary solution??
+var openMainFrameObserver = new Observer("exercise", function(msg) {
+    //serverConnection.removeObserver(openMainFrameObserver);
+    if (msg.exercise.type == "arithmetic") {
+        navigation.openFrames(mainFrame);
+    } else if (msg.exercise.type == "trainMap") {
+        navigation.openFrames(trainGameMainFrame);
+    }
+});
+
+

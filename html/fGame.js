@@ -133,11 +133,6 @@ var exerciseObserver = new Observer("exercise", function(msg) {
     
 });
 
-var reopenMainFrameObserver = new Observer("showExercises", function(msg) {
-    navigation.openFrames(mainFrame);
-    displayArithmeticExercise("Bitte warten..");
-});
-
 var beatBobObserver = new Observer("beatbob", function(msg) {
     showBeatBobBar();
     var p = Math.abs(msg.status);
@@ -163,3 +158,5 @@ var timeLeftObserver = new Observer("timeLeft", function(msg) {
 });
 
 var messageObserver = new Observer("message", function(msg){displayMessage(msg.message);});
+
+
