@@ -15,7 +15,6 @@ public class Shop{
     public int moneySpent; //müsste noch in den shopString eingebaut werden
     public Score score;
     Player player;
-    WheelOfFortune wheel = new WheelOfFortune(this.player);
     public ShopItem[] shopItemList;
     int[] partition = new int[8]; //8 Plätze
 
@@ -179,10 +178,7 @@ public class Shop{
                 if (passage == 5) {}
                 if (passage == 4) {}
                 if (passage == 3) {}
-                if (passage == 2) {
-                    //System.out.println("loadSpinsSpent("+tempString+")");
-                    loadSpinsSpent(tempString);
-                }
+                if (passage == 2) {}
                 if (passage == 1) {
                     //System.out.println("setMoneySpent(Integer.parseInt("+tempString+")");
                     setMoneySpent(Integer.parseInt(tempString));
@@ -216,11 +212,7 @@ public class Shop{
                 shopString = addMoneySpent(shopString); //passage hinzufügen
                 length = shopString.length() - length; //differenz ermitteln
             }
-            if (passage == 2) {
-                length = shopString.length(); //vorherige länge speichern
-                shopString = addSpinsSpent(shopString); //passage hinzufügen
-                length = shopString.length() - length; //differenz ermitteln
-            }
+            if (passage == 2) {}
             if (passage == 3) {}
             if (passage == 4) {}
             if (passage == 5) {}
@@ -237,14 +229,6 @@ public class Shop{
         shopString += calculateCheckBit(shopString); //Kontrollbit anhängen //TODO
         //System.out.println("ergebnis von getShopString(): "+shopString);
         return shopString;
-    }
-
-    private String addSpinsSpent(String shopString) {
-        return shopString+wheel.getSpinsSpent();
-    }
-
-    private void loadSpinsSpent(String spinsSpent){
-        wheel.setSpinsSpent(Integer.parseInt(spinsSpent));
     }
 
     private String addItemString(String shopString){
@@ -275,6 +259,7 @@ public class Shop{
     private String addMoneySpent(String shopString){
         return shopString+Integer.toString(moneySpent);
     }
+
 
     private ShopItem[] sortCopyById(){  //gibt eine sortierte Kopie der ShopitemList zurück
         ShopItem temp;
