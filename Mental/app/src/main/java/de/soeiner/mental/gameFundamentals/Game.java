@@ -283,7 +283,7 @@ public class Game implements Runnable {
             Player p = joinedPlayers.get(i);
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SHOW_EXERCISES);
             try {
-                j.put("type", exerciseCreator.getType());
+                j.put("exerciseType", exerciseCreator.getType());
             } catch (Exception e) {
                 e.printStackTrace();
             }

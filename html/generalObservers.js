@@ -32,13 +32,11 @@ var playerStateObserver = new Observer("scoreboard", function(msg) {
     }
 });
 
-// opens game frames on exercise ---- TODO temporary solution??
-var openMainFrameObserver = new Observer("exercise", function(msg) {
-    //serverConnection.removeObserver(openMainFrameObserver);
-    if (msg.exercise.type == "arithmetic") {
+var openMainFrameObserver = new Observer("showExercises", function(msg) {
+    if (msg.exerciseType == "arithmetic") {
         navigation.openFrames(mainFrame);
-    } else if (msg.exercise.type == "trainMap") {
-        navigation.openFrames(trainGameMainFrame);
+    } else if (msg.exerciseType == "trainMap") {
+        navigation.openFrames(mainTrainGameFrame);
     }
 });
 
