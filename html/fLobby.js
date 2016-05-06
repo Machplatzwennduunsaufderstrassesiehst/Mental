@@ -57,7 +57,6 @@ function joinServer(connection) {
     serverConnection = connection;
     configureObservers();
     navigation.openFrames(lobbyFrame);
-    listAvailableGames();
     var name = byID("name").value;
     var gameString_ = atob(byID("gameStringInput").value); // base64 decode
     setCookie("userName", name, 1000);
