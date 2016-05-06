@@ -164,7 +164,7 @@ public class TrainMapCreator extends ExerciseCreator {
 
     private int[] getStartingPoint() {
         int[] coordinates = {1, 1};
-        while(coordinates[0]+coordinates[1] < 6){
+       // while(coordinates[0]+coordinates[1] < 6){
             switch (pathNumber % 2) {
                 case 0:
                     for (int i = size - 1; i >= 0; i--) {
@@ -207,7 +207,7 @@ public class TrainMapCreator extends ExerciseCreator {
                             }
                         }break;
             }
-        }
+        //}
         if (coordinates[0] == 1 && coordinates[1] == 1) {
             while (map[coordinates[0]][coordinates[1]].getValue() != 0) {
                 coordinates[0] = (int) ((Math.random() * size - 1) + 1);
