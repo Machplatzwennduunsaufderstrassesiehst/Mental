@@ -10,20 +10,6 @@ public class BlockedTrack extends TrainTrack {
         super(x, y, v);
     }
 
-    public int getFrom() {
-        return 0;
-    }
-
-    @Override
-    public int getTo() {
-        return 0;
-    }
-
-    @Override
-    public int getSwitchTo() {
-        return 0;
-    }
-
     @Override
     public String getType() {
         return "blocked";

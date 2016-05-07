@@ -18,20 +18,6 @@ public class Goal extends TrainTrack{
         return goalId;
     }
 
-    @Override
-    public int getFrom() {
-        return 0;
-    }
-
-    @Override
-    public int getTo() {
-        return 0;
-    }
-
-    @Override
-    public int getSwitchTo() {
-        return 0;
-    }
 
     @Override
     public String getType() {
@@ -41,6 +27,5 @@ public class Goal extends TrainTrack{
     @Override
     public void setSuccessor(TrainTrack s) {
         throw new RuntimeException("there is no succesor to a goal");
-        //setSuccessor(null);
     }
 }

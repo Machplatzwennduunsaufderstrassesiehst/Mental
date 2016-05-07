@@ -10,6 +10,7 @@ import de.soeiner.mental.gameModes.ClassicGameMode;
 import de.soeiner.mental.gameModes.GameMode;
 import de.soeiner.mental.gameModes.KnockoutGameMode;
 import de.soeiner.mental.gameModes.SpeedGameMode;
+import de.soeiner.mental.gameModes.TrainGameMode;
 
 /**
  * Created by Malte on 09.04.2016.
@@ -24,7 +25,7 @@ public class Voting {
 
     public Voting(Game game){
         this.game = game;
-        GameMode[] m = {new ClassicGameMode(game), new KnockoutGameMode(game), new ArenaGameMode(game), new SpeedGameMode(game), new BeatBobGameMode(game)};
+        GameMode[] m = {new ClassicGameMode(game), new KnockoutGameMode(game), new ArenaGameMode(game), new SpeedGameMode(game), new BeatBobGameMode(game), new TrainGameMode(game)};
         gameModes = m;
         createGameModeSuggestions();
     }
