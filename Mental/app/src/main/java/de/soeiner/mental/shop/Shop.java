@@ -218,11 +218,9 @@ public class Shop{
                 length = shopString.length() - length; //differenz ermitteln
             }
             if (passage == 2) {
-                /*
                 length = shopString.length(); //vorherige länge speichern
                 shopString = addSpinsSpent(shopString); //passage hinzufügen
                 length = shopString.length() - length; //differenz ermitteln
-                */
             }
             if (passage == 3) {}
             if (passage == 4) {}
