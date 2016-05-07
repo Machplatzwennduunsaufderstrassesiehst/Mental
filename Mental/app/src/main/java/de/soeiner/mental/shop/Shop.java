@@ -15,7 +15,7 @@ public class Shop{
     public int moneySpent; //müsste noch in den shopString eingebaut werden
     public Score score;
     Player player;
-    WheelOfFortune wheel = new WheelOfFortune(this.player);
+    WheelOfFortune wheel;
     public ShopItem[] shopItemList;
     int[] partition = new int[8]; //8 Plätze
 
@@ -24,6 +24,7 @@ public class Shop{
         score = player.getScore();
         calculateMoney();
         shopItemList = createShopItemList();
+        wheel = new WheelOfFortune(this.player);
     }
 
     private ShopItem[] createShopItemList(){
