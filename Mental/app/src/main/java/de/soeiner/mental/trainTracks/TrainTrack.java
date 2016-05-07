@@ -40,6 +40,10 @@ public abstract class TrainTrack extends JSONObject{ //TODO: set attributes
         return id;
     }
 
+    public boolean hasSuccessor(){
+        return !(successor == null);
+    }
+
     public abstract void setSuccessor(TrainTrack s);
     public void setPredecessor(TrainTrack p){
         predecessor = p;
