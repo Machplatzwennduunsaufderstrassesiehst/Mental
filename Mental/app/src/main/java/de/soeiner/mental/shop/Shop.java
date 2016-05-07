@@ -182,7 +182,7 @@ public class Shop{
                 if (passage == 3) {}
                 if (passage == 2) {
                     //System.out.println("loadSpinsSpent("+tempString+")");
-                    loadSpinsSpent(tempString);
+                    //loadSpinsSpent(tempString);
                 }
                 if (passage == 1) {
                     //System.out.println("setMoneySpent(Integer.parseInt("+tempString+")");
@@ -218,9 +218,11 @@ public class Shop{
                 length = shopString.length() - length; //differenz ermitteln
             }
             if (passage == 2) {
+                /*
                 length = shopString.length(); //vorherige länge speichern
                 shopString = addSpinsSpent(shopString); //passage hinzufügen
                 length = shopString.length() - length; //differenz ermitteln
+                */
             }
             if (passage == 3) {}
             if (passage == 4) {}
