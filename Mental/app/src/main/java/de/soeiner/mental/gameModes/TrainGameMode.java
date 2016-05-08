@@ -12,6 +12,8 @@ import de.soeiner.mental.trainTracks.*;
  */
 public class TrainGameMode extends GameMode {
 
+    private int HEALTH_NEEDED_TO_WIN = 50; //imer 2* der anfangs health ?
+    private int REWARD = 100;
     TrainTrack[][] trainMap;
     Switch[] switches;
     Goal[] goals;
@@ -20,6 +22,7 @@ public class TrainGameMode extends GameMode {
     private final double MIN_SPEED = 0.5;
     private int TRAIN_SPAWN_INTERVAL = 3000; //in milllisekunden
     private final int TRAIN_ARRIVED_REWARD = 10;
+    private int health;
 
     public void initializeCompatibleExerciseCreators() {
         compatibleExerciseCreators.add(new TrainMapCreator());
@@ -39,7 +42,7 @@ public class TrainGameMode extends GameMode {
         TrainMapCreator trainMapCreator = (TrainMapCreator) game.exerciseCreator;
         //trainMapCreator.createTrainMap();
         game.broadcastExercise();
-        trainMap = trainMapCreator.getTrainMap();
+        trainMap = trainMapCreator.getTrainMap(); //TODO, von player abhängig machen
         switches = getSwitches();
         goals = getGoals();
         for (int i = 0; i < switches.length; i++) {
@@ -48,49 +51,7 @@ public class TrainGameMode extends GameMode {
         for (int i = 0; i < goals.length; i++) {
             goals[i].setGoalId(i);
         }
-    }
-
-    private Switch[] getSwitches() {
-        int z = 0;
-        for (int i = 0; i < trainMap.length; i++) {
-            for (int j = 0; j < trainMap.length; j++) {
-                if (trainMap[i][j].getType().equals("switch")) {
-                    z++;
-                }
-            }
-        }
-        Switch[] s = new Switch[z];
-        z = 0;
-        for (int i = 0; i < trainMap.length; i++) {
-            for (int j = 0; j < trainMap.length; j++) {
-                if (trainMap[i][j].getType().equals("switch")) {
-                    s[z] = (Switch) trainMap[i][j]; //TODO possible breakpoint
-                    z++;
-                }
-            }
-        }
-        return s;
-    }
-    private Goal[] getGoals() {
-        int z = 0;
-        for (int i = 0; i < trainMap.length; i++) {
-            for (int j = 0; j < trainMap.length; j++) {
-                if (trainMap[i][j].getType().equals("goal")) {
-                    z++;
-                }
-            }
-        }
-        Goal[] s = new Goal[z];
-        z = 0;
-        for (int i = 0; i < trainMap.length; i++) {
-            for (int j = 0; j < trainMap.length; j++) {
-                if (trainMap[i][j].getType().equals("goal")) {
-                    s[z] = (Goal) trainMap[i][j]; //TODO possible breakpoint
-                    z++;
-                }
-            }
-        }
-        return s;
+        health = 25; //TODO, von player abhängig machen
     }
 
     @Override
@@ -107,7 +68,6 @@ public class TrainGameMode extends GameMode {
                 Thread.sleep(TRAIN_SPAWN_INTERVAL); //warten
             }catch(Exception e){e.printStackTrace();}
         }
-
     }
 
     public boolean playerAnswered(Player player, JSONObject answer) {
@@ -124,13 +84,40 @@ public class TrainGameMode extends GameMode {
     }
 
     public void trainArrived(int trainId, int goalId, boolean succsess){
-        game.broadcastMessage("Zug hat sein Ziel erreicht!");
+        if(succsess){
+            game.broadcastMessage("Zug hat sein Ziel erreicht!");
+            health++;
+        }else{
+            game.broadcastMessage("Zug hat das falsche Ziel erreicht :/");
+            health--;
+        }
         for(int i = 0; i<game.activePlayers.size();i++){
             if(succsess) {
                 game.activePlayers.get(i).getScore().updateScore(TRAIN_ARRIVED_REWARD);
             }
             game.activePlayers.get(i).sendTrainArrived(trainId, goalId, succsess);
         }
+        /* // TODO auskommentieren wenn testphase vorrüber
+        if(health <= 0){
+            gameIsRunning = false;
+            game.broadcastMessage("Spieler haben verloren !");
+        }
+        if(health >= HEALTH_NEEDED_TO_WIN){
+            gameIsRunning = false;
+            giveReward();
+        }
+        */
+    }
+
+    private void giveReward(){
+        game.broadcastMessage("Spieler haben gewonnen!");
+        game.broadcastMessage("und bekomen einen Bonus von "+REWARD+"$ !");
+        for(int i = 0; i<game.activePlayers.size();i++){
+            game.activePlayers.get(i).getScore().updateScore(REWARD);
+        }
+        try {
+            Thread.sleep(3000);
+        }catch(Exception e){}
     }
 
     public void broadcastNewTrain(JSONObject train){
@@ -151,5 +138,48 @@ public class TrainGameMode extends GameMode {
     }
     @Override
     public void doWaitTimeout (int timeout){} //es soll kein timeout stattfinden
+
+    private Switch[] getSwitches() {
+        int z = 0;
+        for (int i = 0; i < trainMap.length; i++) {
+            for (int j = 0; j < trainMap.length; j++) {
+                if (trainMap[i][j].getType().equals("switch")) {
+                    z++;
+                }
+            }
+        }
+        Switch[] s = new Switch[z];
+        z = 0;
+        for (int i = 0; i < trainMap.length; i++) {
+            for (int j = 0; j < trainMap.length; j++) {
+                if (trainMap[i][j].getType().equals("switch")) {
+                    s[z] = (Switch) trainMap[i][j];
+                    z++;
+                }
+            }
+        }
+        return s;
+    }
+    private Goal[] getGoals() {
+        int z = 0;
+        for (int i = 0; i < trainMap.length; i++) {
+            for (int j = 0; j < trainMap.length; j++) {
+                if (trainMap[i][j].getType().equals("goal")) {
+                    z++;
+                }
+            }
+        }
+        Goal[] s = new Goal[z];
+        z = 0;
+        for (int i = 0; i < trainMap.length; i++) {
+            for (int j = 0; j < trainMap.length; j++) {
+                if (trainMap[i][j].getType().equals("goal")) {
+                    s[z] = (Goal) trainMap[i][j];
+                    z++;
+                }
+            }
+        }
+        return s;
+    }
 
 }
