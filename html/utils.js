@@ -2,8 +2,10 @@
 var uselessFunction = function(){};
 
 var logContent_ = "";
-var console = console || new function() {
-    this.log = function(s) {logContent_ += s;}
+if (window.console == undefined) {
+    var console = window.console = new function() {
+        this.log = function(s) {logContent_ += s;}
+    }
 }
 
 function log(s) {

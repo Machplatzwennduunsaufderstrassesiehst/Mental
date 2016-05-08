@@ -61,7 +61,7 @@ function TurnMovement(startRotation, radius, degrees, time) {
 var Movement = {};
 Movement.sinValues = [];
 Movement.cosValues = [];
-Movement.rotationResolution = 200;
+Movement.rotationResolution = 250;
 Movement.isSetUp = false;
 
 Movement.sin = function(x) {

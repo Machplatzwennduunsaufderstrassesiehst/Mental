@@ -134,9 +134,9 @@ function ServerConnection(host, port) {
     
     socket.onmessage = function(event) {
         var msg = "";
+        log(event.data);
         try {
             msg = JSON.parse(event.data);
-            log("Received: " + event.data);
             if (currentRequest != null && "_"+currentRequest.jsonCmd.type+"_" == msg.type) {
                 removeRequest(currentRequest);
                 currentRequest.handler(msg);
