@@ -18,20 +18,6 @@ public class Goal extends TrainTrack{
         return goalId;
     }
 
-    @Override
-    public int getFrom() {
-        return 0;
-    }
-
-    @Override
-    public int getTo() {
-        return 0;
-    }
-
-    @Override
-    public int getSwitchTo() {
-        return 0;
-    }
 
     @Override
     public String getType() {

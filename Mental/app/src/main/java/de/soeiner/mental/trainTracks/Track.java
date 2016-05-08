@@ -1,5 +1,8 @@
 package de.soeiner.mental.trainTracks;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by Malte on 26.04.2016.
  */
@@ -10,21 +13,6 @@ public class Track extends TrainTrack {
     }
 
     @Override
-    public int getFrom() {
-        return 0;
-    }
-
-    @Override
-    public int getTo() {
-        return 0;
-    }
-
-    @Override
-    public int getSwitchTo() {
-        return 0;
-    }
-
-    @Override
     public String getType() {
         return "track";
     }
@@ -32,5 +20,11 @@ public class Track extends TrainTrack {
     @Override
     public void setSuccessor(TrainTrack s){
         successor = s;
+        JSONObject position = new JSONObject();
+        try {
+            position.put("xpos", s.getX());
+            position.put("ypos", s.getY());
+            this.put("succesorPosition", position);
+        }catch(JSONException e){e.printStackTrace();}
     }
 }

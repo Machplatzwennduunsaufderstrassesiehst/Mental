@@ -99,7 +99,7 @@ public class TrainGameMode extends GameMode {
         int idcounter = 0;
         double speed = 0;
         while(gameIsRunning){
-            destinationId = (int) Math.random()*goals.length;
+            destinationId = (int) (Math.random()*goals.length);
             speed = Math.random()*(MAX_SPEED-MIN_SPEED)+MIN_SPEED; //mindestens 0.5, maximal 3
             new Train(idcounter, colors[destinationId], destinationId, speed, this); //zug spawnen
             idcounter++;

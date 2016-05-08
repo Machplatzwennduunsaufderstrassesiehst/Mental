@@ -10,8 +10,10 @@ import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
+import de.soeiner.mental.exerciseCreators.TrainMapCreator;
 import de.soeiner.mental.gameModes.ClassicGameMode;
 import de.soeiner.mental.gameModes.GameMode;
+import de.soeiner.mental.gameModes.TrainGameMode;
 
 /**
  * Created by malte on 13.02.16.
