@@ -24,7 +24,7 @@ public class Track extends TrainTrack {
         try {
             position.put("xpos", s.getX());
             position.put("ypos", s.getY());
-            this.put("succesorPosition", position);
+            this.put("successorPosition", position);
         }catch(JSONException e){e.printStackTrace();}
     }
 }

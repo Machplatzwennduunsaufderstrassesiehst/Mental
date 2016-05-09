@@ -13,6 +13,9 @@ public class Goal extends TrainTrack{
 
     public void setGoalId(int goalId) {
         this.goalId = goalId;
+        try{
+            this.put("goalId", goalId);
+        }catch(Exception e){e.printStackTrace();}
     }
     public int getGoalId(){
         return goalId;

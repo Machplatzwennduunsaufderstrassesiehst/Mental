@@ -97,7 +97,7 @@ public class TrainGameMode extends GameMode {
             }
             game.activePlayers.get(i).sendTrainArrived(trainId, goalId, succsess);
         }
-        /* // TODO auskommentieren wenn testphase vorrüber
+         // TODO auskommentieren wenn testphase vorrüber
         if(health <= 0){
             gameIsRunning = false;
             game.broadcastMessage("Spieler haben verloren !");
@@ -106,7 +106,7 @@ public class TrainGameMode extends GameMode {
             gameIsRunning = false;
             giveReward();
         }
-        */
+
     }
 
     private void giveReward(){
