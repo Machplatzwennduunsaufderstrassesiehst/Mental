@@ -55,7 +55,38 @@ function Track(i, j) {
         return successor;
     }
     
-    function buildSprite() {
+    // 0 is the top side for the entranceSide, exitSide properties
+    function buildSprite(predecessorCoords, successorCoords) {
+        var dx1 = i - predecessorCoords.x;
+        var dx2 = successorCoords.x - i;
+        var dy1 = j - predecessorCoords.y;
+        var dy2 = successorCoords.y - j;
+        log("dx1: " + dx1 + "  dy1: " + dy1);
+        log("dx2: " + dx2 + "  dy2: " + dy2);
+        var entranceSide = 2 * Math.abs(dx1) + dx1 + Math.abs(dy1) - dy1;
+        var exitSide = 2 * Math.abs(dx2) - dx2 + Math.abs(dy2) - dy2;
+        var d = exitSide - entranceSide;
+        if (Math.abs(d) % 2 == 0) {
+            if (Math.abs(d) > 2) d -= Math.sign(d) * 4;
+            log("entranceSide: " + entranceSide + "  exitSide: " + exitSide + "  d: " + d)
+        }
+        var rotation, png;
+        rotation = entranceSide;
+        switch (d) {
+            case 0: // straight
+                png = "straight";
+                break;
+            case 1: // left turn
+                png = "turn";
+                break;
+            case -1: // right turn
+                png = "turn";
+                rotation -= 1;
+                rotation = (rotation + 4) % 4;
+                break;
+        }
+        rotation *= Math.PI / 4;
+        log("png: " + png + "   rotation: " + rotation);
         
     }
     

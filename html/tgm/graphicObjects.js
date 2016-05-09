@@ -69,7 +69,7 @@ function createPNGObject(png, container) {
         .add(png)
         .load(function(loader, resources){
             var sprite = new PIXI.Sprite(resources[png].texture);
-            stage.addChild(sprite);
+            container.addChild(sprite);
             g.setSprite(sprite);
         });
     return g;
