@@ -44,6 +44,10 @@ function GraphicObject(sprite_) {
         sprite = sprite_;
     }
     
+    this.getSprite = function() {
+        return sprite;
+    }
+    
     this.addMovement = function(key, movement) {
         movements[key] = movement;
     }

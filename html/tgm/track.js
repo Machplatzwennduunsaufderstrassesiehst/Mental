@@ -2,7 +2,7 @@
 var Tracks = {};
 Tracks.RES = 200;// TODO, must be set related to screen width and height
 
-function Track(i, j, predecessor, successor) {
+function Track(i, j) {
     var predecessor = null;
     var successor = null;
     var dimension = this.dimension = {};
@@ -51,17 +51,51 @@ function Track(i, j, predecessor, successor) {
     }
     
     this.getSuccessor = function() {
+        console.log("Track.getSuccessor");
         return successor;
+    }
+    
+    function buildSprite() {
+        
+    }
+    
+    function buildGraphicObject() {
+        
     }
     
 }
 
-function Switch(type, i, j, predecessor, successor, id, switchLanes, switchedTo) {
-    Track.call(this, i, j, predecessor, successor);
+function Switch(id, i, j, successors, switchedTo) {
+    Track.call(this, i, j);
     this.type = "switch";
+    this.id = id;
     
+    // overwritten
+    this.getSuccessor = function() {
+        log("Switch.getSuccessor");
+        return successors[switchedTo];
+    }
     
+    // overwritten
+    this.setSuccessor = function(s) {
+        switchedTo = successors.indexOf(s);
+    }
+    
+    this.change = function(newSwitchedTo) {
+        switchedTo = newSwitchedTo;
+    }
 }
 Switch.prototype = new Track;
 Switch.prototype.constructor = Switch;
 
+
+function Goal(i, j) {
+    Track.call(this, i, j);
+    
+    // overwritten
+    this.getSuccessor = function() {
+        return false;
+    }
+}
+Goal.prototype = new Track;
+Goal.prototype.constructor = Goal;

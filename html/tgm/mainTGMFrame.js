@@ -39,13 +39,41 @@ function Map(rawdata) {
         log("i: " + i + "  j:" + j);
         if (mapArray[i][j] != null) return;
         try {
-            var t = rawdata[i][j];
+            var trackData = rawdata[i][j];
         } catch (e) {
             log(e);
             return false;
         }
-        log(t);
-        if (t.value == undefined || t.value == null) return false;
+        log(trackData);
+        switch(trackData.trackType) {
+            case "blocked":return false;
+            case "track":
+                var i2 = trackData.successorPosition.xpos;
+                var j2 = trackData.successorPosition.ypos;
+                var futureSuccessor = build(i2, j2);
+                var t = new Track(trackData.xpos, trackData.ypos);
+                t.setPredecessor(predecessor);
+                t.setSuccessor(futureSuccessor);
+                return t;
+            case "switch":
+                var successorPositions = trackData.successorList;
+                var successors = [];
+                for (var s = 0; s < successorPositions.length; s++) {
+                    var i2 = successorPositions[s].xpos;
+                    var j2 = successorPositions[s].ypos;
+                    successors[s] = build(i2, j2);
+                }
+                var s = new Switch(trackData.switchId, trackData.xpos, trackData.ypos, successors, trackData.switchedTo);
+                s.setPredecessor(predecessor);
+                return s;
+            case "goal":
+                var goalId = trackData.goalId;
+                var g = new Goal(trackData.xpos, trackData.ypos);
+                g.setPredecessor(predecessor);
+                return g;
+        }
+        
+        /*
         switch (t.value) {
             case BLOCKED: return false;
             case BLOCKED2: return false;
@@ -55,11 +83,12 @@ function Map(rawdata) {
                 
                 mapArray[i][j] = s;
                 
-        }
+        }*/
+        
         
     }
     
-    build(1,1,null);
+    build(1, 1, null);
 }
 
 function TrainGame() {

@@ -15,23 +15,31 @@ function GameGraphics() {
         return stage;
     }
     
-    function start() {
+    var start = this.start = function() {
         running = true;
         animate();
     }
     
-    function stop() {
+    var stop = this.stop = function() {
         running = false;
     }
     
-    function addGraphicObject(graphicObject) {
+    var addGraphicObject = this.addGraphicObject = function(graphicObject) {
         graphicObjects.push(graphicObject);
         stage.addChild(graphicObject.sprite);
     }
     
-    function removeGraphicObject(graphicObject) {
+    var removeGraphicObject = this.removeGraphicObject = function(graphicObject) {
         graphicObjects.remove(graphicObject);
         stage.removeChild(graphicObject.sprite);
+    }
+    
+    var addEnvironment = this.addEnvironment = function(sprite) {
+        stage.addChild(sprite);
+    }
+    
+    var removeEnvironment = this.removeEnvironment = function(sprite) {
+        stage.removeChild(sprite);
     }
 
     // The renderer will create a canvas element for you that you can then insert into the DOM.
