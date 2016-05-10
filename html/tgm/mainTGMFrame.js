@@ -54,6 +54,7 @@ function Map(rawdata) {
                 var t = new Track(trackData.xpos, trackData.ypos);
                 t.setPredecessor(predecessor);
                 t.setSuccessor(futureSuccessor);
+                t.initialize();
                 return t;
             case "switch":
                 var successorPositions = trackData.successorList;
@@ -65,11 +66,13 @@ function Map(rawdata) {
                 }
                 var s = new Switch(trackData.switchId, trackData.xpos, trackData.ypos, successors, trackData.switchedTo);
                 s.setPredecessor(predecessor);
+                s.initialize();
                 return s;
             case "goal":
                 var goalId = trackData.goalId;
                 var g = new Goal(trackData.xpos, trackData.ypos);
                 g.setPredecessor(predecessor);
+                g.initialize();
                 return g;
         }
         

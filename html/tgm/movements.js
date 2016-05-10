@@ -1,4 +1,28 @@
 
+function Vector(x, y) {
+    this.multiply = function(skalar) {
+        x *= skalar;
+        y *= skalar;
+    }
+    
+    this.add = function(u) {
+        x += u.getX();
+        y += u.getY();
+    }
+    
+    this.normalize = function() {
+        multiply(1 / length());
+    }
+    
+    var length = this.length = function() {
+        return Math.sqrt(x*x + y*y);
+    }
+    
+    this.getX = function(){return x;};
+    this.getY = function(){return y;};
+}
+
+// used to describe one element of a movement
 function Position(x_, y_, r_) {
     var x = this.x = x_;
     var y = this.y = y_;
@@ -6,8 +30,8 @@ function Position(x_, y_, r_) {
     
     // only move this position relative to the parameter position
     this.move = function(dx, dy) {
-        x += dx;
-        y += dy;
+        this.x = x = x + dx;
+        this.y = y = y + dy;
     }
 }
 

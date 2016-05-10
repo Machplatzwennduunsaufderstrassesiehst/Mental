@@ -10,6 +10,8 @@ function Track(i, j) {
     var entranceSide = 0;
     var exitSide = 0;
     var container = new PIXI.Container();
+    container.position.x = i * Tracks.RES;
+    container.position.y = j * Tracks.RES;
     var trackSprite = null;
     
     this.type = "track";
@@ -21,9 +23,10 @@ function Track(i, j) {
         return j;
     }
     this.getEntranceCoords() {
-        var deg = ((entranceSide+1) % 4) * Math.PI/2;
+        var deg = ((entranceSide) % 4) * Math.PI/2;
         log("entranceSide: " + entranceSide + "--> deg: " + deg);
-        var v = {x:Math.cos(deg), y:-Math.sin(deg)};
+        var v = {x:Math.sin(deg), y:-Math.cos(deg)};
+        log("(" + v.x + ", " + v.y + ")");
     }
     
     this.hasPredecessor = function() {
@@ -85,11 +88,11 @@ function Track(i, j) {
         log("png: " + png + "   rotation: " + rotation);
         PIXI.loader
         .add("/graphics/tgm/" + png + ".png")
-        .load(function(loader, resources){
+        .load(function(loader, resources) {
             var sprite = new PIXI.Sprite(resources[png].texture);
             sprite.rotation = rotation;
-            onload(sprite);
             container.addChild(sprite);
+            onload(sprite);
         });
     }
     
@@ -119,6 +122,8 @@ function Switch(id, i, j, successors, switchedTo) {
     this.type = "switch";
     this.id = id;
     
+    var lanes = [];
+    
     // overwritten
     this.getSuccessor = function() {
         log("Switch.getSuccessor");
@@ -133,6 +138,25 @@ function Switch(id, i, j, successors, switchedTo) {
     this.change = function(newSwitchedTo) {
         switchedTo = newSwitchedTo;
     }
+    
+    this.initialize = function() {
+        if (hasPredecessor()) {
+            var predecessorCoords = {x:predecessor.getX(), y:predecessor.getY()};
+        } else {
+            var predecessorCoords = {x:i, y:j-1};
+        }
+        for (var i = 0; i < successors.length; i++) {
+            var successorCoords = {x:successors[i].getX(), y:successors.getY()};
+            var onl = function(index) {
+                log("closure initialized");
+                return function(sprite) {
+                    log("returned function of the closure has been called");
+                    lanes[index] = sprite;
+                }
+            }(i);
+            buildSprite(predecessorCoords, successorCoords, onl);
+        }
+    }
 }
 Switch.prototype = new Track;
 Switch.prototype.constructor = Switch;
@@ -140,6 +164,8 @@ Switch.prototype.constructor = Switch;
 
 function Goal(i, j) {
     Track.call(this, i, j);
+    
+    this.type = "goal";
     
     // overwritten
     this.getSuccessor = function() {

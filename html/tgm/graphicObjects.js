@@ -12,7 +12,7 @@ function GraphicObject(sprite_) {
     // called by render loop
     this.move = function() {
         if (sprite == undefined) {
-            console.log("GO.move: sprite still undefined");
+            log("GO.move: sprite still undefined");
             return;
         }
         var p = positionQueue.pop();
