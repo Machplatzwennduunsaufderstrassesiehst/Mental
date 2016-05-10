@@ -2,33 +2,29 @@
 var Tracks = {};
 Tracks.RES = 200;// TODO, must be set related to screen width and height
 
-function Track(i, j) {
+function Track(i, j) {    
     var predecessor = null;
     var successor = null;
     var dimension = this.dimension = {};
     
-    this.type = "track";
-      
-    function calculateDimensions() {
-        var res = Tracks.RES;
-        dimension.middle = new Position(i*res, j*res, 0);
-        dimension.middle.move(res/2, res/2);
-        
-        dimension.topleft = new Position(i*res, j*res, 0);
-        
-        dimension.topright = new Position(i*res, j*res, 0);
-        dimension.topright.move(res, 0);
-        
-        dimension.bottomleft = new Position(i*res, j*res, 0);
-        dimension.bottomleft.move(0, res);
-        
-        dimension.bottomright = new Position(i*res, j*res, 0);
-        dimension.bottomright.move(res, res);
-        
-        dimension.entrance = new Position(i*res, j*res, 0);
-    }
+    var entranceSide = 0;
+    var exitSide = 0;
+    var container = new PIXI.Container();
+    var trackSprite = null;
     
-    calculateDimensions();
+    this.type = "track";
+    
+    this.getX = function() {
+        return i;
+    }
+    this.getY = function() {
+        return j;
+    }
+    this.getEntranceCoords() {
+        var deg = ((entranceSide+1) % 4) * Math.PI/2;
+        log("entranceSide: " + entranceSide + "--> deg: " + deg);
+        var v = {x:Math.cos(deg), y:-Math.sin(deg)};
+    }
     
     this.hasPredecessor = function() {
         return predecessor != null;
@@ -56,19 +52,19 @@ function Track(i, j) {
     }
     
     // 0 is the top side for the entranceSide, exitSide properties
-    function buildSprite(predecessorCoords, successorCoords) {
+    function buildSprite(predecessorCoords, successorCoords, onload) {
         var dx1 = i - predecessorCoords.x;
         var dx2 = successorCoords.x - i;
         var dy1 = j - predecessorCoords.y;
         var dy2 = successorCoords.y - j;
         log("dx1: " + dx1 + "  dy1: " + dy1);
         log("dx2: " + dx2 + "  dy2: " + dy2);
-        var entranceSide = 2 * Math.abs(dx1) + dx1 + Math.abs(dy1) - dy1;
-        var exitSide = 2 * Math.abs(dx2) - dx2 + Math.abs(dy2) - dy2;
+        entranceSide = 2 * Math.abs(dx1) + dx1 + Math.abs(dy1) - dy1;
+        exitSide = 2 * Math.abs(dx2) - dx2 + Math.abs(dy2) - dy2;
         var d = exitSide - entranceSide;
         if (Math.abs(d) % 2 == 0) {
             if (Math.abs(d) > 2) d -= Math.sign(d) * 4;
-            log("entranceSide: " + entranceSide + "  exitSide: " + exitSide + "  d: " + d)
+            log("entranceSide: " + entranceSide + "  exitSide: " + exitSide + "  d: " + d);
         }
         var rotation, png;
         rotation = entranceSide;
@@ -87,11 +83,33 @@ function Track(i, j) {
         }
         rotation *= Math.PI / 4;
         log("png: " + png + "   rotation: " + rotation);
-        
+        PIXI.loader
+        .add("/graphics/tgm/" + png + ".png")
+        .load(function(loader, resources){
+            var sprite = new PIXI.Sprite(resources[png].texture);
+            sprite.rotation = rotation;
+            onload(sprite);
+            container.addChild(sprite);
+        });
     }
     
-    function buildGraphicObject() {
-        
+    // to be called after successor and predecessor are set
+    this.initialize = function() {
+        if (hasPredecessor()) {
+            var predecessorCoords = {x:predecessor.getX(), y:predecessor.getY()};
+        } else {
+            log("no predecessor");
+            var predecessorCoords = {x:i, y:j-1};
+        }
+        if (hasSuccessor()) {
+            var successorCoords = {x:successor.getX(), y:successor.getY()};
+        } else {
+            log("no successor");
+            var successorCoords = {x:i+1, y:j};
+        }
+        buildSprite(predecessorCoords, successorCoords, function(sprite) {
+            trackSprite = sprite;
+        });
     }
     
 }
