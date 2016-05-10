@@ -64,7 +64,7 @@ public class TrainMapCreator extends ExerciseCreator {
                 map[i][j] = new Track(i, j, 0);
             }
         }
-        map[1][1].setPredecessor(map[1][1]); //TODO dirty harry
+        map[1][1].setPredecessor(null);
         boolean continuePossible = true;
         boolean[] possibilities = new boolean[4];
 
@@ -188,7 +188,7 @@ public class TrainMapCreator extends ExerciseCreator {
         for(int i = 1; i<size-1; i++){
             for(int j = 1; j<size-1; j++){
                 //System.out.println("if("+map[i][j].getValue()+" == 0 && "+checkSurroundingTarget(i, j, 1)+" && "+checkSurroundingPreciselyTarget(i, j, 2)+" || "+checkSurroundingPreciselyTarget(i, j, 3)+" && "+i+"+"+j+" > "+AVOID_START_REGION_VALUE+" && "+getStartingPointConnectionElement().hasSuccessor()+") == "+(map[i][j].getValue() == 0 && checkSurroundingTarget(i, j, 1) && (checkSurroundingPreciselyTarget(i, j, 2) || checkSurroundingPreciselyTarget(i, j, 3)) && i+j > AVOID_START_REGION_VALUE && getStartingPointConnectionElement().hasSuccessor()));
-                    if(map[i][j].getValue() == 0 && checkSurroundingTarget(i, j, 1) && (checkSurroundingPreciselyTarget(i, j, 2) || checkSurroundingPreciselyTarget(i, j, 3)) && i+j > AVOID_START_REGION_VALUE && getStartingPointConnectionElement().hasSuccessor()) {
+                    if(map[i][j].getValue() == 0 && checkSurroundingTarget(i, j, 1) && (checkSurroundingPreciselyTarget(i, j, 2) || checkSurroundingPreciselyTarget(i, j, 3)) && i+j > AVOID_START_REGION_VALUE && getStartingPointConnectionElement(i, j).hasSuccessor()) {
                         coordinates[0] = i;
                         coordinates[1] = j;
                         pussybilities.add(coordinates.clone());
@@ -199,58 +199,12 @@ public class TrainMapCreator extends ExerciseCreator {
         if(!pussybilities.isEmpty())
             coordinates = pussybilities.get((int) (Math.random()*pussybilities.size()));
         pussybilities.clear();
-        /*
-        int retries = 0;
-        while(coordinates[0]+coordinates[1] < AVOID_START_REGION_VALUE){ retries++; if(retries > 3){break;}
-            switch (pathNumber % 2) {
-                case 0:
-                    for (int i = size - 1; i >= 0; i--) {
-                        for (int j = 0; j < size; j++) {
-
-                            if (i == 1 && j == 0) {
-                                continue;
-                            }
-                            if (i == 0 && j == 1) {
-                                continue;
-                            }
-
-                            if (map[i][j].getValue() == 0) {
-                                if (checkSurroundingPreciselyTarget(i, j, 3) || checkSurroundingPreciselyTarget(i, j, 2)
-                                        && checkSurroundingTarget(i, j, 1)) { //!checkSurroundingTarget(i, j, 3) && !checkSurroundingTarget(i, j, 2))
-                                    coordinates[0] = i;
-                                    coordinates[1] = j;
-                                }
-                            }
-                        }
-                    }
-                    break;
-                    case 1:
-                        for (int i = size - 1; i >= 0; i--) {
-                            for (int j = size - 1; j >= 0; j--) {
-                                //for(int k = 0; k < 4; k++){if(i == 1+xT[k] && 1+yT[k] == 1){continue;}}
-                                if (i == 1 && j == 0) {
-                                    continue;
-                                }
-                                if (i == 0 && j == 1) {
-                                    continue;
-                                }
-                                if (map[i][j].getValue() == 0) {
-                                    if (checkSurroundingPreciselyTarget(i, j, 3) || checkSurroundingPreciselyTarget(i, j, 2)
-                                            && checkSurroundingTarget(i, j, 1)) { //!checkSurroundingTarget(i, j, 3) && !checkSurroundingTarget(i, j, 2))
-                                        coordinates[0] = i;
-                                        coordinates[1] = j;
-                                    }
-                                }
-                            }
-                        }break;
-            }
-
-        } */
         if (coordinates[0] == 1 && coordinates[1] == 1) {
             while (map[coordinates[0]][coordinates[1]].getValue() != 0) {
                 coordinates[0] = (int) ((Math.random() * size - 1) + 1);
                 coordinates[1] = (int) ((Math.random() * size - 1) + 1);
-                throw new RuntimeException("getStartingPoint() fail");
+                System.out.println("getStartingPoint() fail ||||||||||||||||||||||||||||||||||||||||||||||||||");
+                ausgabe();
             }
         }
         return coordinates;
@@ -267,7 +221,7 @@ public class TrainMapCreator extends ExerciseCreator {
         return coordinates;
     }
 
-    private TrainTrack getStartingPointConnectionElement() {
+    private TrainTrack getStartingPointConnectionElement(int x, int y) {
         int[] coordinates = new int[2];
         for(int i = 0; i<4; i++){
             if(map[x+xT[i]][y+yT[i]].getValue() != 0 && map[x+xT[i]][y+yT[i]].getValue() != BLOCK_VALUE){
@@ -310,12 +264,12 @@ public class TrainMapCreator extends ExerciseCreator {
 
     private void ausgabe(){
         for(int i = 0; i<map.length;i++){
-            //System.out.println("");
+            System.out.println("");
             for(int j = 0; j<map.length;j++){
                 if(map[i][j].getValue() == 0){
-                    //System.out.print("  ");
+                    System.out.print("  ");
                 }else{
-                    //System.out.print(map[i][j].getValue()+" ");
+                    System.out.print(map[i][j].getValue()+" ");
                 }
             }
         }

@@ -12,6 +12,8 @@ import de.soeiner.mental.trainTracks.*;
  */
 public class TrainGameMode extends GameMode {
 
+    private int HEALTH_NEEDED_TO_WIN = 50;
+    private int REWARD = 100;
     TrainTrack[][] trainMap;
     Switch[] switches;
     Goal[] goals;
@@ -20,6 +22,7 @@ public class TrainGameMode extends GameMode {
     private final double MIN_SPEED = 0.5;
     private int TRAIN_SPAWN_INTERVAL = 3000; //in milllisekunden
     private final int TRAIN_ARRIVED_REWARD = 10;
+    private int health;
 
     public void initializeCompatibleExerciseCreators() {
         compatibleExerciseCreators.add(new TrainMapCreator());
@@ -39,7 +42,7 @@ public class TrainGameMode extends GameMode {
         TrainMapCreator trainMapCreator = (TrainMapCreator) game.exerciseCreator;
         //trainMapCreator.createTrainMap();
         game.broadcastExercise();
-        trainMap = trainMapCreator.getTrainMap();
+        trainMap = trainMapCreator.getTrainMap(); //TODO, von player abhängig machen
         switches = getSwitches();
         goals = getGoals();
         for (int i = 0; i < switches.length; i++) {
@@ -48,7 +51,99 @@ public class TrainGameMode extends GameMode {
         for (int i = 0; i < goals.length; i++) {
             goals[i].setGoalId(i);
         }
+        health = 10; //TODO, von player abhängig machen
     }
+
+    @Override
+    public void loop() {
+        int destinationId = 0;
+        int idcounter = 0;
+        double speed = 0;
+        while(gameIsRunning){
+            destinationId = (int) (Math.random()*goals.length);
+            speed = Math.random()*(MAX_SPEED-MIN_SPEED)+MIN_SPEED; //mindestens 0.5, maximal 3
+            new Train(idcounter, colors[destinationId], destinationId, speed, this); //zug spawnen
+            idcounter++;
+            try{
+                Thread.sleep(TRAIN_SPAWN_INTERVAL); //warten
+            }catch(Exception e){e.printStackTrace();}
+        }
+    }
+
+    public boolean playerAnswered(Player player, JSONObject answer) {
+        if(answer.has("switch")){
+            try {
+                switches[answer.getInt("switch")].changeSwitch();
+                for (int i = 0; i < game.activePlayers.size(); i++) {
+                    game.activePlayers.get(i).sendSwitchChange(switches[answer.getInt("switch")]);
+                }
+            }catch (Exception e){e.printStackTrace();}
+            return true;
+        }
+        return false;
+    }
+
+    public void trainArrived(int trainId, int goalId, boolean succsess){
+        if(succsess){
+            game.broadcastMessage("Zug hat sein Ziel erreicht!");
+            health++;
+            giveReward(5);
+        }else{
+            game.broadcastMessage("Zug hat das falsche Ziel erreicht :/");
+            health--;
+        }
+        for(int i = 0; i<game.activePlayers.size();i++){
+            if(succsess) {
+                game.activePlayers.get(i).getScore().updateScore(TRAIN_ARRIVED_REWARD);
+            }
+            game.activePlayers.get(i).sendTrainArrived(trainId, goalId, succsess);
+        }
+         // TODO auskommentieren wenn testphase vorrüber
+        if(health <= 0){
+            gameIsRunning = false;
+            game.broadcastMessage("Spieler haben verloren !");
+        }
+        if(health >= HEALTH_NEEDED_TO_WIN){
+            gameIsRunning = false;
+            playersWon();
+        }
+
+    }
+
+    private void playersWon(){
+        game.broadcastMessage("Spieler haben gewonnen!");
+        game.broadcastMessage("und bekomen einen Bonus von "+REWARD+"$ !");
+        giveReward(REWARD);
+        try {
+            Thread.sleep(3000);
+        }catch(Exception e){}
+    }
+
+    private void giveReward(int reward){
+        for(int i = 0; i<game.activePlayers.size();i++){
+            game.activePlayers.get(i).getScore().updateScore(reward);
+        }
+    }
+
+
+    public void broadcastNewTrain(JSONObject train){
+        for (int i = 0; i < game.activePlayers.size(); i++) {
+            game.activePlayers.get(i).sendNewTrain(train);
+        }
+    }
+
+    @Override
+    public String getGameModeString() {
+        return "Train Game";
+    }
+
+    public void broadcastTrainDecision(int trainId, int switchId, int direction){
+        for (int i = 0; i < game.activePlayers.size(); i++) {
+            game.activePlayers.get(i).sendTrainDecision(trainId, switchId, direction);
+        }
+    }
+    @Override
+    public void doWaitTimeout (int timeout){} //es soll kein timeout stattfinden
 
     private Switch[] getSwitches() {
         int z = 0;
@@ -64,7 +159,7 @@ public class TrainGameMode extends GameMode {
         for (int i = 0; i < trainMap.length; i++) {
             for (int j = 0; j < trainMap.length; j++) {
                 if (trainMap[i][j].getType().equals("switch")) {
-                    s[z] = (Switch) trainMap[i][j]; //TODO possible breakpoint
+                    s[z] = (Switch) trainMap[i][j];
                     z++;
                 }
             }
@@ -85,71 +180,12 @@ public class TrainGameMode extends GameMode {
         for (int i = 0; i < trainMap.length; i++) {
             for (int j = 0; j < trainMap.length; j++) {
                 if (trainMap[i][j].getType().equals("goal")) {
-                    s[z] = (Goal) trainMap[i][j]; //TODO possible breakpoint
+                    s[z] = (Goal) trainMap[i][j];
                     z++;
                 }
             }
         }
         return s;
     }
-
-    @Override
-    public void loop() {
-        int destinationId = 0;
-        int idcounter = 0;
-        double speed = 0;
-        while(gameIsRunning){
-            destinationId = (int) (Math.random()*goals.length);
-            speed = Math.random()*(MAX_SPEED-MIN_SPEED)+MIN_SPEED; //mindestens 0.5, maximal 3
-            new Train(idcounter, colors[destinationId], destinationId, speed, this); //zug spawnen
-            idcounter++;
-            try{
-                Thread.sleep(TRAIN_SPAWN_INTERVAL); //warten
-            }catch(Exception e){e.printStackTrace();}
-        }
-
-    }
-
-    public boolean playerAnswered(Player player, JSONObject answer) {
-        if(answer.has("switch")){
-            try {
-                switches[answer.getInt("switch")].changeSwitch();
-                for (int i = 0; i < game.activePlayers.size(); i++) {
-                    game.activePlayers.get(i).sendSwitchChange(switches[answer.getInt("switch")]);
-                }
-            }catch (Exception e){e.printStackTrace();}
-            return true;
-        }
-        return false;
-    }
-
-    public void trainArrived(int trainId, int goalId, boolean succsess){
-        game.broadcastMessage("Zug hat sein Ziel erreicht!");
-        for(int i = 0; i<game.activePlayers.size();i++){
-            if(succsess) {
-                game.activePlayers.get(i).getScore().updateScore(TRAIN_ARRIVED_REWARD);
-            }
-            game.activePlayers.get(i).sendTrainArrived(trainId, goalId, succsess);
-        }
-    }
-
-    public void broadcastNewTrain(JSONObject train){
-        for (int i = 0; i < game.activePlayers.size(); i++) {
-            game.activePlayers.get(i).sendNewTrain(train);
-        }
-    }
-
-    @Override
-    public String getGameModeString() {
-        return "Train Game";
-    }
-
-    public void broadcastTrainDecision(int trainId, int switchId, int direction){
-        for (int i = 0; i < game.activePlayers.size(); i++) {
-            game.activePlayers.get(i).sendTrainDecision(trainId, switchId, direction);
-        }
-    }
-    @Override
-    public void doWaitTimeout (int timeout){} //es soll kein timeout stattfinden
 
 }

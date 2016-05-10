@@ -1,9 +1,12 @@
 package de.soeiner.mental.trainTracks;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import de.soeiner.mental.gameModes.Train;
 
 /**
  * Created by Malte on 26.04.2016.
@@ -29,14 +32,22 @@ public class Switch extends TrainTrack {
 
     @Override
     public void setSuccessor(TrainTrack s) {
+        if(s == null){
+            System.out.println("Objekt ist null!!!! ://///");
+        }
         if (!successors.contains(s)) {
             successors.add(s);
             activeSuccessors.add(false);
-            JSONObject position = new JSONObject();
+            JSONArray successorList = new JSONArray();
             try {
-                position.put("xpos", s.getX());
-                position.put("ypos", s.getY());
-                this.put("succesorNo_"+successors.size()+"Position", position);
+                for(int i = 0; i < successors.size(); i++){
+                    System.out.println("Typ an der Stelle "+i);//+" ist "+successors.get(i).getType());
+                    JSONObject position = new JSONObject();
+                    position.put("xpos", successors.get(i).getX());
+                    position.put("ypos", successors.get(i).getY());
+                    successorList.put(i, position);
+                }
+                this.put("successorList", successorList);
             }catch(JSONException e){e.printStackTrace();}
         }
         changeSwitch(); //switch gleich setzen
@@ -59,6 +70,9 @@ public class Switch extends TrainTrack {
                 successor = successors.get(i);
             }
         }
+        try {
+            this.put("switchedTo", active);
+        }catch(Exception e){e.printStackTrace();}
     }
 
     public ArrayList getSuccessors(){
@@ -67,6 +81,9 @@ public class Switch extends TrainTrack {
 
     public void setSwitchId(int id){
         switchId = id;
+        try{
+            this.put("switchId", id);
+        }catch(Exception e){e.printStackTrace();}
     }
 
     public int getSwitchId(){

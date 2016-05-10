@@ -47,12 +47,14 @@ public abstract class TrainTrack extends JSONObject{ //TODO: set attributes
     public abstract void setSuccessor(TrainTrack s);
     public void setPredecessor(TrainTrack p){
         predecessor = p;
-        /*JSONObject position = new JSONObject();
+        /*
+        JSONObject position = new JSONObject();
         try {
             position.put("xpos", p.getX());
             position.put("ypos", p.getY());
             this.put("predecessorPosition", position);
-        }catch(JSONException e){e.printStackTrace();} */
+        }catch(JSONException e){e.printStackTrace();}
+        */
     }
     public void setValue(int v){
         value = v;

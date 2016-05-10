@@ -78,7 +78,7 @@ public class BeatBobGameMode extends GameMode {
 
     public boolean playerAnswered(Player player, JSONObject answer) {
         Score s = player.getScore();
-        if (player.exerciseCreator.checkAnswer(answer)) { //TODO muss natürlich noch korigiert werden
+        if (player.exerciseCreator.checkAnswer(answer)) {
             exercisesSolved++;
             s.updateScore(5);
             player.exerciseCreator.next();

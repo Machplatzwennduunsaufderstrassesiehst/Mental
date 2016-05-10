@@ -295,7 +295,6 @@ public class Game implements Runnable {
 
 
     private void roundTimeout(){
-        sendGameStrings();
         /*try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
             Thread.sleep(GAME_TIMEOUT * 1000); //VOTE_TIMEOUT
         } catch (InterruptedException e) {} */
@@ -321,6 +320,7 @@ public class Game implements Runnable {
         start:
         while(true) {
             broadcastShowScoreBoard();
+            sendGameStrings();
             roundTimeout();
             voting.createGameModeSuggestions();
             synchronized (voteLock) {
