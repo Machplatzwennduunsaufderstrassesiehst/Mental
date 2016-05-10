@@ -26,6 +26,7 @@
     <script src="fLobby.js" type="text/javascript"></script>
     <script src="fScoreboard.js" type="text/javascript"></script>
     <script src="fShop.js" type="text/javascript"></script>
+	<script src="fWheelOfFortune.js" type="text/javascript"></script>
     
     <script src="main.js" type="text/javascript"></script>
     
@@ -69,7 +70,8 @@
                     
                 </div>
                 <p>
-                    <a class="btn" data-role="button" href="#" onclick="navigation.openFrames(shoppingFrame);" style="max-width:12em;"><span data-icon="cart"></span>Zum Shop</a>
+                    <a class="btn" data-role="button" href="#" onclick="navigation.openFrames(shoppingFrame);" style="max-width:20em;"><span data-icon="cart"></span>Zum Shop</a> <br>
+					<a class="btn" data-role="button" href="#" onclick="navigation.openFrames(wheelOfFortuneFrame);" style="max-width:20em;"><span data-icon="cart"></span>Zum Glücksrad</a>
                 </p>
             </div>
             <div id="listServersFrame" class="frame">
@@ -156,7 +158,23 @@
                     </p>
                 </div>
             </div>
-            <p style="text-align:center;" id="warning">Ernsthavtes Problem mit JawaScriptt!!<br>Lösche bitte deinen Cache!</p>
+			<div id="wheelOfFortuneFrame" class="frame">
+                <div style='padding:10px;'>
+                    <div id="shopUserInfo">
+                        <span style="float:right;font-style:italic;font-weight:normal;"><span data-icon="key"></span>Level <span data-field-key="playerLevel"></span> - $<span data-field-key="playerMoney"></span></span>
+                        <span>Hallo <span data-field-key="playerName"></span>!</span>
+                    </div>
+					<div id="wheelSpace" style="text-align:center;">
+						<p>
+							<img src="graphics/wof/wheel.png" id="wheel" >
+						<\p>
+					</div style="text-align:center;">
+                    <p>
+                        <a id="spinButton" class="btn" data-role="button" href="#" onclick=";" style="max-width:16em;"><span data-icon="target"></span>Spin the wheel!</a>
+                    </p>
+                </div>
+            </div>
+            <p style="text-align:center;" id="warning">Ernsthavtes Problem mit JawaScriptt!!1!11<br>Lösche bitte deinen Cache!</p>
             <div id="console">&nbsp;</div>
             <p id="msgBox" class="msgBox">test</p>
         </div>

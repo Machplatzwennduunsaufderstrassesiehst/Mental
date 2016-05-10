@@ -12,7 +12,7 @@ import de.soeiner.mental.trainTracks.*;
  */
 public class TrainGameMode extends GameMode {
 
-    private int HEALTH_NEEDED_TO_WIN = 50; //imer 2* der anfangs health ?
+    private int HEALTH_NEEDED_TO_WIN = 50;
     private int REWARD = 100;
     TrainTrack[][] trainMap;
     Switch[] switches;
@@ -51,7 +51,7 @@ public class TrainGameMode extends GameMode {
         for (int i = 0; i < goals.length; i++) {
             goals[i].setGoalId(i);
         }
-        health = 25; //TODO, von player abhängig machen
+        health = 10; //TODO, von player abhängig machen
     }
 
     @Override
@@ -87,6 +87,7 @@ public class TrainGameMode extends GameMode {
         if(succsess){
             game.broadcastMessage("Zug hat sein Ziel erreicht!");
             health++;
+            giveReward(5);
         }else{
             game.broadcastMessage("Zug hat das falsche Ziel erreicht :/");
             health--;
@@ -104,21 +105,26 @@ public class TrainGameMode extends GameMode {
         }
         if(health >= HEALTH_NEEDED_TO_WIN){
             gameIsRunning = false;
-            giveReward();
+            playersWon();
         }
 
     }
 
-    private void giveReward(){
+    private void playersWon(){
         game.broadcastMessage("Spieler haben gewonnen!");
         game.broadcastMessage("und bekomen einen Bonus von "+REWARD+"$ !");
-        for(int i = 0; i<game.activePlayers.size();i++){
-            game.activePlayers.get(i).getScore().updateScore(REWARD);
-        }
+        giveReward(REWARD);
         try {
             Thread.sleep(3000);
         }catch(Exception e){}
     }
+
+    private void giveReward(int reward){
+        for(int i = 0; i<game.activePlayers.size();i++){
+            game.activePlayers.get(i).getScore().updateScore(reward);
+        }
+    }
+
 
     public void broadcastNewTrain(JSONObject train){
         for (int i = 0; i < game.activePlayers.size(); i++) {
