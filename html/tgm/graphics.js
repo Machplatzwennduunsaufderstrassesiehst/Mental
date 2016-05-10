@@ -1,5 +1,4 @@
 
-var trainGameGraphics = new GameGraphics();
 
 function GameGraphics() {
     var graphicObjects = [];

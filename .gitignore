@@ -1,4 +1,5 @@
 Mental/.idea/*
+Mental/.idea/vcs.xml
 html/.idea
 
 Mental/app/src/androidTest/java/de/soeiner/mental/ClassicTest.java

@@ -2,10 +2,12 @@
 var mainTrainGameFrame = new Frame("mainTrainGameFrame");
 
 var trainGame = null;
+var trainGameGraphics = null;
 
 mainTrainGameFrame.setOnOpen(function() {
    byID("page_").style.display = "none";
    serverConnection.addObserver(trainMapObserver);
+   trainGameGraphics = new GameGraphics();
    trainGame = new TrainGame();
 });
 
@@ -110,3 +112,4 @@ var trainMapObserver = new Observer("exercise", function(msg) {
    trainMap = new Map(msg.exercise.trainMap);
    trainGame.setMap(trainMap);
 });
+

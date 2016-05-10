@@ -1,17 +1,16 @@
-// static
-var Tracks = {};
-Tracks.RES = 200;// TODO, must be set related to screen width and height
 
 function Track(i, j) {    
     var predecessor = null;
     var successor = null;
-    var dimension = this.dimension = {};
     
     var entranceSide = 0;
     var exitSide = 0;
+    // Vector that points to the middle of the track element
+    var midVector = new Vector(i*Track.trackSize + Track.trackSize/2, j*Track.trackSize + Track.trackSize/2); 
+    
     var container = new PIXI.Container();
-    container.position.x = i * Tracks.RES;
-    container.position.y = j * Tracks.RES;
+    container.position.x = i * Track.trackSize;
+    container.position.y = j * Track.trackSize;
     var trackSprite = null;
     
     this.type = "track";
@@ -22,11 +21,26 @@ function Track(i, j) {
     this.getY = function() {
         return j;
     }
-    this.getEntranceCoords() {
-        var deg = ((entranceSide) % 4) * Math.PI/2;
-        log("entranceSide: " + entranceSide + "--> deg: " + deg);
-        var v = {x:Math.sin(deg), y:-Math.cos(deg)};
+    
+    // get the position Vector that points to the specified side of the element
+    function getSideCoords(side) {
+        var deg = ((side) % 4) * Math.PI/2;
+        log("entranceSide: " + side + "--> deg: " + deg);
+        var v = new Vector(Math.sin(deg), -Math.cos(deg)); // vector that points to the entraceSide
         log("(" + v.x + ", " + v.y + ")");
+        v.normalize();
+        v.multiply(Track.trackSize/2);
+        log("(" + v.x + ", " + v.y + ")");
+        v.add(midVector);
+        return v;
+    }
+    
+    this.getEntranceCoords = function() {
+        return getSideCoords(entranceSide);
+    }
+     
+    this.getExitCoords = function() {
+        return getSideCoords(exitSide);
     }
     
     this.hasPredecessor = function() {
@@ -116,12 +130,16 @@ function Track(i, j) {
     }
     
 }
+// static
+Track.trackSize = 200;// TODO, must be set relative to screen width and height
 
 function Switch(id, i, j, successors, switchedTo) {
     Track.call(this, i, j);
     this.type = "switch";
     this.id = id;
+    Switch.es[id] = this;
     
+    // the possible lanes (Sprite objects) this switch has
     var lanes = [];
     
     // overwritten
@@ -132,11 +150,15 @@ function Switch(id, i, j, successors, switchedTo) {
     
     // overwritten
     this.setSuccessor = function(s) {
-        switchedTo = successors.indexOf(s);
+        change(successors.indexOf(s));
     }
     
-    this.change = function(newSwitchedTo) {
+    var change = this.change = function(newSwitchedTo) {
         switchedTo = newSwitchedTo;
+        for (var i = 0; i < lanes.length; i++) {
+            lanes[i].alpha = 0.2;
+        }
+        lanes[switchedTo].alpha = 1;
     }
     
     this.initialize = function() {
@@ -158,12 +180,14 @@ function Switch(id, i, j, successors, switchedTo) {
         }
     }
 }
+Switch.es = [];
 Switch.prototype = new Track;
 Switch.prototype.constructor = Switch;
 
 
-function Goal(i, j) {
+function Goal(id, i, j) {
     Track.call(this, i, j);
+    Goal.s[id] = this;
     
     this.type = "goal";
     
@@ -172,5 +196,7 @@ function Goal(i, j) {
         return false;
     }
 }
+Goal.s = [];
 Goal.prototype = new Track;
 Goal.prototype.constructor = Goal;
+
