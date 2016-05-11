@@ -6,7 +6,7 @@ function GameGraphics() {
     
     var renderer = new PIXI.autoDetectRenderer(
         window.innerWidth, window.innerHeight,
-        {antialias:true,resolution: window.innerWidth / window.innerHeight,}
+        {antialias:true}
     );
     var stage = new PIXI.Container();
     
@@ -35,6 +35,7 @@ function GameGraphics() {
     
     var addEnvironment = this.addEnvironment = function(sprite) {
         stage.addChild(sprite);
+        log("environment sprite added: " + sprite.position.x + " " + sprite.position.y);
     }
     
     var removeEnvironment = this.removeEnvironment = function(sprite) {
@@ -42,7 +43,7 @@ function GameGraphics() {
     }
 
     // The renderer will create a canvas element for you that you can then insert into the DOM.
-    document.body.appendChild(renderer.view);
+    byID("mainTrainGameFrame").appendChild(renderer.view);
 
     function animate() {
         if (!running) return;

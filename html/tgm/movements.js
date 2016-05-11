@@ -20,6 +20,10 @@ function Vector(x, y) {
     
     this.getX = function(){return x;};
     this.getY = function(){return y;};
+    
+    this.copy = function() {
+        return new Vector(x, y);
+    }
 }
 
 // used to describe one element of a movement

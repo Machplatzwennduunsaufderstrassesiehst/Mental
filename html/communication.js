@@ -6,7 +6,7 @@
 
 // sleep time between request queue checks
 var actRate = 250;
-var maxWaitTimeout = 2500;
+var maxWaitTimeout = 5000;
 var gameServerPort = 1297;
 var pingServerPort = 6383;
 var httpDirectory = "/mental";
