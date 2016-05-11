@@ -1,23 +1,19 @@
 
-
 var wheelOfFortuneFrame = new Frame("wheelOfFortuneFrame");
 
-shoppingFrame.setOnOpen(function() {
-    //updateShopItems(); //update wheel inhalt ?
+wheelOfFortuneFrame.setOnOpen(function() {
     byID("toLobby").style.display = "inline";
     var oldonclick = byID("toLobby").onclick;
     byID("toLobby").onclick = function(){byID("toLobby").onclick = oldonclick;navigation.openFrames(lobbyFrame);};
 });
 
-shoppingFrame.setOnClose(function() {
+wheelOfFortuneFrame.setOnClose(function() {
     byID("wheel").style.opacity = 0;
 });
 
 // FUNCTIONALITY =======================================================
-
-var wof = {};
-//wof.spin = function(a, b){}
-
+//wheelOfFortuneFrame.buySpin = function() {
+	
 function buySpin() {
     serverConnection.communicate({type:"buySpin"}, function(msg){
         if (msg.success) {
@@ -42,21 +38,36 @@ function reconfigureSpinButton(text, accessable) {
 }
 
 
-var x, n=0, wheelINT
-function rotateDIV(angle){ //in degrees
+var x, n=0, wheelINT, a
+function rotateDIV(rounds, angle){ //in degrees
+a = angle;
 x=document.getElementById("wheel");
 clearInterval(wheelINT);
-wheelINT=setInterval("startRotate()",10);
+for(i = 0; i<rounds; i++){
+	wheelINT=setInterval("startRoundRotate()", 5);
 }
-function startRotate(){
+wheelINT=setInterval("startAngleRotate()", 15);
+}
+function startRoundRotate(){
 	n=n+1
 	x.style.transform="rotate(" + n + "deg)"
 	x.style.webkitTransform="rotate(" + n + "deg)"
 	x.style.OTransform="rotate(" + n + "deg)"
 	x.style.MozTransform="rotate(" + n + "deg)"
-	if (n==180 || n==360){
+	if (n==360){
 		clearInterval(wheelINT);
-		if (n==360){n=0}
+		n=0;
+	}
+}
+function startAngleRotate(){
+	n=n+1
+	x.style.transform="rotate(" + n + "deg)"
+	x.style.webkitTransform="rotate(" + n + "deg)"
+	x.style.OTransform="rotate(" + n + "deg)"
+	x.style.MozTransform="rotate(" + n + "deg)"
+	if (n==a){
+		clearInterval(wheelINT);
+		n=0;
 	}
 }
  
@@ -81,15 +92,13 @@ function spin(){
 			prize = slices - 1 - Math.floor(degrees / (360 / slices));
 			rotateDIV((rounds*360)+degrees);
 			winPrize(prize);
-			reconfigureSpinButton("spin the wheel!", true);
+			setTimeout(function(){reconfigureSpinButton("spin the wheel!", true);}, 1000); //TODO richtige zeit rausfinden
 		}
 	 });					    
 }
-     winPrize(prize){
-		 var slicePrizes = ["ANOTHER SPIN", "50 DOLLARS", "500 DOLLARS", "BAD LUCK!", "200 DOLLARS", "100 DOLLARS", "150 DOLLARS", "BAD LUCK!"];
-		 var prizeTextField;
-         prizeText.text = slicePrizes[prize];
-     }
+function winPrize(prize){
+	var slicePrizes = ["ANOTHER SPIN", "50 DOLLARS", "500 DOLLARS", "BAD LUCK!", "200 DOLLARS", "100 DOLLARS", "150 DOLLARS", "BAD LUCK!"];
+	byID("prizeTextField").innerHTML = slicePrizes[prize];
 }
 
 
