@@ -22,10 +22,6 @@ mainTrainGameFrame.setOnClose(function() {
 // FUNCTIONALITY =================================================================================================
 
 function Map(rawdata) {
-    var BLOCKED = 8;
-    var BLOCKED2 = 0;
-    var SWITCH = 9;
-
     // initialize array to hold the track objects later
     var mapArray = [];    
     for (var i = 0; i < rawdata.length; i++) {
@@ -36,18 +32,18 @@ function Map(rawdata) {
     }
     log(mapArray);
     
-    // recursive strategy to build the track object needed for the map
+    // recursive strategy to build the track objects needed for the map
     function build(i, j, predecessor) {
         log("i: " + i + "  j:" + j);
-        if (mapArray[i][j] != null) return;
+        if (mapArray[i][j] != null) return null;
         try {
             var trackData = rawdata[i][j];
         } catch (e) {
             log(e);
-            return false;
+            return null;
         }
         switch(trackData.trackType) {
-            case "blocked":return false;
+            case "blocked":return null;
             case "track":
                 var i2 = trackData.successorPosition.xpos;
                 var j2 = trackData.successorPosition.ypos;
