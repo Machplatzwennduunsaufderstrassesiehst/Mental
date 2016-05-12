@@ -57,6 +57,7 @@ public class TrainMapCreator extends ExerciseCreator {
 
 
     public TrainTrack[][] createTrainMap(){
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! AUFRUF VON CREATE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         if(trainMap != null) return null;
         map = new TrainTrack[size][size];
         for(int i = 0; i<size; i++){
@@ -88,7 +89,7 @@ public class TrainMapCreator extends ExerciseCreator {
                 if (coordinates[0] == 1 && coordinates[1] == 1) {
                     pathNumber = 10;
                     continuePossible = false;
-                    System.out.println("============= Map wird aufgrund starting point fail, frühzeitig fertiggestellt");
+                    System.out.println("==== Map wird aufgrund starting point fail, frühzeitig fertiggestellt ====");
                 } else {
                 x = coordinates[0];
                 y = coordinates[1];
@@ -205,16 +206,13 @@ public class TrainMapCreator extends ExerciseCreator {
                     }
             }
         }
-        if(!pussybilities.isEmpty())
-            coordinates = pussybilities.get((int) (Math.random()*pussybilities.size()));
-        pussybilities.clear();
-        if (coordinates[0] == 1 && coordinates[1] == 1) {
-            while (map[coordinates[0]][coordinates[1]].getValue() != 0) {
+        if(!pussybilities.isEmpty()) {
+            coordinates = pussybilities.get((int) (Math.random() * pussybilities.size()));
+        }else if (coordinates[0] == 1 && coordinates[1] == 1) {
                 //coordinates[0] = (int) ((Math.random() * size - 1) + 1);
                 //coordinates[1] = (int) ((Math.random() * size - 1) + 1);
-                System.out.println("getStartingPoint() fail ||||||||||||||||||||||||||||||||||||||||||||||||||");
-                ausgabe();
-            }
+                System.out.println("getStartingPoint() nicht möglich");
+                //ausgabe();
         }
         return coordinates;
     }
