@@ -34,7 +34,7 @@ window.onload = function() {
     
     countdown();
     
-    setTimeout(function(){if (!byID('ip').value.contains(netManager.getLocalIPSub()) && byID('ip').value != "localhost") byID('ip').value = netManager.getLocalIPSub();}, 1000);
+    //setTimeout(function(){if (!byID('ip').value.contains(netManager.getLocalIPSub()) && byID('ip').value != "localhost") byID('ip').value = netManager.getLocalIPSub();}, 1000);
     /*byID("ip").onfocus = function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();};
     byID("ip").onkeyup = function(){
         if (byID("ip").value == "") setTimeout(function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();}, 2000);

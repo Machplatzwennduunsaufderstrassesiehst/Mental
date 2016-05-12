@@ -329,4 +329,8 @@ public class Shop{
         //System.out.println("CHECKSUM: "+checksum);
         return checksum;
     }
+
+    public WheelOfFortune getWheel() {
+        return wheel;
+    }
 }

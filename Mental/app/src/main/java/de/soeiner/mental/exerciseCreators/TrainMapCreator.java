@@ -186,6 +186,17 @@ public class TrainMapCreator extends ExerciseCreator {
                 //ausgabe();
             }
         }
+        int zId = 0;
+        Switch s;
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map.length; j++) {
+                if (map[i][j].getType().equals("switch")) {
+                    s = (Switch) map[i][j];
+                    s.setSwitchId(zId);
+                    zId++;
+                }
+            }
+        }
         for(int i = 0; i<map.length; i++){
             for (int j = 0; j < map.length; j++) {
                 if(map[i][j].getValue() != 0 && map[i][j].getType().equals("track") && map[i][j].getSuccessor() == null){ //goals werden identifiziert
