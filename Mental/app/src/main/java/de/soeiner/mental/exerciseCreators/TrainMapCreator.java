@@ -58,7 +58,17 @@ public class TrainMapCreator extends ExerciseCreator {
 
     public TrainTrack[][] createTrainMap(){
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! AUFRUF VON CREATE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        if(trainMap != null) return null;
+        //if(trainMap != null){return null;}
+        /*
+        if(trainMap != null){}{
+            trainMap = null;
+            map = null;
+        }
+        */
+        x = 0;
+        y = 0;
+        pathNumber = 0;
+
         map = new TrainTrack[size][size];
         for(int i = 0; i<size; i++){
             for(int j = 0; j<size; j++){
