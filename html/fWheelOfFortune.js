@@ -2,6 +2,14 @@
 var wheelOfFortuneFrame = new Frame("wheelOfFortuneFrame");
 
 wheelOfFortuneFrame.setOnOpen(function() {
+	var pin = byID("pin");
+	var w = byID("wheel");
+	pin.style.transitionDuration="0s";
+	var left = w.getClientRects()[0].left+(w.clientWidth/2)-(pin.clientWidth/2);
+	var up = w.getClientRects()[0].top+(w.clientHeight/2)-(pin.clientHeight/2);
+	pin.style.left= left+"px";
+	pin.style.top = up+"px";
+	
     byID("toLobby").style.display = "inline";
     var oldonclick = byID("toLobby").onclick;
     byID("toLobby").onclick = function(){byID("toLobby").onclick = oldonclick;navigation.openFrames(lobbyFrame);};
@@ -38,15 +46,14 @@ function reconfigureSpinButton(text, accessable) {
 }
 
 
-var x, n=0, wheelINT, a
+var x, n=0, a, speed = 5, max
 function rotateDIV(rounds, angle){ //in degrees
 a = angle;
 x=document.getElementById("wheel");
-clearInterval(wheelINT);
-for(i = 0; i<rounds; i++){
-	wheelINT=setInterval("startRoundRotate()", 5);
-}
-wheelINT=setInterval("startAngleRotate()", 15);
+max = 360 * rounds;
+startRoundRotate();
+//setTimeout(function(){startAngleRotate();},2*360*rounds);
+
 }
 function startRoundRotate(){
 	n=n+1
@@ -54,9 +61,10 @@ function startRoundRotate(){
 	x.style.webkitTransform="rotate(" + n + "deg)"
 	x.style.OTransform="rotate(" + n + "deg)"
 	x.style.MozTransform="rotate(" + n + "deg)"
-	if (n==360){
-		clearInterval(wheelINT);
-		n=0;
+	if (n==max){
+		n = 0
+	}else{
+		setTimeout(function(){startRoundRotate();}, 2);
 	}
 }
 function startAngleRotate(){
@@ -66,8 +74,12 @@ function startAngleRotate(){
 	x.style.OTransform="rotate(" + n + "deg)"
 	x.style.MozTransform="rotate(" + n + "deg)"
 	if (n==a){
-		clearInterval(wheelINT);
-		n=0;
+		
+	}else{
+		//speed = ((a - n) / a )+ 30;
+		//speed = (a - ((a-n) + 4))%20
+		//speed *= 1.04;
+		setTimeout(function(){startAngleRotate();}, speed);
 	}
 }
  

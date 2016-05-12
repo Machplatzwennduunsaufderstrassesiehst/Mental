@@ -261,7 +261,7 @@ body {
 
 
 
-#shopUserInfo {
+.userInfo {
     color: #444;
     border-radius: 5px;
     padding: 10px;
