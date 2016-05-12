@@ -149,6 +149,7 @@ function Switch(id, i, j) {
     Track.call(this, i, j);
     this.type = "switch";
     this.id = id;
+    
     Switch.es[id] = this;
     
     // the possible lanes (Sprite objects) this switch has
@@ -173,11 +174,13 @@ function Switch(id, i, j) {
     
     var change = this.change = function(newSwitchedTo) {
         switchedTo = newSwitchedTo;
-        log(lanes);
-        for (var i = 0; i < lanes.length; i++) {
-            lanes[i].alpha = 0.2;
+        for (var l = 0; l < lanes.length; l++) {
+            if (l == switchedTo) {
+                lanes[switchedTo].alpha = 1;
+            } else {
+                lanes[l].alpha = 0.4;
+            }
         }
-        lanes[switchedTo].alpha = 1;
     }
     
     this.initialize = function() {
@@ -191,7 +194,6 @@ function Switch(id, i, j) {
             var successorCoords = {x:successors[s].getX(), y:successors[s].getY()};
             var onl = function(index) {
                 return function(sprite) {
-                    log(index);
                     lanes[index] = sprite;
                     trainGame.graphics.addEnvironment(sprite);
                 }

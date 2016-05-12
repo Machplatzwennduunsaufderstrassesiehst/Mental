@@ -2,19 +2,27 @@
 var mainTrainGameFrame = new Frame("mainTrainGameFrame");
 
 var trainGame = null;
-var trainGameGraphics = undefined;
 
 mainTrainGameFrame.setOnOpen(function() {
    byID("page_").style.display = "none";
+   
    serverConnection.addObserver(trainMapObserver);
-   if (trainGameGraphics == undefined) trainGameGraphics = new GameGraphics();
+   serverConnection.addObserver(newtrainObserver);
+   
+   if (trainGameGraphics != undefined) {
+       trainGameGraphics.stop();
+       trainGameGraphics.clearEnvironment();
+   }
+   var trainGameGraphics = new GameGraphics();
    trainGame = new TrainGame(trainGameGraphics);
    trainGame.start();
 });
 
 mainTrainGameFrame.setOnClose(function() {
    byID("page_").style.display = "block";
+   
    serverConnection.removeObserver(trainMapObserver);
+   serverConnection.removeObserver(newtrainObserver);
    
    trainGame.stop();
    byID("mainTrainGameFrame").innerHTML = "";
@@ -25,7 +33,9 @@ mainTrainGameFrame.setOnClose(function() {
 
 function Map(rawdata) {
     // initialize array to hold the track objects later
-    var mapArray = [];    
+    var mapArray = [];  
+    var trainSpawn = null;
+      
     for (var i = 0; i < rawdata.length; i++) {
         mapArray.push([]);
         for (var j = 0; j < rawdata[i].length; j++) {
@@ -36,7 +46,6 @@ function Map(rawdata) {
     
     // recursive strategy to build the track objects needed for the map
     function build(i, j, predecessor) {
-        log("i: " + i + "  j:" + j);
         if (mapArray[i][j] != null) return null;
         try {
             var trackData = rawdata[i][j];
@@ -76,29 +85,23 @@ function Map(rawdata) {
                 g.initialize();
                 return g;
         }
-        
-        /*
-        switch (t.value) {
-            case BLOCKED: return false;
-            case BLOCKED2: return false;
-            case SWITCH:
-                var s = new Switch(i, j);
-                s.setPredecessor(predecessor);
-                
-                mapArray[i][j] = s;
-                
-        }*/
-        
-        
     }
     
-    build(1, 1, null);
+    log("START MAP BUILD");
+    Switch.es = [];
+    Goal.s = [];
+    trainSpawn = build(1, 1, null);
+    
+    this.getTrainSpawn = function() {
+        return trainSpawn;
+    }
 }
 
 function TrainGame(graphics) {
     var trainMap = null;
     this.graphics = graphics;
     this.trainMap = null;
+    this.trains = [];
     
     this.setMap = function(map) {
         trainMap = this.trainMap = map;
@@ -111,13 +114,23 @@ function TrainGame(graphics) {
     this.stop = function() {
         graphics.stop();
     }
+    
+    this.getTrainSpawn = function() {
+        return trainMap.getTrainSpawn();
+    }
 }
 
 // OBSERVERS =====================================================================================================
 
 var trainMapObserver = new Observer("exercise", function(msg) {
-   if (msg.exercise.type != "trainMap") return;
-   trainMap = new Map(msg.exercise.trainMap);
-   trainGame.setMap(trainMap);
+    if (msg.exercise.type != "trainMap") return;
+    trainMap = new Map(msg.exercise.trainMap);
+    trainGame.setMap(trainMap);
 });
+
+var newtrainObserver = new Observer("newTrain", function(msg) {
+    //var t = new Train(msg.trainId, msg.destinationId, msg.speed, msg.color, trainGame.getTrainSpawn());
+    //trains.push(t);
+});
+
 

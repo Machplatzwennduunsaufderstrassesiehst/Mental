@@ -62,9 +62,9 @@ function GraphicObject(sprite_) {
 }
 
 function createPNGObject(png, container) {
-    if (container == undefined) container = trainGameGraphics.getStage();
+    if (container == undefined) container = trainGame.graphics.getStage();
     var g = new GraphicObject();
-    gameGraphics.addGraphicObject(g);
+    trainGame.graphics.addGraphicObject(g);
     PIXI.loader
         .add(png)
         .load(function(loader, resources){
