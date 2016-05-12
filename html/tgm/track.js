@@ -27,12 +27,12 @@ function Track(i, j) {
     // get the position Vector that points to the specified side of the element
     var getSideCoords = this.getSideCoords = function(side) {
         var deg = ((side) % 4) * Math.PI/2;
-        log("entranceSide: " + side + "--> deg: " + deg);
+        //log("entranceSide: " + side + "--> deg: " + deg);
         var v = new Vector(Math.sin(deg), -Math.cos(deg)); // vector that points to the entraceSide
-        log("(" + v.x + ", " + v.y + ")");
+        //log("(" + v.x + ", " + v.y + ")");
         v.normalize();
         v.multiply(Track.trackSize/2);
-        log("(" + v.x + ", " + v.y + ")");
+        //log("(" + v.x + ", " + v.y + ")");
         v.add(midVector);
         return v;
     }
@@ -76,19 +76,19 @@ function Track(i, j) {
         var dx2 = successorCoords.x - i;
         var dy1 = j - predecessorCoords.y;
         var dy2 = successorCoords.y - j;
-        log("dx1: " + dx1 + "  dy1: " + dy1);
-        log("dx2: " + dx2 + "  dy2: " + dy2);
+        //log("dx1: " + dx1 + "  dy1: " + dy1);
+        //log("dx2: " + dx2 + "  dy2: " + dy2);
         entranceSide = 2 * Math.abs(dx1) + dx1 + Math.abs(dy1) - dy1;
         exitSide =     2 * Math.abs(dx2) - dx2 + Math.abs(dy2) + dy2;
         var d = exitSide - entranceSide;
         if (Math.abs(d) % 2 == 0) {
-            log("this is a straight");
+            //log("this is a straight");
             d = 0;
         } else {
-            log("this is a turn");
+            //log("this is a turn");
             if (Math.abs(d) > 2) d = -Math.sign(d);
         }
-        log("entranceSide: " + entranceSide + "  exitSide: " + exitSide + "  d: " + d);
+        //log("entranceSide: " + entranceSide + "  exitSide: " + exitSide + "  d: " + d);
         var rotation, png;
         rotation = entranceSide;
         switch (d) {
@@ -97,20 +97,20 @@ function Track(i, j) {
                 break;
             case 1: // left turn
                 png = "turn";
-                log("turn left");
+                //log("turn left");
                 break;
             case -1: // right turn
-                log("turn right");
+                //log("turn right");
                 png = "turn";
                 rotation -= 1;
                 rotation = (rotation + 4) % 4;
                 break;
         }
         rotation *= Math.PI / 2;
-        log("png: " + png + "   rotation: " + rotation);
+        //log("png: " + png + "   rotation: " + rotation);
         
         png = "graphics/tgm/" + png + ".png";
-        log(png);
+        //log(png);
         var sprite = new PIXI.Sprite.fromImage(png);
         
         sprite.position = new PIXI.Point(posVector.getX(), posVector.getY());
@@ -119,23 +119,6 @@ function Track(i, j) {
         sprite.scale = new PIXI.Point(Track.trackSize/200, Track.trackSize/200);
         
         onload(sprite);
-        /*
-        var createSprite = function(loader, resources) {
-            var sprite = new PIXI.Sprite(PIXI.loader.resources[png].texture);
-            
-            sprite.position = new PIXI.Point(posVector.getX(), posVector.getY());
-            sprite.pivot = new PIXI.Point(relMidVector.getX(), relMidVector.getY());
-            sprite.rotation = rotation;
-            
-            onload(sprite);
-        }
-        if (PIXI.loader.resources[png] == undefined) {
-            PIXI.loader
-                .add(png)
-                .load(createSprite);
-        } else {
-            createSprite(null, null);
-        }*/
     }
     
     // to be called after successor and predecessor are set
@@ -143,13 +126,13 @@ function Track(i, j) {
         if (hasPredecessor()) {
             var predecessorCoords = {x:predecessor.getX(), y:predecessor.getY()};
         } else {
-            log("no predecessor");
+            //log("no predecessor");
             var predecessorCoords = {x:i, y:j-1};
         }
         if (hasSuccessor()) {
             var successorCoords = {x:successor.getX(), y:successor.getY()};
         } else {
-            log("no successor");
+            //log("no successor");
             var successorCoords = {x:i+1, y:j};
         }
         buildSprite(predecessorCoords, successorCoords, function(sprite) {
@@ -190,6 +173,7 @@ function Switch(id, i, j) {
     
     var change = this.change = function(newSwitchedTo) {
         switchedTo = newSwitchedTo;
+        log(lanes);
         for (var i = 0; i < lanes.length; i++) {
             lanes[i].alpha = 0.2;
         }
@@ -203,14 +187,15 @@ function Switch(id, i, j) {
         } else {
             var predecessorCoords = {x:i, y:j-1};
         }
-        for (var i = 0; i < successors.length; i++) {
-            var successorCoords = {x:successors[i].getX(), y:successors[i].getY()};
+        for (var s = 0; s < successors.length; s++) {
+            var successorCoords = {x:successors[s].getX(), y:successors[s].getY()};
             var onl = function(index) {
                 return function(sprite) {
+                    log(index);
                     lanes[index] = sprite;
                     trainGame.graphics.addEnvironment(sprite);
                 }
-            }(i);
+            }(s);
             this.buildSprite(predecessorCoords, successorCoords, onl);
         }
     }

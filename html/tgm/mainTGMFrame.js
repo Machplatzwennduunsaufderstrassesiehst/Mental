@@ -2,12 +2,14 @@
 var mainTrainGameFrame = new Frame("mainTrainGameFrame");
 
 var trainGame = null;
+var trainGameGraphics = undefined;
 
 mainTrainGameFrame.setOnOpen(function() {
    byID("page_").style.display = "none";
    serverConnection.addObserver(trainMapObserver);
-   var trainGameGraphics = new GameGraphics();
+   if (trainGameGraphics == undefined) trainGameGraphics = new GameGraphics();
    trainGame = new TrainGame(trainGameGraphics);
+   trainGame.start();
 });
 
 mainTrainGameFrame.setOnClose(function() {
@@ -117,6 +119,5 @@ var trainMapObserver = new Observer("exercise", function(msg) {
    if (msg.exercise.type != "trainMap") return;
    trainMap = new Map(msg.exercise.trainMap);
    trainGame.setMap(trainMap);
-   trainGame.start();
 });
 

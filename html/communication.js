@@ -134,7 +134,7 @@ function ServerConnection(host, port) {
     
     socket.onmessage = function(event) {
         var msg = "";
-        log(event.data);
+        if (this.DEBUG) log(event.data);
         try {
             msg = JSON.parse(event.data);
             if (currentRequest != null && "_"+currentRequest.jsonCmd.type+"_" == msg.type) {
@@ -166,7 +166,7 @@ function ServerConnection(host, port) {
             log(e);
         }
         socket.send(jsonStr);
-        log("Sent: " + jsonStr);
+        if (this.DEBUG) log("Sent: " + jsonStr);
     }
     
     this.send = send;
@@ -219,7 +219,7 @@ function ServerConnection(host, port) {
     
     startGetRequestScheduler();
 }
-
+ServerConnection.DEBUG = false;
 
 
 
