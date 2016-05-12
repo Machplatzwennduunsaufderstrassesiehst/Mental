@@ -2,8 +2,10 @@
 var uselessFunction = function(){};
 
 var logContent_ = "";
-var console = console || new function() {
-    this.log = function(s) {logContent_ += s;}
+if (window.console == undefined) {
+    var console = window.console = new function() {
+        this.log = function(s) {logContent_ += s;}
+    }
 }
 
 function log(s) {
@@ -62,6 +64,12 @@ String.prototype.capitalize = function(){
     }
     return self.join('');
 }
+
+if(!('contains' in String.prototype)) {
+       String.prototype.contains = function(str, startIndex) {
+                return -1 !== String.prototype.indexOf.call(this, str, startIndex);
+       };
+ }
 
 function byID(id) {
     return window.document.getElementById(id);

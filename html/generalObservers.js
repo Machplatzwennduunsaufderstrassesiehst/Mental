@@ -5,7 +5,7 @@ function configureObservers() {
     serverConnection.addObserver(gameStringObserver);
     serverConnection.addObserver(showScoreboardObserver);
     serverConnection.addObserver(countdownObserver);
-    serverConnection.addObserver(reopenMainFrameObserver);
+    serverConnection.addObserver(openMainFrameObserver);
     serverConnection.addObserver(playerStateObserver);
 }
 
@@ -31,3 +31,13 @@ var playerStateObserver = new Observer("scoreboard", function(msg) {
         }
     }
 });
+
+var openMainFrameObserver = new Observer("showExercises", function(msg) {
+    if (msg.exerciseType == "arithmetic") {
+        navigation.openFrames(mainFrame);
+    } else if (msg.exerciseType == "trainMap") {
+        navigation.openFrames(mainTrainGameFrame);
+    }
+});
+
+

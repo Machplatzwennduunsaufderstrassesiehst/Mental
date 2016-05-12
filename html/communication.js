@@ -6,7 +6,7 @@
 
 // sleep time between request queue checks
 var actRate = 250;
-var maxWaitTimeout = 2500;
+var maxWaitTimeout = 5000;
 var gameServerPort = 1297;
 var pingServerPort = 6383;
 var httpDirectory = "/mental";
@@ -134,9 +134,9 @@ function ServerConnection(host, port) {
     
     socket.onmessage = function(event) {
         var msg = "";
+        if (ServerConnection.DEBUG) log(event.data);
         try {
             msg = JSON.parse(event.data);
-            log("Received: " + event.data);
             if (currentRequest != null && "_"+currentRequest.jsonCmd.type+"_" == msg.type) {
                 removeRequest(currentRequest);
                 currentRequest.handler(msg);
@@ -166,7 +166,7 @@ function ServerConnection(host, port) {
             log(e);
         }
         socket.send(jsonStr);
-        log("Sent: " + jsonStr);
+        if (ServerConnection.DEBUG) log("Sent: " + jsonStr);
     }
     
     this.send = send;
@@ -219,7 +219,7 @@ function ServerConnection(host, port) {
     
     startGetRequestScheduler();
 }
-
+ServerConnection.DEBUG = true;
 
 
 

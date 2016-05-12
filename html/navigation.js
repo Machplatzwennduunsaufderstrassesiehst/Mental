@@ -34,7 +34,11 @@ function Frame(id_) {
         byID(id).style.transitionDuration = (transitionTime / 1000) + "s";
     });
     
-    var isOpen = false;
+    var open = false;
+    
+    this.isOpen = function() {
+        return open;
+    }
     
     this.setOnOpen  = function(func) {
         onopen = func;
@@ -45,15 +49,15 @@ function Frame(id_) {
     }
     
     var notifyOpen = this.notifyOpen = function() {
-        if (isOpen) return;
-        isOpen = true;
+        if (open) return;
+        open = true;
         onopen();    
     }
     
     var notifyClose = this.notifyClose = function() {
-        if (!isOpen) return;
-        isOpen = false;
-        onclose();    
+        if (!open) return;
+        open = false;
+        onclose();
     }
 
     var smoothClose = this.smoothClose = function() {
@@ -114,6 +118,7 @@ function Navigation() {
         var frames_ = arguments;
         for (var i = 0; i < frames_.length; i++) {
             var f = frames_[i];
+            if (f.isOpen()) continue; 
             f.smoothOpen();
             f.notifyOpen();
         }
@@ -127,6 +132,7 @@ function Navigation() {
         if (!arguments[0].id) arguments = arguments[0];
         for (i = 0; i < arguments.length; i++) {
             var f = arguments[i];
+            if (!f.isOpen()) continue;
             f.notifyClose();
             f.smoothClose();
         }
