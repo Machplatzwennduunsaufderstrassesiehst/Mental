@@ -41,7 +41,7 @@ public class Switch extends TrainTrack {
             JSONArray successorList = new JSONArray();
             try {
                 for(int i = 0; i < successors.size(); i++){
-                    System.out.println("Typ an der Stelle "+i);//+" ist "+successors.get(i).getType());
+                    //System.out.println("Typ an der Stelle "+i);//+" ist "+successors.get(i).getType());
                     JSONObject position = new JSONObject();
                     position.put("xpos", successors.get(i).getX());
                     position.put("ypos", successors.get(i).getY());

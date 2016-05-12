@@ -15,9 +15,7 @@ wheelOfFortuneFrame.setOnOpen(function() {
     byID("toLobby").onclick = function(){byID("toLobby").onclick = oldonclick;navigation.openFrames(lobbyFrame);};
 });
 
-wheelOfFortuneFrame.setOnClose(function() {
-    byID("wheel").style.opacity = 0;
-});
+wheelOfFortuneFrame.setOnClose(function() {});
 
 // FUNCTIONALITY =======================================================
 //wheelOfFortuneFrame.buySpin = function() {
@@ -46,7 +44,7 @@ function reconfigureSpinButton(text, accessable) {
 }
 
 
-var x, n=0, a, speed = 5, max
+var x, n=0, a = 0, speed = 5, max
 function rotateDIV(rounds, angle){ //in degrees
 a = angle;
 x=document.getElementById("wheel");
