@@ -29,12 +29,12 @@ function GameGraphics() {
     
     var addGraphicObject = this.addGraphicObject = function(graphicObject) {
         graphicObjects.push(graphicObject);
-        stage.addChild(graphicObject.sprite);
+        stage.addChild(graphicObject.getSprite());
     }
     
     var removeGraphicObject = this.removeGraphicObject = function(graphicObject) {
         graphicObjects.remove(graphicObject);
-        stage.removeChild(graphicObject.sprite);
+        stage.removeChild(graphicObject.getSprite());
     }
     
     var addEnvironment = this.addEnvironment = function(sprite) {
@@ -68,5 +68,6 @@ function GameGraphics() {
     }
 }
 
+GameGraphics.TGMPATH = "graphics/tgm/";
 
 

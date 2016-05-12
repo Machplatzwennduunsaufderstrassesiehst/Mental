@@ -61,18 +61,4 @@ function GraphicObject(sprite_) {
     }
 }
 
-function createPNGObject(png, container) {
-    if (container == undefined) container = trainGame.graphics.getStage();
-    var g = new GraphicObject();
-    trainGame.graphics.addGraphicObject(g);
-    PIXI.loader
-        .add(png)
-        .load(function(loader, resources){
-            var sprite = new PIXI.Sprite(resources[png].texture);
-            container.addChild(sprite);
-            g.setSprite(sprite);
-        });
-    return g;
-}
-
 

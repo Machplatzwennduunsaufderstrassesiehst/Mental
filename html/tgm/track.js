@@ -1,10 +1,15 @@
 
-function Track(i, j) {    
-    var predecessor = null;
-    var successor = null;
+function Lane(i, j, predecessorCoords, successorCoords) {
+    this.i = i;
+    this.j = j;
+    this.type = null;
     
     var entranceSide = 0;
     var exitSide = 0;
+    var direction = 0;
+    
+    var movement = 
+    
     // Vector that points to the sprite's position
     var posVector = new Vector(i*Track.trackSize, j*Track.trackSize);
     
@@ -13,26 +18,17 @@ function Track(i, j) {
     var midVector = posVector.copy();
     midVector.add(relMidVector); 
     
-    var trackSprite = null;
-    
-    this.type = "track";
-    
-    this.getX = function() {
-        return i;
-    }
-    this.getY = function() {
-        return j;
-    }
+    var sprite = null;
     
     // get the position Vector that points to the specified side of the element
     var getSideCoords = this.getSideCoords = function(side) {
         var deg = ((side) % 4) * Math.PI/2;
-        //log("entranceSide: " + side + "--> deg: " + deg);
+        log("entranceSide: " + side + "--> deg: " + deg);
         var v = new Vector(Math.sin(deg), -Math.cos(deg)); // vector that points to the entraceSide
-        //log("(" + v.x + ", " + v.y + ")");
+        log("(" + v.x + ", " + v.y + ")");
         v.normalize();
         v.multiply(Track.trackSize/2);
-        //log("(" + v.x + ", " + v.y + ")");
+        log("(" + v.x + ", " + v.y + ")");
         v.add(midVector);
         return v;
     }
@@ -43,6 +39,91 @@ function Track(i, j) {
      
     this.getExitCoords = function() {
         return getSideCoords(exitSide);
+    }
+    
+    this.setSwitched = function(bSwitched) {
+        sprite.alpha = (bSwitched ? 1 : 0.4);
+    }
+    
+    // only used for Turns!
+    this.getRadius = function() {
+        return Track.trackSize/2;
+    }
+    this.getDegrees = function() {
+        return direction * Math.PI / 2;
+    }
+    
+    function initializeOrientation() {
+        var dx1 = i - predecessorCoords.x;
+        var dx2 = successorCoords.x - i;
+        var dy1 = j - predecessorCoords.y;
+        var dy2 = successorCoords.y - j;
+        //log("dx1: " + dx1 + "  dy1: " + dy1);
+        //log("dx2: " + dx2 + "  dy2: " + dy2);
+        entranceSide = 2 * Math.abs(dx1) + dx1 + Math.abs(dy1) - dy1;
+        exitSide =     2 * Math.abs(dx2) - dx2 + Math.abs(dy2) + dy2;
+        direction = exitSide - entranceSide;
+        if (Math.abs(direction) % 2 == 0) {
+            //log("this is a straight");
+            direction = 0;
+        } else {
+            //log("this is a turn");
+            if (Math.abs(direction) > 2) direction = -Math.sign(direction);
+        }
+        //log("entranceSide: " + entranceSide + "  exitSide: " + exitSide + "  d: " + d);
+    }
+    
+    initializeOrientation();
+    
+    // 0 is the top side for the entranceSide, exitSide properties
+    var buildSprite = this.buildSprite = function(onload) {
+        var rotation, png;
+        rotation = entranceSide;
+        switch (direction) {
+            case 0: // straight
+                this.type = "straight";
+                png = "straight";
+                break;
+            case 1: // left turn
+                png = "turn";
+                this.type = "turnLeft";
+                break;
+            case -1: // right turn
+                thia.type = "turnRight";
+                png = "turn";
+                rotation -= 1;
+                rotation = (rotation + 4) % 4;
+                break;
+        }
+        rotation *= Math.PI / 2;
+        //log("png: " + png + "   rotation: " + rotation);
+        
+        png = GameGraphics.TGMPATH + png + ".png";
+        //log(png);
+        sprite = new PIXI.Sprite.fromImage(png);
+        
+        sprite.position = new PIXI.Point(midVector.getX(), midVector.getY());
+        sprite.pivot = new PIXI.Point(Track.trackSize, Track.trackSize);
+        sprite.rotation = rotation;
+        sprite.scale = new PIXI.Point(Track.trackSize/200, Track.trackSize/200);
+        
+        onload(sprite);
+    }
+}
+
+function Track(i, j) {    
+    var predecessor = null;
+    var successor = null;
+    
+    var lane = null;
+    
+    this.type = "track";
+    
+    this.getX = function() {
+        return i;
+    }
+    this.getY = function() {
+        return j;
     }
     
     var hasPredecessor = this.hasPredecessor = function() {
@@ -70,57 +151,6 @@ function Track(i, j) {
         return successor;
     }
     
-    // 0 is the top side for the entranceSide, exitSide properties
-    var buildSprite = this.buildSprite = function(predecessorCoords, successorCoords, onload) {
-        var dx1 = i - predecessorCoords.x;
-        var dx2 = successorCoords.x - i;
-        var dy1 = j - predecessorCoords.y;
-        var dy2 = successorCoords.y - j;
-        //log("dx1: " + dx1 + "  dy1: " + dy1);
-        //log("dx2: " + dx2 + "  dy2: " + dy2);
-        entranceSide = 2 * Math.abs(dx1) + dx1 + Math.abs(dy1) - dy1;
-        exitSide =     2 * Math.abs(dx2) - dx2 + Math.abs(dy2) + dy2;
-        var d = exitSide - entranceSide;
-        if (Math.abs(d) % 2 == 0) {
-            //log("this is a straight");
-            d = 0;
-        } else {
-            //log("this is a turn");
-            if (Math.abs(d) > 2) d = -Math.sign(d);
-        }
-        //log("entranceSide: " + entranceSide + "  exitSide: " + exitSide + "  d: " + d);
-        var rotation, png;
-        rotation = entranceSide;
-        switch (d) {
-            case 0: // straight
-                png = "straight";
-                break;
-            case 1: // left turn
-                png = "turn";
-                //log("turn left");
-                break;
-            case -1: // right turn
-                //log("turn right");
-                png = "turn";
-                rotation -= 1;
-                rotation = (rotation + 4) % 4;
-                break;
-        }
-        rotation *= Math.PI / 2;
-        //log("png: " + png + "   rotation: " + rotation);
-        
-        png = "graphics/tgm/" + png + ".png";
-        //log(png);
-        var sprite = new PIXI.Sprite.fromImage(png);
-        
-        sprite.position = new PIXI.Point(posVector.getX(), posVector.getY());
-        sprite.pivot = new PIXI.Point(Track.trackSize, Track.trackSize);
-        sprite.rotation = rotation;
-        sprite.scale = new PIXI.Point(Track.trackSize/200, Track.trackSize/200);
-        
-        onload(sprite);
-    }
-    
     // to be called after successor and predecessor are set
     this.initialize = function() {
         if (hasPredecessor()) {
@@ -135,8 +165,8 @@ function Track(i, j) {
             //log("no successor");
             var successorCoords = {x:i+1, y:j};
         }
-        buildSprite(predecessorCoords, successorCoords, function(sprite) {
-            trackSprite = sprite;
+        lane = new Lane(i, j, predecessorCoords, successorCoords);
+        lane.buildSprite(function(sprite) {
             trainGame.graphics.addEnvironment(sprite);
         });
     }
@@ -176,9 +206,9 @@ function Switch(id, i, j) {
         switchedTo = newSwitchedTo;
         for (var l = 0; l < lanes.length; l++) {
             if (l == switchedTo) {
-                lanes[switchedTo].alpha = 1;
+                lanes[switchedTo].setSwitched(true);
             } else {
-                lanes[l].alpha = 0.4;
+                lanes[l].setSwitched(false);
             }
         }
     }
@@ -192,13 +222,14 @@ function Switch(id, i, j) {
         }
         for (var s = 0; s < successors.length; s++) {
             var successorCoords = {x:successors[s].getX(), y:successors[s].getY()};
+            var lane = new Lane(i, j, predecessorCoords, successorCoords);
+            lanes[s] = lane;
             var onl = function(index) {
                 return function(sprite) {
-                    lanes[index] = sprite;
                     trainGame.graphics.addEnvironment(sprite);
                 }
             }(s);
-            this.buildSprite(predecessorCoords, successorCoords, onl);
+            lanes[s].buildSprite(onl);
         }
     }
 }
