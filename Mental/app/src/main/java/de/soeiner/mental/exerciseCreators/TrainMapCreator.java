@@ -27,7 +27,7 @@ public class TrainMapCreator extends ExerciseCreator {
         createTrainMap();
         JSONObject j = new JSONObject();
         try {
-            j.put("type", "trainMap");
+            j.put("type", this.getType());
             j.put("trainMap", translateTrainMap());
         } catch (Exception e) {
             e.printStackTrace();
@@ -37,6 +37,9 @@ public class TrainMapCreator extends ExerciseCreator {
 
     public String getName() {
         return "Casual Train Map";
+    }
+    public String getType() {
+        return "trainMap";
     }
 
     private final int[] xT = {1, 0, -1, 0};

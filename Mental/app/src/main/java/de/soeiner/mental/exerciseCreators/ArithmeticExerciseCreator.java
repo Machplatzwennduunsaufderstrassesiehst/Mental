@@ -17,6 +17,10 @@ public abstract class ArithmeticExerciseCreator extends ExerciseCreator {
         return 10;
     }
 
+    public String getType() {
+        return "arithmetic";
+    }
+
     protected String createSub(int a, int b) {
         exerciseString = a + " - " + b;
         exerciseResult = a - b;
@@ -52,7 +56,7 @@ public abstract class ArithmeticExerciseCreator extends ExerciseCreator {
         JSONObject j = new JSONObject();
         previousResults.add(exerciseResult);
         try {
-            j.put("type", "arithmetic");
+            j.put("type", getType());
             j.put("exerciseString", exerciseString);
         } catch (Exception e) {
             e.printStackTrace();
