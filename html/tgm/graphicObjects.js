@@ -13,24 +13,24 @@ function GraphicObject(sprite_) {
     this.move = function() {
         if (sprite == undefined) {
             log("GO.move: sprite still undefined");
-            return;
+            return false;
         }
         var p = positionQueue.pop();
-        sprite.position.x = p.x;
-        sprite.position.y = p.y;
-        sprite.rotation = p.rotation;
         if (positionQueue.length == 0) {
             if (movementQueue.length > 0) { // no positions on queue, but movements to be extracted to the positionQueue
                 var m = movementQueue.pop();
                 var steps = m.getSteps();
                 for (var i = 0; i < steps.length; i++) {
-                    steps[i].move(p.x, p.y);
                     positionQueue.unshift(steps[i]);
                 }
             } else { // no movements to be performed, and positionQueue empty => stay at current position (p)
                 positionQueue.push(p); 
             }
         }
+        if (p == undefined) return false;
+        sprite.position.x = p.x;
+        sprite.position.y = p.y;
+        sprite.rotation = p.rotation;
         return p;
     }
     
@@ -38,6 +38,7 @@ function GraphicObject(sprite_) {
         var r = 0;
         if (sprite != undefined) r = sprite.rotation;
         positionQueue = [new Position(x, y, r)]; // set positionQueue to just the new position
+        movementQueue = [];
     }
     
     this.setSprite = function(sprite_) {
@@ -60,5 +61,4 @@ function GraphicObject(sprite_) {
         movementQueue.unshift(movements[key]);
     }
 }
-
 

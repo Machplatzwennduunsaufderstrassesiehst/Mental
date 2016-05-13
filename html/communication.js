@@ -219,7 +219,7 @@ function ServerConnection(host, port) {
     
     startGetRequestScheduler();
 }
-ServerConnection.DEBUG = true;
+ServerConnection.DEBUG = false;
 
 
 

@@ -15,6 +15,7 @@ mainTrainGameFrame.setOnOpen(function() {
    }
    var trainGameGraphics = new GameGraphics();
    trainGame = new TrainGame(trainGameGraphics);
+   trainGame.setGridSize(50);
    trainGame.start();
 });
 
@@ -102,6 +103,7 @@ function TrainGame(graphics) {
     this.graphics = graphics;
     this.trainMap = null;
     this.trains = [];
+    var gridSize = 0;
     
     this.setMap = function(map) {
         trainMap = this.trainMap = map;
@@ -118,7 +120,18 @@ function TrainGame(graphics) {
     this.getTrainSpawn = function() {
         return trainMap.getTrainSpawn();
     }
+    
+    this.setGridSize = function(gridSize_) {
+        gridSize = gridSize_;
+    }
+    
+    this.getGridSize = function() {
+        return gridSize;
+    }
 }
+TrainGame.trainTexture = TextureGenerator.generate(GameGraphics.TGMPATH + "train.png")
+TrainGame.straightTexture = TextureGenerator.generate(GameGraphics.TGMPATH + "straight.png");
+TrainGame.turnTexture = TextureGenerator.generate(GameGraphics.TGMPATH + "turn.png");
 
 // OBSERVERS =====================================================================================================
 
@@ -126,11 +139,16 @@ var trainMapObserver = new Observer("exercise", function(msg) {
     if (msg.exercise.type != "trainMap") return;
     trainMap = new Map(msg.exercise.trainMap);
     trainGame.setMap(trainMap);
+    trainGame.graphics.cacheStaticEnvironment();
 });
 
 var newtrainObserver = new Observer("newTrain", function(msg) {
-    //var t = new Train(msg.trainId, msg.destinationId, msg.speed, msg.color, trainGame.getTrainSpawn());
-    //trains.push(t);
+    var train = new Train(msg.trainId, msg.destinationId, msg.speed, msg.color, trainGame.getTrainSpawn());
+    trainGame.trains.push(train);
+});
+
+var switchChangedObserver = new Observer("switchChanged", function(msg) {
+    // TODO
 });
 
 
