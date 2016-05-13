@@ -56,8 +56,8 @@ public class WheelOfFortune {
     }
 
     public boolean buySpin(){
-        if(shop.getMoney() >= PRICE_PER_SPIN){ //wenn genug Geld vorhanden
-            shop.addMoney(-PRICE_PER_SPIN); //zieht das entsprechende Geld ab
+        if(player.getShop().getMoney() >= PRICE_PER_SPIN){ //wenn genug Geld vorhanden
+            player.getShop().addMoney(-PRICE_PER_SPIN); //zieht das entsprechende Geld ab
             addSpin(); //fügt einen Spin hinzu
             return true;
         }

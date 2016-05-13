@@ -13,7 +13,6 @@
     <script src="constants.js" type="text/javascript"></script>
     <script src="utils.js" type="text/javascript"></script>
     <script src="icons.js" type="text/javascript"></script>
-    
     <script src="navigation.js" type="text/javascript"></script>
     <script src="cookies.js" type="text/javascript"></script>
     <script src="commandSet.js" type="text/javascript"></script>
@@ -31,15 +30,6 @@
     
     <script src="main.js" type="text/javascript"></script>
     
-    <script src="graphics/pixi.min.js"></script>
-    <script src="tgm/movements.js"></script>
-    <script src="tgm/graphicObjects.js"></script>
-    <script src="tgm/track.js"></script>
-    <script src="tgm/train.js"></script>
-    <script src="tgm/map.js"></script>
-    <script src="tgm/graphics.js"></script>
-    <script src="tgm/mainTGMFrame.js"></script>
-    
     <link rel="stylesheet" href="style.css"/>
 </head>
 <body onclick="byID('headerMenu').style.display = 'none';">
@@ -47,7 +37,7 @@
     <span style="position:absolute;top:-200px;opacity:0;" id="countdownHack"></span>
     <!-- blur hack: wird gefocused, um den focus aus input felder zu nehmen -->
     <form onsubmit="return false;" action="#" data-ajax="false" style="position:absolute;top:-300px;opacity:0;"><input type="submit" id="blurHack"></input></form>
-    <div id="page_" data-role="page">
+    <div id="page_" data-role="page" data-fullscreen="true">
         <div id="infobox"><p id="infoboxContent">test</p></div>
         <div id="menu" data-role="header">
             <a id="disconnect" style="display:none;" href="#" class="ui-btn-left" onclick="disconnect();">Ende</a>
@@ -185,6 +175,9 @@
                     <p>
                         <a id="spinButton" class="btn" data-role="button" href="#" onclick="spin()";" style="max-width:16em;"><span data-icon="target"></span>Spin the wheel!</a>
                     </p>
+					<p>
+                        <a id="buySpinButton" class="btn" data-role="button" href="#" onclick="buySpin()";" style="max-width:16em;"><span data-icon="cart"></span>buy a spin</a>
+                    </p>
 					</div>
                 </div>
             </div>
@@ -192,9 +185,6 @@
             <div id="console">&nbsp;</div>
             <p id="msgBox" class="msgBox">test</p>
         </div>
-    </div>
-    <div id="mainTrainGameFrame" class="frame">
-        
     </div>
 </body>
 </html>

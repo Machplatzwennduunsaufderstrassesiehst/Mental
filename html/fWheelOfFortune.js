@@ -4,6 +4,7 @@ var wheelOfFortuneFrame = new Frame("wheelOfFortuneFrame");
 wheelOfFortuneFrame.setOnOpen(function() {
 	var pin = byID("pin");
 	var w = byID("wheel");
+	//w.style.reset(); //rotate zurücksetzen
 	pin.style.transitionDuration="0s";
 	var left = w.getClientRects()[0].left+(w.clientWidth/2)-(pin.clientWidth/2);
 	var up = w.getClientRects()[0].top+(w.clientHeight/2)-(pin.clientHeight/2);
@@ -15,7 +16,10 @@ wheelOfFortuneFrame.setOnOpen(function() {
     byID("toLobby").onclick = function(){byID("toLobby").onclick = oldonclick;navigation.openFrames(lobbyFrame);};
 });
 
-wheelOfFortuneFrame.setOnClose(function() {});
+wheelOfFortuneFrame.setOnClose(function() {
+		pin.style.left= 0+"px";
+	pin.style.top = 0+"px";
+});
 
 // FUNCTIONALITY =======================================================
 //wheelOfFortuneFrame.buySpin = function() {
