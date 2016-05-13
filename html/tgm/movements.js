@@ -58,7 +58,7 @@ function Position(x_, y_, r_) {
 
 // calculates the amount of frames to be rendered in the "time" (in seconds)
 function calculateFrameAmount(time) {
-    return time * 60;
+    return time * trainGame.graphics.getCurrentFPS();
 }
 
 function StraightMovement(rotation, vector, time) {

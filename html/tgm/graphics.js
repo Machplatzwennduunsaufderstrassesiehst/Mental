@@ -27,12 +27,14 @@ function GameGraphics() {
         // The renderer will create a canvas element for you that you can then insert into the DOM.
         byID("mainTrainGameFrame").appendChild(renderer.view);
         animate();
+        fpsMeasureThread = setInterval(measureFPS, 1000);
     }
     
     var stop = this.stop = function() {
         byID("mainTrainGameFrame").removeChild(renderer.view);
         staticEnvironment.cacheAsBitmap = false;
         running = false;
+        clearInterval(fpsMeasureThread);
     }
     
     var addGraphicObject = this.addGraphicObject = function(graphicObject) {
@@ -70,9 +72,26 @@ function GameGraphics() {
             removeEnvironment(environmentSprites[i]);
         }
     }
+    
+    var fpsMeasureThread = null;
+    var measurements = [60];
+    var fpsMeasurementsSize = 5;
+    function measureFPS() {
+        measurements.unshift(frameCounter);
+        if (measurements.length > fpsMeasurementsSize) measurements.pop();
+        frameCounter = 0;
+        // calculate framerate from measurements
+        var totalFPS = 0;
+        for (var i = 0; i < measurements.length; i++) totalFPS += measurements[i];
+        currentFPS = totalFPS / measurements.length;
+    }
+    var currentFPS = 60;
+    this.getCurrentFPS = function(){return currentFPS;};
+    var frameCounter = 0;
 
     function animate() {
         if (!running) return;
+        frameCounter++;
         // start the timer for the next animation loop
         requestAnimationFrame(animate);
 

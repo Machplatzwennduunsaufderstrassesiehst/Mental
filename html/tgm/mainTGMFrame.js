@@ -15,7 +15,7 @@ mainTrainGameFrame.setOnOpen(function() {
    }
    var trainGameGraphics = new GameGraphics();
    trainGame = new TrainGame(trainGameGraphics);
-   trainGame.setGridSize(50);
+   trainGame.setGridSize(90);
    trainGame.start();
 });
 

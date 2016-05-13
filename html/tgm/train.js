@@ -5,7 +5,7 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
     var sprite = TextureGenerator.generateSprite(TrainGame.trainTexture)
     container.addChild(sprite);
 	
-    container.pivot = TextureGenerator.getSpritePivot(sprite);
+    sprite.pivot = TextureGenerator.getSpritePivot(sprite);
 	
     // add color TODO
     var graphicObject = new GraphicObject(container);
