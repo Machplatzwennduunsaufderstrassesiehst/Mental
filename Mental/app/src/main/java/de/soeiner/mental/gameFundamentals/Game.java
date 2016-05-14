@@ -330,7 +330,7 @@ public class Game implements Runnable {
                     e.printStackTrace();
                 }
             }
-            broadcastSendCountdown(3);
+            //broadcastSendCountdown(3); TODO wieder auskommentieren
             System.out.println("Countdown sent");
             broadcastShowExercises();
             System.out.println("broadcastedShowExercise");
