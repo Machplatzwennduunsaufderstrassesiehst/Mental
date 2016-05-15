@@ -2,7 +2,7 @@
 function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
     var container = new PIXI.Container();
     
-    var sprite = TextureGenerator.generateSprite(TrainGame.trainTexture)
+    var sprite = TextureGenerator.generateSprite(TrainGame.trainTexture, 0.5)
     container.addChild(sprite);
 	
     sprite.pivot = TextureGenerator.getSpritePivot(sprite);
@@ -10,10 +10,12 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
     // add color TODO
     var graphicObject = new GraphicObject(container);
 	trainGame.graphics.addGraphicObject(graphicObject);
+	Train.s[trainId] = this;
 	
 	var timePerTrack = 1 / tracksPerSecond;
 	var currentTrack = startTrack;
 	var currentLane = null;
+	var lastTrackChange;
 	
     function move() {
         setTimeout(function(){
@@ -26,11 +28,27 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
         }, timePerTrack * 1000);
         currentLane = currentTrack.getLane();
         var movement = buildMovement();
-        graphicObject.setPos(currentLane.getEntranceCoords().getX(), currentLane.getEntranceCoords().getY());
+        graphicObject.setPos(movement.getFirst());
         graphicObject.queueMovement(movement);
+        lastTrackChange = Date.now();
     }
     
-    move(currentTrack);
+    this.correctLane = function(lane) {
+        if (currentLane != lane) {
+            currentLane = lane;
+            var movement = buildMovement();
+            var movementProgress = (Date.now() - lastTrackChange) / 1000;
+            movement.setProgress(movementProgress);
+            graphicObject.setPos(movement.getFirst());
+            graphicObject.queueMovement(movement);
+        }
+    }
+    
+    this.setCurrentTrack = function(track) {
+        currentTrack = track;
+    }
+    
+    move();
     
     // TODO movement caching
     function buildMovement() {
@@ -56,4 +74,5 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
         }
     }
 }
+Train.s = [];
 

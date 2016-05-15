@@ -14,9 +14,12 @@ function GameGraphics() {
     var staticEnvironment = new PIXI.Container();
     stage.addChild(environment);
     stage.addChild(staticEnvironment);
-    
     stage.width = 1000;
     stage.height = 1000;
+    
+    this.resize = function(width, height) {
+        //renderer.resize(width, height);
+    }
     
     this.getStage = function() {
         return stage;
@@ -119,10 +122,12 @@ var TextureGenerator = new function() {
         return texture;
     }
     
-    this.generateSprite = function(texture) {
+    // scale is an optional additional custom scaling factor
+    this.generateSprite = function(texture, scale) {
+        if (scale == undefined) scale = 1;
         var sprite = new PIXI.Sprite(texture);
         var gridSize = trainGame.getGridSize();
-        sprite.scale = new PIXI.Point(gridSize/sprite.width, gridSize/sprite.height);
+        sprite.scale = new PIXI.Point(gridSize/sprite.width*scale, gridSize/sprite.height*scale);
         return sprite;
     }
     

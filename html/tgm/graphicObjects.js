@@ -34,10 +34,8 @@ function GraphicObject(sprite_) {
         return p;
     }
     
-    this.setPos = function(x, y) {
-        var r = 0;
-        if (sprite != undefined) r = sprite.rotation;
-        positionQueue = [new Position(x, y, r)]; // set positionQueue to just the new position
+    this.setPos = function(position) {;
+        positionQueue = [position]; // set positionQueue so it only contains the new position
         movementQueue = [];
     }
     

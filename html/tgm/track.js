@@ -119,6 +119,7 @@ function Track(i, j) {
     var successor = null;
     
     var lane = null;
+    var gridSize = null;
     
     this.type = "track";
     
@@ -159,6 +160,7 @@ function Track(i, j) {
     
     // to be called after successor and predecessor are set
     this.initialize = function() {
+        gridSize = trainGame.getGridSize();
         if (hasPredecessor()) {
             var predecessorCoords = {x:predecessor.getX(), y:predecessor.getY()};
         } else {
@@ -175,6 +177,10 @@ function Track(i, j) {
         lane.buildSprite(function(sprite) {
             trainGame.graphics.addEnvironment(sprite, true);
         });
+    }
+    
+    this.getRect = function() {
+        return new PIXI.Rectangle(i*gridSize, j*gridSize, gridSize, gridSize);
     }
     
 }
@@ -195,8 +201,10 @@ function Switch(id, i, j) {
     
     var successors = null;
     
-    this.getLane = function() {
-        return lanes[switchedTo];
+    // overwritten
+    this.getLane = function(index) {
+        if (index == undefined) index = switchedTo;
+        return lanes[index];
     }
     
     // overwritten
@@ -205,8 +213,9 @@ function Switch(id, i, j) {
     }
     
     // overwritten
-    this.getSuccessor = function() {
-        return successors[switchedTo];
+    this.getSuccessor = function(index) {
+        if (index == undefined) index = switchedTo;
+        return successors[index];
     }
     
     this.setSuccessors = function(s) {
@@ -247,6 +256,10 @@ function Switch(id, i, j) {
             }(s);
             lanes[s].buildSprite(onl);
         }
+    }
+    
+    this.getNextLaneIndex = function() {
+        return (switchedTo + 1) % successors.length;
     }
 }
 Switch.es = [];

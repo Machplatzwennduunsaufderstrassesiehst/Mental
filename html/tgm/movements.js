@@ -136,6 +136,16 @@ function Movement(steps) {
         }
         return new Movement(movedSteps);
     }
+    
+    this.getFirst = function() {
+        return steps[0];
+    }
+    
+    // between 0 and 1
+    this.setProgress = function(p) {
+        var newFirstIndex = Math.floor(steps.length * p);
+        steps = steps.splice(newFirstIndex);
+    }
 }
 
 // static Movement class part

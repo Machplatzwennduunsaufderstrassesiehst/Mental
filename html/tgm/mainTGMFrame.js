@@ -4,30 +4,36 @@ var mainTrainGameFrame = new Frame("mainTrainGameFrame");
 var trainGame = null;
 
 mainTrainGameFrame.setOnOpen(function() {
-   byID("page_").style.display = "none";
-   
-   serverConnection.addObserver(trainMapObserver);
-   serverConnection.addObserver(newtrainObserver);
-   
-   if (trainGameGraphics != undefined) {
-       trainGameGraphics.stop();
-       trainGameGraphics.clearEnvironment();
-   }
-   var trainGameGraphics = new GameGraphics();
-   trainGame = new TrainGame(trainGameGraphics);
-   trainGame.setGridSize(90);
-   trainGame.start();
+    byID("page_").style.display = "none";
+    
+    serverConnection.addObserver(trainMapObserver);
+    serverConnection.addObserver(newtrainObserver);
+    serverConnection.addObserver(switchChangedObserver);
+    serverConnection.addObserver(trainDecisionObserver);
+    
+    if (trainGameGraphics != undefined) {
+        trainGameGraphics.stop();
+        trainGameGraphics.clearEnvironment();
+    }
+    var trainGameGraphics = new GameGraphics();
+    trainGame = new TrainGame(trainGameGraphics);
+    trainGame.setGridSize(90);
+    trainGame.start();
+    
+    byID("mainTrainGameFrame").onmousedown = trainGame.mouseDown;
 });
 
 mainTrainGameFrame.setOnClose(function() {
-   byID("page_").style.display = "block";
-   
-   serverConnection.removeObserver(trainMapObserver);
-   serverConnection.removeObserver(newtrainObserver);
-   
-   trainGame.stop();
-   byID("mainTrainGameFrame").innerHTML = "";
-   trainGame = null;
+    byID("page_").style.display = "block";
+    
+    serverConnection.removeObserver(trainMapObserver);
+    serverConnection.removeObserver(newtrainObserver);
+    serverConnection.removeObserver(switchChangedObserver);
+    serverConnection.removeObserver(trainDecisionObserver);
+    
+    trainGame.stop();
+    byID("mainTrainGameFrame").innerHTML = "";
+    trainGame = null;
 });
 
 // FUNCTIONALITY =================================================================================================
@@ -91,10 +97,15 @@ function Map(rawdata) {
     log("START MAP BUILD");
     Switch.es = [];
     Goal.s = [];
+    Train.s = [];
     trainSpawn = build(1, 1, null);
     
     this.getTrainSpawn = function() {
         return trainSpawn;
+    }
+    
+    this.getSize = function() {
+        return {x:mapArray.length, y:mapArray[0].length};
     }
 }
 
@@ -107,6 +118,8 @@ function TrainGame(graphics) {
     
     this.setMap = function(map) {
         trainMap = this.trainMap = map;
+        var size = map.getSize();
+        graphics.resize(size.x*gridSize, size.y*gridSize);
     }
     
     this.start = function() {
@@ -128,8 +141,24 @@ function TrainGame(graphics) {
     this.getGridSize = function() {
         return gridSize;
     }
+    
+    this.mouseDown = function(event) {
+        var clickPoint = new PIXI.Point(event.clientX, event.clientY);
+        for (var i = 0; i < Switch.es.length; i++) {
+            var sw = Switch.es[i];
+            if (sw == undefined) continue;
+            var switchRect = sw.getRect();
+            if (switchRect.contains(clickPoint)) {
+                performSwitchChange(sw);
+            }
+        }
+    }
+    
+    var performSwitchChange = this.performSwitchChange = function(sw) {
+        serverConnection.send({type:"changeSwitch", switchId:sw.id, value:sw.getNextLaneIndex()}); // TODO!!
+    }
 }
-TrainGame.trainTexture = TextureGenerator.generate(GameGraphics.TGMPATH + "train.png")
+TrainGame.trainTexture = TextureGenerator.generate(GameGraphics.TGMPATH + "train.png");
 TrainGame.straightTexture = TextureGenerator.generate(GameGraphics.TGMPATH + "straight.png");
 TrainGame.turnTexture = TextureGenerator.generate(GameGraphics.TGMPATH + "turn.png");
 
@@ -148,7 +177,15 @@ var newtrainObserver = new Observer("newTrain", function(msg) {
 });
 
 var switchChangedObserver = new Observer("switchChanged", function(msg) {
-    // TODO
+    Switch.es[msg.switchId].change(msg.switchedTo);
+});
+
+var trainDecisionObserver = new Observer("trainDecision", function(msg) {
+    msg.switchedTo -= 1;
+    var lane = Switch.es[msg.switchId].getLane(msg.switchedTo);
+    var track = Switch.es[msg.switchId];
+    Train.s[msg.trainId].setCurrentTrack(track);
+    Train.s[msg.trainId].correctLane(lane);
 });
 
 
