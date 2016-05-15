@@ -107,8 +107,8 @@ public class Train implements Runnable{
                 }catch(Exception e){
                     e.printStackTrace();
                     System.out.println("============== Der Zug ist bei der einem " + traingame.trainMap[x][y].getType() + " gecrasht. An Koordinaten x: " + x + " y: " + y + " mit hasSuccesor: " + traingame.trainMap[x][y].hasSuccessor());
-                }
-            }*/
+                } */
+            //}
             distance++;
         }while(!(traingame.trainMap[x][y].getType().equals("switch")) && !(traingame.trainMap[x][y].getType().equals("goal")));
         return (int) (distance/speed * 1000);

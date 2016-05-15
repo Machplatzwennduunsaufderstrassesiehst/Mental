@@ -71,6 +71,7 @@ public class Switch extends TrainTrack {
         try {
             this.put("switchedTo", switchedTo); //für map jsonobject setzen
         }catch(Exception e){e.printStackTrace();}
+        this.successor = successors.get(active);
     }
 
     public ArrayList getSuccessors(){
