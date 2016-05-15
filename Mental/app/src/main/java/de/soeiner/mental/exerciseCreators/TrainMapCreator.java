@@ -57,7 +57,18 @@ public class TrainMapCreator extends ExerciseCreator {
 
 
     public TrainTrack[][] createTrainMap(){
-        if(trainMap != null) return null;
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! AUFRUF VON CREATE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        //if(trainMap != null){return null;}
+        /*
+        if(trainMap != null){}{
+            trainMap = null;
+            map = null;
+        }
+        */
+        x = 0;
+        y = 0;
+        pathNumber = 0;
+
         map = new TrainTrack[size][size];
         for(int i = 0; i<size; i++){
             for(int j = 0; j<size; j++){
@@ -83,8 +94,13 @@ public class TrainMapCreator extends ExerciseCreator {
         int counter = 0;
         while(pathNumber < 7){
             pathNumber++;
-            if(pathNumber > 1){
+            if(pathNumber > 1) {
                 coordinates = getStartingPoint();
+                if (coordinates[0] == 1 && coordinates[1] == 1) {
+                    pathNumber = 10;
+                    continuePossible = false;
+                    System.out.println("==== Map wird aufgrund starting point fail, frühzeitig fertiggestellt ====");
+                } else {
                 x = coordinates[0];
                 y = coordinates[1];
                 //System.out.println("Starting Point: "+Arrays.toString(coordinates));
@@ -92,26 +108,30 @@ public class TrainMapCreator extends ExerciseCreator {
 
                 coordinates = getStartingPointConnection(); //anknüpfung an startpunkt finden
                 //System.out.println("Starting Point Anknüpfung: "+Arrays.toString(coordinates));
-
-                TrainTrack successorTemp = map[coordinates[0]][coordinates[1]].getSuccessor(); //aktueller
-                TrainTrack predecessorTemp = map[coordinates[0]][coordinates[1]].getPredecessor(); //aktueller
-                map[coordinates[0]][coordinates[1]] = new Switch(coordinates[0], coordinates[1], 9); //switch setzen
-                ////System.out.println("x,y: "+x+" "+y+" c1,c2: "+coordinates[0]+" "+coordinates[1]);
-                try {
-                    //System.out.println("predecessor Typ: " + predecessorTemp.getType() + " succesor Typ: " + successorTemp.getType());
-                }catch(Exception e){
-                    map[coordinates[0]][coordinates[1]].setValue(-1);
-                    ausgabe();
+                    if (map[coordinates[0]][coordinates[1]].getType().equals("switch")) { //wenn der anknüpfpunkt bereits ein switch ist
+                        map[coordinates[0]][coordinates[1]].setSuccessor(map[x][y]);
+                    } else {
+                        TrainTrack successorTemp = map[coordinates[0]][coordinates[1]].getSuccessor(); //aktueller
+                        TrainTrack predecessorTemp = map[coordinates[0]][coordinates[1]].getPredecessor(); //aktueller
+                        map[coordinates[0]][coordinates[1]] = new Switch(coordinates[0], coordinates[1], 9); //switch setzen
+                        ////System.out.println("x,y: "+x+" "+y+" c1,c2: "+coordinates[0]+" "+coordinates[1]);
+                        try {
+                            //System.out.println("predecessor Typ: " + predecessorTemp.getType() + " succesor Typ: " + successorTemp.getType());
+                        } catch (Exception e) {
+                            map[coordinates[0]][coordinates[1]].setValue(-1);
+                            ausgabe();
+                        }
+                        map[coordinates[0]][coordinates[1]].setPredecessor(predecessorTemp);
+                        map[coordinates[0]][coordinates[1]].setSuccessor(successorTemp); //1. vorheriger weg //Swich, daher mehrere Succesor
+                        map[coordinates[0]][coordinates[1]].setSuccessor(map[x][y]); //2. neuer abzweig
+                        map[x][y].setPredecessor(map[coordinates[0]][coordinates[1]]);
+                        // anknüpfung mit startpunkt (switch) verbinden
+                    }
+                    map[x][y].setValue(pathNumber);
                 }
-                map[coordinates[0]][coordinates[1]].setPredecessor(predecessorTemp);
-                map[coordinates[0]][coordinates[1]].setSuccessor(successorTemp); //1. vorheriger weg //Swich, daher mehrere Succesor
-                map[coordinates[0]][coordinates[1]].setSuccessor(map[x][y]); //2. neuer abzweig
-                map[x][y].setPredecessor(map[coordinates[0]][coordinates[1]]);
-                // anknüpfung mit startpunkt (switch) verbinden
-                map[x][y].setValue(pathNumber);
+                continuePossible = true;
+                z = 0;
             }
-            continuePossible = true;
-            z = 0;
             while(continuePossible && z < size){
                 //System.out.println(counter+++" "+pathNumber);
                 for(int i = 0; i<4; i++){
@@ -166,6 +186,17 @@ public class TrainMapCreator extends ExerciseCreator {
                 //ausgabe();
             }
         }
+        int zId = 0;
+        Switch s;
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map.length; j++) {
+                if (map[i][j].getType().equals("switch")) {
+                    s = (Switch) map[i][j];
+                    s.setSwitchId(zId);
+                    zId++;
+                }
+            }
+        }
         for(int i = 0; i<map.length; i++){
             for (int j = 0; j < map.length; j++) {
                 if(map[i][j].getValue() != 0 && map[i][j].getType().equals("track") && map[i][j].getSuccessor() == null){ //goals werden identifiziert
@@ -196,16 +227,13 @@ public class TrainMapCreator extends ExerciseCreator {
                     }
             }
         }
-        if(!pussybilities.isEmpty())
-            coordinates = pussybilities.get((int) (Math.random()*pussybilities.size()));
-        pussybilities.clear();
-        if (coordinates[0] == 1 && coordinates[1] == 1) {
-            while (map[coordinates[0]][coordinates[1]].getValue() != 0) {
-                coordinates[0] = (int) ((Math.random() * size - 1) + 1);
-                coordinates[1] = (int) ((Math.random() * size - 1) + 1);
-                System.out.println("getStartingPoint() fail ||||||||||||||||||||||||||||||||||||||||||||||||||");
-                ausgabe();
-            }
+        if(!pussybilities.isEmpty()) {
+            coordinates = pussybilities.get((int) (Math.random() * pussybilities.size()));
+        }else if (coordinates[0] == 1 && coordinates[1] == 1) {
+                //coordinates[0] = (int) ((Math.random() * size - 1) + 1);
+                //coordinates[1] = (int) ((Math.random() * size - 1) + 1);
+                System.out.println("getStartingPoint() nicht möglich");
+                //ausgabe();
         }
         return coordinates;
     }

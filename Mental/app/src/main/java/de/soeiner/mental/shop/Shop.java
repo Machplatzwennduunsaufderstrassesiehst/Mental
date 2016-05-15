@@ -1,5 +1,7 @@
 package de.soeiner.mental.shop;
 
+import java.util.Arrays;
+
 import de.soeiner.mental.shop.shopItems.Color;
 import de.soeiner.mental.gameFundamentals.Score;
 import de.soeiner.mental.shop.shopItems.ShopItem;
@@ -162,7 +164,7 @@ public class Shop{
             //System.out.println("Kontrollbit abschneiden: " + shopString);
             score.updateScore(0);
             loadPartition(shopString.substring(shopString.length() - partition.length, shopString.length())); //partition laden
-            //System.out.println("partition laden: " + shopString + " --> " + "Shop partition: " + Arrays.toString(partition));
+            System.out.println("partition laden: " + shopString + " --> " + "Shop partition: " + Arrays.toString(partition));
             shopString = shopString.substring(0, shopString.length() - partition.length); // Partition abschneiden
             //System.out.println("Partition abschneiden: "+shopString);
             //shopString = Integer.toString((int) Long.parseLong(shopString, 16)); // Umwandlung von hex ins Zehner//System
@@ -328,5 +330,9 @@ public class Shop{
         checksum = Math.abs(checksum);
         //System.out.println("CHECKSUM: "+checksum);
         return checksum;
+    }
+
+    public WheelOfFortune getWheel() {
+        return wheel;
     }
 }

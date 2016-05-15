@@ -40,9 +40,10 @@ public class TrainGameMode extends GameMode {
             game.activePlayers.add(game.joinedPlayers.get(i));
         }
         TrainMapCreator trainMapCreator = (TrainMapCreator) game.exerciseCreator;
-        //trainMapCreator.createTrainMap();
-        game.broadcastExercise();
+        System.out.println("===================== AUFRUF VON CREATE ====================");
+        trainMapCreator.createTrainMap();
         trainMap = trainMapCreator.getTrainMap(); //TODO, von player abhängig machen
+        game.broadcastExercise();
         switches = getSwitches();
         goals = getGoals();
         for (int i = 0; i < switches.length; i++) {
@@ -99,6 +100,7 @@ public class TrainGameMode extends GameMode {
             game.activePlayers.get(i).sendTrainArrived(trainId, goalId, succsess);
         }
          // TODO auskommentieren wenn testphase vorrüber
+        /*
         if(health <= 0){
             gameIsRunning = false;
             game.broadcastMessage("Spieler haben verloren !");
@@ -107,6 +109,7 @@ public class TrainGameMode extends GameMode {
             gameIsRunning = false;
             playersWon();
         }
+        */
 
     }
 
@@ -188,4 +191,6 @@ public class TrainGameMode extends GameMode {
         return s;
     }
 
+    //@Override
+    public void newExercise() {}
 }

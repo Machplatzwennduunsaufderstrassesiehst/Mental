@@ -16,13 +16,14 @@ public class Switch extends TrainTrack {
     ArrayList<TrainTrack> successors = new ArrayList<TrainTrack>();
     ArrayList<Boolean> activeSuccessors = new ArrayList<Boolean>();
     int switchId;
+    int switchedTo = 0;
 
     public Switch(int x, int y, int v){
         super(x, y, v);
     }
 
-    public int getSwitchTo() {
-        return 0;
+    public int getSwitchedTo() {
+        return switchedTo;
     }
 
     @Override
@@ -41,7 +42,7 @@ public class Switch extends TrainTrack {
             JSONArray successorList = new JSONArray();
             try {
                 for(int i = 0; i < successors.size(); i++){
-                    System.out.println("Typ an der Stelle "+i);//+" ist "+successors.get(i).getType());
+                    //System.out.println("Typ an der Stelle "+i);//+" ist "+successors.get(i).getType());
                     JSONObject position = new JSONObject();
                     position.put("xpos", successors.get(i).getX());
                     position.put("ypos", successors.get(i).getY());
@@ -61,18 +62,16 @@ public class Switch extends TrainTrack {
                 active = i;
             }
         }
-        for(int i = 0; i<successors.size(); i++){ //alle nachfolger auf wahr setzen
-            activeSuccessors.set(i, new Boolean(true));
+        for(int i = 0; i<successors.size(); i++){ //alle nachfolger auf falsch setzen
+            activeSuccessors.set(i, new Boolean(false));
         }
-        activeSuccessors.set(active, new Boolean(false)); //vorher aktiven nachfolger auf false setzen
-        for (int i = 0; i < successors.size(); i++) {
-            if(activeSuccessors.get(i) == true){
-                successor = successors.get(i);
-            }
-        }
+        active = (active+1)%successors.size(); //index des nächsten Nachfolgers ermitteln
+        activeSuccessors.set(active, new Boolean(true)); //nächsten nachfolger auf true setzen
+        switchedTo = active; //für trains globale variable setzen
         try {
-            this.put("switchedTo", active);
+            this.put("switchedTo", switchedTo); //für map jsonobject setzen
         }catch(Exception e){e.printStackTrace();}
+        this.successor = successors.get(active);
     }
 
     public ArrayList getSuccessors(){

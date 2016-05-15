@@ -2,19 +2,16 @@
 var player = new Player();
 
 function Player() {
-    this.money = 0;
-    this.level = 0;
-    this.title = "";
-    this.name = "";
-    var self = this;
+	var data = {};
     
     this.set_ = function(id, value) {
-        self[id] = value;
+        data[id] = value;
         updateDataFields(id, value);
     }
     
     this.update_ = function(id, value) {
-        self[id] = value;
+		//if (data[id] == undefined) data[id] = 0;  
+        data[id] += value;
         updateDataFields(id, value);
     }
 }

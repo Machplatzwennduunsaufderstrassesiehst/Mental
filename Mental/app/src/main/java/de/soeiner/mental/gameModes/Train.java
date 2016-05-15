@@ -44,8 +44,10 @@ public class Train implements Runnable{
 
     public void run() { // TODO
         boolean moving = true;
+        int z = 0;
         while(moving){
             try {
+                z++;
                 Thread.sleep(calculateTimeToDestination());
             }catch(Exception e){e.printStackTrace();}
             if(traingame.trainMap[x][y].getType().equals("goal")){
@@ -55,8 +57,7 @@ public class Train implements Runnable{
                 }else{
                     traingame.trainArrived(id, tempGoal.getGoalId(), false);
                 }
-                /* sicherere möglichkeit: if(id == traingame.trainMap[x][y].getValue()){ traingame.trainArrived(); } */
-                moving = false; //beende thread
+               moving = false; //beende thread
             }
         }
     }
@@ -67,27 +68,49 @@ public class Train implements Runnable{
         boolean broadcast = false;
         Switch s = null;
         int direction = 0; //0 oben, 1 rechts, 2 unten, 3 links
+        int xtemp = 0;
+        int ytemp = 0;
         do{
+            //System.out.println("distance: "+distance+" map["+x+"]["+y+"] = "+traingame.trainMap[x][y].getType());
             if(distance == 0 && traingame.trainMap[x][y].getType().equals("switch")){
+                //System.out.println("s = (Switch) traingame.trainMap[x][y];");
                 s = (Switch) traingame.trainMap[x][y];
+                direction = s.getSwitchedTo();
+                //System.out.println("broadcast = true;");
                 broadcast = true;
-            }
-            x = traingame.trainMap[x][y].getSuccessor().getX();
-            y = traingame.trainMap[x][y].getSuccessor().getY();
-            if(broadcast){
+                //System.out.println("x = traingame.trainMap[x][y].getSuccessor().getX();");
+               /* xtemp = traingame.trainMap[x][y].getSuccessor().getX();
+                //System.out.println("y = traingame.trainMap[x][y].getSuccessor().getY();");
+                ytemp = traingame.trainMap[x][y].getSuccessor().getY();
+                x = xtemp;
+                y = ytemp;
+
                 switch (x - s.getX()){
                     case -1: direction = 3; break;
                     case  0: switch (y - s.getY()){
-                                case -1: direction = 0; break;
-                                case  1: direction = 2; break;
-                             }break;
+                        case -1: direction = 0; break;
+                        case  1: direction = 2; break;
+                    }break;
                     case  1: direction = 1; break;
                 }
+                */
                 traingame.broadcastTrainDecision(id, s.getSwitchId(), direction);
-                broadcast = false;
             }
+            //System.out.println("if(!traingame.trainMap["+x+"]["+y+"].hasSuccessor()) -> "+(traingame.trainMap[x][y].hasSuccessor()));
+            //if(traingame.trainMap[x][y].hasSuccessor()) {
+                //try {
+                    xtemp = traingame.trainMap[x][y].getSuccessor().getX();
+                    ytemp = traingame.trainMap[x][y].getSuccessor().getY();
+                    x = xtemp;
+                    y = ytemp;
+                /*
+                }catch(Exception e){
+                    e.printStackTrace();
+                    System.out.println("============== Der Zug ist bei der einem " + traingame.trainMap[x][y].getType() + " gecrasht. An Koordinaten x: " + x + " y: " + y + " mit hasSuccesor: " + traingame.trainMap[x][y].hasSuccessor());
+                } */
+            //}
             distance++;
-        }while(!(traingame.trainMap[x][y].getType().equals("switch") || traingame.trainMap[x][y].getType().equals("goal")));
+        }while(!(traingame.trainMap[x][y].getType().equals("switch")) && !(traingame.trainMap[x][y].getType().equals("goal")));
         return (int) (distance/speed * 1000);
     }
 }

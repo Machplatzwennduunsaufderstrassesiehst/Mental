@@ -257,6 +257,19 @@ public class Player extends ClientConnection {
                 j.put("shopItemList", new JSONArray(shopItemList));
                 send(new PushRequest(j));
             }
+            if (type.equals("spin")) {
+                JSONObject j = CmdRequest.makeResponseCmd(type);
+                j.put("angle", this.shop.getWheel().calculateAngel());
+                j.put("success", this.shop.getWheel().spin());
+                send(new PushRequest(j));
+                sendGameString();
+            }
+            if (type.equals("buySpin")) {
+                JSONObject j = CmdRequest.makeResponseCmd(type);
+                j.put("success", this.shop.getWheel().buySpin());
+                send(new PushRequest(j));
+                sendGameString();
+            }
             if (type.equals("vote")) {
                 int suggestionID = Integer.parseInt(json.getString("suggestionID"));
                 System.out.println(game);
