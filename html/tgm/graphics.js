@@ -7,7 +7,7 @@ function GameGraphics() {
     
     var renderer = new PIXI.autoDetectRenderer(
         1000, 1000,
-        {antialias:false}
+        {antialias:true}
     );
     var stage = new PIXI.Container();
     var environment = new PIXI.Container();
@@ -78,7 +78,7 @@ function GameGraphics() {
     
     var fpsMeasureThread = null;
     var measurements = [60];
-    var fpsMeasurementsSize = 5;
+    var fpsMeasurementsSize = 3;
     function measureFPS() {
         measurements.unshift(frameCounter);
         if (measurements.length > fpsMeasurementsSize) measurements.pop();

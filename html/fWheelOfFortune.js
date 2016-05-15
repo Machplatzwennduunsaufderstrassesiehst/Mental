@@ -28,7 +28,7 @@ function buySpin() {
     serverConnection.communicate({type:"buySpin"}, function(msg){
         if (msg.success) {
             backgroundColorAnimate("buySpinButton", "#afa");
-            player.update_("money", -msg.price);
+            player.update_("playerMoney", -msg.price);
         } else {
             backgroundColorAnimate("buySpinButton", "#faa");
         }
@@ -48,38 +48,37 @@ function reconfigureSpinButton(text, accessable) {
 }
 
 
-var x, n=0, a = 0, speed = 5, max
+var x, n=0, a = 0, speed = 5, max;
 function rotate(rounds, angle){ //in degrees
-n = 0;
-a = angle;
-speed = 5;
-max = 360 * rounds;
-x=document.getElementById("wheel");
-startRoundRotate();
-
+    n = 0;
+    a = angle;
+    speed = 5;
+    max = 360 * rounds;
+    x=document.getElementById("wheel");
+    startRoundRotate();
 }
 function startRoundRotate(){
-	n=n+1
-	x.style.transform="rotate(" + n + "deg)"
-	x.style.webkitTransform="rotate(" + n + "deg)"
-	x.style.OTransform="rotate(" + n + "deg)"
-	x.style.MozTransform="rotate(" + n + "deg)"
+	n=n+5;
+	x.style.transform="rotate(" + n + "deg)";
+	x.style.webkitTransform="rotate(" + n + "deg)";
+	x.style.OTransform="rotate(" + n + "deg)";
+	x.style.MozTransform="rotate(" + n + "deg)";
 	if (n>=max){
 		n = 0;
 		startAngleRotate();
 	}else{
-		setTimeout(function(){startRoundRotate();}, 2);
+		setTimeout(function(){startRoundRotate();}, 20);
 	}
 }
 function startAngleRotate(){
-	n=n+1
-	x.style.transform="rotate(" + n + "deg)"
-	x.style.webkitTransform="rotate(" + n + "deg)"
-	x.style.OTransform="rotate(" + n + "deg)"
-	x.style.MozTransform="rotate(" + n + "deg)"
+	n=n+1;
+	x.style.transform="rotate(" + n + "deg)";
+	x.style.webkitTransform="rotate(" + n + "deg)";
+	x.style.OTransform="rotate(" + n + "deg)";
+	x.style.MozTransform="rotate(" + n + "deg)";
 	if (n>=a){
 		winPrize(prize);
-		reconfigureSpinButton("spin the wheel!", false);
+		//reconfigureSpinButton("spin the wheel!", false);
 	}else{
 		//speed = ((a - n) / a )+ 20;
 		//speed = (a - ((a-n) + 4))%20
@@ -104,7 +103,7 @@ function spin(){
 			canSpin = false;
 		}
 		if(canSpin){ 
-			reconfigureSpinButton("wheel is spinning...", true);
+			//reconfigureSpinButton("wheel is spinning...", true);
 			var rounds = Math.floor(msg.angle/360);
 			var degrees = msg.angle%360;
 			prize = slices - 1 - Math.floor(degrees / (360 / slices));

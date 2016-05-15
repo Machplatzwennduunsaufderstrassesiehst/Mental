@@ -2,7 +2,7 @@
 function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
     var container = new PIXI.Container();
     
-    var sprite = TextureGenerator.generateSprite(TrainGame.trainTexture, 0.5)
+    var sprite = TextureGenerator.generateSprite(TrainGame.trainTexture, 0.5);
     container.addChild(sprite);
 	
     sprite.pivot = TextureGenerator.getSpritePivot(sprite);

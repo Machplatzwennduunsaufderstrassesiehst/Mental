@@ -24,7 +24,7 @@ function buyItem(index) {
             byID("boughtCheck"+index).style.display = "inline";
             backgroundColorAnimate("buyButton"+index, "#afa");
             byID("equipButton"+index).classList.remove("disabled");
-            player.update_("money", -msg.price);
+            player.update_("playerMoney", -msg.price);
         } else {
             backgroundColorAnimate("buyButton"+index, "#faa");
         }
@@ -83,8 +83,8 @@ function listShopItems() {
     var html = "";
     for (var i = 0; i < shop.shopItemList.length; i++) {
         var item = shop.shopItemList[i];
-        var unlocked = item.lvlUnlock <= player.playerLevel;
-        var buyPossible = !item.bought && (player.money >= item.price);
+        var unlocked = item.lvlUnlock <= player.get("playerLevel");
+        var buyPossible = !item.bought && (player.get("playerMoney") >= item.price);
         var ocBuy = (true ? "buyItem("+(item.nr-1)+");" : "");
         var ocEquip = (!item.equipped ? "equipItem("+(item.nr-1)+");" : "unequipItem("+(item.nr-1)+");");
         var textEquip = (!item.equipped ? shop.equipButtonText : shop.unequipButtonText);

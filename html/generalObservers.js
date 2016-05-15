@@ -23,7 +23,7 @@ var playerStateObserver = new Observer("scoreboard", function(msg) {
     for (var i = 0; i < msg.scoreboard.length; i++) {
         var s = msg.scoreboard[i];
         if (s.highlight) { // the highlighted player is the user
-            var copy = ["playerMoney", "playerName", "playerTitle", "playerLevel"];
+            var copy = ["playerMoney", "playerName", "playerTitle", "playerLevel", "playerSpins"];
             for (var i = 0; i < copy.length; i++) {
                 player.set_(copy[i], s[copy[i]]);
             }

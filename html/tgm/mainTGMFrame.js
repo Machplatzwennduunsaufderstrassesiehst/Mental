@@ -9,7 +9,7 @@ mainTrainGameFrame.setOnOpen(function() {
     serverConnection.addObserver(trainMapObserver);
     serverConnection.addObserver(newtrainObserver);
     serverConnection.addObserver(switchChangedObserver);
-    serverConnection.addObserver(trainDecisionObserver);
+    //serverConnection.addObserver(trainDecisionObserver);
     
     if (trainGameGraphics != undefined) {
         trainGameGraphics.stop();
@@ -181,7 +181,6 @@ var switchChangedObserver = new Observer("switchChanged", function(msg) {
 });
 
 var trainDecisionObserver = new Observer("trainDecision", function(msg) {
-    msg.switchedTo -= 1;
     var lane = Switch.es[msg.switchId].getLane(msg.switchedTo);
     var track = Switch.es[msg.switchId];
     Train.s[msg.trainId].setCurrentTrack(track);
