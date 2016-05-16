@@ -14,11 +14,11 @@ function GameGraphics() {
     var staticEnvironment = new PIXI.Container();
     stage.addChild(environment);
     stage.addChild(staticEnvironment);
-    stage.width = 1000;
-    stage.height = 1000;
+    //stage.width = 1000;
+    //stage.height = 1000;
     
     this.resize = function(width, height) {
-        //renderer.resize(width, height);
+        renderer.resize(width, height);
     }
     
     this.getStage = function() {

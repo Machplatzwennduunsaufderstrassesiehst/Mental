@@ -17,7 +17,6 @@ mainTrainGameFrame.setOnOpen(function() {
     }
     var trainGameGraphics = new GameGraphics();
     trainGame = new TrainGame(trainGameGraphics);
-    trainGame.setGridSize(90);
     trainGame.start();
     
     byID("mainTrainGameFrame").onmousedown = trainGame.mouseDown;
@@ -36,6 +35,20 @@ mainTrainGameFrame.setOnClose(function() {
 });
 
 // FUNCTIONALITY =================================================================================================
+
+function fitGraphics(xMapSize, yMapSize) {
+    var frame = byID("mainTrainGameFrame");
+    var frameRatio = frame.clientWidth / frame.clientHeight;
+    var mapRatio = xMapSize / yMapSize;
+    var gridSize;
+    if (frameRatio > mapRatio) {
+        gridSize = frame.clientHeight / yMapSize;
+    } else {
+        gridSize = frame.clientWidth / xMapSize;
+    }
+    trainGame.graphics.resize(xMapSize*gridSize, yMapSize*gridSize);
+    trainGame.setGridSize(gridSize);
+} 
 
 function Map(rawdata) {
     // initialize array to hold the track objects later
@@ -118,8 +131,6 @@ function TrainGame(graphics) {
     
     this.setMap = function(map) {
         trainMap = this.trainMap = map;
-        var size = map.getSize();
-        graphics.resize(size.x*gridSize, size.y*gridSize);
     }
     
     this.start = function() {
@@ -172,6 +183,7 @@ TrainGame.turnTexture = TextureGenerator.generate(GameGraphics.TGMPATH + "turn.p
 
 var trainMapObserver = new Observer("exercise", function(msg) {
     if (msg.exercise.type != "trainMap") return;
+    fitGraphics(msg.exercise.trainMap.length, msg.exercise.trainMap[0].length);
     trainMap = new Map(msg.exercise.trainMap);
     trainGame.setMap(trainMap);
     trainGame.graphics.cacheStaticEnvironment();
