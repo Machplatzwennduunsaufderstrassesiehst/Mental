@@ -57,14 +57,6 @@ public class TrainMapCreator extends ExerciseCreator {
 
 
     public TrainTrack[][] createTrainMap(){
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! AUFRUF VON CREATE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        //if(trainMap != null){return null;}
-        /*
-        if(trainMap != null){}{
-            trainMap = null;
-            map = null;
-        }
-        */
         x = 0;
         y = 0;
         pathNumber = 0;
@@ -103,24 +95,14 @@ public class TrainMapCreator extends ExerciseCreator {
                 } else {
                 x = coordinates[0];
                 y = coordinates[1];
-                //System.out.println("Starting Point: "+Arrays.toString(coordinates));
-                //koordinaten auf neuen Startpunkt gesetzt
 
                 coordinates = getStartingPointConnection(); //anknüpfung an startpunkt finden
-                //System.out.println("Starting Point Anknüpfung: "+Arrays.toString(coordinates));
                     if (map[coordinates[0]][coordinates[1]].getType().equals("switch")) { //wenn der anknüpfpunkt bereits ein switch ist
                         map[coordinates[0]][coordinates[1]].setSuccessor(map[x][y]);
                     } else {
                         TrainTrack successorTemp = map[coordinates[0]][coordinates[1]].getSuccessor(); //aktueller
                         TrainTrack predecessorTemp = map[coordinates[0]][coordinates[1]].getPredecessor(); //aktueller
                         map[coordinates[0]][coordinates[1]] = new Switch(coordinates[0], coordinates[1], 9); //switch setzen
-                        ////System.out.println("x,y: "+x+" "+y+" c1,c2: "+coordinates[0]+" "+coordinates[1]);
-                        try {
-                            //System.out.println("predecessor Typ: " + predecessorTemp.getType() + " succesor Typ: " + successorTemp.getType());
-                        } catch (Exception e) {
-                            map[coordinates[0]][coordinates[1]].setValue(-1);
-                            ausgabe();
-                        }
                         map[coordinates[0]][coordinates[1]].setPredecessor(predecessorTemp);
                         map[coordinates[0]][coordinates[1]].setSuccessor(successorTemp); //1. vorheriger weg //Swich, daher mehrere Succesor
                         map[coordinates[0]][coordinates[1]].setSuccessor(map[x][y]); //2. neuer abzweig
@@ -200,12 +182,10 @@ public class TrainMapCreator extends ExerciseCreator {
         for(int i = 0; i<map.length; i++){
             for (int j = 0; j < map.length; j++) {
                 if(map[i][j].getValue() != 0 && map[i][j].getType().equals("track") && map[i][j].getSuccessor() == null){ //goals werden identifiziert
-                    ////System.out.println(map[i][j].getType()+" gefunden und zu Goal gemacht!");
-                    map[i][j] = new Goal(i, j, map[i][j].getValue()); //und gesetzt
+                     map[i][j] = new Goal(i, j, map[i][j].getValue()); //und gesetzt
                 }
             }
         }
-        //for (int i = 0; i < 1000; i++) { //System.out.println("!!!"); }
         System.out.println("map: ");
         ausgabe();
         this.trainMap = map;
@@ -218,20 +198,16 @@ public class TrainMapCreator extends ExerciseCreator {
         ArrayList<int[]> pussybilities = new ArrayList<int[]>();
         for(int i = 1; i<size-1; i++){
             for(int j = 1; j<size-1; j++){
-                //System.out.println("if("+map[i][j].getValue()+" == 0 && "+checkSurroundingTarget(i, j, 1)+" && "+checkSurroundingPreciselyTarget(i, j, 2)+" || "+checkSurroundingPreciselyTarget(i, j, 3)+" && "+i+"+"+j+" > "+AVOID_START_REGION_VALUE+" && "+getStartingPointConnectionElement().hasSuccessor()+") == "+(map[i][j].getValue() == 0 && checkSurroundingTarget(i, j, 1) && (checkSurroundingPreciselyTarget(i, j, 2) || checkSurroundingPreciselyTarget(i, j, 3)) && i+j > AVOID_START_REGION_VALUE && getStartingPointConnectionElement().hasSuccessor()));
-                    if(map[i][j].getValue() == 0 && checkSurroundingTarget(i, j, 1) && (checkSurroundingPreciselyTarget(i, j, 2) || checkSurroundingPreciselyTarget(i, j, 3)) && i+j > AVOID_START_REGION_VALUE && getStartingPointConnectionElement(i, j).hasSuccessor()) {
-                        coordinates[0] = i;
-                        coordinates[1] = j;
-                        pussybilities.add(coordinates.clone());
-                        //System.out.println(Arrays.toString(coordinates.clone()));
-                    }
+                if(map[i][j].getValue() == 0 && checkSurroundingTarget(i, j, 1) && (checkSurroundingPreciselyTarget(i, j, 2) || checkSurroundingPreciselyTarget(i, j, 3)) && i+j > AVOID_START_REGION_VALUE && getStartingPointConnectionElement(i, j).hasSuccessor()) {
+                    coordinates[0] = i;
+                    coordinates[1] = j;
+                    pussybilities.add(coordinates.clone());
+                }
             }
         }
         if(!pussybilities.isEmpty()) {
             coordinates = pussybilities.get((int) (Math.random() * pussybilities.size()));
         }else if (coordinates[0] == 1 && coordinates[1] == 1) {
-                //coordinates[0] = (int) ((Math.random() * size - 1) + 1);
-                //coordinates[1] = (int) ((Math.random() * size - 1) + 1);
                 System.out.println("getStartingPoint() nicht möglich");
                 //ausgabe();
         }
