@@ -9,7 +9,7 @@ mainTrainGameFrame.setOnOpen(function() {
     serverConnection.addObserver(trainMapObserver);
     serverConnection.addObserver(newtrainObserver);
     serverConnection.addObserver(switchChangedObserver);
-    //serverConnection.addObserver(trainDecisionObserver);
+    serverConnection.addObserver(trainDecisionObserver);
     
     if (trainGameGraphics != undefined) {
         trainGameGraphics.stop();
@@ -33,7 +33,6 @@ mainTrainGameFrame.setOnClose(function() {
     
     trainGame.stop();
     byID("mainTrainGameFrame").innerHTML = "";
-    trainGame = null;
 });
 
 // FUNCTIONALITY =================================================================================================
@@ -115,6 +114,7 @@ function TrainGame(graphics) {
     this.trainMap = null;
     this.trains = [];
     var gridSize = 0;
+    var running = false;
     
     this.setMap = function(map) {
         trainMap = this.trainMap = map;
@@ -123,11 +123,17 @@ function TrainGame(graphics) {
     }
     
     this.start = function() {
+        running = true;
         graphics.start();
     }
     
     this.stop = function() {
         graphics.stop();
+        running = false;
+    }
+    
+    this.isRunning = function() {
+        return running;
     }
     
     this.getTrainSpawn = function() {
@@ -181,10 +187,10 @@ var switchChangedObserver = new Observer("switchChanged", function(msg) {
 });
 
 var trainDecisionObserver = new Observer("trainDecision", function(msg) {
-    var lane = Switch.es[msg.switchId].getLane(msg.switchedTo);
-    var track = Switch.es[msg.switchId];
-    Train.s[msg.trainId].setCurrentTrack(track);
-    Train.s[msg.trainId].correctLane(lane);
+    var sw = Switch.es[msg.switchId];
+    var successor = sw.getSuccessor(msg.switchedTo);
+    var lane = sw.getLane(msg.switchedTo);
+    Train.s[msg.trainId].correctMovement(sw, successor, lane);
 });
 
 

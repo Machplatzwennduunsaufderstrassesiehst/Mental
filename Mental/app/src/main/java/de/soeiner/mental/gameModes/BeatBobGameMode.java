@@ -64,7 +64,7 @@ public class BeatBobGameMode extends GameMode {
             while(gameIsRunning){
                 System.out.println("[BeatBob.loop]");
                 if(game.activePlayers.size() == 0){gameIsRunning = false; }
-                for (double i = 0; (i <= bobSolveTime*10) && gameIsRunning;i++) {
+                for (double i = 0; (i <= bobSolveTime*10) && gameIsRunning; i++) {
                     System.out.println("[BeatBob.loop] for-Schleife");
                     bobSolveTime = balanceBob();
                     Thread.sleep(100);

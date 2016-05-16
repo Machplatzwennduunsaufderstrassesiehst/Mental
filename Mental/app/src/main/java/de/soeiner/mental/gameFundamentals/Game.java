@@ -173,9 +173,11 @@ public class Game implements Runnable {
         }
     }
 
+    /**
+     * does only send the exercise to all players - not create !
+     */
     public void broadcastExercise() {
         System.out.println("broadcastExercise()");
-        exerciseCreator.next();
         for (int i = 0; i < activePlayers.size(); i++) {
             Player p = activePlayers.get(i);
             p.finished = false;

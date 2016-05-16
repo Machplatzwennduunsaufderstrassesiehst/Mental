@@ -14,38 +14,64 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
 	
 	var timePerTrack = 1 / tracksPerSecond;
 	var currentTrack = startTrack;
+	var successorTrack = null;
+	var predecessorTrack = null;
 	var currentLane = null;
 	var lastTrackChange;
 	
     function move() {
         setTimeout(function(){
-            if (currentTrack.hasSuccessor()) {
-                currentTrack = currentTrack.getSuccessor();
+            if (!trainGame.isRunning()) return;
+            if (successorTrack != null) {
+                currentTrack = successorTrack;
                 move();
             } else {
                 trainGame.graphics.removeGraphicObject(graphicObject); // TODO
             }
         }, timePerTrack * 1000);
+        
         currentLane = currentTrack.getLane();
         var movement = buildMovement();
         graphicObject.setPos(movement.getFirst());
         graphicObject.queueMovement(movement);
         lastTrackChange = Date.now();
+        successorTrack = currentTrack.getSuccessor();
+        predecessorTrack = currentTrack.getPredecessor();
     }
     
-    this.correctLane = function(lane) {
-        if (currentLane != lane) {
-            currentLane = lane;
-            var movement = buildMovement();
-            var movementProgress = (Date.now() - lastTrackChange) / 1000;
-            movement.setProgress(movementProgress);
-            graphicObject.setPos(movement.getFirst());
-            graphicObject.queueMovement(movement);
+    var correctionRetryTimeout = 50, // ms
+        correctionMaxRetryCount = 10;
+    
+    var correctMovement = this.correctMovement = function(correctedTrack, successor, lane, retry) {
+        if (retry == undefined) retry = 0;
+        retry = retry + 1;
+        if (retry > correctionMaxRetryCount) return;
+        if (successorTrack == correctedTrack) { // train has not arrived at the corrected track yet
+            setTimeout(function(){
+                correctMovement(correctedTrack, successor, lane, retry);
+            }, correctionRetryTimeout);
+        } else if (predecessorTrack == correctedTrack) { // train has already passed the corrected track
+            // this is a very bad case, should only occur if: latency > (1000 / TRAIN_MAX_SPEED)
+            setTimeout(function(){
+                correctMovement(successor, successor.getSuccessor(), successor.getLane(), correctionMaxRetryCount + 1);
+            }, correctionRetryTimeout);
+            return;
+        } else { // train is on the correct track => only correct its lane and successorTrack if necessary
+            // (another case corrected here: train is on a switch's wrong successor track due to INSANE lagg)
+            currentTrack = correctedTrack;
+            successorTrack = successor;
+            if (currentLane != lane) {
+                currentLane = lane;
+                var movement = buildMovement();
+                var movementProgress = 0;
+                if (currentTrack == correctedTrack) { // correction on the current track uses movementProgress, only for graphics
+                    movementProgress = (Date.now() - lastTrackChange) / 1000;
+                }
+                movement.setProgress(movementProgress);
+                graphicObject.setPos(movement.getFirst());
+                graphicObject.queueMovement(movement);
+            }
         }
-    }
-    
-    this.setCurrentTrack = function(track) {
-        currentTrack = track;
     }
     
     move();

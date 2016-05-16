@@ -40,8 +40,8 @@ public class TrainGameMode extends GameMode {
             game.activePlayers.add(game.joinedPlayers.get(i));
         }
         TrainMapCreator trainMapCreator = (TrainMapCreator) game.exerciseCreator;
-        System.out.println("===================== AUFRUF VON CREATE ====================");
-        game.broadcastExercise(); // das hier erstellt eine neue Map!
+        game.exerciseCreator.next(); // erstellt die neue map
+        game.broadcastExercise(); // macht nichts außer die map an alle zu senden
         trainMap = trainMapCreator.getTrainMap(); //TODO, von player abhängig machen
         switches = getSwitches();
         goals = getGoals();

@@ -92,7 +92,8 @@ public abstract class GameMode {
 
 
     public void newExercise(){
-        game.broadcastExercise();
+        game.exerciseCreator.next(); // erstellt neue aufgabe
+        game.broadcastExercise(); // sendet aufgabe an alle spieler
         game.exerciseCreator.increaseDifficulty();
     }
 

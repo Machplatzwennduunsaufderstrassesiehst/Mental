@@ -275,7 +275,7 @@ function Goal(id, i, j) {
     
     // overwritten
     this.getSuccessor = function() {
-        return false;
+        return null;
     }
 }
 Goal.s = [];
