@@ -45,10 +45,11 @@ public class Train implements Runnable{
     public void run() { // TODO
         boolean moving = true;
         int z = 0;
-        while(moving){
+        while(moving && traingame.getGameIsRunning()){
             try {
                 z++;
                 Thread.sleep(calculateTimeToDestination());
+                System.out.println("Train " + this.getId() + " is now at (" + x + "|" + y + ")");
             }catch(Exception e){e.printStackTrace();}
             if(traingame.trainMap[x][y].getType().equals("goal")){
                 Goal tempGoal = (Goal) traingame.trainMap[x][y]; //TODO possible breaking point
@@ -57,7 +58,7 @@ public class Train implements Runnable{
                 }else{
                     traingame.trainArrived(id, tempGoal.getGoalId(), false);
                 }
-               moving = false; //beende thread
+                moving = false; //beende thread
             }
         }
     }
@@ -74,6 +75,7 @@ public class Train implements Runnable{
             if(distance == 0 && traingame.trainMap[x][y].getType().equals("switch")){
                 s = (Switch) traingame.trainMap[x][y];
                 direction = s.getSwitchedTo();
+                System.out.println("Train " + this.getId() + " now switching. switchId:" + s.getSwitchId() + " Pos(" + x + "|" + y + ")");
                 traingame.broadcastTrainDecision(id, s.getSwitchId(), direction);
             }
             xtemp = traingame.trainMap[x][y].getSuccessor().getX();

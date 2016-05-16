@@ -18,9 +18,9 @@ public class TrainGameMode extends GameMode {
     Switch[] switches;
     Goal[] goals;
     String[] colors = {"#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"};
-    private final double MAX_SPEED = 3.0;
+    private final double MAX_SPEED = 3.0; // 3.0
     private final double MIN_SPEED = 0.5;
-    private int TRAIN_SPAWN_INTERVAL = 3000; //in milllisekunden
+    private int TRAIN_SPAWN_INTERVAL = 3000; //3000 //in milllisekunden
     private final int TRAIN_ARRIVED_REWARD = 10;
     private int health;
 
@@ -41,9 +41,8 @@ public class TrainGameMode extends GameMode {
         }
         TrainMapCreator trainMapCreator = (TrainMapCreator) game.exerciseCreator;
         System.out.println("===================== AUFRUF VON CREATE ====================");
-        trainMapCreator.createTrainMap();
+        game.broadcastExercise(); // das hier erstellt eine neue Map!
         trainMap = trainMapCreator.getTrainMap(); //TODO, von player abhängig machen
-        game.broadcastExercise();
         switches = getSwitches();
         goals = getGoals();
         for (int i = 0; i < switches.length; i++) {

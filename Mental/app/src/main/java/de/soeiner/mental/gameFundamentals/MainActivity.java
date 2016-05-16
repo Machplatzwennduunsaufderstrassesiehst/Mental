@@ -61,9 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void serverStart(){
         try {
-            int port = PORT;
-            server = new Server( port );
-            System.out.println("Server started: " + server.toString());
+            server = new Server(PORT);
+            System.out.println("Server started on port " + PORT);
         } catch (IOException e) {
             e.printStackTrace();
         }

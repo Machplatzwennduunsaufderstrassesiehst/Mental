@@ -56,7 +56,7 @@ public class TrainMapCreator extends ExerciseCreator {
     private TrainTrack[] predeccesors;
 
 
-    public TrainTrack[][] createTrainMap(){
+    private TrainTrack[][] createTrainMap(){
         x = 0;
         y = 0;
         pathNumber = 0;
