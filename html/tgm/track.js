@@ -7,7 +7,9 @@ function Lane(i, j, predecessorCoords, successorCoords) {
     var gridSize = trainGame.getGridSize();
     
     var entranceSide = 0;
+    var entranceCoords = null;
     var exitSide = 0;
+    var exitCoords = null;
     var direction = 0;
     
     var movement = null;
@@ -22,9 +24,9 @@ function Lane(i, j, predecessorCoords, successorCoords) {
     var sprite = null;
     
     // get the position Vector that points to the specified side of the element
-    var getSideCoords = this.getSideCoords = function(side) {
+    var calculateSideCoords = function(side) {
         var deg = ((side) % 4) * Math.PI/2;
-        var v = new Vector(Math.sin(deg), -Math.cos(deg)); // vector that points to the entranceSide
+        var v = new Vector(Math.sin(deg), -Math.cos(deg)); // vector that points to the side
         v.normalize();
         v.multiply(gridSize/2);
         v.add(posVector);
@@ -40,11 +42,15 @@ function Lane(i, j, predecessorCoords, successorCoords) {
     }
     
     var getEntranceCoords = this.getEntranceCoords = function() {
-        return getSideCoords(entranceSide);
+        return entranceCoords;
     }
      
     var getExitCoords = this.getExitCoords = function() {
-        return getSideCoords(exitSide);
+        return exitCoords;
+    }
+    
+    this.setExitCoords = function(xc, yc) {
+        exitCoords = {x:xc, y:yc};
     }
     
     this.setSwitched = function(bSwitched) {
@@ -79,12 +85,9 @@ function Lane(i, j, predecessorCoords, successorCoords) {
         //log("entranceSide: " + entranceSide + "  exitSide: " + exitSide + "  d: " + d);
     }
     
-    initializeOrientation();
+    var spriteRotation, texture;
     
-    var buildSprite = this.buildSprite = function(onload) {
-        var rotation, texture;
-        rotation = entranceSide;
-        
+    var initTextureType = this.initTextureType = function() {
         switch (direction) {
             case 0: // straight
                 this.type = "straight";
@@ -97,21 +100,32 @@ function Lane(i, j, predecessorCoords, successorCoords) {
             case -1: // right turn
                 this.type = "turnRight";
                 texture = TrainGame.turnTexture;
-                rotation -= 1;
-                rotation = (rotation + 4) % 4;
+                spriteRotation -= 1;
+                spriteRotation = (spriteRotation + 4) % 4;
                 break;
         }
-        rotation *= Math.PI / 2;
-        //log("png: " + png + "   rotation: " + rotation);
+        spriteRotation *= Math.PI / 2;
+    }
+    
+    var setTexture = this.setTexture = function(texture_) {
+        texture = texture_;
+    }
+    
+    var buildSprite = this.buildSprite = function(onload) {
+        if (texture == undefined) initTextureType();
         
         sprite = TextureGenerator.generateSprite(texture);
-        
         sprite.position = new PIXI.Point(posVector.getX(), posVector.getY());
         sprite.pivot = TextureGenerator.getSpritePivot(sprite);
-        sprite.rotation = rotation;
-        
+        sprite.rotation = spriteRotation;
         onload(sprite);
     }
+    
+    
+    initializeOrientation();
+    entranceCoords = calculateSideCoords(entranceSide);
+    exitCoords = calculateSideCoords(exitSide);
+    spriteRotation = entranceSide;
 }
 
 function Track(i, j) {    
