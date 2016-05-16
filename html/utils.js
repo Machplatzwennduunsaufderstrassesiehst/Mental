@@ -128,7 +128,7 @@ function fullScreen(element) {
         element.webkitRequestFullScreen();
     }
 }
-
+/*
 function hideAddressBar(){
   if(document.documentElement.scrollHeight<window.outerHeight/window.devicePixelRatio)
     document.documentElement.style.height=(window.outerHeight/window.devicePixelRatio)+'px';
@@ -136,7 +136,7 @@ function hideAddressBar(){
 }
 window.addEventListener("load",function(){hideAddressBar();});
 window.addEventListener("orientationchange",hideAddressBar);
-
+*/
 Math.signum = function(a) {
     if (a > 0) {
         return 1;

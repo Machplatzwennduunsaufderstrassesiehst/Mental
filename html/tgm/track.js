@@ -48,7 +48,7 @@ function Lane(i, j, predecessorCoords, successorCoords) {
     }
     
     this.setSwitched = function(bSwitched) {
-        sprite.alpha = (bSwitched ? 1 : 0.4);
+        sprite.alpha = (bSwitched ? 1 : 0.5);
     }
     
     // only used for Turns!
