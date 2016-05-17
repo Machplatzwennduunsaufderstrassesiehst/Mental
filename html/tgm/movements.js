@@ -1,29 +1,31 @@
 
+/* global trainGame */
+
 function Vector(x, y) {
     this.multiply = function(skalar) {
         x *= skalar;
         y *= skalar;
-    }
+    };
     
     this.add = function(u) {
         x += u.getX();
         y += u.getY();
-    }
+    };
     
     this.normalize = function() {
         this.multiply(1 / length());
-    }
+    };
     
     var length = this.length = function() {
         return Math.sqrt(x*x + y*y);
-    }
+    };
     
     this.getX = function(){return x;};
     this.getY = function(){return y;};
     
     this.copy = function() {
         return new Vector(x, y);
-    }
+    };
 }
 // static
 Vector.newFromTo = function(u, v) {
@@ -32,7 +34,7 @@ Vector.newFromTo = function(u, v) {
     u.multiply(-1);
     v.add(u);
     return v;
-}
+};
 
 // used to describe one element of a movement
 function Position(x_, y_, r_) {
@@ -44,16 +46,16 @@ function Position(x_, y_, r_) {
     this.move = function(vector) {
         this.x = x = x + vector.getX();
         this.y = y = y + vector.getY();
-    }
+    };
     
     this.toString = function() {
         return "Pos("+x+","+y+", "+r+")\n";
-    }
+    };
     
     this.copy = function(vector) {
         if (vector == undefined) vector = new Vector(0,0);
         return new Position(Math.floor(x+vector.getX()),Math.floor(y+vector.getY()),r);
-    }
+    };
 }
 
 // calculates the amount of frames to be rendered in the "time" (in seconds)
@@ -121,11 +123,11 @@ function Movement(steps) {
     
     this.getSteps = function() {
         return steps;
-    }
+    };
     
     var addVector = this.addVector = function(vector) {
         steps = copyTo(vector).getSteps();
-    }
+    };
     
     var copyTo = this.copyTo = function(vector) {
         var movedSteps = [];
@@ -135,17 +137,17 @@ function Movement(steps) {
             //alert(movedSteps[i]);
         }
         return new Movement(movedSteps);
-    }
+    };
     
     this.getFirst = function() {
         return steps[0];
-    }
+    };
     
     // between 0 and 1
     this.setProgress = function(p) {
         var newFirstIndex = Math.floor(steps.length * p);
         steps = steps.splice(newFirstIndex);
-    }
+    };
 }
 
 // static Movement class part
@@ -158,13 +160,13 @@ Movement.sin = function(x) {
     if (!Movement.isSetUp) Movement.setup();
     var i = Math.floor(x * Movement.rotationResolution / Math.PI);
     return Movement.sinValues[i];
-}
+};
 
 Movement.cos = function(x) {
     if (!Movement.isSetUp) Movement.setup();
     var i = Math.floor(x * Movement.rotationResolution / Math.PI);
     return Movement.cosValues[i];
-}
+};
 
 Movement.setup = function() {
    for (var i = 0; i <= Math.PI*2; i+=Math.PI/Movement.rotationResolution) {
@@ -172,5 +174,5 @@ Movement.setup = function() {
        Movement.cosValues.push(Math.cos(i));
    } 
    Movement.isSetUp = true;
-}
+};
 

@@ -1,4 +1,6 @@
 
+/* global trainGame */
+
 function Lane(i, j, predecessorCoords, successorCoords) {
     this.i = i;
     this.j = j;

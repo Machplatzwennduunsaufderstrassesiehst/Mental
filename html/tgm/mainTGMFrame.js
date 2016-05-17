@@ -1,4 +1,6 @@
 
+/* global byID, serverConnection, Switch, Goal, Train, GameGraphics, TextureGenerator */
+
 var mainTrainGameFrame = new Frame("mainTrainGameFrame");
 
 var trainGame = null;
@@ -114,11 +116,11 @@ function Map(rawdata) {
     
     this.getTrainSpawn = function() {
         return trainSpawn;
-    }
+    };
     
     this.getSize = function() {
         return {x:mapArray.length, y:mapArray[0].length};
-    }
+    };
 }
 
 function TrainGame(graphics) {
@@ -131,33 +133,33 @@ function TrainGame(graphics) {
     
     this.setMap = function(map) {
         trainMap = this.trainMap = map;
-    }
+    };
     
     this.start = function() {
         running = true;
         graphics.start();
-    }
+    };
     
     this.stop = function() {
         graphics.stop();
         running = false;
-    }
+    };
     
     this.isRunning = function() {
         return running;
-    }
+    };
     
     this.getTrainSpawn = function() {
         return trainMap.getTrainSpawn();
-    }
+    };
     
     this.setGridSize = function(gridSize_) {
         gridSize = gridSize_;
-    }
+    };
     
     this.getGridSize = function() {
         return gridSize;
-    }
+    };
     
     this.mouseDown = function(event) {
         var clickPoint = new PIXI.Point(event.clientX, event.clientY);
@@ -169,15 +171,16 @@ function TrainGame(graphics) {
                 performSwitchChange(sw);
             }
         }
-    }
+    };
     
     var performSwitchChange = this.performSwitchChange = function(sw) {
         serverConnection.send({type:"changeSwitch", switchId:sw.id, value:sw.getNextLaneIndex()}); // TODO!!
-    }
+    };
 }
-TrainGame.trainTexture = TextureGenerator.generate(GameGraphics.TGMPATH + "train.png");
-TrainGame.straightTexture = TextureGenerator.generate(GameGraphics.TGMPATH + "straight.png");
-TrainGame.turnTexture = TextureGenerator.generate(GameGraphics.TGMPATH + "turn.png");
+TrainGame.TGMPATH = "graphics/tgm/";
+TrainGame.trainTexture = TextureGenerator.generate(TrainGame.TGMPATH + "train.png");
+TrainGame.straightTexture = TextureGenerator.generate(TrainGame.TGMPATH + "straight.png");
+TrainGame.turnTexture = TextureGenerator.generate(TrainGame.TGMPATH + "turn.png");
 
 // OBSERVERS =====================================================================================================
 
