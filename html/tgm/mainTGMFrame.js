@@ -178,6 +178,7 @@ TrainGame.TGMPATH = "graphics/tgm/";
 TrainGame.trainTexture = TextureGenerator.generate(TrainGame.TGMPATH + "train.png");
 TrainGame.straightTexture = TextureGenerator.generate(TrainGame.TGMPATH + "straight.png");
 TrainGame.turnTexture = TextureGenerator.generate(TrainGame.TGMPATH + "turn.png");
+TrainGame.goalTexture = TextureGenerator.generate(TrainGame.TGMPATH + "goal.png");
 
 // OBSERVERS =====================================================================================================
 

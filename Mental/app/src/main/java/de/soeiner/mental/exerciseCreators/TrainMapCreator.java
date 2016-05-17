@@ -273,7 +273,7 @@ public class TrainMapCreator extends ExerciseCreator {
                 if(map[i][j].getValue() == 0){
                     System.out.print("  ");
                 }else{
-                    System.out.print(map[i][j].getValue()+" ");
+                    System.out.print(map[j][i].getValue()+" "); // vertauscht damit es mit der grafik übereinstimmt
                 }
             }
         }

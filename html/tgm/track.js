@@ -1,5 +1,5 @@
 
-/* global trainGame, PIXI */
+/* global trainGame, PIXI, TrainGame, TextureGenerator */
 
 function Lane(i, j, predecessorCoords, successorCoords) {
     this.i = i;
@@ -14,9 +14,10 @@ function Lane(i, j, predecessorCoords, successorCoords) {
     var exitCoords = null;
     var direction = 0;
     
+    var spriteRotation, texture;
+    
     // Vector that points to the middle of the track elements
     var relMidVector = new Vector(gridSize/2, gridSize/2);
-    
     // Vector that points to the sprite's position
     var posVector = new Vector(i*gridSize, j*gridSize);
     posVector.add(relMidVector);
@@ -49,8 +50,12 @@ function Lane(i, j, predecessorCoords, successorCoords) {
         return exitCoords;
     };
     
-    this.setExitCoords = function(xc, yc) {
-        exitCoords = {x:xc, y:yc};
+    var getPosVector = this.getPosVector = function() {
+        return posVector;
+    };
+    
+    this.setExitCoords = function(vector) {
+        exitCoords = vector;
     };
     
     this.setSwitched = function(bSwitched) {
@@ -65,7 +70,7 @@ function Lane(i, j, predecessorCoords, successorCoords) {
         return direction * Math.PI / 2;
     };
     
-    function initializeOrientation() {
+    function initializeDimensions() {
         var dx1 = i - predecessorCoords.x;
         var dx2 = successorCoords.x - i;
         var dy1 = j - predecessorCoords.y;
@@ -83,9 +88,10 @@ function Lane(i, j, predecessorCoords, successorCoords) {
             if (Math.abs(direction) > 2) direction = -Math.sign(direction);
         }
         //log("entranceSide: " + entranceSide + "  exitSide: " + exitSide + "  d: " + d);
+        entranceCoords = calculateSideCoords(entranceSide);
+        exitCoords = calculateSideCoords(exitSide);
+        spriteRotation = entranceSide;
     }
-    
-    var spriteRotation, texture;
     
     var initTextureType = this.initTextureType = function() {
         switch (direction) {
@@ -104,15 +110,15 @@ function Lane(i, j, predecessorCoords, successorCoords) {
                 spriteRotation = (spriteRotation + 4) % 4;
                 break;
         }
-        spriteRotation *= Math.PI / 2;
     };
     
-    var setTexture = this.setTexture = function(texture_) {
-        texture = texture_;
+    var setTexture = this.setTexture = function(tex) {
+        texture = tex;
     };
     
     var buildSprite = this.buildSprite = function(onload) {
         if (texture == undefined) initTextureType();
+        spriteRotation *= Math.PI / 2;
         
         sprite = TextureGenerator.generateSprite(texture);
         sprite.position = new PIXI.Point(posVector.getX(), posVector.getY());
@@ -122,10 +128,7 @@ function Lane(i, j, predecessorCoords, successorCoords) {
     };
     
     
-    initializeOrientation();
-    entranceCoords = calculateSideCoords(entranceSide);
-    exitCoords = calculateSideCoords(exitSide);
-    spriteRotation = entranceSide;
+    initializeDimensions();
 }
 
 function Track(i, j) {    
@@ -283,12 +286,35 @@ Switch.prototype.constructor = Switch;
 function Goal(id, i, j) {
     Track.call(this, i, j);
     Goal.s[id] = this;
+    var lane;
+    
+    // overwritten
+    this.getLane = function(){return lane;};
     
     this.type = "goal";
     
     // overwritten
     this.getSuccessor = function() {
         return null;
+    };
+    
+    this.initialize = function() {
+        var predecessor = this.getPredecessor();
+        var predecessorCoords, successorCoords;
+        if (this.hasPredecessor()) {
+            predecessorCoords = {x:predecessor.getX(), y:predecessor.getY()};
+            successorCoords   = {x:i+i-predecessor.getX(), y:j+j-predecessor.getY()};
+        } else {
+            predecessorCoords = {x:i, y:j-1};
+            successorCoords   = {x:i, y:j+1};
+        }
+        
+        lane = new Lane(i, j, predecessorCoords, successorCoords);
+        lane.setExitCoords(lane.getPosVector());
+        lane.setTexture(TrainGame.goalTexture);
+        lane.buildSprite(function(sprite) {
+            trainGame.graphics.addEnvironment(sprite, true);
+        });
     };
 }
 Goal.s = [];
