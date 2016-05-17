@@ -317,12 +317,15 @@ public class Game implements Runnable {
     public void confirm(){confirmed++;}
 
     int confirmed = 0;
+    int TIMEOUT_TIME = 50; //in 100 millisek
     private void waitForConfirmation(){
+        int z = 0;
         if(!gameMode.needsConfirmation){return;}
         confirmed = 0;
-        while(confirmed < activePlayers.size()){
+        while(confirmed < activePlayers.size() && z < TIMEOUT_TIME){
             try{
                 Thread.sleep(100);
+                z++;
             }catch(Exception e){e.printStackTrace();}
         }
     }
