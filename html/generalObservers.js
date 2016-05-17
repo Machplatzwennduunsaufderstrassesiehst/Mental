@@ -1,7 +1,8 @@
 
 
+/* global serverConnection, byID, player, navigation, mainFrame, scoreboardFrame, mainTrainGameFrame, countdownFrame */
+
 function configureObservers() {
-    serverConnection.addObserver(timeLeftObserver);
     serverConnection.addObserver(gameStringObserver);
     serverConnection.addObserver(showScoreboardObserver);
     serverConnection.addObserver(countdownObserver);
@@ -9,8 +10,7 @@ function configureObservers() {
     serverConnection.addObserver(playerStateObserver);
 }
 
-
-
+// GENERAL OR FRAME OPENING OBSERVERS =========================================================================
 
 var gameStringObserver = new Observer("gameString", function(msg) {
     var gs = btoa(msg.gameString); // base64 encode
@@ -33,11 +33,18 @@ var playerStateObserver = new Observer("scoreboard", function(msg) {
 });
 
 var openMainFrameObserver = new Observer("showExercises", function(msg) {
-    if (msg.exerciseType == "arithmetic") {
+    if (msg.exerciseType === "arithmetic") {
         navigation.openFrames(mainFrame);
-    } else if (msg.exerciseType == "trainMap") {
+    } else if (msg.exerciseType === "trainMap") {
         navigation.openFrames(mainTrainGameFrame);
     }
 });
 
+var showScoreboardObserver = new Observer("showScoreboard", function(msg) {
+    navigation.openFrames(scoreboardFrame);
+});
 
+var countdownObserver = new Observer("countdown", function(msg) {
+    countdownFrame["countdownTime"] = msg.time;
+    navigation.openFrames(countdownFrame);
+});

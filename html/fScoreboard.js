@@ -1,4 +1,6 @@
 
+/* global serverConnection, uselessFunction, byID */
+
 var scoreboardFrame = new Frame("scoreboardFrame");
 
 scoreboardFrame.setOnOpen(function() {
@@ -66,9 +68,5 @@ var updateScoreboardObserver = new Observer("scoreboard", function(msg) {
     scoreboardBody.innerHTML = html;
     
     adjustSuggestionListing();
-});
-
-var showScoreboardObserver = new Observer("showScoreboard", function(msg) {
-    navigation.openFrames(scoreboardFrame);
 });
 

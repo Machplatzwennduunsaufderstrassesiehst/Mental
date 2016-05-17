@@ -2,7 +2,7 @@
 var player = new Player();
 
 function Player() {
-	var data = this.data = {};
+    var data = this.data = {};
     
     this.set_ = function(id, value) {
         data[id] = value;
@@ -10,7 +10,7 @@ function Player() {
     }
     
     this.update_ = function(id, value) {
-		if (data[id] == undefined) data[id] = 0;
+        if (data[id] === undefined) data[id] = 0;
         data[id] += value;
         updateDataFields(id, data[id]);
     }

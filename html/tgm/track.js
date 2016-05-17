@@ -12,8 +12,6 @@ function Lane(i, j, predecessorCoords, successorCoords) {
     var exitCoords = null;
     var direction = 0;
     
-    var movement = null;
-    
     // Vector that points to the middle of the track elements
     var relMidVector = new Vector(gridSize/2, gridSize/2);
     

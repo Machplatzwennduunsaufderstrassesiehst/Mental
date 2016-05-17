@@ -1,4 +1,6 @@
 
+/* global serverConnection, byID */
+
 var mainFrame = new Frame("mainFrame");
 
 mainFrame.setOnOpen(function() {
@@ -9,6 +11,7 @@ mainFrame.setOnOpen(function() {
     serverConnection.addObserver(beatBobObserver);
     serverConnection.addObserver(messageObserver);
     serverConnection.addObserver(exerciseObserver);
+    serverConnection.addObserver(timeLeftObserver);
     serverConnection.addObserver(playerWonObserver);
     resetBeatBobBar();
 });
@@ -78,7 +81,7 @@ function displayMessage(message) {
     setTimeout(function(){msgC.removeChild(byID(msgID));}, 5500);
     msgIDCounter++;
 }
-var slide = function(msgC, value) {
+function slide(msgC, value) {
     if (value >= 0) {return;}
     msgC.style.marginTop = String(value) + "em";
     value += 0.1;
@@ -122,11 +125,11 @@ var playerWonObserver = new Observer("playerWon", function(msg) {
 });
 
 var exerciseObserver = new Observer("exercise", function(msg) {
-    if (msg.exercise.type == "arithmetic") {
+    if (msg.exercise.type === "arithmetic") {
         var ex = msg.exercise.exerciseString;
         log("got arithmetic exercise");
         displayArithmeticExercise(ex + " = ");
-    } else if (msg.exercise.type == undefined) { // backwards compatibility
+    } else if (msg.exercise.type === undefined) { // backwards compatibility
         var ex = msg.exercise;
         displayArithmeticExercise(ex + " = ");
     }
@@ -144,7 +147,7 @@ var beatBobObserver = new Observer("beatbob", function(msg) {
         byID("beatBobBarLeft").style.backgroundColor = c;
         byID("beatBobBarLeft").style.boxShadow = "0px 0px 3px " + c;
     }
-    if (msg.status == 0) resetBeatBobBar();
+    if (msg.status === 0) resetBeatBobBar();
     if (msg.status > 0) {
         byID("beatBobBarRight").style.width = percent + "%";
         var c = 'rgb('+(150*p_)+','+(155+100*p)+','+(150*p_)+')';

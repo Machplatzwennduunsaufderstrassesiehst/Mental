@@ -2,9 +2,9 @@
 <html encoding="UTF-8">
 <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-    <meta content="utf-8" http-equiv="encoding">
+    <meta content="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> 
-    <meta http-equiv="cache-control" content="no-cache"><!-- TODO -->
+    <meta content="no-cache"><!-- TODO -->
     
     <link rel="stylesheet" href="jQuery/jquery.mobile-1.2.1.min.css" />
     <script src="jQuery/jquery-1.8.3.min.js"></script>
@@ -45,7 +45,7 @@
     <!-- used for default countdown, if no other countdown container should be displayed -->
     <span style="position:absolute;top:-200px;opacity:0;" id="countdownHack"></span>
     <!-- blur hack: wird gefocused, um den focus aus input felder zu nehmen -->
-    <form onsubmit="return false;" action="#" data-ajax="false" style="position:absolute;top:-300px;opacity:0;"><input type="submit" id="blurHack"></input></form>
+    <form onsubmit="return false;" action="#" data-ajax="false" style="position:absolute;top:-300px;opacity:0;"><input type="submit" id="blurHack"></form>
     <div id="page_" data-role="page" data-fullscreen="true">
         <div id="infobox"><p id="infoboxContent">test</p></div>
         <div id="menu" data-role="header">
@@ -112,8 +112,8 @@
                     </p>
                 </form>
                 <div id="beatBob" class="lvlProgress">
-                    <span style="width:49.9%;display:block;float:left;border-radius: 4px 0px 0px 4px;" class="lvlProgress"><div id="beatBobBarLeft" style="width:56%" class="lvlProgressBar"></div></span>
-                    <span style="width:49.9%;display:block;float:right;border-radius: 0px 4px 4px 0px;" class="lvlProgress"><div id="beatBobBarRight" style="width:80%" class="lvlProgressBar"></div></span>
+                    <span style="width:49.9%;display:block;float:left;border-radius: 4px 0px 0px 4px;" class="lvlProgress"><span id="beatBobBarLeft" style="width:56%" class="lvlProgressBar"></span></span>
+                    <span style="width:49.9%;display:block;float:right;border-radius: 0px 4px 4px 0px;" class="lvlProgress"><span id="beatBobBarRight" style="width:80%" class="lvlProgressBar"></span></span>
                 </div>
                 <table id="numpadTable">
                     <tr>
@@ -173,21 +173,21 @@
                         <span style="float:right;font-style:italic;font-weight:normal;"><span data-icon="key"></span>Level <span data-field-key="playerLevel"></span> -Spins <span data-field-key="playerSpins"></span> - $<span data-field-key="playerMoney"></span></span>
                         <span>Hallo <span data-field-key="playerName"></span>!</span>
                     </div>
-					<div id="wheelSpace" style="text-align:center;">
-						<h2><span id="prizeTextField">spin 2 win</span></h2>
-						<p>
-							<img src="graphics/wof/wheel.png" id="wheel">
-							<img style="position:absolute;" src="graphics/wof/pin.png" id="pin">
-						</p>
-					</div>	
-					<div style="text-align:center;">
-                    <p>
-                        <a id="spinButton" class="btn" data-role="button" href="#" onclick="spin()";" style="max-width:16em;"><span data-icon="target"></span>Spin the wheel!</a>
-                    </p>
-					<p>
-                        <a id="buySpinButton" class="btn" data-role="button" href="#" onclick="buySpin()";" style="max-width:16em;"><span data-icon="cart"></span>buy a spin</a>
-                    </p>
-					</div>
+                        <div id="wheelSpace" style="text-align:center;">
+                            <h2><span id="prizeTextField">spin 2 win</span></h2>
+                            <p>
+                                    <img src="graphics/wof/wheel.png" id="wheel" alt="fortuneWheel">
+                                    <img style="position:absolute;" src="graphics/wof/pin.png" id="pin" alt="fortuneWheelPin">
+                            </p>
+                        </div>	
+                        <div style="text-align:center;">
+                            <p>
+                                <a id="spinButton" class="btn" data-role="button" href="#" onclick="spin();" style="max-width:16em;"><span data-icon="target"></span><span id="spinButtonText">Spin the wheel!</span></a>
+                            </p>
+                                                <p>
+                                <a id="buySpinButton" class="btn" data-role="button" href="#" onclick="buySpin();" style="max-width:16em;"><span data-icon="cart"></span>buy a spin</a>
+                            </p>
+                        </div>
                 </div>
             </div>
             <p style="text-align:center;" id="warning">Ernsthavtes Problem mit JawaScriptt!!1!11<br>Lösche bitte deinen Cache!</p>

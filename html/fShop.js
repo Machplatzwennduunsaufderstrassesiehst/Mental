@@ -1,4 +1,6 @@
 
+/* global byID, navigation, serverConnection, player, lobbyFrame */
+
 var shoppingFrame = new Frame("shoppingFrame");
 
 shoppingFrame.setOnOpen(function() {
@@ -41,7 +43,7 @@ function equipItem(index) {
     serverConnection.communicate(makeSimpleCmd("equipItem", "index", index), function(msg){
         if (msg.success) {
             for (var i = 0; i < shop.shopItemList.length; i++) {// TODO für Booster etc
-                if (byID("shopItem"+i).getAttribute("data-item-type") != msg.itemType) continue; // wenn die Typen nicht übereinstimmen, das equip symbol nicht löschen
+                if (byID("shopItem"+i).getAttribute("data-item-type") !== msg.itemType) continue; // wenn die Typen nicht übereinstimmen, das equip symbol nicht löschen
                 byID("equipCheck"+i).style.display = "none"; 
             }
             reconfigureEquipButton("equipButton"+index, function(){unequipItem(index);}, shop.unequipButtonText);
@@ -57,7 +59,7 @@ function unequipItem(index) {
     serverConnection.communicate(makeSimpleCmd("unequipItem", "index", index), function(msg){
         if (msg.success) {
             for (var i = 0; i < shop.shopItemList.length; i++) {// TODO für Booster etc
-                if (byID("shopItem"+i).getAttribute("data-item-type") != msg.itemType) continue; // wenn die Typen nicht übereinstimmen, das equip symbol nicht löschen
+                if (byID("shopItem"+i).getAttribute("data-item-type") !== msg.itemType) continue; // wenn die Typen nicht übereinstimmen, das equip symbol nicht löschen
                 byID("equipButton"+i).style.display = "none"; 
                 reconfigureEquipButton("equipButton"+index, function(){equipItem(index);}, shop.equipButtonText);
             }

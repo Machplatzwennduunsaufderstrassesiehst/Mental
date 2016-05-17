@@ -1,4 +1,5 @@
 
+/* global welcomeFrame, byID, navigation, lobbyFrame, serverConnections, listAvailableGames */
 
 var serverConnection = null;
 var netManager = new NetworkManager();
@@ -18,10 +19,10 @@ window.onload = function() {
     netManager.setOnScanReady(function(){setTimeout(listAvailableGames, 1000);});
     
     // versuche die letzten anmeldedaten und gameString aus den cookies zu lesen
-    if (getCookie("userName") != "") byID("name").value = getCookie("userName");
-    if (getCookie("ip") != "") byID("ip").value = getCookie("ip");
-    if (getCookie("gameString") != "") byID("gameStringInput").value = getCookie("gameString");
-    if (getCookie("gameString") != "") byID("gameString").innerHTML = "Alter Spielstand: " + getCookie("gameString");
+    if (getCookie("userName") !== "") byID("name").value = getCookie("userName");
+    if (getCookie("ip") !== "") byID("ip").value = getCookie("ip");
+    if (getCookie("gameString") !== "") byID("gameStringInput").value = getCookie("gameString");
+    if (getCookie("gameString") !== "") byID("gameString").innerHTML = "Alter Spielstand: " + getCookie("gameString");
     
     setTimeout(function(){updateLocalIP();},100);
     setDoOnEnter(function(){byID("connect").click();});
@@ -34,14 +35,14 @@ window.onload = function() {
     
     countdown();
     
-    setTimeout(function(){if (!byID('ip').value.contains(netManager.getLocalIPSub()) && byID('ip').value != "localhost") byID('ip').value = netManager.getLocalIPSub();}, 1000);
+    setTimeout(function(){if (!byID('ip').value.contains(netManager.getLocalIPSub()) && byID('ip').value !== "localhost") byID('ip').value = netManager.getLocalIPSub();}, 1000);
     /*byID("ip").onfocus = function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();};
     byID("ip").onkeyup = function(){
         if (byID("ip").value == "") setTimeout(function(){if (byID("ip").value == "") byID("ip").value = netManager.getLocalIPSub();}, 2000);
     }*/ // weiß nicht, das kann auch echt nervig sein
     
     byID("warning").style.display = "none";
-}
+};
 
 function updateLocalIP() {
     netManager.updateLocalIP();

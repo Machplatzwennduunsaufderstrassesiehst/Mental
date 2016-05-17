@@ -1,13 +1,13 @@
 
 function createIcon(key, size, offsetpx) {
-    if (size == undefined) size = 2;
+    if (size === undefined) size = 2;
     var size_;
     if (size < 2) {
         size_ = "";
     } else {
         size_ = "-" + size + "x";
     }
-    if (offsetpx != undefined) size = offsetpx;
+    if (offsetpx !== undefined) size = offsetpx;
     var html = '<img style="margin-bottom:-'+size+'px;" src="graphics/icons/open-iconic-master/png/'+key+size_+'.png" ';
     html += 'alt="'+key+'">&nbsp;';
     return html;
