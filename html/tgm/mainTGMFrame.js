@@ -1,5 +1,5 @@
 
-/* global byID, serverConnection, Switch, Goal, Train, GameGraphics, TextureGenerator */
+/* global byID, serverConnection, Switch, Goal, Train, GameGraphics, TextureGenerator, PIXI */
 
 var mainTrainGameFrame = new Frame("mainTrainGameFrame");
 
@@ -17,7 +17,7 @@ mainTrainGameFrame.setOnOpen(function() {
         trainGameGraphics.stop();
         trainGameGraphics.clearEnvironment();
     }
-    var trainGameGraphics = new GameGraphics();
+    var trainGameGraphics = new GameGraphics("mainTrainGameFrame");
     trainGame = new TrainGame(trainGameGraphics);
     trainGame.start();
     
@@ -162,19 +162,19 @@ function TrainGame(graphics) {
     };
     
     this.mouseDown = function(event) {
-        var clickPoint = new PIXI.Point(event.clientX, event.clientY);
         for (var i = 0; i < Switch.es.length; i++) {
             var sw = Switch.es[i];
             if (sw == undefined) continue;
             var switchRect = sw.getRect();
-            if (switchRect.contains(clickPoint)) {
+            if (switchRect.contains(event.clientX, event.clientY)) {
                 performSwitchChange(sw);
             }
         }
     };
     
     var performSwitchChange = this.performSwitchChange = function(sw) {
-        serverConnection.send({type:"changeSwitch", switchId:sw.id, value:sw.getNextLaneIndex()}); // TODO!!
+        var a = {switch: sw.id};
+        serverConnection.send({type:"answer", answer:a}); // TODO!!
     };
 }
 TrainGame.TGMPATH = "graphics/tgm/";
@@ -197,8 +197,8 @@ var newtrainObserver = new Observer("newTrain", function(msg) {
     trainGame.trains.push(train);
 });
 
-var switchChangedObserver = new Observer("switchChanged", function(msg) {
-    Switch.es[msg.switchId].change(msg.switchedTo);
+var switchChangedObserver = new Observer("switchChange", function(msg) {
+    Switch.es[msg.switchChange.switchId].change(msg.switchChange.switchedTo);
 });
 
 var trainDecisionObserver = new Observer("trainDecision", function(msg) {

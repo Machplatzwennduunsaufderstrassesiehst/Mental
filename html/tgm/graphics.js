@@ -2,7 +2,7 @@
 
 /* global PIXI, byID, trainGame */
 
-function GameGraphics() {
+function GameGraphics(htmlContainer) {
     var graphicObjects = [];
     var environmentSprites = [];
     var running = false;
@@ -30,13 +30,13 @@ function GameGraphics() {
     var start = this.start = function() {
         running = true;
         // The renderer will create a canvas element for you that you can then insert into the DOM.
-        byID("mainTrainGameFrame").appendChild(renderer.view);
+        byID(htmlContainer).appendChild(renderer.view);
         animate();
         fpsMeasureThread = setInterval(measureFPS, 1000);
     };
     
     var stop = this.stop = function() {
-        byID("mainTrainGameFrame").removeChild(renderer.view);
+        byID(htmlContainer).removeChild(renderer.view);
         staticEnvironment.cacheAsBitmap = false;
         running = false;
         clearInterval(fpsMeasureThread);
@@ -53,7 +53,7 @@ function GameGraphics() {
     };
     
     var addEnvironment = this.addEnvironment = function(sprite, cache) {
-        if (cache) {
+        if (cache === true) {
             staticEnvironment.addChild(sprite);
         } else {
             environment.addChild(sprite);

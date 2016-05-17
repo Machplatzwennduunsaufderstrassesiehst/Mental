@@ -1,5 +1,5 @@
 
-/* global trainGame */
+/* global trainGame, PIXI */
 
 function Lane(i, j, predecessorCoords, successorCoords) {
     this.i = i;
@@ -31,39 +31,39 @@ function Lane(i, j, predecessorCoords, successorCoords) {
         v.multiply(gridSize/2);
         v.add(posVector);
         return v;
-    }
+    };
     
     var getStartRotation = this.getStartRotation = function() {
         return entranceSide * Math.PI / 2;
-    }
+    };
     
     var getEntranceSide = this.getEntranceSide = function() {
         return entranceSide;
-    }
+    };
     
     var getEntranceCoords = this.getEntranceCoords = function() {
         return entranceCoords;
-    }
+    };
      
     var getExitCoords = this.getExitCoords = function() {
         return exitCoords;
-    }
+    };
     
     this.setExitCoords = function(xc, yc) {
         exitCoords = {x:xc, y:yc};
-    }
+    };
     
     this.setSwitched = function(bSwitched) {
         sprite.alpha = (bSwitched ? 1 : 0.5);
-    }
+    };
     
     // only used for Turns!
     this.getTurnRadius = function() {
         return gridSize/2;
-    }
+    };
     this.getTurnDegrees = function() {
         return direction * Math.PI / 2;
-    }
+    };
     
     function initializeOrientation() {
         var dx1 = i - predecessorCoords.x;
@@ -105,11 +105,11 @@ function Lane(i, j, predecessorCoords, successorCoords) {
                 break;
         }
         spriteRotation *= Math.PI / 2;
-    }
+    };
     
     var setTexture = this.setTexture = function(texture_) {
         texture = texture_;
-    }
+    };
     
     var buildSprite = this.buildSprite = function(onload) {
         if (texture == undefined) initTextureType();
@@ -119,7 +119,7 @@ function Lane(i, j, predecessorCoords, successorCoords) {
         sprite.pivot = TextureGenerator.getSpritePivot(sprite);
         sprite.rotation = spriteRotation;
         onload(sprite);
-    }
+    };
     
     
     initializeOrientation();
@@ -133,48 +133,46 @@ function Track(i, j) {
     var successor = null;
     
     var lane = null;
-    var gridSize = null;
     
     this.type = "track";
     
     this.getX = function() {
         return i;
-    }
+    };
     this.getY = function() {
         return j;
-    }
+    };
     
     this.getLane = function() {
         return lane;
-    }
+    };
     
     var hasPredecessor = this.hasPredecessor = function() {
         return predecessor != null;
-    }
+    };
     
     var hasSuccessor = this.hasSuccessor = function() {
         return successor != null;
-    }
+    };
     
     this.setPredecessor = function(p) {
         predecessor = p;
-    }
+    };
     
     this.setSuccessor = function(s) {
         successor = s;
-    }
+    };
     
     this.getPredecessor = function() {
         return predecessor;
-    }
+    };
     
     this.getSuccessor = function() {
         return successor;
-    }
+    };
     
     // to be called after successor and predecessor are set
     this.initialize = function() {
-        gridSize = trainGame.getGridSize();
         if (hasPredecessor()) {
             var predecessorCoords = {x:predecessor.getX(), y:predecessor.getY()};
         } else {
@@ -191,11 +189,12 @@ function Track(i, j) {
         lane.buildSprite(function(sprite) {
             trainGame.graphics.addEnvironment(sprite, true);
         });
-    }
+    };
     
     this.getRect = function() {
+        var gridSize = trainGame.getGridSize();
         return new PIXI.Rectangle(i*gridSize, j*gridSize, gridSize, gridSize);
-    }
+    };
     
 }
 // static
@@ -219,27 +218,27 @@ function Switch(id, i, j) {
     this.getLane = function(index) {
         if (index == undefined) index = switchedTo;
         return lanes[index];
-    }
+    };
     
     // overwritten
     this.hasSuccessor = function() {
         return true;
-    }
+    };
     
     // overwritten
     this.getSuccessor = function(index) {
         if (index == undefined) index = switchedTo;
         return successors[index];
-    }
+    };
     
     this.setSuccessors = function(s) {
         successors = s;
-    }
+    };
     
     // overwritten
     this.setSuccessor = function(s) {
         change(successors.indexOf(s));
-    }
+    };
     
     var change = this.change = function(newSwitchedTo) {
         switchedTo = newSwitchedTo;
@@ -250,7 +249,7 @@ function Switch(id, i, j) {
                 lanes[l].setSwitched(false);
             }
         }
-    }
+    };
     
     this.initialize = function() {
         var predecessor = this.getPredecessor();
@@ -266,15 +265,15 @@ function Switch(id, i, j) {
             var onl = function(index) {
                 return function(sprite) {
                     trainGame.graphics.addEnvironment(sprite);
-                }
+                };
             }(s);
             lanes[s].buildSprite(onl);
         }
-    }
+    };
     
     this.getNextLaneIndex = function() {
         return (switchedTo + 1) % successors.length;
-    }
+    };
 }
 Switch.es = [];
 Switch.prototype = new Track;
@@ -290,7 +289,7 @@ function Goal(id, i, j) {
     // overwritten
     this.getSuccessor = function() {
         return null;
-    }
+    };
 }
 Goal.s = [];
 Goal.prototype = new Track;
