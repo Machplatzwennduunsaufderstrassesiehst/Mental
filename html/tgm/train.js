@@ -4,10 +4,19 @@
 function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
     var container = new PIXI.Container();
     
-    var sprite = TextureGenerator.generateSprite(TrainGame.trainTexture, 0.5);
+    var gridSize = trainGame.getGridSize();
+    var scale = 0.38;
+    var sprite = TextureGenerator.generateSprite(TrainGame.trainTexture, scale);
+    var colorTexture = new PIXI.Graphics();
+    colorTexture.beginFill(Number("0x" + TrainGame.idColors[destinationId]), 1);
+    colorTexture.drawRect(0, -gridSize/8*scale, gridSize / 3 * scale, gridSize / 1.5 * scale);
     container.addChild(sprite);
+    container.addChild(colorTexture);
 	
     sprite.pivot = TextureGenerator.getSpritePivot(sprite);
+    colorTexture.pivot = TextureGenerator.getDisplayObjectPivot(colorTexture);
+    
+    container.cacheAsBitmap = true;
 	
     // add color TODO
     var graphicObject = new GraphicObject(container);

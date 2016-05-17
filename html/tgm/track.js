@@ -313,7 +313,11 @@ function Goal(id, i, j) {
         lane.setExitCoords(lane.getPosVector());
         lane.setTexture(TrainGame.goalTexture);
         lane.buildSprite(function(sprite) {
+            var colorTexture = new PIXI.Graphics();
+            colorTexture.beginFill(Number("0x" + TrainGame.idColors[id]), 1);
+            colorTexture.drawCircle(lane.getPosVector().getX(), lane.getPosVector().getY(), gridSize/10);
             trainGame.graphics.addEnvironment(sprite, true);
+            trainGame.graphics.addEnvironment(colorTexture, true);
         });
     };
 }

@@ -135,6 +135,10 @@ var TextureGenerator = new function () {
     this.getSpritePivot = function(sprite) {
         return new PIXI.Point(sprite._texture.width/2, sprite._texture.height/2);
     };
+    
+    this.getDisplayObjectPivot = function(displayObject) {
+        return new PIXI.Point(displayObject.width/2, displayObject.height/2);
+    };
 };
 
 

@@ -180,6 +180,8 @@ TrainGame.straightTexture = TextureGenerator.generate(TrainGame.TGMPATH + "strai
 TrainGame.turnTexture = TextureGenerator.generate(TrainGame.TGMPATH + "turn.png");
 TrainGame.goalTexture = TextureGenerator.generate(TrainGame.TGMPATH + "goal.png");
 
+TrainGame.idColors = ["ff0000", "00ff00", "0000ff", "ffff00", "ff00ff", "00ffff", "ffffff", "000000"];
+
 // OBSERVERS =====================================================================================================
 
 var trainMapObserver = new Observer("exercise", function(msg) {
