@@ -314,6 +314,18 @@ public class Game implements Runnable {
         gameMode.minPlayers = players;
         gameMode.waitForPlayers();
     }
+    public void confirm(){confirmed++;}
+
+    int confirmed = 0;
+    private void waitForConfirmation(){
+        if(!gameMode.needsConfirmation){return;}
+        confirmed = 0;
+        while(confirmed < activePlayers.size()){
+            try{
+                Thread.sleep(100);
+            }catch(Exception e){e.printStackTrace();}
+        }
+    }
 
     @Override
     public void run() {
@@ -338,6 +350,7 @@ public class Game implements Runnable {
             System.out.println("broadcastedShowExercise");
             gameMode.prepareGame();
             System.out.println("game prepared: " + gameMode.getGameModeString());
+            waitForConfirmation();
 
             while (gameMode.getGameIsRunning()) {
                 System.out.println("[Game.run] while-Schleife anfang");

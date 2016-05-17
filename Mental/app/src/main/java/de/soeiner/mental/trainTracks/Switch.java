@@ -23,6 +23,7 @@ public class Switch extends TrainTrack {
     }
 
     public int getSwitchedTo() {
+        //return (int) (Math.random()*(successors.size()+0.99));
         return switchedTo;
     }
 

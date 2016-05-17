@@ -275,6 +275,9 @@ public class Player extends ClientConnection {
                 System.out.println(game);
                 game.voting.receiveVote(suggestionID, this);
             }
+            if (type.equals("confirm")) {
+                this.game.confirm();
+            }
             if (type.equals("leave")) {
                 try {
                     game.removePlayer(this);

@@ -31,6 +31,7 @@ public class TrainGameMode extends GameMode {
 
     public TrainGameMode(Game game) {
         super(game);
+        needsConfirmation = true;
     }
 
     @Override

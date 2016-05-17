@@ -25,6 +25,7 @@ public abstract class GameMode {
 
     public boolean gameIsRunning;
     public int minPlayers = 2;
+    public boolean needsConfirmation = false;
     public Game game;
 
     public final Object answerLock = new Object();
