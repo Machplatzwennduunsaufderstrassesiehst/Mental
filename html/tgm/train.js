@@ -1,4 +1,6 @@
 
+/* global PIXI, TextureGenerator, TrainGame, trainGame, Vector */
+
 function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
     var container = new PIXI.Container();
     
@@ -72,7 +74,7 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
                 graphicObject.queueMovement(movement);
             }
         }
-    }
+    };
     
     move();
     

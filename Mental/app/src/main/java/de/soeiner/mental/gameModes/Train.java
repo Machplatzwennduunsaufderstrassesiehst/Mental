@@ -50,7 +50,13 @@ public class Train implements Runnable{
                 z++;
                 Thread.sleep(calculateTimeToDestination());
                 System.out.println("Train " + this.getId() + " is now at (" + x + "|" + y + ")");
-            }catch(Exception e){e.printStackTrace();}
+            }catch(Exception e){
+                e.printStackTrace();
+                try{
+                    System.out.println("Train " + id + " waiting 10 s due to error");
+                    Thread.sleep(10000);
+                }catch (Exception e2){e2.printStackTrace();}
+            }
             if(traingame.trainMap[x][y].getType().equals("goal")){
                 Goal tempGoal = (Goal) traingame.trainMap[x][y]; //TODO possible breaking point
                 if(destinationId == tempGoal.getGoalId()){

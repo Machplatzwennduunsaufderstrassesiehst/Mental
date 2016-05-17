@@ -1,4 +1,6 @@
 
+/* global byID, uselessFunction, serverConnections, serverConnection, connections, navigation */
+
 var lobbyFrame = new Frame("listGamesFrame");
 var serverLobbyFrame = new Frame("listServersFrame");
 
@@ -30,7 +32,7 @@ function listAvailableServers() {
 }
 
 function listAvailableGames() {
-    if (serverConnection == null) return;
+    if (serverConnection === null) return;
     byID("gamesList").innerHTML = "";
     serverConnection.communicate(makeGetCmd("getGames"), function(msg) {
         for (var j = 0; j < msg.games.length; j++) {
@@ -41,7 +43,7 @@ function listAvailableGames() {
                 players += game.players[k].playerName;
                 if (k < game.players.length-1) players += ", ";
             }
-            if (players == "") players = "keine";
+            if (players === "") players = "keine";
             html += "<div style='padding-left: 5px;padding-right: 5px;' class='selectListItem' onclick='joinGame("+game.gameId+");'>";
             html += "<p>"+createIcon("account-login")+"Joinen: "+game.name+" auf "+serverConnection.host+" - Spieler: "+players+"</p>";
             html += "</div>";
@@ -52,7 +54,7 @@ function listAvailableGames() {
 
 function joinServer(connection) {
     for (var i = 0; i < serverConnections; i++) {
-        if (serverConnections[i] != connection) connections[i].close();
+        if (serverConnections[i] !== connection) connections[i].close();
     }
     serverConnection = connection;
     configureObservers();

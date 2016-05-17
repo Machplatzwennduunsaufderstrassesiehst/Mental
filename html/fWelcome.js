@@ -1,4 +1,6 @@
 
+/* global byID, netManager */
+
 var welcomeFrame = new Frame("welcome");
 
 welcomeFrame.setOnOpen(function() {

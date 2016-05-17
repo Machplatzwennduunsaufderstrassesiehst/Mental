@@ -4,6 +4,8 @@
  * 
  */
 
+/* global uselessFunction, welcomeFrame, welcomeFrame, navigation */
+
 // sleep time between request queue checks
 var actRate = 250;
 var maxWaitTimeout = 5000;
@@ -31,30 +33,30 @@ function GetRequest(jc, hl, eHl) {
     // these functions are called by receive() when data is received
     this.ok = function(msg) {
         this.handler(msg);
-    }
+    };
     this.notok = function(msg) {
-        if (errorHandler != null) {
+        if (errorHandler !== undefined) {
             errorHandler(msg);
         } else {
             
         }
-    }
+    };
     this.data = function(msg) {
         this.handler(msg);
-    }
+    };
     
     this.notifySent = function(msg) {
         sent = true;
         setTimeout(function(){failed = true;}, maxWaitTimeout);
-    }
+    };
     
     this.hasFailed = function() {
         return failed;
-    }
+    };
     
     this.isSent = function() {
         return sent;
-    }
+    };
 }
 
 
@@ -74,7 +76,7 @@ function Observer(cmdType, handler) {
 var serverConnections = [];
 function getConnectionByHost(host) {
     for (var i = 0; i < serverConnections.length; i++) {
-        if (serverConnections[i].host == host) return serverConnections[i];
+        if (serverConnections[i].host === host) return serverConnections[i];
     }
 }
 // class constructor definition
@@ -98,7 +100,7 @@ function ServerConnection(host, port) {
         unshowMsgBox();
         onopen();
         log("Socket opened");
-    }
+    };
     
     socket.onclose = function(event) {
         //unshowMsgBox();
@@ -108,21 +110,21 @@ function ServerConnection(host, port) {
         if (manuallyClosed) return; // normal socket close
         showMsgBox("Verbindung zum Server geschlossen (oder nicht möglich): Code: "+event.code+", Phase: " + event.eventPhase, "msgBoxError");
         setTimeout(function(){unshowMsgBox();}, 5000);
-    }
+    };
     
     socket.onerror = function(event) {
         //unshowMsgBox();
         showMsgBox("Fehler beim Verbinden mit Server: Code: "+event.code+", Phase: "+event.eventPhase, "msgBoxError");
         setTimeout(function(){unshowMsgBox();}, 5000);
-    }
+    };
     
     this.setOnOpen = function(func) {
         onopen = func;
-    }
+    };
     
     this.setOnClose = function(func) {
         onclose = func;
-    }
+    };
     
     this.close = function() {
         socket.close();
@@ -130,14 +132,14 @@ function ServerConnection(host, port) {
         serverConnections.remove(self);
         manuallyClosed = true;
         setTimeout(function(){manuallyClosed = false;}, 2000);
-    }
+    };
     
     socket.onmessage = function(event) {
         var msg = "";
         if (ServerConnection.DEBUG) log(event.data);
         try {
             msg = JSON.parse(event.data);
-            if (currentRequest != null && "_"+currentRequest.jsonCmd.type+"_" == msg.type) {
+            if (currentRequest !== null && "_"+currentRequest.jsonCmd.type+"_" === msg.type) {
                 removeRequest(currentRequest);
                 currentRequest.handler(msg);
                 currentRequest = null;
@@ -147,7 +149,7 @@ function ServerConnection(host, port) {
         } catch (e) {
             log(e);
         }
-    }
+    };
     
     // always call this function to add a command to the command queue
     function communicate(jsonCmd, handler, errorHandler) {
@@ -183,8 +185,8 @@ function ServerConnection(host, port) {
     function notify(msg) {
         var l = observers.length;
         for (var i = 0; i < l; i++) {
-            if (observers[i] == undefined) continue; // behalte ich für alle Fälle
-            if (observers[i].cmdType == msg.type) {
+            if (!observers[i]) continue; // behalte ich für alle Fälle
+            if (observers[i].cmdType === msg.type) {
                 observers[i].handler(msg);
             }
         }
@@ -201,11 +203,11 @@ function ServerConnection(host, port) {
     
     // scheduler function to schedule the CommandRequests on the Queue
     function startGetRequestScheduler() {
-        if (currentRequest == null && commandRequestQueue.length > 0) {
+        if (!currentRequest && commandRequestQueue.length > 0) {
             // get the first request on the queue and remove it from the queue
             currentRequest = commandRequestQueue.shift();
         }
-        if (currentRequest != null) {
+        if (currentRequest) {
             if (!currentRequest.isSent()) {
                 send(currentRequest.jsonCmd);
                 currentRequest.notifySent();
@@ -249,7 +251,7 @@ function NetworkManager() {
         scanning = true;
         tryPing("localhost");
         checkNext([localIP_[0], localIP_[1], localIP_[2], 0], true, 0);
-    }
+    };
     
     this.scanManually = function(ip) {
         var s = new ServerConnection(ip, gameServerPort);
@@ -261,7 +263,7 @@ function NetworkManager() {
                 navigation.openFrames(welcomeFrame);
             });
         });
-    }
+    };
     
     function checkNext(ipArray, isBasic, c) {
         if (!scanning || c > 255*255) return;
@@ -294,7 +296,7 @@ function NetworkManager() {
     
     this.setOnScanReady = function(f) {
         onScanReady = f;
-    }
+    };
     
     function addServer(conn) {
         openServerConnections.push(conn);
@@ -302,16 +304,16 @@ function NetworkManager() {
     
     this.getOpenServerConnections = function() {
         return openServerConnections;
-    }
+    };
     
     this.popOpenConnection = function() {
         return openServerConnections.pop();
-    }
+    };
     
     // kleines workaround um die lokale IP des Users zu ermitteln
     function updateLocalIP(){
         window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;   //compatibility for firefox and chrome
-        if (window.RTCPeerConnection == undefined) return;
+        if (!window.RTCPeerConnection) return;
         var pc = new RTCPeerConnection({iceServers:[]}); 
         pc.createDataChannel("");    //create a bogus data channel
         pc.createOffer(pc.setLocalDescription.bind(pc), uselessFunction);    // create offer and set local description
@@ -325,12 +327,12 @@ function NetworkManager() {
     
     this.getLocalIP = function() {
         return localIP;
-    }
+    };
     
     this.getLocalIPSub = function() {
         var a = localIP.split(".");
         return a[0] + "." + a[1] + ".";
-    }
+    };
 }
 
 

@@ -183,108 +183,103 @@ public class Player extends ClientConnection {
 
     @Override
     public void processData(JSONObject json) {
+        System.out.println(getName() + ": " + json.toString());
         try {
             String type = json.getString("type");
-            // TODO switch anstatt if
-            if (type.equals("getGames")) {
-                JSONArray jsonGameArray = Game.getGamesJSONArray();
-                JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_GAMES);
-                j.put("games", jsonGameArray);
-                send(new PushRequest(j));
+            int index;
+            JSONObject callback = null;
+            switch (type) {
+                case "getGames":
+                    JSONArray jsonGameArray = Game.getGamesJSONArray();
+                    callback = CmdRequest.makeCmd(CmdRequest.SEND_GAMES);
+                    callback.put("games", jsonGameArray);
+                    break;
+                case "join":
+                    int id = Integer.parseInt(json.getString("gameId"));
+                    Game g = Game.getGames().get(id);
+                    g.addPlayer(this);
+                    game = g;
+                    break;
+                case "confirm":
+                    this.game.confirm();
+                    break;
+                case "answer":
+                    JSONObject answer = json.getJSONObject("answer");
+                    boolean isCorrect = game.gameMode.playerAnswered(this, answer);
+                    callback = CmdRequest.makeResponseCmd(type);
+                    callback.put("isCorrect", isCorrect);
+                    callback.put("pointsGained", this.getScore().getPointsGained());
+                    break;
+                case "setName":
+                    String name = json.getString("name");
+                    this.name = name;
+                    this.score.setPlayerName(name);
+                    break;
+                case "setGameString":
+                    String gameString = json.getString("gameString");
+                    try {
+                        loadGameString(gameString);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("set game string");
+                    Score[] s = new Score[1];
+                    s[0] = getScore();
+                    sendScoreBoard(s);
+                    break;
+                case "buyItem":
+                    index = Integer.parseInt(json.getString("index"));
+                    callback = CmdRequest.makeResponseCmd(type);
+                    callback.put("success", this.shop.buyItem(index));
+                    callback.put("price", this.shop.shopItemList[index].getPrice());
+                    callback.put("index", index);
+                    sendGameString();
+                    break;
+                case "equipItem":
+                    index = Integer.parseInt(json.getString("index"));
+                    callback = CmdRequest.makeResponseCmd(type);
+                    callback.put("success", this.shop.equipItem(index));
+                    callback.put("index", index);
+                    callback.put("itemType", shop.shopItemList[index].getType());
+                    sendGameString();
+                    break;
+                case "unequipItem":
+                    index = Integer.parseInt(json.getString("index"));
+                    callback = CmdRequest.makeResponseCmd(type);
+                    callback.put("success", this.shop.unequipItem(index));
+                    callback.put("index", index);
+                    sendGameString();
+                    break;
+                case "getShopItemList":
+                    ShopItem[] shopItemList = shop.getShopItemList();
+                    callback = CmdRequest.makeResponseCmd(type);
+                    callback.put("shopItemList", new JSONArray(shopItemList));
+                    break;
+                case "spin":
+                    callback = CmdRequest.makeResponseCmd(type);
+                    callback.put("angle", this.shop.getWheel().calculateAngel());
+                    callback.put("success", this.shop.getWheel().spin());
+                    sendGameString();
+                    break;
+                case "buySpin":
+                    callback = CmdRequest.makeResponseCmd(type);
+                    callback.put("success", this.shop.getWheel().buySpin());
+                    sendGameString();
+                    break;
+                case "vote":
+                    int suggestionID = Integer.parseInt(json.getString("suggestionID"));
+                    System.out.println(game);
+                    game.voting.receiveVote(suggestionID, this);
+                    break;
+                case "leave":
+                    try {
+                        game.removePlayer(this);
+                    } catch (Exception e) {
+                        System.out.println("[processData] [leave] Player already disconnected.");
+                    }
+                    break;
             }
-            if (type.equals("join")) {
-                int id = Integer.parseInt(json.getString("gameId"));
-                Game g = Game.getGames().get(id);
-                g.addPlayer(this);
-                game = g;
-
-            }
-            if (type.equals("answer")) {
-                JSONObject answer = json.getJSONObject("answer");
-                boolean isCorrect = game.gameMode.playerAnswered(this, answer);
-                JSONObject j = CmdRequest.makeResponseCmd(type);
-                j.put("isCorrect", isCorrect);
-                j.put("pointsGained", this.getScore().getPointsGained());
-                send(new PushRequest(j));
-            }
-            if (type.equals("setName")) {
-                String name = json.getString("name");
-                this.name = name;
-                this.score.setPlayerName(name);
-            }
-            if (type.equals("setGameString")) {
-                String g = json.getString("gameString");
-                System.out.println(g);
-                try {
-                    loadGameString(g);
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-                System.out.println("set game string");
-                Score[] s = new Score[1];
-                s[0] = getScore();
-                sendScoreBoard(s);
-            }
-            if (type.equals("buyItem")) {
-                int index = Integer.parseInt(json.getString("index"));
-                JSONObject j = CmdRequest.makeResponseCmd(type);
-                j.put("success", this.shop.buyItem(index));
-                j.put("price", this.shop.shopItemList[index].getPrice());
-                j.put("index", index);
-                send(new PushRequest(j));
-                sendGameString();
-            }
-            if (type.equals("equipItem")) {
-                int index = Integer.parseInt(json.getString("index"));
-                JSONObject j = CmdRequest.makeResponseCmd(type);
-                j.put("success", this.shop.equipItem(index));
-                j.put("index", index);
-                j.put("itemType", shop.shopItemList[index].getType());
-                send(new PushRequest(j));
-                sendGameString();
-            }
-            if (type.equals("unequipItem")) {
-                int index = Integer.parseInt(json.getString("index"));
-                JSONObject j = CmdRequest.makeResponseCmd(type);
-                j.put("success", this.shop.unequipItem(index));
-                j.put("index", index);
-                send(new PushRequest(j));
-                sendGameString();
-            }
-            if (type.equals("getShopItemList")) {
-                ShopItem[] shopItemList = shop.getShopItemList();
-                JSONObject j = CmdRequest.makeResponseCmd(type);
-                j.put("shopItemList", new JSONArray(shopItemList));
-                send(new PushRequest(j));
-            }
-            if (type.equals("spin")) {
-                JSONObject j = CmdRequest.makeResponseCmd(type);
-                j.put("angle", this.shop.getWheel().calculateAngel());
-                j.put("success", this.shop.getWheel().spin());
-                send(new PushRequest(j));
-                sendGameString();
-            }
-            if (type.equals("buySpin")) {
-                JSONObject j = CmdRequest.makeResponseCmd(type);
-                j.put("success", this.shop.getWheel().buySpin());
-                send(new PushRequest(j));
-                sendGameString();
-            }
-            if (type.equals("vote")) {
-                int suggestionID = Integer.parseInt(json.getString("suggestionID"));
-                System.out.println(game);
-                game.voting.receiveVote(suggestionID, this);
-            }
-            if (type.equals("confirm")) {
-                this.game.confirm();
-            }
-            if (type.equals("leave")) {
-                try {
-                    game.removePlayer(this);
-                } catch (Exception e) {
-                    System.out.println("[processData] [leave] Player already disconnected.");
-                }
-            }
+            if (callback != null) send(new PushRequest(callback));
         } catch (Exception e) {
             e.printStackTrace();
             Logger.log(e);

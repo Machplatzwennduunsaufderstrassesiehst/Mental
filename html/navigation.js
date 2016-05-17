@@ -1,4 +1,6 @@
 
+/* global byID */
+
 function showMsgBox(message, extra) {
     var m = byID("msgBox");
     while (m.classList.length > 0) m.classList.remove(m.classList[0]);
@@ -29,7 +31,6 @@ function Frame(id_) {
     var onopen = function(){};
     var onclose = function(){};
     var transitionTime = this.transitionTime = 300;
-    var smoothLock = new Lock(); // lock for smoothClose and smoothOpen
     window.addEventListener("load", function() {
         byID(id).style.transitionDuration = (transitionTime / 1000) + "s";
     });
@@ -38,27 +39,27 @@ function Frame(id_) {
     
     this.isOpen = function() {
         return open;
-    }
+    };
     
     this.setOnOpen  = function(func) {
         onopen = func;
-    }
+    };
     
     this.setOnClose = function(func) {
         onclose = func;
-    }
+    };
     
     var notifyOpen = this.notifyOpen = function() {
         if (open) return;
         open = true;
         onopen();    
-    }
+    };
     
     var notifyClose = this.notifyClose = function() {
         if (!open) return;
         open = false;
         onclose();
-    }
+    };
 
     var smoothClose = this.smoothClose = function() {
         var element = byID(id);
@@ -72,7 +73,7 @@ function Frame(id_) {
         element.setAttribute("data-old-style-display", element.style.display);
         element.style.opacity = 0;
         setTimeout(function(){element.style.display = "none";smoothLock.release();isVisible = false;}, transitionTime);*/
-    }
+    };
 
     var smoothOpen = this.smoothOpen = function() {
         var element = byID(id);
@@ -87,7 +88,7 @@ function Frame(id_) {
         if (d == null || d == "none" || d == "") d = "block";
         element.style.display = d;
         setTimeout(function(){element.style.opacity = 1;smoothLock.release();isVisible = true;}, transitionTime);*/
-    }
+    };
     
     navigation.registerFrame(this);
 }
@@ -102,14 +103,14 @@ function Navigation() {
             var frameId = frame.id;
             frames.push(frame);
         });
-    }
+    };
     
     // does not close the frames given by parameters
     var closeAll = this.closeAll = function() {
         closeFrames(frames);
         byID("disconnect").style.display = "none";
         byID("toLobby").style.display = "none";
-    }
+    };
     
     var openFrames = this.openFrames = function() {
         if (arguments.length < 1) return;
@@ -122,9 +123,9 @@ function Navigation() {
             f.smoothOpen();
             f.notifyOpen();
         }
-
+        setTimeout(function(){window.scrollTo(1,1)},0);
         //if (isMobile()) hideAddressBar();
-    }
+    };
     
     // takes frames as arguments
     var closeFrames = this.closeFrames = function() {
@@ -136,7 +137,7 @@ function Navigation() {
             f.notifyClose();
             f.smoothClose();
         }
-    }
+    };
 }
 // man braucht davon nur eine instanz
 var navigation = new Navigation();

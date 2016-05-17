@@ -32,31 +32,31 @@ function GraphicObject(sprite_) {
         sprite.position.y = p.y;
         sprite.rotation = p.rotation;
         return p;
-    }
+    };
     
     this.setPos = function(position) {;
         positionQueue = [position]; // set positionQueue so it only contains the new position
         movementQueue = [];
-    }
+    };
     
     this.setSprite = function(sprite_) {
         sprite = sprite_;
-    }
+    };
     
     this.getSprite = function() {
         return sprite;
-    }
+    };
     
     this.addMovement = function(key, movement) {
         movements[key] = movement;
-    }
+    };
     
     this.queueMovement = function(movement) {
         movementQueue.unshift(movement);
-    }
+    };
     
     this.queueMovementByKey = function(key) {
         movementQueue.unshift(movements[key]);
-    }
+    };
 }
 
