@@ -49,9 +49,9 @@ public class TrainGameMode extends GameMode {
         for (int i = 0; i < switches.length; i++) {
             switches[i].setSwitchId(i);
         }
-        for (int i = 0; i < goals.length; i++) {
+        /*for (int i = 0; i < goals.length; i++) {
             goals[i].setGoalId(i);
-        }
+        }*/
         health = 10; //TODO, von player abhängig machen
     }
 
@@ -61,7 +61,7 @@ public class TrainGameMode extends GameMode {
         int idcounter = 0;
         double speed = 0;
         while(gameIsRunning){
-            destinationId = (int) (Math.random()*goals.length);
+            destinationId = (int) (Math.random()*goals.length) + 1; // da die goalId jetzt gleich der values sind und bei 1 starten, muss hier +1 stehen
             speed = Math.random()*(MAX_SPEED-MIN_SPEED)+MIN_SPEED; //mindestens 0.5, maximal 3
             new Train(idcounter, colors[destinationId], destinationId, speed, this); //zug spawnen
             idcounter++;
