@@ -16,8 +16,6 @@ function GameGraphics(htmlContainer) {
     var staticEnvironment = new PIXI.Container();
     stage.addChild(environment);
     stage.addChild(staticEnvironment);
-    //stage.width = 1000;
-    //stage.height = 1000;
     
     this.resize = function(width, height) {
         renderer.resize(width, height);
@@ -97,7 +95,7 @@ function GameGraphics(htmlContainer) {
     function animate() {
         if (!running) return;
         frameCounter++;
-        // start the timer for the next animation loop
+        
         requestAnimationFrame(animate);
 
         for (var i = 0; i < graphicObjects.length; i++) {
@@ -108,7 +106,6 @@ function GameGraphics(htmlContainer) {
             }
         }
 
-        // this is the main render call that makes pixi draw your container and its children.
         renderer.render(stage);
     }
 }
