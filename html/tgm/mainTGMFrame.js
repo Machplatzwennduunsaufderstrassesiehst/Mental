@@ -14,6 +14,7 @@ mainTrainGameFrame.setOnOpen(function() {
     serverConnection.addObserver(newtrainObserver);
     serverConnection.addObserver(switchChangedObserver);
     serverConnection.addObserver(trainDecisionObserver);
+    serverConnection.addObserver(trainArrivedObserver);
     
     if (trainGameGraphics != undefined) {
         trainGameGraphics.stop();
@@ -34,6 +35,7 @@ mainTrainGameFrame.setOnClose(function() {
     serverConnection.removeObserver(newtrainObserver);
     serverConnection.removeObserver(switchChangedObserver);
     serverConnection.removeObserver(trainDecisionObserver);
+    serverConnection.removeObserver(trainArrivedObserver);
     
     trainGame.stop();
     byID("mainTrainGameFrame").innerHTML = "";

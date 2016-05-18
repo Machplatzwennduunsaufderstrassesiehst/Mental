@@ -98,16 +98,10 @@ function TurnMovement(startRotation, radius, degrees, time) {
     var r = startRotation;
     for (var f = 0; f < frames; f++) {
         r += stepWide;
-        if (degrees < 0) {
-            x = Math.cos(r) * radius - Math.cos(startRotation) * radius;
-        } else {
-            x = - Math.cos(r) * radius + Math.cos(startRotation) * radius;
-        }
-        if (degrees < 0) {
-            y = Math.sin(r) * radius - Math.sin(startRotation) * radius;
-        } else {
-            y = - Math.sin(r) * radius + Math.sin(startRotation) * radius;
-        }
+        x = Math.cos(r) - Math.cos(startRotation);
+        x *= -Math.sign(degrees) * radius;
+        y = Math.sin(r) - Math.sin(startRotation);
+        y *= -Math.sign(degrees) * radius;
         p = new Position(x, y, r);
         steps.push(p);
     }
@@ -116,6 +110,33 @@ function TurnMovement(startRotation, radius, degrees, time) {
 }
 TurnMovement.prototype = new Movement;
 TurnMovement.prototype.constructor = TurnMovement;
+
+//TODO
+function StraightAccelerationMovement(rotation, vector, time, factor) {
+    var steps = [];
+    
+    var dx = vector.getX();
+    var dy = vector.getY();
+    
+    var frames = calculateFrameAmount(time);
+    frames *= 1/factor;
+    
+    var x = 0, 
+        y = 0, 
+        p;
+    for (var f = 0; f < frames; f++) {
+        x += dx / frames;
+        y += dy / frames;
+        dx *= factor;
+        dy *= factor;
+        p = new Position(x, y, rotation);
+        steps.push(p);
+    }
+    
+    Movement.call(this, steps);
+}
+StraightAccelerationMovement.prototype = new Movement;
+StraightAccelerationMovement.prototype.constructor = StraightAccelerationMovement;
 
 
 function Movement(steps) {
