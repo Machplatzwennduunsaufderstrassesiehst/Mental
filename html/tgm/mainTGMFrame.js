@@ -5,6 +5,8 @@ var mainTrainGameFrame = new Frame("mainTrainGameFrame");
 
 var trainGame = null;
 
+var clickHandler = undefined;
+
 mainTrainGameFrame.setOnOpen(function() {
     byID("page_").style.display = "none";
     
@@ -20,7 +22,9 @@ mainTrainGameFrame.setOnOpen(function() {
     var trainGameGraphics = new GameGraphics("mainTrainGameFrame");
     trainGame = new TrainGame(trainGameGraphics);
     
-    byID("mainTrainGameFrame").onmousedown = trainGame.mouseDown;
+    clickHandler = byID("clickHandler");
+    clickHandler.style.display = "block";
+    clickHandler.onclick = trainGame.mouseDown;
 });
 
 mainTrainGameFrame.setOnClose(function() {
@@ -33,6 +37,9 @@ mainTrainGameFrame.setOnClose(function() {
     
     trainGame.stop();
     byID("mainTrainGameFrame").innerHTML = "";
+    
+    clickHandler.onclick = function(){};
+    clickHandler.style.display = "none";
 });
 
 // FUNCTIONALITY =================================================================================================
@@ -160,11 +167,14 @@ function TrainGame(graphics) {
     };
     
     this.mouseDown = function(event) {
+        var g = graphics.getRenderer().view;
+        var x = event.clientX + g.clientLeft;
+        var y = event.clientY + g.clientTop;
         for (var i = 0; i < Switch.es.length; i++) {
             var sw = Switch.es[i];
             if (sw == undefined) continue;
             var switchRect = sw.getRect();
-            if (switchRect.contains(event.clientX, event.clientY)) {
+            if (switchRect.contains(x, y)) {
                 performSwitchChange(sw);
             }
         }
@@ -212,4 +222,6 @@ var trainDecisionObserver = new Observer("trainDecision", function(msg) {
     Train.s[msg.trainId].correctMovement(sw, successor, lane);
 });
 
-
+var trainArrivedObserver = new Observer("trainArrived", function(msg) {
+    Train.s[msg.trainId].arrive();
+});

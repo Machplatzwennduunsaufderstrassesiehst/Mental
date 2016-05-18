@@ -9,7 +9,7 @@ function GameGraphics(htmlContainer) {
     
     var renderer = new PIXI.autoDetectRenderer(
         1000, 1000,
-        {antialias:true}
+        {antialias:false}
     );
     var stage = new PIXI.Container();
     var environment = new PIXI.Container();
@@ -24,6 +24,7 @@ function GameGraphics(htmlContainer) {
     this.getStage = function() {
         return stage;
     };
+    this.getRenderer = function() { return renderer; };
     
     var start = this.start = function() {
         running = true;
