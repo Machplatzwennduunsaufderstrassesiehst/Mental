@@ -1,14 +1,14 @@
 Mental/.idea/vcs.xml
 Mental/.idea/misc.xml
+Mental/.idea/gradle.xml
+Mental/.idea/encodings.xml
 
-Mental/app/build 
+Mental/app/build
 
-
-html/graphics/icons/open-iconic-master/*.db
-html/graphics/tgm/Thumbs.db
+html/graphics/icons/open-iconic-master/*.db 
+html/graphics/tgm/Thumbs.db 
 html/graphics/wof/Thumbs.db
 
 html/nbproject
 Mental/app/src/androidTest/java/de/soeiner/mental/ClassicTest.java
-Mental/.idea/gradle.xml
-Mental/.idea/encodings.xml
+
