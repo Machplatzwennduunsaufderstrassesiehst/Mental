@@ -190,8 +190,14 @@ public class TrainMapCreator extends ExerciseCreator {
         }
         System.out.println("map: ");
         ausgabe();
-        this.trainMap = map;
-        return map;
+        TrainTrack[][] finalMap = new TrainTrack[size-2][size-2];
+        for(int i = 1; i<size-1; i++) {
+            for (int j = 1; j < size - 1; j++) {
+                finalMap[i-1][j-1] = map[i][j];
+            }
+        }
+        this.trainMap = finalMap;
+        return finalMap;
     }
 
     private int[] getStartingPoint() {
