@@ -34,7 +34,7 @@
 },
 "exp13.png":
 {
-	"frame": {"x":0,"y":64,"w":64,"h":64},
+	"frame": {"x":251,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -42,7 +42,7 @@
 },
 "exp14.png":
 {
-	"frame": {"x":64,"y":64,"w":64,"h":64},
+	"frame": {"x":315,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -50,7 +50,7 @@
 },
 "exp15.png":
 {
-	"frame": {"x":128,"y":64,"w":64,"h":64},
+	"frame": {"x":379,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -58,7 +58,7 @@
 },
 "exp16.png":
 {
-	"frame": {"x":192,"y":64,"w":64,"h":64},
+	"frame": {"x":443,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -66,7 +66,7 @@
 },
 "exp2.png":
 {
-	"frame": {"x":0,"y":128,"w":64,"h":64},
+	"frame": {"x":507,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -74,7 +74,7 @@
 },
 "exp3.png":
 {
-	"frame": {"x":64,"y":128,"w":64,"h":64},
+	"frame": {"x":571,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -82,7 +82,7 @@
 },
 "exp4.png":
 {
-	"frame": {"x":128,"y":128,"w":64,"h":64},
+	"frame": {"x":635,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -90,7 +90,7 @@
 },
 "exp5.png":
 {
-	"frame": {"x":192,"y":128,"w":64,"h":64},
+	"frame": {"x":699,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -98,7 +98,7 @@
 },
 "exp6.png":
 {
-	"frame": {"x":0,"y":192,"w":64,"h":64},
+	"frame": {"x":763,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -106,7 +106,7 @@
 },
 "exp7.png":
 {
-	"frame": {"x":64,"y":192,"w":64,"h":64},
+	"frame": {"x":827,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -114,7 +114,7 @@
 },
 "exp8.png":
 {
-	"frame": {"x":128,"y":192,"w":64,"h":64},
+	"frame": {"x":891,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -122,24 +122,16 @@
 },
 "exp9.png":
 {
-	"frame": {"x":192,"y":192,"w":64,"h":64},
+	"frame": {"x":955,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
 	"sourceSize": {"w":64,"h":64}
-},
-"explosion.png":
-{
-	"frame": {"x":0,"y":256,"w":256,"h":256},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
-	"sourceSize": {"w":256,"h":256}
 }},
 "meta": {
 	"image": "explosion.png",
 	"format": "RGBA8888",
-	"size": {"w":256,"h":512},
+	"size": {"w":1019,"h":64},
 	"scale": "1"
 }
 }
