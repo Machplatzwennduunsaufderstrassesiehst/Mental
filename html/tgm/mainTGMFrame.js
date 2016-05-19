@@ -1,5 +1,5 @@
 
-/* global byID, serverConnection, Switch, Goal, Train, GameGraphics, TextureGenerator, PIXI */
+/* global byID, serverConnection, Switch, Goal, Train, GameGraphics, TextureGenerator, PIXI, particles */
 
 var mainTrainGameFrame = new Frame("mainTrainGameFrame");
 
@@ -191,6 +191,7 @@ TrainGame.trainTexture = TextureGenerator.generate(TrainGame.TGMPATH + "train.pn
 TrainGame.straightTexture = TextureGenerator.generate(TrainGame.TGMPATH + "straight.png");
 TrainGame.turnTexture = TextureGenerator.generate(TrainGame.TGMPATH + "turn.png");
 TrainGame.goalTexture = TextureGenerator.generate(TrainGame.TGMPATH + "goal.png");
+TrainGame.starTexture = TextureGenerator.generate(TrainGame.TGMPATH + "star.png");
 
 TrainGame.idColors = ["ff0000", "00ff00", "0000ff", "ffff00", "ff00ff", "00ffff", "ffffff", "000000"];
 
@@ -201,8 +202,8 @@ var trainMapObserver = new Observer("exercise", function(msg) {
     fitGraphics(msg.exercise.trainMap.length, msg.exercise.trainMap[0].length);
     trainMap = new Map(msg.exercise.trainMap);
     trainGame.setMap(trainMap);
-    trainGame.graphics.cacheStaticEnvironment();
     trainGame.start();
+    trainGame.graphics.cacheStaticEnvironment();
     // send confirmation
     setTimeout(function() {
         serverConnection.send({type:"confirm"});
@@ -225,5 +226,12 @@ var trainDecisionObserver = new Observer("trainDecision", function(msg) {
 });
 
 var trainArrivedObserver = new Observer("trainArrived", function(msg) {
-    Train.s[msg.trainId].arrive();
+    var onArriveInGoal = function(msg) {
+        return function() {
+            if (msg.success) {
+                new particles.Star(Goal.s[msg.goalId].getLane().getExitCoords());
+            }
+        }
+    }(msg);
+    Train.s[msg.trainId].arrive(onArriveInGoal);
 });

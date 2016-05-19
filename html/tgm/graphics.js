@@ -9,7 +9,7 @@ function GameGraphics(htmlContainer) {
     
     var renderer = new PIXI.autoDetectRenderer(
         1000, 1000,
-        {antialias:false}
+        {antialias:true}
     );
     var stage = new PIXI.Container();
     var environment = new PIXI.Container();
@@ -112,11 +112,8 @@ function GameGraphics(htmlContainer) {
 }
 
 var TextureGenerator = new function () {
-    var textures = [];
-    
     this.generate = function(path) {
         var texture = PIXI.Texture.fromImage(path);
-        textures.push(texture);
         return texture;
     };
     
@@ -127,10 +124,6 @@ var TextureGenerator = new function () {
         var gridSize = trainGame.getGridSize();
         sprite.scale = new PIXI.Point(gridSize/sprite.width*scale, gridSize/sprite.height*scale);
         return sprite;
-    };
-    
-    this.getTextures = function() {
-        return textures;
     };
     
     this.getSpritePivot = function(sprite) {

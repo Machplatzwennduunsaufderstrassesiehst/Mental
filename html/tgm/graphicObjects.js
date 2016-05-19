@@ -58,5 +58,25 @@ function GraphicObject(sprite_) {
     this.queueMovementByKey = function(key) {
         movementQueue.unshift(movements[key]);
     };
+    
+    this.fadeOut = function(onFaded, seconds) {
+        var startFading = function(displayObject, onFaded) {
+            var frames = calculateFrameAmount(seconds);
+            var c = 0;
+            function fade() {
+                if (c >= frames) {
+                    onFaded();
+                    return;
+                }
+                c++;
+                setTimeout(fade, seconds * 1000 / frames);
+                displayObject.alpha = displayObject.alpha - 1 / frames;
+            }
+            return function() {
+                fade();
+            };
+        }(sprite, onFaded);
+        startFading();
+    };
 }
 

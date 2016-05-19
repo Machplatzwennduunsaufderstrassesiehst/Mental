@@ -35,6 +35,12 @@ Vector.newFromTo = function(u, v) {
     v.add(u);
     return v;
 };
+Vector.newWithRandomDirection = function(distance) {
+    var direction = Math.random() * Math.PI * 2;
+    var x = Movement.cos(direction) * distance;
+    var y = Movement.sin(direction) * distance;
+    return new Vector(x, y);
+};
 
 // used to describe one element of a movement
 function Position(x_, y_, r_) {
@@ -111,7 +117,13 @@ function TurnMovement(startRotation, radius, degrees, time) {
 TurnMovement.prototype = new Movement;
 TurnMovement.prototype.constructor = TurnMovement;
 
-//TODO
+/**
+ * Straight deacceleration movement
+ * @param {number} rotation
+ * @param {Vector} vector
+ * @param {number} initialTimePerTrack
+ * @returns {StraightDeaccelerationMovement}
+ */
 function StraightDeaccelerationMovement(rotation, vector, initialTimePerTrack) {
     var steps = [];
     
@@ -168,7 +180,11 @@ function Movement(steps) {
         return steps[0];
     };
     
-    // between 0 and 1
+    /**
+     * remove the first p percent positions from position array
+     * @param {number} p percentage between 0 and 1
+     * @returns {undefined}
+     */
     this.setProgress = function(p) {
         var newFirstIndex = Math.floor(steps.length * p);
         steps = steps.splice(newFirstIndex);
@@ -183,18 +199,18 @@ Movement.isSetUp = false;
 
 Movement.sin = function(x) {
     if (!Movement.isSetUp) Movement.setup();
-    var i = Math.floor(x * Movement.rotationResolution / Math.PI);
+    var i = Math.floor(x * Movement.rotationResolution / Math.PI / 2);
     return Movement.sinValues[i];
 };
 
 Movement.cos = function(x) {
     if (!Movement.isSetUp) Movement.setup();
-    var i = Math.floor(x * Movement.rotationResolution / Math.PI);
+    var i = Math.floor(x * Movement.rotationResolution / Math.PI / 2);
     return Movement.cosValues[i];
 };
 
 Movement.setup = function() {
-   for (var i = 0; i <= Math.PI*2; i+=Math.PI/Movement.rotationResolution) {
+   for (var i = 0; i <= Math.PI*2; i+=Math.PI*2/Movement.rotationResolution) {
        Movement.sinValues.push(Math.sin(i));
        Movement.cosValues.push(Math.cos(i));
    } 

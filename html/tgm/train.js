@@ -2,6 +2,7 @@
 /* global PIXI, TextureGenerator, TrainGame, trainGame, Vector */
 
 function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
+    Train.s[trainId] = this;
     var container = new PIXI.Container();
     
     var gridSize = trainGame.getGridSize();
@@ -21,7 +22,6 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
     // add color TODO
     var graphicObject = new GraphicObject(container);
 	trainGame.graphics.addGraphicObject(graphicObject);
-	Train.s[trainId] = this;
 	
 	var timePerTrack = 1 / tracksPerSecond;
 	var currentTrack = startTrack;
@@ -29,6 +29,8 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
 	var predecessorTrack = null;
 	var currentLane = null;
 	var lastTrackChange;
+    var arriveInGoal = function(){};
+    var graphicsArrived = false;
 	
     function move() {
         setTimeout(function(){
@@ -37,7 +39,8 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
                 currentTrack = successorTrack;
                 move();
             } else {
-                
+                arriveInGoal();
+                graphicArrived = true;
             }
         }, timePerTrack * 1000);
         
@@ -119,26 +122,16 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
         return movement;
     }
     
-    this.arrive = function() {
-        var startFading = function(container) {
-            var frames = calculateFrameAmount(1);
-            var c = 0;
-            function fade() {
-                if (c >= frames) return;
-                c++;
-                setTimeout(fade, 1000 / frames);
-                container.alpha = container.alpha - 1 / frames;
-            }
-            return function() {
-                fade();
-            };
-        }(container);
+    this.arrive = function(onArriveInGoal) {
+        arriveInGoal = onArriveInGoal;
+        if (graphicsArrived) { // manual call if graphics are already in goal, only occurs if server msg too late
+            arriveInGoal();
+        }
         setTimeout(function(){
-            startFading();
-        }, 2000);
-        setTimeout(function(){
-            trainGame.graphics.removeGraphicObject(graphicObject);
-        }, 3000);
+            graphicObject.fadeOut(function() {
+                trainGame.graphics.removeGraphicObject(graphicObject);
+            }, 1);
+        }, 1000);
     };
 }
 Train.s = [];
