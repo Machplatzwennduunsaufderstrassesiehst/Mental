@@ -1,5 +1,5 @@
 
-/* global PIXI, TextureGenerator, TrainGame, trainGame, Vector */
+/* global PIXI, TextureGenerator, TrainGame, trainGame, Vector, particles */
 
 function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
     Train.s[trainId] = this;
@@ -122,16 +122,22 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
         return movement;
     }
     
+    this.explode = function() {
+        new particles.Explosion(graphicObject.getPos());
+        trainGame.graphics.removeGraphicObject(graphicObject);
+    };
+    
+    this.fadeOut = function() {
+        graphicObject.fadeOut(function() {
+            trainGame.graphics.removeGraphicObject(graphicObject);
+        }, 1);
+    };
+    
     this.arrive = function(onArriveInGoal) {
         arriveInGoal = onArriveInGoal;
         if (graphicsArrived) { // manual call if graphics are already in goal, only occurs if server msg too late
             arriveInGoal();
         }
-        setTimeout(function(){
-            graphicObject.fadeOut(function() {
-                trainGame.graphics.removeGraphicObject(graphicObject);
-            }, 1);
-        }, 1000);
     };
 }
 Train.s = [];

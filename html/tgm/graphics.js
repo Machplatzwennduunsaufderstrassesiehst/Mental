@@ -46,6 +46,9 @@ function GameGraphics(htmlContainer) {
         stage.addChild(graphicObject.getSprite());
     };
     
+    this.addSprite = function(sprite) {stage.addChild(sprite);};
+    this.removeSprite = function(sprite) {stage.removeChild(sprite);};
+    
     var removeGraphicObject = this.removeGraphicObject = function(graphicObject) {
         graphicObjects.remove(graphicObject);
         stage.removeChild(graphicObject.getSprite());

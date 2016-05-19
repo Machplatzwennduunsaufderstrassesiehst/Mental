@@ -226,12 +226,16 @@ var trainDecisionObserver = new Observer("trainDecision", function(msg) {
 });
 
 var trainArrivedObserver = new Observer("trainArrived", function(msg) {
-    var onArriveInGoal = function(msg) {
+    var train = Train.s[msg.trainId];
+    var onArriveInGoal = function(msg, train) {
         return function() {
             if (msg.success) {
                 new particles.Star(Goal.s[msg.goalId].getLane().getExitCoords());
+                train.fadeOut();
+            } else {
+                train.explode();
             }
-        }
-    }(msg);
-    Train.s[msg.trainId].arrive(onArriveInGoal);
+        };
+    }(msg, train);
+    train.arrive(onArriveInGoal);
 });

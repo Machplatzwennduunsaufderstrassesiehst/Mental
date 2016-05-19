@@ -29,7 +29,46 @@ var particles = (function() {
         setTimeout(fadeOut, 500);
     }
     
+    var explosionTextures = [];
+    var assetLoader = new PIXI.loaders.Loader();
+    assetLoader.add("graphics/tgm/explosion.json");
+    assetLoader.once("complete", function() {
+        for (var i = 1; i <= 16; i++) {
+            explosionTextures.push(new PIXI.Texture.fromFrame("exp" + i + ".png"));
+        }
+        log(explosionTextures);
+    });
+    assetLoader.load();
+    
+    function Explosion(posVector) {
+        var gridSize = trainGame.getGridSize();
+        var scale = gridSize / 100 * 1.15;
+        
+        var explosion = new PIXI.extras.MovieClip(explosionTextures);
+        explosion.loop = false;
+        explosion.animationSpeed = 0.7;
+        
+        explosion.position.x = posVector.getX();
+        explosion.position.y = posVector.getY();
+        explosion.anchor = new PIXI.Point(0.5, 0.5);
+        explosion.rotation = Math.random() * Math.PI * 2;
+        explosion.scale = new PIXI.Point(scale, scale);
+        
+        function checkAnimationEnded() {
+            if (explosion.playing) {
+                setTimeout(checkAnimationEnded, 100);
+            } else {
+                trainGame.graphics.removeSprite(explosion);
+            }
+        }
+        
+        trainGame.graphics.addSprite(explosion);
+        explosion.play();
+        checkAnimationEnded();
+    }
+    
     return {
-        Star: Star
+        Star: Star,
+        Explosion: Explosion
     };
 })();

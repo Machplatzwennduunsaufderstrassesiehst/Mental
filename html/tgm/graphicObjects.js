@@ -2,7 +2,8 @@
 
 // sprite can also be a container
 function GraphicObject(sprite_) {
-    var positionQueue = [new Position(0,0)];
+    var latestPosition = new Position(0,0);
+    var positionQueue = [latestPosition];
     var movements = {};
     var movementQueue = [];
     
@@ -15,7 +16,7 @@ function GraphicObject(sprite_) {
             log("GO.move: sprite still undefined");
             return false;
         }
-        var p = positionQueue.pop();
+        var p = latestPosition = positionQueue.pop();
         if (positionQueue.length == 0) {
             if (movementQueue.length > 0) { // no positions on queue, but movements to be extracted to the positionQueue
                 var m = movementQueue.pop();
@@ -32,6 +33,10 @@ function GraphicObject(sprite_) {
         sprite.position.y = p.y;
         sprite.rotation = p.rotation;
         return p;
+    };
+    
+    this.getPos = function() {
+        return latestPosition;
     };
     
     this.setPos = function(position) {;

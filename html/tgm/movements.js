@@ -46,6 +46,8 @@ Vector.newWithRandomDirection = function(distance) {
 function Position(x_, y_, r_) {
     var x = this.x = x_;
     var y = this.y = y_;
+    this.getX = function(){return x;};
+    this.getY = function(){return y;};
     var r = this.rotation = r_;
     
     // only move this position relative to the parameter position
@@ -58,7 +60,7 @@ function Position(x_, y_, r_) {
         return "Pos("+x+","+y+", "+r+")\n";
     };
     
-    this.copy = function(vector) {
+    this.copyBy = function(vector) {
         if (vector == undefined) vector = new Vector(0,0);
         return new Position(Math.floor(x+vector.getX()),Math.floor(y+vector.getY()),r);
     };
@@ -170,7 +172,7 @@ function Movement(steps) {
         var movedSteps = [];
         for (var i = 0; i < steps.length; i++) {
             //alert(steps[i]);
-            movedSteps[i] = steps[i].copy(vector);
+            movedSteps[i] = steps[i].copyBy(vector);
             //alert(movedSteps[i]);
         }
         return new Movement(movedSteps);
