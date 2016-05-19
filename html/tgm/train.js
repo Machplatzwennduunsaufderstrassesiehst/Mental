@@ -1,7 +1,8 @@
 
-/* global PIXI, TextureGenerator, TrainGame, trainGame, Vector */
+/* global PIXI, TextureGenerator, TrainGame, trainGame, Vector, particles */
 
 function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
+    Train.s[trainId] = this;
     var container = new PIXI.Container();
     
     var gridSize = trainGame.getGridSize();
@@ -21,7 +22,6 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
     // add color TODO
     var graphicObject = new GraphicObject(container);
 	trainGame.graphics.addGraphicObject(graphicObject);
-	Train.s[trainId] = this;
 	
 	var timePerTrack = 1 / tracksPerSecond;
 	var currentTrack = startTrack;
@@ -29,6 +29,8 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
 	var predecessorTrack = null;
 	var currentLane = null;
 	var lastTrackChange;
+    var arriveInGoal = function(){};
+    var graphicsArrived = false;
 	
     function move() {
         setTimeout(function(){
@@ -37,7 +39,8 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
                 currentTrack = successorTrack;
                 move();
             } else {
-                trainGame.graphics.removeGraphicObject(graphicObject); // TODO
+                arriveInGoal();
+                graphicArrived = true;
             }
         }, timePerTrack * 1000);
         
@@ -97,19 +100,45 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
         var u = currentLane.getEntranceCoords();
         var v = currentLane.getExitCoords();
         var movement = null;
-        switch (Math.abs(Math.sign(degrees))) {
-            case 0:
-                movement = new StraightMovement(startRotation, Vector.newFromTo(u, v), timePerTrack);
-                movement.addVector(u);
-                return movement;
-            case 1: // turn
-                movement = new TurnMovement(startRotation, currentLane.getTurnRadius(), degrees, timePerTrack);
-                movement.addVector(u);
-                return movement;
-            default:
-                log("fehler in train.js: degrees: " + degrees);
+        switch (currentTrack.type) {
+            case "track":case "switch":
+                switch (Math.abs(Math.sign(degrees))) {
+                    case 0:
+                        movement = new StraightMovement(startRotation, Vector.newFromTo(u, v), timePerTrack);
+                        break;
+                    case 1: // turn
+                        movement = new TurnMovement(startRotation, currentLane.getTurnRadius(), degrees, timePerTrack);
+                        break;
+                    default:
+                        log("fehler in train.js: degrees: " + degrees);
+                        movement = new Movement([]);
+                }
+                break;
+            case "goal":
+                movement = new StraightDeaccelerationMovement(startRotation, Vector.newFromTo(u, v), timePerTrack/2);
+                break;
         }
+        movement.addVector(u);
+        return movement;
     }
+    
+    this.explode = function() {
+        new particles.Explosion(graphicObject.getPos());
+        trainGame.graphics.removeGraphicObject(graphicObject);
+    };
+    
+    this.fadeOut = function() {
+        graphicObject.fadeOut(function() {
+            trainGame.graphics.removeGraphicObject(graphicObject);
+        }, 1);
+    };
+    
+    this.arrive = function(onArriveInGoal) {
+        arriveInGoal = onArriveInGoal;
+        if (graphicsArrived) { // manual call if graphics are already in goal, only occurs if server msg too late
+            arriveInGoal();
+        }
+    };
 }
 Train.s = [];
 

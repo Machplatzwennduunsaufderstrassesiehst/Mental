@@ -116,6 +116,7 @@ function Navigation() {
         if (arguments.length < 1) return;
         if (!arguments[0].id) arguments = arguments[0];
         closeAll();
+        unshowMsgBox();
         var frames_ = arguments;
         for (var i = 0; i < frames_.length; i++) {
             var f = frames_[i];

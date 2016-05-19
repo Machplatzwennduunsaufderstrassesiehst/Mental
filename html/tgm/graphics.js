@@ -24,6 +24,7 @@ function GameGraphics(htmlContainer) {
     this.getStage = function() {
         return stage;
     };
+    this.getRenderer = function() { return renderer; };
     
     var start = this.start = function() {
         running = true;
@@ -44,6 +45,9 @@ function GameGraphics(htmlContainer) {
         graphicObjects.push(graphicObject);
         stage.addChild(graphicObject.getSprite());
     };
+    
+    this.addSprite = function(sprite) {stage.addChild(sprite);};
+    this.removeSprite = function(sprite) {stage.removeChild(sprite);};
     
     var removeGraphicObject = this.removeGraphicObject = function(graphicObject) {
         graphicObjects.remove(graphicObject);
@@ -111,11 +115,8 @@ function GameGraphics(htmlContainer) {
 }
 
 var TextureGenerator = new function () {
-    var textures = [];
-    
     this.generate = function(path) {
         var texture = PIXI.Texture.fromImage(path);
-        textures.push(texture);
         return texture;
     };
     
@@ -126,10 +127,6 @@ var TextureGenerator = new function () {
         var gridSize = trainGame.getGridSize();
         sprite.scale = new PIXI.Point(gridSize/sprite.width*scale, gridSize/sprite.height*scale);
         return sprite;
-    };
-    
-    this.getTextures = function() {
-        return textures;
     };
     
     this.getSpritePivot = function(sprite) {

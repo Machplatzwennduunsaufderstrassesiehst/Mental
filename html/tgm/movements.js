@@ -35,11 +35,19 @@ Vector.newFromTo = function(u, v) {
     v.add(u);
     return v;
 };
+Vector.newWithRandomDirection = function(distance) {
+    var direction = Math.random() * Math.PI * 2;
+    var x = Movement.cos(direction) * distance;
+    var y = Movement.sin(direction) * distance;
+    return new Vector(x, y);
+};
 
 // used to describe one element of a movement
 function Position(x_, y_, r_) {
     var x = this.x = x_;
     var y = this.y = y_;
+    this.getX = function(){return x;};
+    this.getY = function(){return y;};
     var r = this.rotation = r_;
     
     // only move this position relative to the parameter position
@@ -52,7 +60,7 @@ function Position(x_, y_, r_) {
         return "Pos("+x+","+y+", "+r+")\n";
     };
     
-    this.copy = function(vector) {
+    this.copyBy = function(vector) {
         if (vector == undefined) vector = new Vector(0,0);
         return new Position(Math.floor(x+vector.getX()),Math.floor(y+vector.getY()),r);
     };
@@ -98,16 +106,10 @@ function TurnMovement(startRotation, radius, degrees, time) {
     var r = startRotation;
     for (var f = 0; f < frames; f++) {
         r += stepWide;
-        if (degrees < 0) {
-            x = Math.cos(r) * radius - Math.cos(startRotation) * radius;
-        } else {
-            x = - Math.cos(r) * radius + Math.cos(startRotation) * radius;
-        }
-        if (degrees < 0) {
-            y = Math.sin(r) * radius - Math.sin(startRotation) * radius;
-        } else {
-            y = - Math.sin(r) * radius + Math.sin(startRotation) * radius;
-        }
+        x = Math.cos(r) - Math.cos(startRotation);
+        x *= -Math.sign(degrees) * radius;
+        y = Math.sin(r) - Math.sin(startRotation);
+        y *= -Math.sign(degrees) * radius;
         p = new Position(x, y, r);
         steps.push(p);
     }
@@ -116,6 +118,43 @@ function TurnMovement(startRotation, radius, degrees, time) {
 }
 TurnMovement.prototype = new Movement;
 TurnMovement.prototype.constructor = TurnMovement;
+
+/**
+ * Straight deacceleration movement
+ * @param {number} rotation
+ * @param {Vector} vector
+ * @param {number} initialTimePerTrack
+ * @returns {StraightDeaccelerationMovement}
+ */
+function StraightDeaccelerationMovement(rotation, vector, initialTimePerTrack) {
+    var steps = [];
+    
+    var frames = calculateFrameAmount(initialTimePerTrack);
+    
+    var xSpeed = vector.getX() / frames;
+    var ySpeed = vector.getY() / frames;
+    
+    frames *= 2;
+    
+    var xAcc = - xSpeed / frames;
+    var yAcc = - ySpeed / frames;
+    
+    var x = 0, 
+        y = 0, 
+        p;
+    for (var f = 0; f < frames; f++) {
+        x += xSpeed;
+        y += ySpeed;
+        xSpeed += xAcc;
+        ySpeed += yAcc;
+        p = new Position(x, y, rotation);
+        steps.push(p);
+    }
+    
+    Movement.call(this, steps);
+}
+StraightDeaccelerationMovement.prototype = new Movement;
+StraightDeaccelerationMovement.prototype.constructor = StraightDeaccelerationMovement;
 
 
 function Movement(steps) {
@@ -133,7 +172,7 @@ function Movement(steps) {
         var movedSteps = [];
         for (var i = 0; i < steps.length; i++) {
             //alert(steps[i]);
-            movedSteps[i] = steps[i].copy(vector);
+            movedSteps[i] = steps[i].copyBy(vector);
             //alert(movedSteps[i]);
         }
         return new Movement(movedSteps);
@@ -143,7 +182,11 @@ function Movement(steps) {
         return steps[0];
     };
     
-    // between 0 and 1
+    /**
+     * remove the first p percent positions from position array
+     * @param {number} p percentage between 0 and 1
+     * @returns {undefined}
+     */
     this.setProgress = function(p) {
         var newFirstIndex = Math.floor(steps.length * p);
         steps = steps.splice(newFirstIndex);
@@ -158,18 +201,18 @@ Movement.isSetUp = false;
 
 Movement.sin = function(x) {
     if (!Movement.isSetUp) Movement.setup();
-    var i = Math.floor(x * Movement.rotationResolution / Math.PI);
+    var i = Math.floor(x * Movement.rotationResolution / Math.PI / 2);
     return Movement.sinValues[i];
 };
 
 Movement.cos = function(x) {
     if (!Movement.isSetUp) Movement.setup();
-    var i = Math.floor(x * Movement.rotationResolution / Math.PI);
+    var i = Math.floor(x * Movement.rotationResolution / Math.PI / 2);
     return Movement.cosValues[i];
 };
 
 Movement.setup = function() {
-   for (var i = 0; i <= Math.PI*2; i+=Math.PI/Movement.rotationResolution) {
+   for (var i = 0; i <= Math.PI*2; i+=Math.PI*2/Movement.rotationResolution) {
        Movement.sinValues.push(Math.sin(i));
        Movement.cosValues.push(Math.cos(i));
    } 

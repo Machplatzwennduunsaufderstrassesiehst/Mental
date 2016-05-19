@@ -1,9 +1,11 @@
 
-/* global byID, serverConnection, Switch, Goal, Train, GameGraphics, TextureGenerator, PIXI */
+/* global byID, serverConnection, Switch, Goal, Train, GameGraphics, TextureGenerator, PIXI, particles */
 
 var mainTrainGameFrame = new Frame("mainTrainGameFrame");
 
 var trainGame = null;
+
+var clickHandler = undefined;
 
 mainTrainGameFrame.setOnOpen(function() {
     byID("page_").style.display = "none";
@@ -12,6 +14,7 @@ mainTrainGameFrame.setOnOpen(function() {
     serverConnection.addObserver(newtrainObserver);
     serverConnection.addObserver(switchChangedObserver);
     serverConnection.addObserver(trainDecisionObserver);
+    serverConnection.addObserver(trainArrivedObserver);
     
     if (trainGameGraphics != undefined) {
         trainGameGraphics.stop();
@@ -20,7 +23,9 @@ mainTrainGameFrame.setOnOpen(function() {
     var trainGameGraphics = new GameGraphics("mainTrainGameFrame");
     trainGame = new TrainGame(trainGameGraphics);
     
-    byID("mainTrainGameFrame").onmousedown = trainGame.mouseDown;
+    clickHandler = byID("clickHandler");
+    clickHandler.style.display = "block";
+    clickHandler.onclick = trainGame.mouseDown;
 });
 
 mainTrainGameFrame.setOnClose(function() {
@@ -30,9 +35,13 @@ mainTrainGameFrame.setOnClose(function() {
     serverConnection.removeObserver(newtrainObserver);
     serverConnection.removeObserver(switchChangedObserver);
     serverConnection.removeObserver(trainDecisionObserver);
+    serverConnection.removeObserver(trainArrivedObserver);
     
     trainGame.stop();
     byID("mainTrainGameFrame").innerHTML = "";
+    
+    clickHandler.onclick = function(){};
+    clickHandler.style.display = "none";
 });
 
 // FUNCTIONALITY =================================================================================================
@@ -160,11 +169,14 @@ function TrainGame(graphics) {
     };
     
     this.mouseDown = function(event) {
+        var g = graphics.getRenderer().view;
+        var x = event.clientX + g.clientLeft;
+        var y = event.clientY + g.clientTop;
         for (var i = 0; i < Switch.es.length; i++) {
             var sw = Switch.es[i];
             if (sw == undefined) continue;
             var switchRect = sw.getRect();
-            if (switchRect.contains(event.clientX, event.clientY)) {
+            if (switchRect.contains(x, y)) {
                 performSwitchChange(sw);
             }
         }
@@ -179,6 +191,7 @@ TrainGame.trainTexture = TextureGenerator.generate(TrainGame.TGMPATH + "train.pn
 TrainGame.straightTexture = TextureGenerator.generate(TrainGame.TGMPATH + "straight.png");
 TrainGame.turnTexture = TextureGenerator.generate(TrainGame.TGMPATH + "turn.png");
 TrainGame.goalTexture = TextureGenerator.generate(TrainGame.TGMPATH + "goal.png");
+TrainGame.starTexture = TextureGenerator.generate(TrainGame.TGMPATH + "star.png");
 
 TrainGame.idColors = ["ff0000", "00ff00", "0000ff", "ffff00", "ff00ff", "00ffff", "ffffff", "000000"];
 
@@ -189,8 +202,8 @@ var trainMapObserver = new Observer("exercise", function(msg) {
     fitGraphics(msg.exercise.trainMap.length, msg.exercise.trainMap[0].length);
     trainMap = new Map(msg.exercise.trainMap);
     trainGame.setMap(trainMap);
-    trainGame.graphics.cacheStaticEnvironment();
     trainGame.start();
+    trainGame.graphics.cacheStaticEnvironment();
     // send confirmation
     setTimeout(function() {
         serverConnection.send({type:"confirm"});
@@ -212,4 +225,17 @@ var trainDecisionObserver = new Observer("trainDecision", function(msg) {
     Train.s[msg.trainId].correctMovement(sw, successor, lane);
 });
 
-
+var trainArrivedObserver = new Observer("trainArrived", function(msg) {
+    var train = Train.s[msg.trainId];
+    var onArriveInGoal = function(msg, train) {
+        return function() {
+            if (msg.success) {
+                new particles.Star(Goal.s[msg.goalId].getLane().getExitCoords());
+                train.fadeOut();
+            } else {
+                train.explode();
+            }
+        };
+    }(msg, train);
+    train.arrive(onArriveInGoal);
+});
