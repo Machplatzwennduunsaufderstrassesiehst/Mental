@@ -102,26 +102,24 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
                 switch (Math.abs(Math.sign(degrees))) {
                     case 0:
                         movement = new StraightMovement(startRotation, Vector.newFromTo(u, v), timePerTrack);
-                        movement.addVector(u);
-                        return movement;
+                        break;
                     case 1: // turn
                         movement = new TurnMovement(startRotation, currentLane.getTurnRadius(), degrees, timePerTrack);
-                        movement.addVector(u);
-                        return movement;
+                        break;
                     default:
                         log("fehler in train.js: degrees: " + degrees);
+                        movement = new Movement([]);
                 }
+                break;
             case "goal":
-                movement = new StraightAccelerationMovement(startRotation, Vector.newFromTo(u, v), timePerTrack/2, 0.9);
-                movement.addVector(u);
-                return movement;
+                movement = new StraightDeaccelerationMovement(startRotation, Vector.newFromTo(u, v), timePerTrack/2);
+                break;
         }
+        movement.addVector(u);
+        return movement;
     }
     
     this.arrive = function() {
-        setTimeout(function(){
-            trainGame.graphics.removeGraphicObject(graphicObject);
-        }, 1000);
         var startFading = function(container) {
             var frames = calculateFrameAmount(1);
             var c = 0;
@@ -135,7 +133,12 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
                 fade();
             };
         }(container);
-        startFading();
+        setTimeout(function(){
+            startFading();
+        }, 2000);
+        setTimeout(function(){
+            trainGame.graphics.removeGraphicObject(graphicObject);
+        }, 3000);
     };
 }
 Train.s = [];

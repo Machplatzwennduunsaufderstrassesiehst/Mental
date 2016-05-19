@@ -112,31 +112,35 @@ TurnMovement.prototype = new Movement;
 TurnMovement.prototype.constructor = TurnMovement;
 
 //TODO
-function StraightAccelerationMovement(rotation, vector, time, factor) {
+function StraightDeaccelerationMovement(rotation, vector, initialTimePerTrack) {
     var steps = [];
     
-    var dx = vector.getX();
-    var dy = vector.getY();
+    var frames = calculateFrameAmount(initialTimePerTrack);
     
-    var frames = calculateFrameAmount(time);
-    frames *= 1/factor;
+    var xSpeed = vector.getX() / frames;
+    var ySpeed = vector.getY() / frames;
+    
+    frames *= 2;
+    
+    var xAcc = - xSpeed / frames;
+    var yAcc = - ySpeed / frames;
     
     var x = 0, 
         y = 0, 
         p;
     for (var f = 0; f < frames; f++) {
-        x += dx / frames;
-        y += dy / frames;
-        dx *= factor;
-        dy *= factor;
+        x += xSpeed;
+        y += ySpeed;
+        xSpeed += xAcc;
+        ySpeed += yAcc;
         p = new Position(x, y, rotation);
         steps.push(p);
     }
     
     Movement.call(this, steps);
 }
-StraightAccelerationMovement.prototype = new Movement;
-StraightAccelerationMovement.prototype.constructor = StraightAccelerationMovement;
+StraightDeaccelerationMovement.prototype = new Movement;
+StraightDeaccelerationMovement.prototype.constructor = StraightDeaccelerationMovement;
 
 
 function Movement(steps) {
