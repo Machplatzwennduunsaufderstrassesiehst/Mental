@@ -40,7 +40,7 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
                 move();
             } else {
                 arriveInGoal();
-                graphicArrived = true;
+                graphicsArrived = true;
             }
         }, timePerTrack * 1000);
         
@@ -67,7 +67,7 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
         } else if (predecessorTrack == correctedTrack) { // train has already passed the corrected track
             // this is a very bad case, should only occur if: latency > (1000 / TRAIN_MAX_SPEED)
             setTimeout(function(){
-                correctMovement(successor, successor.getSuccessor(), successor.getLane(), correctionMaxRetryCount + 1);
+                correctMovement(successor, successor.getSuccessor(), successor.getLane(), correctionMaxRetryCount - 2);
             }, correctionRetryTimeout);
             return;
         } else { // train is on the correct track => only correct its lane and successorTrack if necessary
@@ -84,6 +84,10 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
                 movement.setProgress(movementProgress);
                 graphicObject.setPos(movement.getFirst());
                 graphicObject.queueMovement(movement);
+                if (graphicsArrived) {
+                    var timeUntilNextMoveCall = (Date.now() - lastTrackChange) % (timePerTrack * 1000);
+                    setTimeout(move, timeUntilNextMoveCall);
+                }
             }
         }
     };
