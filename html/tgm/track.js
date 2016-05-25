@@ -195,7 +195,7 @@ function Track(i, j) {
     };
     
     this.getRect = function() {
-        var gridSize = trainGame.getGridSize();
+        var gridSize = trainGame.getViewGridSize();
         return new PIXI.Rectangle(i*gridSize, j*gridSize, gridSize, gridSize);
     };
     

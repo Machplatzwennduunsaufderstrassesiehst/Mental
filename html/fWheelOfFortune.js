@@ -1,39 +1,29 @@
 
-/* global byID, serverConnection, player, navigation, lobbyFrame */
+/* global byID, serverConnection, player, navigation, lobbyFrame, PIXI */
 
 var wheelOfFortuneFrame = new Frame("wheelOfFortuneFrame");
 
 wheelOfFortuneFrame.setOnOpen(function() {
-    var maxWheelSize = byID("wheelOfFortuneFrame").clientWidth;
-    var pin = wheelOfFortuneFrame.pin = byID("pin");
-    var wheel = wheelOfFortuneFrame.wheel = byID("wheel");
-    pin.style.transitionDuration="0s";
-    /*if (wheel.clientWidth > maxWheelSize) {
-        alert("test");
-        var scale = maxWheelSize / wheel.clientWidth;
-        wheel.style.transitionDuration = "0s";
-        wheel.style.width = maxWheelSize;
-        wheel.style.height = maxWheelSize;
-        pin.style.width = pin.clientWidth * scale;
-        pin.style.height = pin.clientHeight * scale;
-    }*/
-    var left = wheel.getClientRects()[0].left+(wheel.clientWidth/2)-(pin.clientWidth/2);
-    var up = wheel.getClientRects()[0].top+(wheel.clientHeight/2)-(pin.clientHeight/2);
-    pin.style.left= left+"px";
-    pin.style.top = up+"px";
-	
     byID("toLobby").style.display = "inline";
     var oldonclick = byID("toLobby").onclick;
     byID("toLobby").onclick = function(){byID("toLobby").onclick = oldonclick;navigation.openFrames(lobbyFrame);};
+    wheelOfFortuneFrame.startGraphics();
 });
 
 wheelOfFortuneFrame.setOnClose(function() {
-    
+    wheelOfFortuneFrame.stopGraphics();
 });
 
 // FUNCTIONALITY =======================================================
-//wheelOfFortuneFrame.buySpin = function() {
 (function(wheelOfFortuneFrame) {
+    
+    var graphics = new GameGraphics("wheelGraphics");
+    var wheel = PIXI.Sprite.fromImage("graphics/wof/wheel.png");
+    wheel.anchor = new PIXI.Point(0.5, 0.5);
+    var wheelPin = PIXI.Sprite.fromImage("graphics/wof/pin.png");
+    wheelPin.anchor = new PIXI.Point(0.5, 0.5);
+    graphics.addEnvironment(wheel);
+    graphics.addEnvironment(wheelPin);
     
     function reconfigureSpinButton(text, accessable) {
         var b = byID("spinButton");
@@ -48,38 +38,36 @@ wheelOfFortuneFrame.setOnClose(function() {
         }
     }
 
-    var x, n, a, speed, fps, breakingStartPoint, initSpeed;
+    var n, a, speed, fps, breakingStartPoint, initSpeed;
     function rotate(rounds, angle){ //in degrees
         n = 0;
         a = angle + 360 * rounds;
-        fps = 144; // damit das auch auf deinem bildschirm läuft
         initSpeed = speed = 10; // is now degrees per frame
         breakingStartPoint = 0;
-        x = wheelOfFortuneFrame.wheel;
         startAngleRotate();
     }
     
     function startAngleRotate() {
         n = n + (n + speed < a ? speed : a - n); // verhindert, dass wir über das Ziel hinausschießen
 
-        x.style.transform="rotate(" + n + "deg)";
-        x.style.webkitTransform="rotate(" + n + "deg)";
-        x.style.OTransform="rotate(" + n + "deg)";
-        x.style.MozTransform="rotate(" + n + "deg)";
+        fps = graphics.getCurrentFPS();
+        wheel.rotation = graphics.degreesToRadian(n);
+        
         if (n>=a){
-            winPrize(prize);
-            reconfigureSpinButton("Spin the wheel!", false);
+            endRotate();
         }else{
-            //speed = ((a - n) / a )+ 20;
-            //speed = (a - ((a-n) + 4))%20
-            //speed *= 1+((3590/a)*0.0005);
             if (n >= breakingStartPoint) {
                 var breakingProgress = 1 - (a - n) / (a - breakingStartPoint);
-                speed = initSpeed - Math.pow(breakingProgress, 0.5) * (initSpeed - 0.2);
+                speed = initSpeed - Math.sqrt(breakingProgress) * (initSpeed - 0.15);
             }
             if (speed <= 0.05) speed = 0.05;
             setTimeout(function(){startAngleRotate();}, 1000 / fps);
         }
+    }
+    
+    function endRotate() {
+        winPrize(prize);
+        reconfigureSpinButton("Spin the wheel!", false);
     }
     
     function buySpin() {
@@ -130,6 +118,23 @@ wheelOfFortuneFrame.setOnClose(function() {
     
     wheelOfFortuneFrame.buySpin = buySpin;
     wheelOfFortuneFrame.spin = spin;
+    
+    wheelOfFortuneFrame.startGraphics = function() {
+        var wh = jQuery(window).height();
+        var ww = jQuery(window).width();
+        var renderSize = (wh > ww ? ww - 50 : wh / 2);
+        graphics.getRenderer().backgroundColor = 0x000000;
+        graphics.resizeRenderer(renderSize, renderSize);
+    
+        wheel.width = wheel.height = renderSize;
+        wheelPin.width = wheelPin.height = renderSize / 3;
+
+        graphics.centerSprite(wheel);
+        graphics.centerSprite(wheelPin);
+        
+        graphics.start();
+    };
+    wheelOfFortuneFrame.stopGraphics = function() {graphics.stop();};
     
 })(wheelOfFortuneFrame);
 

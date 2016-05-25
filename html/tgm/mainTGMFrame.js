@@ -62,6 +62,7 @@ function fitGraphics(xMapSize, yMapSize) {
     trainGame.graphics.resizeRenderer(xMapSize*viewGridSize, yMapSize*viewGridSize);
     trainGame.graphics.setStageScale(stageScale);
     trainGame.setGridSize(gridSize);
+    trainGame.setViewGridSize(viewGridSize);
 } 
 
 function Map(rawdata) {
@@ -152,6 +153,7 @@ function TrainGame(graphics) {
     this.graphics = graphics;
     this.trainMap = null;
     var gridSize = 0;
+    var viewGridSize = 0;
     var running = false;
     
     this.setMap = function(map) {
@@ -183,6 +185,14 @@ function TrainGame(graphics) {
     
     this.getGridSize = function() {
         return gridSize;
+    };
+    
+    this.setViewGridSize = function(vgs) {
+        viewGridSize = vgs;
+    };
+    
+    this.getViewGridSize = function() {
+        return viewGridSize;
     };
     
     this.mouseDown = function(event) {
