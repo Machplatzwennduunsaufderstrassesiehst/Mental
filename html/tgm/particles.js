@@ -36,7 +36,6 @@ var particles = (function() {
         for (var i = 1; i <= 16; i++) {
             explosionTextures.push(new PIXI.Texture.fromFrame("exp" + i + ".png"));
         }
-        log(explosionTextures);
     });
     assetLoader.load();
     

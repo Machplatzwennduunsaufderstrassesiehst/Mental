@@ -62,22 +62,31 @@ function fitGraphics(xMapSize, yMapSize) {
 
 function Map(rawdata) {
     // initialize array to hold the track objects later
-    var mapArray = [];  
-    var trainSpawn = null;
-      
+    var trackArray = [null];  
+    var trainSpawn = null; // reference to the first track of the double linked list
+    var firstTrackId = 0;
+    
     for (var i = 0; i < rawdata.length; i++) {
-        mapArray.push([]);
         for (var j = 0; j < rawdata[i].length; j++) {
-            mapArray[i].push(null);
+            var trackData = rawdata[i][j];
+            var trackId = Number(trackData.id);
+            if (trackId < 0 || trackId == undefined) continue;
+            trackArray[trackId] = trackData;
+            if (trackData.xpos == 1 && trackData.ypos == 1) {
+                firstTrackId = trackId;
+            }
         }
     }
-    log(mapArray);
+    
+    log(trackArray);
     
     // recursive strategy to build the track objects needed for the map
-    function build(i, j, predecessor) {
-        if (mapArray[i][j] != null) return null;
+    function build(trackId, predecessor) {
+        //if (!trackArray[trackId]) return null;
         try {
-            var trackData = rawdata[i][j];
+            var trackData = trackArray[trackId];
+            log(trackData);
+            log(trackData.trackType)
         } catch (e) {
             log(e);
             return null;
@@ -85,22 +94,19 @@ function Map(rawdata) {
         switch(trackData.trackType) {
             case "blocked":return null;
             case "track":
-                var i2 = trackData.successorPosition.xpos;
-                var j2 = trackData.successorPosition.ypos;
+                var successorId = trackData.successorId;
                 var t = new Track(trackData.xpos, trackData.ypos);
-                var futureSuccessor = build(i2, j2, t);
+                var futureSuccessor = build(successorId, t);
                 t.setPredecessor(predecessor);
                 t.setSuccessor(futureSuccessor);
                 t.initialize();
                 return t;
             case "switch":
-                var successorPositions = trackData.successorList;
+                var successorIds = trackData.successorIds;
                 var successors = [];
                 var sw = new Switch(trackData.switchId, trackData.xpos, trackData.ypos);
-                for (var s = 0; s < successorPositions.length; s++) {
-                    var i2 = successorPositions[s].xpos;
-                    var j2 = successorPositions[s].ypos;
-                    successors[s] = build(i2, j2, sw);
+                for (var s = 0; s < successorIds.length; s++) {
+                    successors[s] = build(successorIds[s], sw);
                 }
                 sw.setPredecessor(predecessor);
                 sw.setSuccessors(successors);
@@ -120,7 +126,7 @@ function Map(rawdata) {
     Switch.es = [];
     Goal.s = [];
     Train.s = [];
-    trainSpawn = build(1, 1, null);
+    trainSpawn = build(firstTrackId, null);
     
     this.getTrainSpawn = function() {
         return trainSpawn;
