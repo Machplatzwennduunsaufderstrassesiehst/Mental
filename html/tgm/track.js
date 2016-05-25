@@ -274,8 +274,11 @@ function Switch(id, i, j) {
         }
     };
     
+    var switchingDirection = 1;
     this.getNextLaneIndex = function() {
-        return (switchedTo + 1) % successors.length;
+        if (switchedTo <= 0) switchingDirection = 1;
+        if (switchedTo >= successors.length - 1) switchingDirection = -1;
+        return switchedTo + switchingDirection;
     };
 }
 Switch.es = [];

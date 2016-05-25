@@ -223,7 +223,31 @@ function ServerConnection(host, port) {
 }
 ServerConnection.DEBUG = false;
 
-
+var LatencyCalculator = function() {
+    var maxLatencyHistory = 5;
+    var requests = {};
+    var latestLatencies = [100];
+    var currentLatency = 100;
+    
+    this.onRequest = function(requestId) {
+        requests[requestId] = Date.now();
+    };
+    
+    this.onAnswer = function(requestId) {
+        if (requests[requestId] == undefined) return this.getCurrentLatency();
+        var latency = Date.now() - requests[requestId];
+        latestLatencies.unshift(latency);
+        if (latestLatencies.length > maxLatencyHistory) latestLatencies.pop();
+        var sumLatency = 0;
+        for (var i = 0; i < latestLatencies.length; i++) sumLatency += latestLatencies[i];
+        currentLatency = sumLatency / latestLatencies.length;
+        return latency;
+    };
+    
+    this.getCurrentLatency = function() {
+        return currentLatency;
+    };
+};
 
 
 

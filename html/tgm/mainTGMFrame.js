@@ -183,7 +183,12 @@ function TrainGame(graphics) {
     };
     
     var performSwitchChange = this.performSwitchChange = function(sw) {
-        serverConnection.send({type:"answer", answer:{switch: sw.id}});
+        TrainGame.latencyCalculator.onRequest("switchChange" + sw.id);
+        var newSwitchedTo = sw.getNextLaneIndex();
+        setTimeout(function(sw, swto){
+            return function(){sw.change(swto);};
+        }(sw, newSwitchedTo), TrainGame.latencyCalculator.getCurrentLatency() / 2);
+        serverConnection.send({type:"answer", answer:{switch: sw.id, switchedTo:newSwitchedTo}});
     };
 }
 TrainGame.TGMPATH = "graphics/tgm/";
@@ -194,6 +199,8 @@ TrainGame.goalTexture = TextureGenerator.generate(TrainGame.TGMPATH + "goal.png"
 TrainGame.starTexture = TextureGenerator.generate(TrainGame.TGMPATH + "star.png");
 
 TrainGame.idColors = ["ff0000", "00ff00", "0000ff", "ffff00", "ff00ff", "00ffff", "ffffff", "000000"];
+
+TrainGame.latencyCalculator = new LatencyCalculator();
 
 // OBSERVERS =====================================================================================================
 
@@ -211,10 +218,11 @@ var trainMapObserver = new Observer("exercise", function(msg) {
 });
 
 var newtrainObserver = new Observer("newTrain", function(msg) {
-    new Train(msg.trainId, msg.destinationId, msg.speed, msg.color, trainGame.getTrainSpawn());
+    new Train(msg.trainId, msg.destinationId, msg.speed, trainGame.getTrainSpawn());
 });
 
 var switchChangedObserver = new Observer("switchChange", function(msg) {
+    TrainGame.latencyCalculator.onAnswer("switchChange" + msg.switchChange.switchId);
     Switch.es[msg.switchChange.switchId].change(msg.switchChange.switchedTo);
 });
 
