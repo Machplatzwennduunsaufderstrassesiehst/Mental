@@ -198,7 +198,7 @@ TrainGame.turnTexture = TextureGenerator.generate(TrainGame.TGMPATH + "turn.png"
 TrainGame.goalTexture = TextureGenerator.generate(TrainGame.TGMPATH + "goal.png");
 TrainGame.starTexture = TextureGenerator.generate(TrainGame.TGMPATH + "star.png");
 
-TrainGame.idColors = ["ff0000", "00ff00", "0000ff", "ffff00", "ff00ff", "00ffff", "ffffff", "000000"];
+TrainGame.idColors = ["8808ff", "00ff00", "ff0000", "ffff00", "ff00ff", "00dfdf", "ffffff", "ff8800"];
 
 TrainGame.latencyCalculator = new LatencyCalculator();
 
