@@ -1,12 +1,10 @@
-package de.soeiner.mental.trainTracks;
+package de.soeiner.mental.trainGameRelated.trainTracks;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import de.soeiner.mental.gameModes.Train;
 
 /**
  * Created by Malte on 26.04.2016.
@@ -18,8 +16,8 @@ public class Switch extends TrainTrack {
     int switchId;
     int switchedTo = 0;
 
-    public Switch(int x, int y, int v){
-        super(x, y, v);
+    public Switch(int x, int y, int v, int id){
+        super(x, y, v, id);
     }
 
     public int getSwitchedTo() {
@@ -50,6 +48,13 @@ public class Switch extends TrainTrack {
                     successorList.put(i, position);
                 }
                 this.put("successorList", successorList);
+
+                JSONArray alternativeSuccessorList = new JSONArray();
+                for(int i = 0; i < successors.size(); i++){
+                    //System.out.println("Typ an der Stelle "+i);//+" ist "+successors.get(i).getType());
+                    alternativeSuccessorList.put(i, successors.get(i).getId());
+                }
+                this.put("successorIds", alternativeSuccessorList);
             }catch(JSONException e){e.printStackTrace();}
         }
         changeSwitch(); //switch gleich setzen

@@ -1,9 +1,11 @@
-package de.soeiner.mental.gameModes;
+package de.soeiner.mental.trainGameRelated;
 
 import org.json.JSONObject;
 
 import de.soeiner.mental.communication.CmdRequest;
-import de.soeiner.mental.trainTracks.*;
+import de.soeiner.mental.gameModes.TrainGameMode;
+import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
+import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
 
 /**
  * Created by Malte on 21.04.2016.
@@ -16,16 +18,14 @@ public class Train implements Runnable{
     private TrainGameMode traingame;
     private int x,y;
 
-    public Train(int i, String c, int d, double s, TrainGameMode tg){
+    public Train(int i, int d, double s, TrainGameMode tg){
         id = i;
-        color = c;
         destinationId = d;
         speed = s;
         traingame = tg;
         JSONObject train = CmdRequest.makeCmd(CmdRequest.SEND_NEWTRAIN);;
         try{
             train.put("trainId", id);
-            train.put("color", c);
             train.put("destinationId", destinationId);
             train.put("speed", s);
         }catch(Exception e){ e.printStackTrace();}
@@ -35,9 +35,6 @@ public class Train implements Runnable{
         t.start();
     }
 
-    public String getColor(){
-        return color;
-    }
     public int getId(){
         return id;
     }

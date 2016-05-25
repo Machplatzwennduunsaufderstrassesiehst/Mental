@@ -10,12 +10,11 @@ import java.util.Arrays;
 
 import de.soeiner.mental.shop.Shop;
 import de.soeiner.mental.shop.shopItems.ShopItem;
-import de.soeiner.mental.gameModes.Train;
 import de.soeiner.mental.communication.ClientConnection;
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
-import de.soeiner.mental.trainTracks.Switch;
+import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
 
 /**
  * Created by sven on 12.02.16.
@@ -147,8 +146,7 @@ public class Player extends ClientConnection {
     }
 
     public void sendGameString() {
-       // if(!(shop.money == 0/* && score.getOverallScoreValue() == 0*/)) { //wenn daten zur speicherung vorhanden sind
-            String gameString = this.getGameString();
+        String gameString = this.getGameString();
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_GAME_STRING);
             try {
                 j.put("gameString", gameString);
@@ -157,7 +155,18 @@ public class Player extends ClientConnection {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-       // }
+    }
+
+    public void sendWaveCompleted(boolean success, int waveNo, int reward){
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TRAIN_WAVE_COMPLETED);
+        try {
+            j.put("success", success);
+            j.put("waveNo", waveNo);
+            j.put("reward", reward);
+            makePushRequest(new PushRequest(j));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendBeatBobStatus(double status){ //bekommt double e [-1, 1]

@@ -1,4 +1,4 @@
-package de.soeiner.mental.trainTracks;
+package de.soeiner.mental.trainGameRelated.trainTracks;
 
 /**
  * Created by Malte on 28.04.2016.
@@ -7,8 +7,8 @@ public class Goal extends TrainTrack{
 
     private int goalId = 0;
 
-    public Goal(int x, int y, int v) {
-        super(x, y, v);
+    public Goal(int x, int y, int v, int id) {
+        super(x, y, v, id);
     }
 
     public void setGoalId(int goalId) {
