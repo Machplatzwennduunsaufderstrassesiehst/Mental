@@ -30,12 +30,13 @@
     <script src="fWheelOfFortune.js" type="text/javascript"></script>
     
     <script src="graphics/pixi.min.js"></script>
+    <script src="graphics/graphicObjects.js"></script>
+    <script src="graphics/graphics.js"></script>
+    
     <script src="tgm/movements.js"></script>
-    <script src="tgm/graphicObjects.js"></script>
     <script src="tgm/track.js"></script>
     <script src="tgm/train.js"></script>
     <script src="tgm/map.js"></script>
-    <script src="tgm/graphics.js"></script>
     <script src="tgm/particles.js"></script>
     <script src="tgm/mainTGMFrame.js"></script>
     
@@ -177,17 +178,17 @@
                     </div>
                         <div id="wheelSpace" style="text-align:center;">
                             <h2><span id="prizeTextField">spin 2 win</span></h2>
-                            <p>
-                                    <img src="graphics/wof/wheel.png" id="wheel" alt="fortuneWheel">
-                                    <img style="position:absolute;" src="graphics/wof/pin.png" id="pin" alt="fortuneWheelPin">
+                            <p id= "wheelGraphics">
+                                <img src="graphics/wof/wheel.png" id="wheel" alt="fortuneWheel">
+                                <img style="position:absolute;" src="graphics/wof/pin.png" id="pin" alt="fortuneWheelPin">
                             </p>
-                        </div>	
+                        </div>
                         <div style="text-align:center;">
                             <p>
-                                <a id="spinButton" class="btn" data-role="button" href="#" onclick="spin();" style="max-width:16em;"><span data-icon="target"></span><span id="spinButtonText">Spin the wheel!</span></a>
+                                <a id="spinButton" class="btn" data-role="button" href="#" onclick="wheelOfFortuneFrame.spin();" style="max-width:16em;"><span data-icon="target"></span><span id="spinButtonText">Spin the wheel!</span></a>
                             </p>
-                                                <p>
-                                <a id="buySpinButton" class="btn" data-role="button" href="#" onclick="buySpin();" style="max-width:16em;"><span data-icon="cart"></span>buy a spin</a>
+                            <p>
+                                <a id="buySpinButton" class="btn" data-role="button" href="#" onclick="wheelOfFortuneFrame.buySpin();" style="max-width:16em;"><span data-icon="cart"></span>buy a spin</a>
                             </p>
                         </div>
                 </div>

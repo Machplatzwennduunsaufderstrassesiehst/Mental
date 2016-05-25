@@ -1,6 +1,6 @@
 
 
-/* global PIXI, byID, trainGame */
+/* global PIXI, byID */
 
 function GameGraphics(htmlContainer) {
     var graphicObjects = [];
@@ -114,18 +114,28 @@ function GameGraphics(htmlContainer) {
     }
 }
 
-var TextureGenerator = new function () {
+var TextureGenerator = new (function () {
+    var gridSize = undefined;
+    
     this.generate = function(path) {
         var texture = PIXI.Texture.fromImage(path);
         return texture;
+    };
+    
+    this.setGridSize = function(gs) {
+        gridSize = gs;
     };
     
     // scale is an optional additional custom scaling factor
     this.generateSprite = function(texture, scale) {
         if (scale == undefined) scale = 1;
         var sprite = new PIXI.Sprite(texture);
-        var gridSize = trainGame.getGridSize();
-        sprite.scale = new PIXI.Point(gridSize/sprite.width*scale, gridSize/sprite.height*scale);
+        var xScale = 1, yScale = 1;
+        if (gridSize != undefined) {
+            xScale = gridSize/sprite.width * scale;
+            yScale = gridSize/sprite.height * scale;
+        }
+        sprite.scale = new PIXI.Point(xScale, yScale);
         return sprite;
     };
     
@@ -136,6 +146,6 @@ var TextureGenerator = new function () {
     this.getDisplayObjectPivot = function(displayObject) {
         return new PIXI.Point(displayObject.width/2, displayObject.height/2);
     };
-};
+})();
 
 

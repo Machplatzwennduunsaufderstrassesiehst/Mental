@@ -162,6 +162,7 @@ function TrainGame(graphics) {
     
     this.setGridSize = function(gridSize_) {
         gridSize = gridSize_;
+        TextureGenerator.setGridSize(gridSize);
     };
     
     this.getGridSize = function() {
@@ -246,4 +247,11 @@ var trainArrivedObserver = new Observer("trainArrived", function(msg) {
         };
     }(msg, train);
     train.arrive(onArriveInGoal);
+});
+
+// TODO
+var trainWaveObserver = new Observer("trainWaveCompleted", function(msg) {
+    var success = msg.success; // wave survived
+    var waveNo = msg.waveNo;
+    var reward = msg.reward;
 });
