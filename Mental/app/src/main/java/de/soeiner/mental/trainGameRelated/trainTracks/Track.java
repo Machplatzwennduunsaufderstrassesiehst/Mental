@@ -25,7 +25,7 @@ public class Track extends TrainTrack {
         try {
             position.put("xpos", s.getX()); // alt
             position.put("ypos", s.getY()); // alt
-            this.put("successorId", getSuccessorId()); // Alternative
+            this.put("successorId", s.id); // Alternative
             this.put("successorPosition", position); //alt
             System.out.println("successorId mit Wert "+s.id+" von Track mit Koordinaten ("+getX()+"|"+getY()+")");
         }catch(JSONException e){e.printStackTrace();}

@@ -45,8 +45,8 @@ public class Train implements Runnable{
         while(moving && traingame.getGameIsRunning()){
             try {
                 z++;
-                Thread.sleep(calculateTimeToDestination());
-                System.out.println("Train " + this.getId() + " is now at (" + x + "|" + y + ")");
+                Thread.sleep(calculateTimeToDestination()); //calculateTimeToDestination() TODO
+                //System.out.println("Train " + this.getId() + " is now at (" + x + "|" + y + ")");
             }catch(Exception e){
                 e.printStackTrace();
                 try{
@@ -78,13 +78,18 @@ public class Train implements Runnable{
             if(distance == 0 && traingame.trainMap[x][y].getType().equals("switch")){
                 s = (Switch) traingame.trainMap[x][y];
                 direction = s.getSwitchedTo();
-                System.out.println("Train " + this.getId() + " now switching. switchId:" + s.getSwitchId() + " Pos(" + x + "|" + y + ")");
+                //System.out.println("Train " + this.getId() + " now switching. switchId:" + s.getSwitchId() + " Pos(" + x + "|" + y + ")");
                 traingame.broadcastTrainDecision(id, s.getSwitchId(), direction);
             }
-            xtemp = traingame.trainMap[x][y].getSuccessor().getX();
-            ytemp = traingame.trainMap[x][y].getSuccessor().getY();
-            x = xtemp;
-            y = ytemp;
+            try {
+                xtemp = traingame.trainMap[x][y].getSuccessor().getX();
+                ytemp = traingame.trainMap[x][y].getSuccessor().getY();
+                x = xtemp;
+                y = ytemp;
+            }catch(Exception e){
+                System.out.println("Train ist gecrasht an stelle x: "+x+", y: "+y+" , "+traingame.trainMap[x][y].getType()+" mit id: "+ traingame.trainMap[x][y].id+" und value: "+traingame.trainMap[x][y].getValue()+" vorgänger: "+traingame.trainMap[x][y].getPredecessor().getType()+", "+traingame.trainMap[x][y].id+", x:"+traingame.trainMap[x][y].getX()+", y: "+traingame.trainMap[x][y].getY());
+                throw new RuntimeException();
+            }
             distance++;
         }while(!(traingame.trainMap[x][y].getType().equals("switch")) && !(traingame.trainMap[x][y].getType().equals("goal")));
         return (int) (distance/speed * 1000);

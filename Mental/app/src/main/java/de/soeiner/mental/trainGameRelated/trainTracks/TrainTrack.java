@@ -58,6 +58,11 @@ public abstract class TrainTrack extends JSONObject{ //TODO: set attributes
     }
     public void setValue(int v){
         value = v;
+        try {
+            this.put("value", v);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
     public int getValue(){
         return value;

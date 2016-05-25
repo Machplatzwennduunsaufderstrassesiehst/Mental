@@ -32,12 +32,23 @@ public class Switch extends TrainTrack {
 
     @Override
     public void setSuccessor(TrainTrack s) {
+        boolean replaced = false;
         if(s == null){
             System.out.println("Objekt ist null!!!! ://///");
         }
+
         if (!successors.contains(s)) {
-            successors.add(s);
-            activeSuccessors.add(false);
+            for(int i = 0; i<successors.size();i++){
+                if(s.getX() == successors.get(i).getX() && s.getY() == successors.get(i).getY()){
+                    successors.set(i, s);
+                    replaced = true;
+                    break;
+                }
+            }
+            if(!replaced) {
+                successors.add(s);
+                activeSuccessors.add(false);
+            }
             JSONArray successorList = new JSONArray();
             try {
                 for(int i = 0; i < successors.size(); i++){
@@ -52,7 +63,7 @@ public class Switch extends TrainTrack {
                 JSONArray alternativeSuccessorList = new JSONArray();
                 for(int i = 0; i < successors.size(); i++){
                     //System.out.println("Typ an der Stelle "+i);//+" ist "+successors.get(i).getType());
-                    alternativeSuccessorList.put(i, successors.get(i).getId());
+                    alternativeSuccessorList.put(i, successors.get(i).id);
                 }
                 this.put("successorIds", alternativeSuccessorList);
             }catch(JSONException e){e.printStackTrace();}

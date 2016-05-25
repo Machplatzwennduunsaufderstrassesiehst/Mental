@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import de.soeiner.mental.trainGameRelated.Train;
 import de.soeiner.mental.trainGameRelated.trainTracks.BlockedTrack;
 import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
 import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
@@ -85,7 +86,7 @@ public class TrainMapCreator extends ExerciseCreator {
         }
         x = 1;
         y = 1;
-        id = 1;
+        //id = 1;
         map[x][y] = new Track(x, y, 1, id++);
         int[] coordinates = new int[2];
         int z = 0;
@@ -109,10 +110,13 @@ public class TrainMapCreator extends ExerciseCreator {
                         TrainTrack successorTemp = map[coordinates[0]][coordinates[1]].getSuccessor(); //aktueller
                         TrainTrack predecessorTemp = map[coordinates[0]][coordinates[1]].getPredecessor(); //aktueller
                         map[coordinates[0]][coordinates[1]] = new Switch(coordinates[0], coordinates[1], 9, id++); //switch setzen
+                        predecessorTemp.setSuccessor(map[coordinates[0]][coordinates[1]]); //TODO
                         map[coordinates[0]][coordinates[1]].setPredecessor(predecessorTemp);
                         map[coordinates[0]][coordinates[1]].setSuccessor(successorTemp); //1. vorheriger weg //Swich, daher mehrere Succesor
+                        successorTemp.setPredecessor(map[coordinates[0]][coordinates[1]]);
                         map[coordinates[0]][coordinates[1]].setSuccessor(map[x][y]); //2. neuer abzweig
                         map[x][y].setPredecessor(map[coordinates[0]][coordinates[1]]);
+
                         // anknüpfung mit startpunkt (switch) verbinden
                     }
                     map[x][y].setValue(pathNumber);
@@ -180,6 +184,7 @@ public class TrainMapCreator extends ExerciseCreator {
             for (int j = 0; j < map.length; j++) {
                 if (map[i][j].getType().equals("switch")) {
                     s = (Switch) map[i][j];
+                    map[i][j].getPredecessor().setSuccessor(map[i][j]); //experimentell
                     s.setSwitchId(zId);
                     zId++;
                 }
@@ -188,9 +193,15 @@ public class TrainMapCreator extends ExerciseCreator {
         for(int i = 0; i<map.length; i++){
             for (int j = 0; j < map.length; j++) {
                 if(map[i][j].getValue() != 0 && map[i][j].getType().equals("track") && map[i][j].getSuccessor() == null){ //goals werden identifiziert
+                    TrainTrack predeccessorTemp = map[i][j].getPredecessor();
                     Goal goal = new Goal(i, j, map[i][j].getValue(), id++); //und gesetzt
                     goal.setGoalId(map[i][j].getValue());
                     map[i][j] = goal;
+                    System.out.println("i: "+i+", j: "+j+" mit predeccessor == null : "+predeccessorTemp == null);
+                    if(predeccessorTemp.getType().equals("switch")){
+                        System.out.println("gotcha bitch");
+                    }
+                    predeccessorTemp.setSuccessor(map[i][j]);
                 }
             }
         }
@@ -285,10 +296,10 @@ public class TrainMapCreator extends ExerciseCreator {
         for(int i = 0; i<map.length;i++){
             System.out.println("");
             for(int j = 0; j<map.length;j++){
-                if(map[i][j].getValue() == 0){
+                if(map[j][i].getValue() == 0){
                     System.out.print("  ");
                 }else{
-                    System.out.print(map[j][i].getValue()+" "); // vertauscht damit es mit der grafik übereinstimmt
+                    System.out.print(map[j][i].getValue()+" ");
                 }
             }
         }
