@@ -50,13 +50,17 @@ function fitGraphics(xMapSize, yMapSize) {
     var frame = byID("mainTrainGameFrame");
     var frameRatio = frame.clientWidth / frame.clientHeight;
     var mapRatio = xMapSize / yMapSize;
-    var gridSize;
+    var viewGridSize;
     if (frameRatio > mapRatio) {
-        gridSize = frame.clientHeight / yMapSize;
+        viewGridSize = frame.clientHeight / yMapSize;
     } else {
-        gridSize = frame.clientWidth / xMapSize;
+        viewGridSize = frame.clientWidth / xMapSize;
     }
-    trainGame.graphics.resize(xMapSize*gridSize, yMapSize*gridSize);
+    var gridSize = viewGridSize / 2;
+    if (gridSize > 90) gridSize = 90;
+    var stageScale = viewGridSize / gridSize;
+    trainGame.graphics.resizeRenderer(xMapSize*viewGridSize, yMapSize*viewGridSize);
+    trainGame.graphics.setStageScale(stageScale);
     trainGame.setGridSize(gridSize);
 } 
 
@@ -71,6 +75,9 @@ function Map(rawdata) {
             var trackData = rawdata[i][j];
             var trackId = Number(trackData.id);
             if (trackId < 0 || trackId == undefined) continue;
+            if (trackArray[trackId] != undefined) {
+                log("Trackid " + trackId + " doppelt vergeben");
+            }
             trackArray[trackId] = trackData;
             if (trackData.xpos == 1 && trackData.ypos == 1) {
                 firstTrackId = trackId;
@@ -86,39 +93,42 @@ function Map(rawdata) {
         try {
             var trackData = trackArray[trackId];
             log(trackData);
-            log(trackData.trackType)
         } catch (e) {
             log(e);
             return null;
         }
-        switch(trackData.trackType) {
-            case "blocked":return null;
-            case "track":
-                var successorId = trackData.successorId;
-                var t = new Track(trackData.xpos, trackData.ypos);
-                var futureSuccessor = build(successorId, t);
-                t.setPredecessor(predecessor);
-                t.setSuccessor(futureSuccessor);
-                t.initialize();
-                return t;
-            case "switch":
-                var successorIds = trackData.successorIds;
-                var successors = [];
-                var sw = new Switch(trackData.switchId, trackData.xpos, trackData.ypos);
-                for (var s = 0; s < successorIds.length; s++) {
-                    successors[s] = build(successorIds[s], sw);
-                }
-                sw.setPredecessor(predecessor);
-                sw.setSuccessors(successors);
-                sw.initialize();
-                sw.change(trackData.switchedTo);
-                return sw;
-            case "goal":
-                var goalId = trackData.goalId;
-                var g = new Goal(goalId, trackData.xpos, trackData.ypos);
-                g.setPredecessor(predecessor);
-                g.initialize();
-                return g;
+        try {
+            switch(trackData.trackType) {
+                case "blocked":return null;
+                case "track":
+                    var successorId = trackData.successorId;
+                    var t = new Track(trackData.xpos, trackData.ypos);
+                    var futureSuccessor = build(successorId, t);
+                    t.setPredecessor(predecessor);
+                    t.setSuccessor(futureSuccessor);
+                    t.initialize();
+                    return t;
+                case "switch":
+                    var successorIds = trackData.successorIds;
+                    var successors = [];
+                    var sw = new Switch(trackData.switchId, trackData.xpos, trackData.ypos);
+                    for (var s = 0; s < successorIds.length; s++) {
+                        successors[s] = build(successorIds[s], sw);
+                    }
+                    sw.setPredecessor(predecessor);
+                    sw.setSuccessors(successors);
+                    sw.initialize();
+                    sw.change(trackData.switchedTo);
+                    return sw;
+                case "goal":
+                    var goalId = trackData.goalId;
+                    var g = new Goal(goalId, trackData.xpos, trackData.ypos);
+                    g.setPredecessor(predecessor);
+                    g.initialize();
+                    return g;
+            }
+        } catch (e) {
+            console.log(e);
         }
     }
     

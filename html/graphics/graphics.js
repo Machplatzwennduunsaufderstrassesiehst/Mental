@@ -17,8 +17,12 @@ function GameGraphics(htmlContainer) {
     stage.addChild(environment);
     stage.addChild(staticEnvironment);
     
-    this.resize = function(width, height) {
+    this.resizeRenderer = function(width, height) {
         renderer.resize(width, height);
+    };
+    
+    this.setStageScale = function(scale) {
+        stage.scale = new PIXI.Point(scale, scale);
     };
     
     this.getStage = function() {
