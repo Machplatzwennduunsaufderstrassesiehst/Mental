@@ -49,7 +49,7 @@ public class Player extends ClientConnection {
     }
 
     public void sendScoreBoard(Score[] playerScores) {
-
+        if(shop == null) { return; }
         shop.updateMoney(); //TODO CARE
         for(int i = 0; i < playerScores.length;i++){ // richtiger Spieler wird gehilightet
             if(playerScores[i].attributeOf(this)){
@@ -58,7 +58,6 @@ public class Player extends ClientConnection {
                 playerScores[i].setHiglight(false);
             }
         }
-
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_SCOREBOARD);
         try {
             JSONArray scoreJSONArray = new JSONArray(playerScores);
@@ -178,6 +177,12 @@ public class Player extends ClientConnection {
             e.printStackTrace();
         }
     }
+
+    public void updatePlayerInfo(){ //TODO CARE
+        Score[] s = new Score[1];
+        s[0] = getScore();
+        sendScoreBoard(s);
+    }
     public Score getScore() { return score; }
 
     public Shop getShop() { return shop; }
@@ -232,10 +237,11 @@ public class Player extends ClientConnection {
                         e.printStackTrace();
                     }
                     System.out.println("set game string");
+                    updatePlayerInfo(); //<--- anstelle von
+                    /*--->
                     Score[] s = new Score[1];
                     s[0] = getScore();
-                    sendScoreBoard(s);
-                    break;
+                    sendScoreBoard(s);*/                    break;
                 case "buyItem":
                     index = Integer.parseInt(json.getString("index"));
                     callback = CmdRequest.makeResponseCmd(type);
@@ -273,6 +279,7 @@ public class Player extends ClientConnection {
                 case "buySpin":
                     callback = CmdRequest.makeResponseCmd(type);
                     callback.put("success", this.shop.getWheel().buySpin());
+                    callback.put("price", this.shop.getWheel().PRICE_PER_SPIN);
                     sendGameString();
                     break;
                 case "vote":

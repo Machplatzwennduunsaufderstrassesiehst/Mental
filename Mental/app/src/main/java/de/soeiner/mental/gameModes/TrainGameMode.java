@@ -55,22 +55,21 @@ public class TrainGameMode extends GameMode {
         reward = 100; //reward für beenden des Spiels
     }
     private Wave[] initiateWaves(){
-        Wave[] wellen = new Wave[5];
+        Wave[] wellen = new Wave[6];
         //double minspeed, double maxspeed, trainspawnintervall, trainarrivedreward, health, healthnw, r
-        /*
-        wellen[0] = new Wave(0.5, 0.5, 4000, 1, 10, 20, 25);
+        wellen[0] = new Wave(6, 6, 100, 1, 99999, 999999, 25);
         wellen[1] = new Wave(1.0, 1.0, 4000, 2, 10, 25, 50);
-        wellen[2] = new Wave(1.5, 1.5, 3500, 3, 10, 30, 100);
-        wellen[3] = new Wave(2.0, 2.0, 3000, 4, 10, 35, 200);
-        wellen[4] = new Wave(4.0, 4.0, 2000, 10, 10, 50, 500);
-        */
-        int testhealth = 8;
-        int testhealthNeededToWin = 17; // um schnell zur nächsten wave zu gelangen
-        wellen[0] = new Wave(0.5, 0.5, 4000, 1, 10, testhealthNeededToWin, 25);
-        wellen[1] = new Wave(1.0, 1.0, 4000, 2, 10, testhealthNeededToWin, 50);
-        wellen[2] = new Wave(1.5, 1.5, 3500, 3, 10, testhealthNeededToWin, 100);
-        wellen[3] = new Wave(2.0, 2.0, 3000, 4, 10, testhealthNeededToWin, 200);
-        wellen[4] = new Wave(4.0, 4.0, 2000, 10, 10, testhealthNeededToWin, 500);
+        wellen[2] = new Wave(1.8, 1.8, 3200, 3, 10, 30, 100);
+        wellen[3] = new Wave(2.5, 2.5, 2500, 4, 10, 35, 200);
+        wellen[4] = new Wave(4.0, 4.0, 1600, 10, 10, 40, 500);
+        wellen[5] = new Wave(0.5, 0.5, 1600, 10, 10, 50, 500);
+//        int testhealth = 8;
+//        int testhealthNeededToWin = 17; // um schnell zur nächsten wave zu gelangen
+//        wellen[0] = new Wave(0.5, 0.5, 4000, 1, 10, testhealthNeededToWin, 25);
+//        wellen[1] = new Wave(1.0, 1.0, 4000, 2, 10, testhealthNeededToWin, 50);
+//        wellen[2] = new Wave(1.5, 1.5, 3500, 3, 10, testhealthNeededToWin, 100);
+//        wellen[3] = new Wave(2.0, 2.0, 3000, 4, 10, testhealthNeededToWin, 200);
+//        wellen[4] = new Wave(4.0, 4.0, 2000, 10, 10, testhealthNeededToWin, 500);
         return wellen;
     }
 
@@ -98,7 +97,8 @@ public class TrainGameMode extends GameMode {
             if(waveSuccess){
                 giveReward(waves[i].getREWARD());
                 broadcastWaveCompleted(true, i, waves[i].getREWARD());
-                try{Thread.sleep(2000);}catch(Exception e){e.printStackTrace();}
+                System.out.println("welle "+i+" erfolgreich abgeschlossen!");
+                try{Thread.sleep(3000);}catch(Exception e){e.printStackTrace();}
             }else{
                 broadcastWaveCompleted(false, i, waves[i].getREWARD());
                 gameIsRunning = false;
@@ -140,13 +140,13 @@ public class TrainGameMode extends GameMode {
             game.activePlayers.get(i).sendTrainArrived(trainId, goalId, succsess);
         }
         if(health <= 0){ //Check for Wellen status
-            waveIsRunning = false;
             waveSuccess = false;
+            waveIsRunning = false;
             game.broadcastMessage("Spieler haben verloren !");
         }
         if(health >= healthNeededToWin) {
-            waveIsRunning = false;
             waveSuccess = true;
+            waveIsRunning = false;
         }
     }
 

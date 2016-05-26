@@ -30,6 +30,7 @@ public class Score extends JSONObject{
         setHiglight(false);
         setPlayerLevel(0);
         setPlayerLevelProgress(0);
+        setPlayerSpins(0);
     }
 
     // quadratische abhängigkeit als vorschlag?
@@ -153,6 +154,11 @@ public class Score extends JSONObject{
     private void setPlayerLevel(int overallScoreValue) {
         setInt("playerLevel", calculateLevel(overallScoreValue));
     }
+
+    public void setPlayerSpins(int playerSpins) {
+        setInt("playerSpins", playerSpins);
+    }
+
 
     public int getPlayerLevel() {
         return calculateLevel(getOverallScoreValue());

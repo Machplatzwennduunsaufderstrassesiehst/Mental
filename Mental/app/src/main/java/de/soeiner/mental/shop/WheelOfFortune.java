@@ -13,7 +13,7 @@ public class WheelOfFortune {
     Score score;
     int spinsLeft;
     int spinsSpent = 0;
-    private int PRICE_PER_SPIN = 100;
+    public int PRICE_PER_SPIN = 100;
     private int SLICES = 8;
     private int angle = 0;
     int[] slicePrizes = {-1, 50, 500, 0, 200, 100, 150, 0};
@@ -22,7 +22,6 @@ public class WheelOfFortune {
         player = p;
         shop = p.getShop();
         score = p.getScore();
-        calculateSpinsLeft();
     }
 
     protected void calculateSpinsLeft(){
@@ -37,22 +36,32 @@ public class WheelOfFortune {
         return spinsSpent;
     }
 
+    private void update(){
+
+        calculateSpinsLeft();
+        player.getScore().setPlayerSpins(spinsLeft);
+        player.updatePlayerInfo();
+
+    }
+
     public void addSpinsSpent(int plus) {
         spinsSpent += plus;
-        calculateSpinsLeft();
+        update();
     }
 
     public void addSpin() {
         addSpinsSpent(-1);
+        update();
     }
 
     public void substractSpin() {
         addSpinsSpent(1);
+        update();
     }
 
     public void setSpinsSpent(int spinsSpent) {
         this.spinsSpent = spinsSpent;
-        calculateSpinsLeft();
+        update();
     }
 
     public boolean buySpin(){
@@ -74,7 +83,7 @@ public class WheelOfFortune {
         }else{
             player.getShop().addMoney(slicePrizes[prize]);
         }
-        player.sendGameString();
+        update();
         /*
         * TODO
         * rad konfigurieren

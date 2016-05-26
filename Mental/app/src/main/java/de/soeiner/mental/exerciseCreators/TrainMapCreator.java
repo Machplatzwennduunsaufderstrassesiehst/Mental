@@ -198,8 +198,15 @@ public class TrainMapCreator extends ExerciseCreator {
                     goal.setGoalId(map[i][j].getValue());
                     map[i][j] = goal;
                     System.out.println("i: "+i+", j: "+j+" mit predeccessor == null : "+predeccessorTemp == null);
-                    if(predeccessorTemp.getType().equals("switch")){
-                        System.out.println("gotcha bitch");
+                    if(predeccessorTemp != null){
+                        if(predeccessorTemp.getType().equals("switch")){
+                            System.out.println("switch vor goal");
+                        }else{
+                            System.out.println("track vor switch");
+                        }
+                    }else{
+                        System.out.println("======================================== null vor switch");
+                        ausgabe();
                     }
                     predeccessorTemp.setSuccessor(map[i][j]);
                 }
