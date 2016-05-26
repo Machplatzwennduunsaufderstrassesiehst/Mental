@@ -11,8 +11,6 @@ body {
 
 #mainTrainGameFrame {
     margin: 0;
-    padding: auto;
-    text-align: center;
     background-color: #111;
     overflow: hidden;
     width: 100%;

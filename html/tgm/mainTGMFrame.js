@@ -163,6 +163,12 @@ function TrainGame(graphics) {
     this.start = function() {
         running = true;
         graphics.start();
+        // move clickHandler so it acts as a mask to the graphics
+        /*var stageRect = graphics.getRenderer().view.getClientRects()[0];
+        clickHandler.style.top = stageRect.top + "px";
+        clickHandler.style.left = stageRect.left + "px";
+        clickHandler.style.width = stageRect.width + "px";
+        clickHandler.style.height = stageRect.height + "px";*/
     };
     
     this.stop = function() {

@@ -9,7 +9,7 @@ function GameGraphics(htmlContainerId) {
     
     var renderer = new PIXI.autoDetectRenderer(
         1000, 1000,
-        {antialias:false, transparent:true}
+        {antialias:true, transparent:true}
     );
     var stage = new PIXI.Container();
     var environment = new PIXI.Container();
