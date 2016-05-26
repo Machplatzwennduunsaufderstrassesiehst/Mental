@@ -236,6 +236,11 @@ var LatencyCalculator = function() {
     this.onAnswer = function(requestId) {
         if (requests[requestId] == undefined) return this.getCurrentLatency();
         var latency = Date.now() - requests[requestId];
+        if (latency > 1000) {
+            log("Latency measure of " + latency + "ms > 1000ms ignored.");
+            return this.getCurrentLatency();
+        }
+        requests[requestId] = undefined;
         latestLatencies.unshift(latency);
         if (latestLatencies.length > maxLatencyHistory) latestLatencies.pop();
         var sumLatency = 0;

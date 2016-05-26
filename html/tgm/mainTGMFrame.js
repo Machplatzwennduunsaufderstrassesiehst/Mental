@@ -88,14 +88,11 @@ function Map(rawdata) {
         }
     }
     
-    log(trackArray);
-    
     // recursive strategy to build the track objects needed for the map
     function build(trackId, predecessor) {
         //if (!trackArray[trackId]) return null;
         try {
             var trackData = trackArray[trackId];
-            log(trackData);
         } catch (e) {
             log(e);
             return null;
@@ -135,7 +132,6 @@ function Map(rawdata) {
         }
     }
     
-    log("START MAP BUILD");
     Switch.es = [];
     Goal.s = [];
     Train.s = [];
@@ -146,7 +142,7 @@ function Map(rawdata) {
     };
     
     this.getSize = function() {
-        return {x:mapArray.length, y:mapArray[0].length};
+        return {x:rawdata.length, y:rawdata[0].length};
     };
 }
 

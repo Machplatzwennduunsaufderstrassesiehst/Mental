@@ -129,7 +129,7 @@ wheelOfFortuneFrame.setOnClose(function() {
         var wh = jQuery(window).height();
         var ww = jQuery(window).width();
         var renderSize = (wh > ww ? ww - 50 : wh / 2);
-        graphics.getRenderer().backgroundColor = 0x000000;
+        
         graphics.resizeRenderer(renderSize, renderSize);
     
         wheel.width = wheel.height = renderSize;

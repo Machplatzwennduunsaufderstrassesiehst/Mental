@@ -243,6 +243,8 @@ function Switch(id, i, j) {
         change(successors.indexOf(s));
     };
     
+    var idPermutation = []; // für pendel funktion
+    
     var change = this.change = function(newSwitchedTo) {
         switchedTo = newSwitchedTo;
         for (var l = 0; l < lanes.length; l++) {
@@ -271,6 +273,13 @@ function Switch(id, i, j) {
                 };
             }(s);
             lanes[s].buildSprite(onl);
+        }
+        if (successors.length == 3) {
+            for (var s1 = 0; s1 < successors.length; s1++) {
+                for (var s2 = 0; s2 < successors.length; s2++) {
+                    
+                }
+            }
         }
     };
     

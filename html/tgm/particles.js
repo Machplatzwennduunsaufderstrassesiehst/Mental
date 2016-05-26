@@ -66,8 +66,13 @@ var particles = (function() {
         checkAnimationEnded();
     }
     
+    function Text(posVector) {
+        var scale = gridSize / 100;
+    };
+    
     return {
         Star: Star,
-        Explosion: Explosion
+        Explosion: Explosion,
+        Text: Text
     };
 })();
