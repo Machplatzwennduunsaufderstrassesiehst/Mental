@@ -68,27 +68,32 @@ public class Switch extends TrainTrack {
                 this.put("successorIds", alternativeSuccessorList);
             }catch(JSONException e){e.printStackTrace();}
         }
-        changeSwitch(); //switch gleich setzen
+        changeSwitch((int) Math.random()*successors.size()%successors.size()); //switch gleich setzen
     }
 
-    public void changeSwitch(){ //nimmt an, dass es zwei nachfolger gibt
-        int active = 0;
-
+    public void changeSwitch(int st){ //nimmt an, dass es zwei nachfolger gibt
+        //int active = 0;
+        switchedTo = st;
+        /*
         for(int i = 0; i<successors.size(); i++){ //aktiven nachfolger finden
             if(activeSuccessors.get(i).equals(true)){
                 active = i;
             }
         }
+        */
         for(int i = 0; i<successors.size(); i++){ //alle nachfolger auf falsch setzen
             activeSuccessors.set(i, new Boolean(false));
         }
+        /*
         active = (active+1)%successors.size(); //index des nächsten Nachfolgers ermitteln
         activeSuccessors.set(active, new Boolean(true)); //nächsten nachfolger auf true setzen
         switchedTo = active; //für trains globale variable setzen
+        */
+        activeSuccessors.set(switchedTo, new Boolean(true)); //nächsten nachfolger auf true setzen
         try {
             this.put("switchedTo", switchedTo); //für map jsonobject setzen
         }catch(Exception e){e.printStackTrace();}
-        this.successor = successors.get(active);
+        this.successor = successors.get(switchedTo);
     }
 
     public ArrayList getSuccessors(){

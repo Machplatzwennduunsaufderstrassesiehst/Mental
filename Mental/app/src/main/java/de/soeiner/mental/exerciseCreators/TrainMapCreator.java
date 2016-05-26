@@ -51,7 +51,7 @@ public class TrainMapCreator extends ExerciseCreator {
     private final int[] xTP = {1, 1, 0, -1, -1, -1, 0, 1}; //precisley
     private final int[] yTP = {0, 1, 1, 1, 0, -1, -1, -1}; //precisley
     private int pathNumber = 0;
-    private final int size = 11;
+    private final int size = 10;
     private final int BLOCK_VALUE = 8;
     TrainTrack[][] map;
     private int x = 0;
@@ -304,7 +304,6 @@ public class TrainMapCreator extends ExerciseCreator {
             }
         }
     }
-
     // hier kann man die TrainMap jetzt abrufen
     public TrainTrack[][] getTrainMap() {
         return trainMap;

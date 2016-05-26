@@ -65,7 +65,7 @@ public class TrainGameMode extends GameMode {
         wellen[4] = new Wave(4.0, 4.0, 2000, 10, 10, 50, 500);
         */
         int testhealth = 8;
-        int testhealthNeededToWin = 11; // um schnell zur nächsten wave zu gelangen
+        int testhealthNeededToWin = 17; // um schnell zur nächsten wave zu gelangen
         wellen[0] = new Wave(0.5, 0.5, 4000, 1, 10, testhealthNeededToWin, 25);
         wellen[1] = new Wave(1.0, 1.0, 4000, 2, 10, testhealthNeededToWin, 50);
         wellen[2] = new Wave(1.5, 1.5, 3500, 3, 10, testhealthNeededToWin, 100);
@@ -114,7 +114,7 @@ public class TrainGameMode extends GameMode {
     public boolean playerAnswered(Player player, JSONObject answer) {
         if(answer.has("switch")){
             try {
-                switches[answer.getInt("switch")].changeSwitch();
+                switches[answer.getInt("switch")].changeSwitch(answer.getInt("switchedTo"));
                 for (int i = 0; i < game.activePlayers.size(); i++) {
                     game.activePlayers.get(i).sendSwitchChange(switches[answer.getInt("switch")]);
                 }
@@ -131,7 +131,7 @@ public class TrainGameMode extends GameMode {
             giveReward(trainArrivedReward);
         }else{
             //game.broadcastMessage("Zug hat das falsche Ziel erreicht :/");
-            health--;
+            health--; //TODO TODO TODO TODO TODO
         }
         for(int i = 0; i<game.activePlayers.size();i++){
             if(succsess) {
@@ -139,17 +139,15 @@ public class TrainGameMode extends GameMode {
             }
             game.activePlayers.get(i).sendTrainArrived(trainId, goalId, succsess);
         }
-        /*
         if(health <= 0){ //Check for Wellen status
             waveIsRunning = false;
             waveSuccess = false;
             game.broadcastMessage("Spieler haben verloren !");
         }
-        if(health >= healthNeededToWin){
+        if(health >= healthNeededToWin) {
             waveIsRunning = false;
             waveSuccess = true;
         }
-        */
     }
 
     private void playersWon(){
