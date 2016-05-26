@@ -64,7 +64,7 @@
                 <span style="color:#fff;margin-top:5px;" class="btn" onclick="byID('headerMenu').style.display = 'none';">Schlie&szlig;en</span></p>
             </div>
             <div id="welcome" class="frame">
-                <p>"Kopfrechnen auf Zeit - doch Competition findet keine statt wie'n Navi im Provinznest."</p>
+                <p>"Games auf Zeit - doch Competition findet keine statt wie'n Navi im Provinznest."</p>
                 <p>
                     <input placeholder="Benutzername (frei wählbar)" type="text" id="name"/>
                     <input placeholder="Alter Spielstand (optional)" type="text" id="gameStringInput"/>
@@ -173,7 +173,7 @@
 	    <div id="wheelOfFortuneFrame" class="frame">
                 <div style='padding:10px;'>
                     <div class="userInfo">
-                        <span style="float:right;font-style:italic;font-weight:normal;"><span data-icon="key"></span>Level <span data-field-key="playerLevel"></span> -Spins <span data-field-key="playerSpins"></span> - $<span data-field-key="playerMoney"></span></span>
+                        <span style="float:right;font-style:italic;font-weight:normal;"><span data-icon="key"></span>Level <span data-field-key="playerLevel"></span> - Spins <span data-field-key="playerSpins"></span> - $<span data-field-key="playerMoney"></span></span>
                         <span>Hallo <span data-field-key="playerName"></span>!</span>
                     </div>
                         <div id="wheelSpace" style="text-align:center;">
@@ -182,10 +182,10 @@
                         </div>
                         <div style="text-align:center;">
                             <p>
-                                <a id="spinButton" class="btn" data-role="button" href="#" onclick="wheelOfFortuneFrame.spin();" style="max-width:16em;"><span data-icon="target"></span><span id="spinButtonText">Spin the wheel!</span></a>
+                                <span id="spinButton" class="btn btnLarge" onclick="wheelOfFortuneFrame.spin();" style="max-width:16em;"><span data-icon="target"></span><span id="spinButtonText">Spin the wheel!</span></span>
                             </p>
                             <p>
-                                <a id="buySpinButton" class="btn" data-role="button" href="#" onclick="wheelOfFortuneFrame.buySpin();" style="max-width:16em;"><span data-icon="cart"></span>buy a spin</a>
+                                <span id="buySpinButton" class="btn btnLarge" onclick="wheelOfFortuneFrame.buySpin();" style="max-width:16em;"><span data-icon="cart"></span>buy a spin</span>
                             </p>
                         </div>
                 </div>

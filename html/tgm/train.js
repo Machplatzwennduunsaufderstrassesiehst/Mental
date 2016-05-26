@@ -71,7 +71,7 @@ function Train(trainId, destinationId, tracksPerSecond, startTrack) {
         } else if (predecessorTrack == correctedTrack) { // train has already passed the corrected track
             // this is a very bad case, should only occur if: latency > (1000 / TRAIN_MAX_SPEED)
             setTimeout(function(){
-                correctMovement(successor, successor.getSuccessor(), successor.getLane(), correctionMaxRetryCount - 2);
+                correctMovement(successor, successor.getSuccessor(), successor.getLane(), retry);
             }, correctionRetryTimeout);
             return;
         } else { // train is on the correct track => only correct its lane and successorTrack if necessary

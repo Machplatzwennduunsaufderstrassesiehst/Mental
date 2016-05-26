@@ -15,6 +15,7 @@ mainTrainGameFrame.setOnOpen(function() {
     serverConnection.addObserver(switchChangedObserver);
     serverConnection.addObserver(trainDecisionObserver);
     serverConnection.addObserver(trainArrivedObserver);
+    serverConnection.addObserver(trainWaveObserver);
     
     if (trainGameGraphics != undefined) {
         trainGameGraphics.stop();
@@ -36,6 +37,7 @@ mainTrainGameFrame.setOnClose(function() {
     serverConnection.removeObserver(switchChangedObserver);
     serverConnection.removeObserver(trainDecisionObserver);
     serverConnection.removeObserver(trainArrivedObserver);
+    serverConnection.removeObserver(trainWaveObserver);
     
     trainGame.stop();
     byID("mainTrainGameFrame").innerHTML = "";
@@ -284,6 +286,17 @@ var trainArrivedObserver = new Observer("trainArrived", function(msg) {
 // TODO
 var trainWaveObserver = new Observer("trainWaveCompleted", function(msg) {
     var success = msg.success; // wave survived
+    if (success) {
+        var timeout = 0;
+        var timeoutStep = 100;
+        for (var i = 0; i < Train.s.length; i++) {
+            var train = Train.s[i];
+            if (train == undefined) continue;
+            setTimeout((function(train){return function(){train.explode();};})(train), timeout);
+            Train.s[i] = undefined;
+            timeout += timeoutStep;
+        }
+    }
     var waveNo = msg.waveNo;
     var reward = msg.reward;
 });

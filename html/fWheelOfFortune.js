@@ -25,16 +25,17 @@ wheelOfFortuneFrame.setOnClose(function() {
     graphics.addEnvironment(wheel);
     graphics.addEnvironment(wheelPin);
     
+    var spinButtonAccessable = true;
+    
     function reconfigureSpinButton(text, accessable) {
+        spinButtonAccessable = accessable;
         var b = byID("spinButton");
         var bText = byID("spinButtonText");
         bText.innerHTML = text;
         if(accessable){
-            //b.classList.add("disabled");
-            b["data-disabled"] = "true";
+            b.classList.remove("disabled");
         }else{
-            //b.classList.remove("disabled");
-            b["data-disabled"] = "false";
+            b.classList.add("disabled");
         }
     }
 
@@ -67,7 +68,7 @@ wheelOfFortuneFrame.setOnClose(function() {
     
     function endRotate() {
         winPrize(prize);
-        reconfigureSpinButton("Spin the wheel!", false);
+        reconfigureSpinButton("Spin the wheel!", true);
     }
     
     function buySpin() {
@@ -75,6 +76,7 @@ wheelOfFortuneFrame.setOnClose(function() {
             if (msg.success) {
                 backgroundColorAnimate("buySpinButton", "#afa");
                 player.update_("playerMoney", -Number(msg.price));
+                player.update_("playerSpins", +1);
             } else {
                 backgroundColorAnimate("buySpinButton", "#faa");
             }
@@ -86,17 +88,21 @@ wheelOfFortuneFrame.setOnClose(function() {
     var slices = 8;
 
     function spin(){
+        if (!spinButtonAccessable) return;
+        spinButtonAccessable = false;
         serverConnection.communicate({type:"spin"}, function(msg){
             if (msg.success) {
                 backgroundColorAnimate("spinButton", "#afa");
                 player.update_("playerSpins", -1);
                 canSpin = true;
+                spinButtonAccessable = true;
             } else {
                 backgroundColorAnimate("spinButton", "#faa");
                 canSpin = false;
+                spinButtonAccessable = false;
             }
             if(canSpin){ 
-                reconfigureSpinButton("Wheel is spinning...", true);
+                reconfigureSpinButton("Wheel is spinning...", false);
                 var rounds = Math.floor(msg.angle/360);
                 var degrees = msg.angle%360;
                 prize = slices - 1 - Math.floor(degrees / (360 / slices));

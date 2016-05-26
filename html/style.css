@@ -84,6 +84,7 @@ body {
 }
 
 .btn, input, a {
+    text-decoration: none;
     box-shadow: 0px 0px 0.2em #abf;
     border-radius: 0.1em;
     display: inline-block;
@@ -107,6 +108,10 @@ body {
     border-radius: 0.5em;
     display:inline-block;
     transition: background 0s;
+}
+
+.btnLarge {
+    padding: 7px;
 }
 
 .btn + .btn {
@@ -184,15 +189,6 @@ body {
     padding: 0px 5px 5px 5px;
     border-radius: 5px;
 }
-
-#pointGained {
-    animation: pointsGainedAnimation;
-}
-
-@keyframes pointsGainedAnimation {
-    
-}
-
 
 
 #beatBob {
