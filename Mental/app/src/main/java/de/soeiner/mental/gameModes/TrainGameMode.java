@@ -57,12 +57,13 @@ public class TrainGameMode extends GameMode {
     private Wave[] initiateWaves(){
         Wave[] wellen = new Wave[6];
         //double minspeed, double maxspeed, trainspawnintervall, trainarrivedreward, health, healthnw, r
-        wellen[0] = new Wave(6, 6, 100, 1, 99999, 999999, 25);
-        wellen[1] = new Wave(1.0, 1.0, 4000, 2, 10, 25, 50);
+        //wellen[0] = new Wave(6, 6, 100, 1, 99999, 999999, 25);
+        wellen[0] = new Wave(1.0, 1.0, 4000, 1, 10, 15, 25);
+        wellen[1] = new Wave(1.3, 1.3, 3500, 2, 10, 25, 50);
         wellen[2] = new Wave(1.8, 1.8, 3200, 3, 10, 30, 100);
         wellen[3] = new Wave(2.5, 2.5, 2500, 4, 10, 35, 200);
         wellen[4] = new Wave(4.0, 4.0, 1600, 10, 10, 40, 500);
-        wellen[5] = new Wave(0.5, 0.5, 1600, 10, 10, 50, 500);
+        wellen[5] = new Wave(6, 6, 100, 10, 10, 50, 500);
 //        int testhealth = 8;
 //        int testhealthNeededToWin = 17; // um schnell zur nächsten wave zu gelangen
 //        wellen[0] = new Wave(0.5, 0.5, 4000, 1, 10, testhealthNeededToWin, 25);
