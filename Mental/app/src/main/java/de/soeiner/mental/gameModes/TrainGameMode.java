@@ -64,13 +64,13 @@ public class TrainGameMode extends GameMode {
         wellen[3] = new Wave(2.5, 2.5, 2500, 4, 10, 35, 200);
         wellen[4] = new Wave(4.0, 4.0, 1600, 10, 10, 40, 500);
         wellen[5] = new Wave(6, 6, 100, 10, 10, 50, 500);
-//        int testhealth = 8;
-//        int testhealthNeededToWin = 17; // um schnell zur nächsten wave zu gelangen
-//        wellen[0] = new Wave(0.5, 0.5, 4000, 1, 10, testhealthNeededToWin, 25);
-//        wellen[1] = new Wave(1.0, 1.0, 4000, 2, 10, testhealthNeededToWin, 50);
-//        wellen[2] = new Wave(1.5, 1.5, 3500, 3, 10, testhealthNeededToWin, 100);
-//        wellen[3] = new Wave(2.0, 2.0, 3000, 4, 10, testhealthNeededToWin, 200);
-//        wellen[4] = new Wave(4.0, 4.0, 2000, 10, 10, testhealthNeededToWin, 500);
+/*        int testhealth = 8;
+        int testhealthNeededToWin = 17; // um schnell zur nächsten wave zu gelangen
+        wellen[0] = new Wave(0.5, 0.5, 4000, 1, 10, testhealthNeededToWin, 25);
+        wellen[1] = new Wave(1.0, 1.0, 4000, 2, 10, testhealthNeededToWin, 50);
+        wellen[2] = new Wave(1.5, 1.5, 3500, 3, 10, testhealthNeededToWin, 100);
+        wellen[3] = new Wave(2.0, 2.0, 3000, 4, 10, testhealthNeededToWin, 200);
+        wellen[4] = new Wave(4.0, 4.0, 2000, 10, 10, testhealthNeededToWin, 500);*/
         return wellen;
     }
 
@@ -232,6 +232,17 @@ public class TrainGameMode extends GameMode {
             }
         }
         return s;
+    }
+
+    public TrainTrack getTrackById(int id){
+        for(int i = 0; i < trainMap.length; i++){
+            for (int j = 0; j < trainMap.length; j++) {
+                if(trainMap[i][j].id == id){
+                    return trainMap[i][j];
+                }
+            }
+        }
+        throw new RuntimeException("getTrackById(), konnte keine Track mit id"+ id+" finden");
     }
 
     //@Override

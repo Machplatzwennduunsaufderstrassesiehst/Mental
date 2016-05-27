@@ -71,7 +71,7 @@ public class Switch extends TrainTrack {
         changeSwitch((int) Math.random()*successors.size()%successors.size()); //switch gleich setzen
     }
 
-    public void changeSwitch(int st){ //nimmt an, dass es zwei nachfolger gibt
+    public void changeSwitch(int st){
         //int active = 0;
         switchedTo = st;
         /*

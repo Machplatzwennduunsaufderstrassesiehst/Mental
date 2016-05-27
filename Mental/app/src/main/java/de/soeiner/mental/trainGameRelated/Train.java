@@ -17,12 +17,14 @@ public class Train implements Runnable{
     private double speed; //tracks pro sekunde
     private TrainGameMode traingame;
     private int x,y;
+    private int positionId;
 
     public Train(int i, int d, double s, TrainGameMode tg){
         id = i;
         destinationId = d;
         speed = s;
         traingame = tg;
+        positionId = traingame.trainMap[1][1].getId();
         JSONObject train = CmdRequest.makeCmd(CmdRequest.SEND_NEWTRAIN);;
         try{
             train.put("trainId", id);
@@ -39,7 +41,7 @@ public class Train implements Runnable{
         return id;
     }
 
-    public void run() { // TODO
+    public void run() {
         boolean moving = true;
         int z = 0;
         while(moving && traingame.getGameIsRunning()){
@@ -55,7 +57,7 @@ public class Train implements Runnable{
                 }catch (Exception e2){e2.printStackTrace();}
             }
             if(traingame.trainMap[x][y].getType().equals("goal")){
-                Goal tempGoal = (Goal) traingame.trainMap[x][y]; //TODO possible breaking point
+                Goal tempGoal = (Goal) traingame.trainMap[x][y];
                 if(destinationId == tempGoal.getGoalId()){
                     traingame.trainArrived(id, tempGoal.getGoalId(), true);
                 }else{
@@ -65,6 +67,36 @@ public class Train implements Runnable{
             }
         }
     }
+
+/*    private int calculateTimeToDestination(){ //in millisek
+        if(traingame.trainMap[x][y].getType().equals("goal")){return 0;}
+        double distance = 0;
+        boolean broadcast = false;
+        Switch s = null;
+        int direction = 0;
+        x = traingame.getTrackById(positionId).getX();
+        y = traingame.getTrackById(positionId).getY();
+
+        do{
+            if(distance == 0 && traingame.trainMap[x][y].getType().equals("switch")){
+                s = (Switch) traingame.trainMap[x][y];
+                direction = s.getSwitchedTo();
+                //System.out.println("Train " + this.getId() + " now switching. switchId:" + s.getSwitchId() + " Pos(" + x + "|" + y + ")");
+                traingame.broadcastTrainDecision(id, s.getSwitchId(), direction);
+            }
+            try {
+                System.out.println("getTrackById("+positionId+")");
+                positionId = traingame.getTrackById(positionId).getSuccessor().id;
+                x = traingame.getTrackById(positionId).getX();
+                y = traingame.getTrackById(positionId).getY();
+                }catch(Exception e){
+                System.out.println("Train ist gecrasht an stelle x: "+x+", y: "+y+" , "+traingame.trainMap[x][y].getType()+" mit id: "+ traingame.trainMap[x][y].id+" und value: "+traingame.trainMap[x][y].getValue()+" vorgänger: "+traingame.trainMap[x][y].getPredecessor().getType()+", "+traingame.trainMap[x][y].id+", x:"+traingame.trainMap[x][y].getX()+", y: "+traingame.trainMap[x][y].getY());
+                //throw new RuntimeException();
+            }
+            distance++;
+        }while(!(traingame.trainMap[x][y].getType().equals("switch")) && !(traingame.trainMap[x][y].getType().equals("goal")));
+        return (int) (distance/speed * 1000);
+    }*/
 
     private int calculateTimeToDestination(){ //in millisek
         if(traingame.trainMap[x][y].getType().equals("goal")){return 0;}
