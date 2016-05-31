@@ -134,11 +134,11 @@ wheelOfFortuneFrame.setOnClose(function() {
     
         wheel.width = wheel.height = renderSize;
         wheelPin.width = wheelPin.height = renderSize / 3;
+        
+        graphics.start();
 
         graphics.centerSprite(wheel);
         graphics.centerSprite(wheelPin);
-        
-        graphics.start();
     };
     wheelOfFortuneFrame.stopGraphics = function() {graphics.stop();};
     
