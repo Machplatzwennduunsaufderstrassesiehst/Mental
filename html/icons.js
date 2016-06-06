@@ -8,7 +8,7 @@ function createIcon(key, size, offsetpx) {
         size_ = "-" + size + "x";
     }
     if (offsetpx !== undefined) size = offsetpx;
-    var html = '<img style="margin-bottom:-'+size+'px;" src="graphics/icons/open-iconic-master/png/'+key+size_+'.png" ';
+    var html = '<img style="margin-bottom:-'+size+'px;" src="icons/open-iconic-master/png/'+key+size_+'.png" ';
     html += 'alt="'+key+'">&nbsp;';
     return html;
 }

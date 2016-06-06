@@ -1,15 +1,15 @@
 
 
-/* global PIXI, byID, trainGame */
+/* global PIXI, byID */
 
-function GameGraphics(htmlContainer) {
+function GameGraphics(htmlContainerId) {
     var graphicObjects = [];
     var environmentSprites = [];
     var running = false;
     
     var renderer = new PIXI.autoDetectRenderer(
         1000, 1000,
-        {antialias:true}
+        {antialias:true, transparent:true}
     );
     var stage = new PIXI.Container();
     var environment = new PIXI.Container();
@@ -17,8 +17,12 @@ function GameGraphics(htmlContainer) {
     stage.addChild(environment);
     stage.addChild(staticEnvironment);
     
-    this.resize = function(width, height) {
+    this.resizeRenderer = function(width, height) {
         renderer.resize(width, height);
+    };
+    
+    this.setStageScale = function(scale) {
+        stage.scale = new PIXI.Point(scale, scale);
     };
     
     this.getStage = function() {
@@ -29,13 +33,13 @@ function GameGraphics(htmlContainer) {
     var start = this.start = function() {
         running = true;
         // The renderer will create a canvas element for you that you can then insert into the DOM.
-        byID(htmlContainer).appendChild(renderer.view);
+        byID(htmlContainerId).appendChild(renderer.view);
         animate();
         fpsMeasureThread = setInterval(measureFPS, 1000);
     };
     
     var stop = this.stop = function() {
-        byID(htmlContainer).removeChild(renderer.view);
+        byID(htmlContainerId).removeChild(renderer.view);
         staticEnvironment.cacheAsBitmap = false;
         running = false;
         clearInterval(fpsMeasureThread);
@@ -48,6 +52,11 @@ function GameGraphics(htmlContainer) {
     
     this.addSprite = function(sprite) {stage.addChild(sprite);};
     this.removeSprite = function(sprite) {stage.removeChild(sprite);};
+    
+    this.centerSprite = function(sprite) {
+        sprite.position.x = renderer.width / 2 / stage.scale.x;
+        sprite.position.y = renderer.height / 2 / stage.scale.y;
+    };
     
     var removeGraphicObject = this.removeGraphicObject = function(graphicObject) {
         graphicObjects.remove(graphicObject);
@@ -112,20 +121,34 @@ function GameGraphics(htmlContainer) {
 
         renderer.render(stage);
     }
+    
+    this.degreesToRadian = function(deg) {
+        return deg / 360 * Math.PI * 2;
+    };
 }
 
-var TextureGenerator = new function () {
+var TextureGenerator = new (function () {
+    var gridSize = undefined;
+    
     this.generate = function(path) {
         var texture = PIXI.Texture.fromImage(path);
         return texture;
+    };
+    
+    this.setGridSize = function(gs) {
+        gridSize = gs;
     };
     
     // scale is an optional additional custom scaling factor
     this.generateSprite = function(texture, scale) {
         if (scale == undefined) scale = 1;
         var sprite = new PIXI.Sprite(texture);
-        var gridSize = trainGame.getGridSize();
-        sprite.scale = new PIXI.Point(gridSize/sprite.width*scale, gridSize/sprite.height*scale);
+        var xScale = 1, yScale = 1;
+        if (gridSize != undefined) {
+            xScale = gridSize/sprite.width * scale;
+            yScale = gridSize/sprite.height * scale;
+        }
+        sprite.scale = new PIXI.Point(xScale, yScale);
         return sprite;
     };
     
@@ -136,6 +159,6 @@ var TextureGenerator = new function () {
     this.getDisplayObjectPivot = function(displayObject) {
         return new PIXI.Point(displayObject.width/2, displayObject.height/2);
     };
-};
+})();
 
 

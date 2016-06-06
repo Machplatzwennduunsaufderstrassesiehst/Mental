@@ -108,8 +108,6 @@ function Navigation() {
     // does not close the frames given by parameters
     var closeAll = this.closeAll = function() {
         closeFrames(frames);
-        byID("disconnect").style.display = "none";
-        byID("toLobby").style.display = "none";
     };
     
     var openFrames = this.openFrames = function() {
@@ -124,7 +122,7 @@ function Navigation() {
             f.smoothOpen();
             f.notifyOpen();
         }
-        setTimeout(function(){window.scrollTo(1,1)},0);
+        setTimeout(function(){window.scrollTo(1,1);},0);
         //if (isMobile()) hideAddressBar();
     };
     
@@ -135,6 +133,8 @@ function Navigation() {
         for (i = 0; i < arguments.length; i++) {
             var f = arguments[i];
             if (!f.isOpen()) continue;
+            byID("disconnect").style.display = "none";
+            byID("toLobby").style.display = "none";
             f.notifyClose();
             f.smoothClose();
         }

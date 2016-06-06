@@ -15,6 +15,7 @@ mainTrainGameFrame.setOnOpen(function() {
     serverConnection.addObserver(switchChangedObserver);
     serverConnection.addObserver(trainDecisionObserver);
     serverConnection.addObserver(trainArrivedObserver);
+    serverConnection.addObserver(trainWaveObserver);
     
     if (trainGameGraphics != undefined) {
         trainGameGraphics.stop();
@@ -36,6 +37,7 @@ mainTrainGameFrame.setOnClose(function() {
     serverConnection.removeObserver(switchChangedObserver);
     serverConnection.removeObserver(trainDecisionObserver);
     serverConnection.removeObserver(trainArrivedObserver);
+    serverConnection.removeObserver(trainWaveObserver);
     
     trainGame.stop();
     byID("mainTrainGameFrame").innerHTML = "";
@@ -50,84 +52,97 @@ function fitGraphics(xMapSize, yMapSize) {
     var frame = byID("mainTrainGameFrame");
     var frameRatio = frame.clientWidth / frame.clientHeight;
     var mapRatio = xMapSize / yMapSize;
-    var gridSize;
+    var viewGridSize;
     if (frameRatio > mapRatio) {
-        gridSize = frame.clientHeight / yMapSize;
+        viewGridSize = frame.clientHeight / yMapSize;
     } else {
-        gridSize = frame.clientWidth / xMapSize;
+        viewGridSize = frame.clientWidth / xMapSize;
     }
-    trainGame.graphics.resize(xMapSize*gridSize, yMapSize*gridSize);
+    var gridSize = viewGridSize / 2;
+    if (gridSize > 90) gridSize = 90;
+    var stageScale = viewGridSize / gridSize;
+    trainGame.graphics.resizeRenderer(xMapSize*viewGridSize, yMapSize*viewGridSize);
+    trainGame.graphics.setStageScale(stageScale);
     trainGame.setGridSize(gridSize);
+    trainGame.setViewGridSize(viewGridSize);
 } 
 
 function Map(rawdata) {
     // initialize array to hold the track objects later
-    var mapArray = [];  
-    var trainSpawn = null;
-      
+    var trackArray = [null];  
+    var trainSpawn = null; // reference to the first track of the double linked list
+    var firstTrackId = 0;
+    
     for (var i = 0; i < rawdata.length; i++) {
-        mapArray.push([]);
         for (var j = 0; j < rawdata[i].length; j++) {
-            mapArray[i].push(null);
+            var trackData = rawdata[i][j];
+            var trackId = Number(trackData.id);
+            if (trackId < 0 || trackId == undefined) continue;
+            if (trackArray[trackId] != undefined) {
+                log("Trackid " + trackId + " doppelt vergeben");
+            }
+            trackArray[trackId] = trackData;
+            if (trackData.xpos == 1 && trackData.ypos == 1) {
+                firstTrackId = trackId;
+            }
         }
     }
-    log(mapArray);
     
     // recursive strategy to build the track objects needed for the map
-    function build(i, j, predecessor) {
-        if (mapArray[i][j] != null) return null;
+    function build(trackId, predecessor) {
+        //if (!trackArray[trackId]) return null;
         try {
-            var trackData = rawdata[i][j];
+            var trackData = trackArray[trackId];
         } catch (e) {
             log(e);
             return null;
         }
-        switch(trackData.trackType) {
-            case "blocked":return null;
-            case "track":
-                var i2 = trackData.successorPosition.xpos;
-                var j2 = trackData.successorPosition.ypos;
-                var t = new Track(trackData.xpos, trackData.ypos);
-                var futureSuccessor = build(i2, j2, t);
-                t.setPredecessor(predecessor);
-                t.setSuccessor(futureSuccessor);
-                t.initialize();
-                return t;
-            case "switch":
-                var successorPositions = trackData.successorList;
-                var successors = [];
-                var sw = new Switch(trackData.switchId, trackData.xpos, trackData.ypos);
-                for (var s = 0; s < successorPositions.length; s++) {
-                    var i2 = successorPositions[s].xpos;
-                    var j2 = successorPositions[s].ypos;
-                    successors[s] = build(i2, j2, sw);
-                }
-                sw.setPredecessor(predecessor);
-                sw.setSuccessors(successors);
-                sw.initialize();
-                sw.change(trackData.switchedTo);
-                return sw;
-            case "goal":
-                var goalId = trackData.goalId;
-                var g = new Goal(goalId, trackData.xpos, trackData.ypos);
-                g.setPredecessor(predecessor);
-                g.initialize();
-                return g;
+        try {
+            switch(trackData.trackType) {
+                case "blocked":return null;
+                case "track":
+                    var successorId = trackData.successorId;
+                    var t = new Track(trackData.xpos, trackData.ypos);
+                    var futureSuccessor = build(successorId, t);
+                    t.setPredecessor(predecessor);
+                    t.setSuccessor(futureSuccessor);
+                    t.initialize();
+                    return t;
+                case "switch":
+                    var successorIds = trackData.successorIds;
+                    var successors = [];
+                    var sw = new Switch(trackData.switchId, trackData.xpos, trackData.ypos);
+                    for (var s = 0; s < successorIds.length; s++) {
+                        successors[s] = build(successorIds[s], sw);
+                    }
+                    sw.setPredecessor(predecessor);
+                    sw.setSuccessors(successors);
+                    sw.initialize();
+                    sw.change(trackData.switchedTo);
+                    return sw;
+                case "goal":
+                    var goalId = trackData.goalId;
+                    var g = new Goal(goalId, trackData.xpos, trackData.ypos);
+                    g.setPredecessor(predecessor);
+                    g.initialize();
+                    return g;
+            }
+        } catch (e) {
+            console.log(e);
         }
     }
     
-    log("START MAP BUILD");
     Switch.es = [];
     Goal.s = [];
     Train.s = [];
-    trainSpawn = build(1, 1, null);
+    trainSpawn = build(firstTrackId, null);
     
     this.getTrainSpawn = function() {
         return trainSpawn;
     };
     
     this.getSize = function() {
-        return {x:mapArray.length, y:mapArray[0].length};
+        return {x:rawdata.length, y:rawdata[0].length};
     };
 }
 
@@ -136,6 +151,7 @@ function TrainGame(graphics) {
     this.graphics = graphics;
     this.trainMap = null;
     var gridSize = 0;
+    var viewGridSize = 0;
     var running = false;
     
     this.setMap = function(map) {
@@ -145,6 +161,12 @@ function TrainGame(graphics) {
     this.start = function() {
         running = true;
         graphics.start();
+        // move clickHandler so it acts as a mask to the graphics
+        /*var stageRect = graphics.getRenderer().view.getClientRects()[0];
+        clickHandler.style.top = stageRect.top + "px";
+        clickHandler.style.left = stageRect.left + "px";
+        clickHandler.style.width = stageRect.width + "px";
+        clickHandler.style.height = stageRect.height + "px";*/
     };
     
     this.stop = function() {
@@ -162,10 +184,19 @@ function TrainGame(graphics) {
     
     this.setGridSize = function(gridSize_) {
         gridSize = gridSize_;
+        TextureGenerator.setGridSize(gridSize);
     };
     
     this.getGridSize = function() {
         return gridSize;
+    };
+    
+    this.setViewGridSize = function(vgs) {
+        viewGridSize = vgs;
+    };
+    
+    this.getViewGridSize = function() {
+        return viewGridSize;
     };
     
     this.mouseDown = function(event) {
@@ -183,7 +214,12 @@ function TrainGame(graphics) {
     };
     
     var performSwitchChange = this.performSwitchChange = function(sw) {
-        serverConnection.send({type:"answer", answer:{switch: sw.id}});
+        TrainGame.latencyCalculator.onRequest("switchChange" + sw.id);
+        var newSwitchedTo = sw.getNextLaneIndex();
+        setTimeout(function(sw, swto){
+            return function(){sw.change(swto);};
+        }(sw, newSwitchedTo), TrainGame.latencyCalculator.getCurrentLatency() / 2);
+        serverConnection.send({type:"answer", answer:{switch: sw.id, switchedTo:newSwitchedTo}});
     };
 }
 TrainGame.TGMPATH = "graphics/tgm/";
@@ -193,7 +229,9 @@ TrainGame.turnTexture = TextureGenerator.generate(TrainGame.TGMPATH + "turn.png"
 TrainGame.goalTexture = TextureGenerator.generate(TrainGame.TGMPATH + "goal.png");
 TrainGame.starTexture = TextureGenerator.generate(TrainGame.TGMPATH + "star.png");
 
-TrainGame.idColors = ["ff0000", "00ff00", "0000ff", "ffff00", "ff00ff", "00ffff", "ffffff", "000000"];
+TrainGame.idColors = ["8808ff", "00ff00", "ff0000", "ffff00", "ff00ff", "00dfdf", "ffffff", "ff8800"];
+
+TrainGame.latencyCalculator = new LatencyCalculator();
 
 // OBSERVERS =====================================================================================================
 
@@ -204,6 +242,13 @@ var trainMapObserver = new Observer("exercise", function(msg) {
     trainGame.setMap(trainMap);
     trainGame.start();
     trainGame.graphics.cacheStaticEnvironment();
+    var text = new particles.Text("Game started!", 0xffffff);
+    text.fadeIn();
+    setTimeout(
+        function(text) {
+            return function() {text.fadeOut();}
+        }(text)
+    , 2000);
     // send confirmation
     setTimeout(function() {
         serverConnection.send({type:"confirm"});
@@ -211,10 +256,11 @@ var trainMapObserver = new Observer("exercise", function(msg) {
 });
 
 var newtrainObserver = new Observer("newTrain", function(msg) {
-    new Train(msg.trainId, msg.destinationId, msg.speed, msg.color, trainGame.getTrainSpawn());
+    new Train(msg.trainId, msg.destinationId, msg.speed, trainGame.getTrainSpawn());
 });
 
 var switchChangedObserver = new Observer("switchChange", function(msg) {
+    TrainGame.latencyCalculator.onAnswer("switchChange" + msg.switchChange.switchId);
     Switch.es[msg.switchChange.switchId].change(msg.switchChange.switchedTo);
 });
 
@@ -238,4 +284,30 @@ var trainArrivedObserver = new Observer("trainArrived", function(msg) {
         };
     }(msg, train);
     train.arrive(onArriveInGoal);
+});
+
+// TODO
+var trainWaveObserver = new Observer("trainWaveCompleted", function(msg) {
+    var success = msg.success; // wave survived
+    var waveNo = msg.waveNo;
+    var reward = msg.reward;
+    var text;
+    if (success) {
+        var timeout = 0;
+        var timeoutStep = 100;
+        for (var i = 0; i < Train.s.length; i++) {
+            var train = Train.s[i];
+            if (train == undefined) continue;
+            setTimeout((function(train){return function(){train.explode();};})(train), timeout);
+            Train.s[i] = undefined;
+            timeout += timeoutStep;
+        }
+        text = new particles.Text("Wave " + waveNo + " survived!", 0xffffff);
+    } else {
+        text = new particles.Text("You lost!!", 0xffaaaa);
+    }
+    text.fadeIn();
+    setTimeout(function(text){
+        return function(){text.fadeOut();};
+    }(text), 2000);
 });

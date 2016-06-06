@@ -48,7 +48,19 @@ function backgroundColorAnimate(id, color, fallbackTimeout) {
     }, fallbackTimeout);
 }
 
-
+/**
+ * Swaps elements at index i and j
+ * @param {type} i
+ * @param {type} j
+ * @returns {boolean}
+ */
+Array.prototype.swap = function(i, j) {
+    if (this[i] == undefined || this[j] == undefined) return false;
+    var temp = this[i];
+    this[i] = this[j];
+    this[j] = temp;
+    return true;
+};
 Array.prototype.remove = function(element) {
     var index = this.indexOf(element);
     if (index < 0) return false; // element not found in array

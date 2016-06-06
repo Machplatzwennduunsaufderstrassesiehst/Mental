@@ -36,7 +36,6 @@ var particles = (function() {
         for (var i = 1; i <= 16; i++) {
             explosionTextures.push(new PIXI.Texture.fromFrame("exp" + i + ".png"));
         }
-        log(explosionTextures);
     });
     assetLoader.load();
     
@@ -67,8 +66,49 @@ var particles = (function() {
         checkAnimationEnded();
     }
     
+    function Text(text, color) {
+        var gridSize = trainGame.getGridSize();
+        var scale = gridSize / 100;
+        
+        var sprite = new PIXI.Text(text, {
+            font: '50px Arial',
+            fill: color,
+            align: 'center',
+            strokeThickness: 10
+        });
+        sprite.anchor = new PIXI.Point(0.5, 0.5);
+        sprite.scale = new PIXI.Point(scale, scale);
+        sprite.alpha = 0.1;
+        
+        function fade(endValue, stepWide, onFaded) {
+            if (Math.abs(endValue - sprite.alpha) <= Math.abs(stepWide)) {
+                sprite.alpha = endValue;
+                onFaded();
+                return;
+            }
+            setTimeout(
+                (function(e, s ,o){return function(){fade(e, s, o);};})
+                (endValue, stepWide, onFaded)
+            , 40);
+            sprite.alpha += stepWide;
+        }
+        
+        this.fadeIn = function() {
+            trainGame.graphics.addSprite(sprite);
+            trainGame.graphics.centerSprite(sprite);
+            fade(1, 0.15, function() {});
+        };
+        
+        this.fadeOut = function() {
+            fade(0, -0.07, function() {
+                trainGame.graphics.removeSprite(sprite);
+            });
+        };
+    };
+    
     return {
         Star: Star,
-        Explosion: Explosion
+        Explosion: Explosion,
+        Text: Text
     };
 })();

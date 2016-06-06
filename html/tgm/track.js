@@ -42,6 +42,10 @@ function Lane(i, j, predecessorCoords, successorCoords) {
         return entranceSide;
     };
     
+    var getExitSide = this.getExitSide = function() {
+        return exitSide;
+    };
+    
     var getEntranceCoords = this.getEntranceCoords = function() {
         return entranceCoords;
     };
@@ -195,7 +199,7 @@ function Track(i, j) {
     };
     
     this.getRect = function() {
-        var gridSize = trainGame.getGridSize();
+        var gridSize = trainGame.getViewGridSize();
         return new PIXI.Rectangle(i*gridSize, j*gridSize, gridSize, gridSize);
     };
     
@@ -245,6 +249,7 @@ function Switch(id, i, j) {
     
     var change = this.change = function(newSwitchedTo) {
         switchedTo = newSwitchedTo;
+        switchingOrderIndex = switchingOrder.indexOf(switchedTo);
         for (var l = 0; l < lanes.length; l++) {
             if (l == switchedTo) {
                 lanes[switchedTo].setSwitched(true);
@@ -262,6 +267,7 @@ function Switch(id, i, j) {
             var predecessorCoords = {x:i, y:j-1};
         }
         for (var s = 0; s < successors.length; s++) {
+            switchingOrder[s] = s;
             var successorCoords = {x:successors[s].getX(), y:successors[s].getY()};
             var lane = new Lane(i, j, predecessorCoords, successorCoords);
             lanes[s] = lane;
@@ -272,11 +278,41 @@ function Switch(id, i, j) {
             }(s);
             lanes[s].buildSprite(onl);
         }
+        if (lanes.length == 3) {
+            for (var l = 0; l < lanes.length; l++) {
+                if ((lanes[l].getEntranceSide() - lanes[l].getExitSide()) % 2 == 0) {// the straight one in the middle
+                    log("3-Switch enhancement: found the Straight");
+                    var ids = [0,1,2];
+                    ids.remove(l);
+                    if (lanes[ids[0]].getTurnDegrees() < 0) ids.swap(0, 1); // wenn 0 eine rechts- und 1 eine linkskurve ist, tauschen, sodass links vorne ist
+                    switchingOrder[0] = ids[0];
+                    switchingOrder[1] = l;
+                    switchingOrder[2] = ids[1];
+                    log(switchingOrder);
+                }
+            }
+        }
     };
     
+    var switchingOrder = [];
+    var switchingOrderIndex = 0;
+    
     this.getNextLaneIndex = function() {
-        return (switchedTo + 1) % successors.length;
+        switchingOrderIndex += 1;
+        return switchingOrder[switchingOrderIndex % switchingOrder.length];
     };
+    
+    // pendeln, ist aber vllt doch nicht so gut
+    /*
+    var switchingDirection = 0;
+    this.getNextLaneIndex = function() {
+        var index = switchingOrderIndex;
+        if (index <= 0) switchingDirection = 1;
+        if (index >= successors.length - 1) switchingDirection = -1;
+        switchingOrderIndex = index += switchingDirection;
+        return switchingOrder[index % switchingOrder.length];
+    };
+    */
 }
 Switch.es = [];
 Switch.prototype = new Track;
@@ -287,6 +323,8 @@ function Goal(id, i, j) {
     Track.call(this, i, j);
     Goal.s[id] = this;
     var lane;
+    
+    var gridSize = trainGame.getGridSize();
     
     // overwritten
     this.getLane = function(){return lane;};
@@ -315,7 +353,7 @@ function Goal(id, i, j) {
         lane.buildSprite(function(sprite) {
             var colorTexture = new PIXI.Graphics();
             colorTexture.beginFill(Number("0x" + TrainGame.idColors[id]), 1);
-            colorTexture.drawCircle(lane.getPosVector().getX(), lane.getPosVector().getY(), gridSize/10);
+            colorTexture.drawCircle(lane.getPosVector().getX(), lane.getPosVector().getY(), gridSize/5.7);
             trainGame.graphics.addEnvironment(sprite, true);
             trainGame.graphics.addEnvironment(colorTexture, true);
         });

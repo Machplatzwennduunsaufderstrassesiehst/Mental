@@ -1,7 +1,7 @@
 
 /* global PIXI, TextureGenerator, TrainGame, trainGame, Vector, particles */
 
-function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
+function Train(trainId, destinationId, tracksPerSecond, startTrack) {
     Train.s[trainId] = this;
     var container = new PIXI.Container();
     
@@ -32,26 +32,30 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
     var arriveInGoal = function(){};
     var graphicsArrived = false;
 	
-    function move() {
+    function move(bWithLatencyHeadStart) {
+        var headStart = (bWithLatencyHeadStart ? TrainGame.latencyCalculator.getCurrentLatency() * 1.15 : 0);
         setTimeout(function(){
             if (!trainGame.isRunning()) return;
             if (successorTrack != null) {
                 currentTrack = successorTrack;
-                move();
+                move(false);
             } else {
                 arriveInGoal();
-                graphicArrived = true;
+                graphicsArrived = true;
             }
-        }, timePerTrack * 1000);
+        }, timePerTrack * 1000 - headStart);
         
         currentLane = currentTrack.getLane();
         var movement = buildMovement();
+        if (bWithLatencyHeadStart) movement.setProgress(headStart / 1000);
         graphicObject.setPos(movement.getFirst());
         graphicObject.queueMovement(movement);
         lastTrackChange = Date.now();
         successorTrack = currentTrack.getSuccessor();
         predecessorTrack = currentTrack.getPredecessor();
     }
+    
+    move(true);
     
     var correctionRetryTimeout = 50, // ms
         correctionMaxRetryCount = 10;
@@ -67,7 +71,7 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
         } else if (predecessorTrack == correctedTrack) { // train has already passed the corrected track
             // this is a very bad case, should only occur if: latency > (1000 / TRAIN_MAX_SPEED)
             setTimeout(function(){
-                correctMovement(successor, successor.getSuccessor(), successor.getLane(), correctionMaxRetryCount + 1);
+                correctMovement(successor, successor.getSuccessor(), successor.getLane(), retry);
             }, correctionRetryTimeout);
             return;
         } else { // train is on the correct track => only correct its lane and successorTrack if necessary
@@ -84,11 +88,13 @@ function Train(trainId, destinationId, tracksPerSecond, color, startTrack) {
                 movement.setProgress(movementProgress);
                 graphicObject.setPos(movement.getFirst());
                 graphicObject.queueMovement(movement);
+                if (graphicsArrived) {
+                    var timeUntilNextMoveCall = (Date.now() - lastTrackChange) % (timePerTrack * 1000);
+                    setTimeout(move, timeUntilNextMoveCall);
+                }
             }
         }
     };
-    
-    move();
     
     // TODO movement caching
     function buildMovement() {
