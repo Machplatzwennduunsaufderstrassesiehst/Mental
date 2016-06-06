@@ -176,7 +176,7 @@ body {
     width: 2em;
     margin: 0 0.6em 0.6em 0;
     font-weight: bold;
-    opacity:0;
+    display:none;
 }
 
 #messageContainerDivision {
@@ -233,8 +233,9 @@ body {
 #scoreboard td {
     border-top: 4px solid white;
     padding: 12px;
-    padding-top:0px;
-    padding-bottom:0px;
+    padding-top:2px;
+    padding-bottom:2px;
+    vertical-align: middle;
 }
 #scoreboard td + td { border-left: 2px solid white;margin:0;}
 
