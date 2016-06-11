@@ -1,8 +1,6 @@
 package de.soeiner.mental.exerciseCreators;
 import org.json.JSONObject;
 
-import de.soeiner.mental.trainTracks.TrainTrack;
-
 /**
  * Created by sven on 22.03.16.
  */

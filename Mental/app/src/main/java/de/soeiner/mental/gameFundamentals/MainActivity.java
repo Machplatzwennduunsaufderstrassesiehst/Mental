@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         new Game();
+        new Game();
     }
 
     @Override

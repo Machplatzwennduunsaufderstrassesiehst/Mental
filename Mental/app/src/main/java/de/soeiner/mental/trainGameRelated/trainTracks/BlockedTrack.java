@@ -1,4 +1,4 @@
-package de.soeiner.mental.trainTracks;
+package de.soeiner.mental.trainGameRelated.trainTracks;
 
 /**
  * Created by Malte on 26.04.2016.
@@ -6,8 +6,8 @@ package de.soeiner.mental.trainTracks;
 public class BlockedTrack extends TrainTrack {
 
 
-    public BlockedTrack(int x, int y, int v) {
-        super(x, y, v);
+    public BlockedTrack(int x, int y, int v, int id) {
+        super(x, y, v, id);
     }
 
     @Override

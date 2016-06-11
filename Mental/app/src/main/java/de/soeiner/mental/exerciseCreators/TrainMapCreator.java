@@ -4,9 +4,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import de.soeiner.mental.trainTracks.*;
+import de.soeiner.mental.trainGameRelated.Train;
+import de.soeiner.mental.trainGameRelated.trainTracks.BlockedTrack;
+import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
+import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
+import de.soeiner.mental.trainGameRelated.trainTracks.Track;
+import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
 
 /**
  * Created by sven on 25.04.16.
@@ -47,24 +51,26 @@ public class TrainMapCreator extends ExerciseCreator {
     private final int[] xTP = {1, 1, 0, -1, -1, -1, 0, 1}; //precisley
     private final int[] yTP = {0, 1, 1, 1, 0, -1, -1, -1}; //precisley
     private int pathNumber = 0;
-    private final int size = 11;
+    private final int size = 10;
     private final int BLOCK_VALUE = 8;
     TrainTrack[][] map;
     private int x = 0;
     private int y = 0;
     private TrainTrack[] succesors;
     private TrainTrack[] predeccesors;
+    private int id;
 
 
     private TrainTrack[][] createTrainMap(){
         x = 0;
         y = 0;
         pathNumber = 0;
+        id = 1;
 
         map = new TrainTrack[size][size];
         for(int i = 0; i<size; i++){
             for(int j = 0; j<size; j++){
-                map[i][j] = new Track(i, j, 0);
+                map[i][j] = new Track(i, j, 0, id++);
             }
         }
         map[1][1].setPredecessor(null);
@@ -73,14 +79,15 @@ public class TrainMapCreator extends ExerciseCreator {
 
         for(int i = 0; i<4; i++){ //ränder setzen
             for(int j = 0; j<size-1;j++){
-                map[x][y] = new BlockedTrack(x, y, BLOCK_VALUE);
+                map[x][y] = new BlockedTrack(x, y, BLOCK_VALUE, -1);
                 x += xT[i];
                 y += yT[i];
             }
         }
         x = 1;
         y = 1;
-        map[x][y] = new Track(x, y, 1);
+        //id = 1;
+        map[x][y] = new Track(x, y, 1, id++);
         int[] coordinates = new int[2];
         int z = 0;
         int counter = 0;
@@ -99,14 +106,18 @@ public class TrainMapCreator extends ExerciseCreator {
                 coordinates = getStartingPointConnection(); //anknüpfung an startpunkt finden
                     if (map[coordinates[0]][coordinates[1]].getType().equals("switch")) { //wenn der anknüpfpunkt bereits ein switch ist
                         map[coordinates[0]][coordinates[1]].setSuccessor(map[x][y]);
+                        map[x][y].setPredecessor(map[coordinates[0]][coordinates[1]]);
                     } else {
                         TrainTrack successorTemp = map[coordinates[0]][coordinates[1]].getSuccessor(); //aktueller
                         TrainTrack predecessorTemp = map[coordinates[0]][coordinates[1]].getPredecessor(); //aktueller
-                        map[coordinates[0]][coordinates[1]] = new Switch(coordinates[0], coordinates[1], 9); //switch setzen
+                        map[coordinates[0]][coordinates[1]] = new Switch(coordinates[0], coordinates[1], 9, id++); //switch setzen
+                        predecessorTemp.setSuccessor(map[coordinates[0]][coordinates[1]]); //TODO
                         map[coordinates[0]][coordinates[1]].setPredecessor(predecessorTemp);
                         map[coordinates[0]][coordinates[1]].setSuccessor(successorTemp); //1. vorheriger weg //Swich, daher mehrere Succesor
+                        successorTemp.setPredecessor(map[coordinates[0]][coordinates[1]]);
                         map[coordinates[0]][coordinates[1]].setSuccessor(map[x][y]); //2. neuer abzweig
                         map[x][y].setPredecessor(map[coordinates[0]][coordinates[1]]);
+
                         // anknüpfung mit startpunkt (switch) verbinden
                     }
                     map[x][y].setValue(pathNumber);
@@ -164,8 +175,8 @@ public class TrainMapCreator extends ExerciseCreator {
                         possibilities[i] = false;
                     }
                 }
-                //System.out.println("========================== Iteration nr. "+pathNumber);
-                //ausgabe();
+                System.out.println("========================== Iteration nr. "+pathNumber);
+                ausgabe();
             }
         }
         int zId = 0;
@@ -174,6 +185,7 @@ public class TrainMapCreator extends ExerciseCreator {
             for (int j = 0; j < map.length; j++) {
                 if (map[i][j].getType().equals("switch")) {
                     s = (Switch) map[i][j];
+                    map[i][j].getPredecessor().setSuccessor(map[i][j]); //experimentell
                     s.setSwitchId(zId);
                     zId++;
                 }
@@ -182,9 +194,32 @@ public class TrainMapCreator extends ExerciseCreator {
         for(int i = 0; i<map.length; i++){
             for (int j = 0; j < map.length; j++) {
                 if(map[i][j].getValue() != 0 && map[i][j].getType().equals("track") && map[i][j].getSuccessor() == null){ //goals werden identifiziert
-                    Goal goal = new Goal(i, j, map[i][j].getValue()); //und gesetzt
+                    TrainTrack predeccessorTemp = map[i][j].getPredecessor();
+                    Goal goal = new Goal(i, j, map[i][j].getValue(), id++); //und gesetzt
                     goal.setGoalId(map[i][j].getValue());
                     map[i][j] = goal;
+                    System.out.println("i: " + i + ", j: " + j + " mit predeccessor == null : " + predeccessorTemp == null);
+                    if(predeccessorTemp != null){
+                        predeccessorTemp.setSuccessor(map[i][j]);
+                        map[i][j].setPredecessor(predeccessorTemp);
+                        if(predeccessorTemp.getType().equals("switch")){
+                            System.out.println("switch vor goal");
+                        }else{
+                            System.out.println("track vor switch");
+                        }
+                    }else{
+                        System.out.println("======================================== null vor switch");
+                        ausgabe();
+                        //
+                        //keine längerfristige Lösung
+                        System.out.println("beginne map creation prozess von vorne"); //quick fix
+                        int ldot = 4;
+                        /* nur bildschirm ausgabe */ try{for (int g = 1; g < ldot; g++) {System.out.println("");for (int l = ldot - g; l < ldot; l++) {System.out.print(".");}}}catch(Exception e){}//der ist mit absicht leer !!}
+                        createTrainMap();
+                        return null;
+                        //keine längerfristige Lösung
+                        //
+                    }
                 }
             }
         }
@@ -279,15 +314,14 @@ public class TrainMapCreator extends ExerciseCreator {
         for(int i = 0; i<map.length;i++){
             System.out.println("");
             for(int j = 0; j<map.length;j++){
-                if(map[i][j].getValue() == 0){
+                if(map[j][i].getValue() == 0){
                     System.out.print("  ");
                 }else{
-                    System.out.print(map[j][i].getValue()+" "); // vertauscht damit es mit der grafik übereinstimmt
+                    System.out.print(map[j][i].getValue()+" ");
                 }
             }
         }
     }
-
     // hier kann man die TrainMap jetzt abrufen
     public TrainTrack[][] getTrainMap() {
         return trainMap;

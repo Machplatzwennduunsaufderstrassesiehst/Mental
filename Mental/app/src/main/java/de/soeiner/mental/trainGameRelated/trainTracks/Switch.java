@@ -1,12 +1,10 @@
-package de.soeiner.mental.trainTracks;
+package de.soeiner.mental.trainGameRelated.trainTracks;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import de.soeiner.mental.gameModes.Train;
 
 /**
  * Created by Malte on 26.04.2016.
@@ -18,8 +16,8 @@ public class Switch extends TrainTrack {
     int switchId;
     int switchedTo = 0;
 
-    public Switch(int x, int y, int v){
-        super(x, y, v);
+    public Switch(int x, int y, int v, int id){
+        super(x, y, v, id);
     }
 
     public int getSwitchedTo() {
@@ -34,12 +32,23 @@ public class Switch extends TrainTrack {
 
     @Override
     public void setSuccessor(TrainTrack s) {
+        boolean replaced = false;
         if(s == null){
             System.out.println("Objekt ist null!!!! ://///");
         }
+
         if (!successors.contains(s)) {
-            successors.add(s);
-            activeSuccessors.add(false);
+            for(int i = 0; i<successors.size();i++){
+                if(s.getX() == successors.get(i).getX() && s.getY() == successors.get(i).getY()){
+                    successors.set(i, s);
+                    replaced = true;
+                    break;
+                }
+            }
+            if(!replaced) {
+                successors.add(s);
+                activeSuccessors.add(false);
+            }
             JSONArray successorList = new JSONArray();
             try {
                 for(int i = 0; i < successors.size(); i++){
@@ -50,29 +59,41 @@ public class Switch extends TrainTrack {
                     successorList.put(i, position);
                 }
                 this.put("successorList", successorList);
+
+                JSONArray alternativeSuccessorList = new JSONArray();
+                for(int i = 0; i < successors.size(); i++){
+                    //System.out.println("Typ an der Stelle "+i);//+" ist "+successors.get(i).getType());
+                    alternativeSuccessorList.put(i, successors.get(i).id);
+                }
+                this.put("successorIds", alternativeSuccessorList);
             }catch(JSONException e){e.printStackTrace();}
         }
-        changeSwitch(); //switch gleich setzen
+        changeSwitch((int) Math.random()*successors.size()%successors.size()); //switch gleich setzen
     }
 
-    public void changeSwitch(){ //nimmt an, dass es zwei nachfolger gibt
-        int active = 0;
-
+    public void changeSwitch(int st){
+        //int active = 0;
+        switchedTo = st;
+        /*
         for(int i = 0; i<successors.size(); i++){ //aktiven nachfolger finden
             if(activeSuccessors.get(i).equals(true)){
                 active = i;
             }
         }
+        */
         for(int i = 0; i<successors.size(); i++){ //alle nachfolger auf falsch setzen
             activeSuccessors.set(i, new Boolean(false));
         }
+        /*
         active = (active+1)%successors.size(); //index des nächsten Nachfolgers ermitteln
         activeSuccessors.set(active, new Boolean(true)); //nächsten nachfolger auf true setzen
         switchedTo = active; //für trains globale variable setzen
+        */
+        activeSuccessors.set(switchedTo, new Boolean(true)); //nächsten nachfolger auf true setzen
         try {
             this.put("switchedTo", switchedTo); //für map jsonobject setzen
         }catch(Exception e){e.printStackTrace();}
-        this.successor = successors.get(active);
+        this.successor = successors.get(switchedTo);
     }
 
     public ArrayList getSuccessors(){

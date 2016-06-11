@@ -10,12 +10,11 @@ import java.util.Arrays;
 
 import de.soeiner.mental.shop.Shop;
 import de.soeiner.mental.shop.shopItems.ShopItem;
-import de.soeiner.mental.gameModes.Train;
 import de.soeiner.mental.communication.ClientConnection;
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
-import de.soeiner.mental.trainTracks.Switch;
+import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
 
 /**
  * Created by sven on 12.02.16.
@@ -50,7 +49,7 @@ public class Player extends ClientConnection {
     }
 
     public void sendScoreBoard(Score[] playerScores) {
-
+        if(shop == null) { return; }
         shop.updateMoney(); //TODO CARE
         for(int i = 0; i < playerScores.length;i++){ // richtiger Spieler wird gehilightet
             if(playerScores[i].attributeOf(this)){
@@ -59,7 +58,6 @@ public class Player extends ClientConnection {
                 playerScores[i].setHiglight(false);
             }
         }
-
         JSONObject jsonObject = CmdRequest.makeCmd(CmdRequest.SEND_SCOREBOARD);
         try {
             JSONArray scoreJSONArray = new JSONArray(playerScores);
@@ -147,8 +145,7 @@ public class Player extends ClientConnection {
     }
 
     public void sendGameString() {
-       // if(!(shop.money == 0/* && score.getOverallScoreValue() == 0*/)) { //wenn daten zur speicherung vorhanden sind
-            String gameString = this.getGameString();
+        String gameString = this.getGameString();
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_GAME_STRING);
             try {
                 j.put("gameString", gameString);
@@ -157,7 +154,18 @@ public class Player extends ClientConnection {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-       // }
+    }
+
+    public void sendWaveCompleted(boolean success, int waveNo, int reward){
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TRAIN_WAVE_COMPLETED);
+        try {
+            j.put("success", success);
+            j.put("waveNo", waveNo);
+            j.put("reward", reward);
+            makePushRequest(new PushRequest(j));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendBeatBobStatus(double status){ //bekommt double e [-1, 1]
@@ -168,6 +176,12 @@ public class Player extends ClientConnection {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void updatePlayerInfo(){ //TODO CARE
+        Score[] s = new Score[1];
+        s[0] = getScore();
+        sendScoreBoard(s);
     }
     public Score getScore() { return score; }
 
@@ -223,10 +237,11 @@ public class Player extends ClientConnection {
                         e.printStackTrace();
                     }
                     System.out.println("set game string");
+                    updatePlayerInfo(); //<--- anstelle von
+                    /*--->
                     Score[] s = new Score[1];
                     s[0] = getScore();
-                    sendScoreBoard(s);
-                    break;
+                    sendScoreBoard(s);*/                    break;
                 case "buyItem":
                     index = Integer.parseInt(json.getString("index"));
                     callback = CmdRequest.makeResponseCmd(type);
@@ -264,6 +279,7 @@ public class Player extends ClientConnection {
                 case "buySpin":
                     callback = CmdRequest.makeResponseCmd(type);
                     callback.put("success", this.shop.getWheel().buySpin());
+                    callback.put("price", this.shop.getWheel().PRICE_PER_SPIN);
                     sendGameString();
                     break;
                 case "vote":

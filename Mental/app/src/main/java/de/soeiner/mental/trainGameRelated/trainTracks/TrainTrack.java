@@ -1,4 +1,4 @@
-package de.soeiner.mental.trainTracks;
+package de.soeiner.mental.trainGameRelated.trainTracks;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,22 +10,22 @@ public abstract class TrainTrack extends JSONObject{ //TODO: set attributes
 
     protected TrainTrack successor;
     protected TrainTrack predecessor;
-    protected int id;
-    protected int from;
+    public int id;
     protected int to;
-    protected int switchTo;
     protected int value = 0;
     protected int[] coordinates = new int[2];
 
-    public TrainTrack(int x, int y, int v){
+    public TrainTrack(int x, int y, int v, int id){
         coordinates[0] = x;
         coordinates[1] = y;
-        setValue(v);
+        this.id = id;
+        this.value = v;
         try {
             this.put("trackType", this.getType());
             this.put("xpos", x);
             this.put("ypos", y);
             this.put("value", v);
+            this.put("id", id);
         }catch (JSONException e){e.printStackTrace();}
     }
     public abstract String getType();
@@ -58,6 +58,11 @@ public abstract class TrainTrack extends JSONObject{ //TODO: set attributes
     }
     public void setValue(int v){
         value = v;
+        try {
+            this.put("value", v);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
     public int getValue(){
         return value;
@@ -68,4 +73,5 @@ public abstract class TrainTrack extends JSONObject{ //TODO: set attributes
     }
     public int getX(){return coordinates[0];}
     public int getY(){return coordinates[1];}
+
 }
