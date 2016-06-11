@@ -73,6 +73,15 @@ function Map(rawdata) {
     var trainSpawn = null; // reference to the first track of the double linked list
     var firstTrackId = 0;
     
+    var correctedRawdata = [];
+    for (var i = 0; i < rawdata.length - 2; i++) {
+        correctedRawdata[i] = [];
+        for (var j = 0; j < rawdata[i].length - 2; j++) {
+            correctedRawdata[i][j] = rawdata[i+1][j+1];
+        }
+    }
+    rawdata = correctedRawdata;
+    
     for (var i = 0; i < rawdata.length; i++) {
         for (var j = 0; j < rawdata[i].length; j++) {
             var trackData = rawdata[i][j];
@@ -93,6 +102,8 @@ function Map(rawdata) {
         //if (!trackArray[trackId]) return null;
         try {
             var trackData = trackArray[trackId];
+            trackData.xpos -= 1;
+            trackData.ypos -= 1;
         } catch (e) {
             log(e);
             return null;
@@ -237,7 +248,7 @@ TrainGame.latencyCalculator = new LatencyCalculator();
 
 var trainMapObserver = new Observer("exercise", function(msg) {
     if (msg.exercise.type != "trainMap") return;
-    fitGraphics(msg.exercise.trainMap.length, msg.exercise.trainMap[0].length);
+    fitGraphics(msg.exercise.trainMap.length - 2, msg.exercise.trainMap[0].length - 2);
     trainMap = new Map(msg.exercise.trainMap);
     trainGame.setMap(trainMap);
     trainGame.start();
