@@ -253,6 +253,13 @@ var trainMapObserver = new Observer("exercise", function(msg) {
     trainGame.setMap(trainMap);
     trainGame.start();
     trainGame.graphics.cacheStaticEnvironment();
+    var text = new particles.Text("Game started!", 0xffffff);
+    text.fadeIn();
+    setTimeout(
+        function(text) {
+            return function() {text.fadeOut();}
+        }(text)
+    , 2000);
     // send confirmation
     setTimeout(function() {
         serverConnection.send({type:"confirm"});
@@ -293,6 +300,9 @@ var trainArrivedObserver = new Observer("trainArrived", function(msg) {
 // TODO
 var trainWaveObserver = new Observer("trainWaveCompleted", function(msg) {
     var success = msg.success; // wave survived
+    var waveNo = msg.waveNo;
+    var reward = msg.reward;
+    var text;
     if (success) {
         var timeout = 0;
         var timeoutStep = 100;
@@ -303,7 +313,12 @@ var trainWaveObserver = new Observer("trainWaveCompleted", function(msg) {
             Train.s[i] = undefined;
             timeout += timeoutStep;
         }
+        text = new particles.Text("Wave " + waveNo + " survived!", 0xffffff);
+    } else {
+        text = new particles.Text("You lost!!", 0xffaaaa);
     }
-    var waveNo = msg.waveNo;
-    var reward = msg.reward;
+    text.fadeIn();
+    setTimeout(function(text){
+        return function(){text.fadeOut();};
+    }(text), 2000);
 });

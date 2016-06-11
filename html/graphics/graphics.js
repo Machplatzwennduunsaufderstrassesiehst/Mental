@@ -54,8 +54,8 @@ function GameGraphics(htmlContainerId) {
     this.removeSprite = function(sprite) {stage.removeChild(sprite);};
     
     this.centerSprite = function(sprite) {
-        sprite.position.x = renderer.width / 2;
-        sprite.position.y = renderer.height / 2;
+        sprite.position.x = renderer.width / 2 / stage.scale.x;
+        sprite.position.y = renderer.height / 2 / stage.scale.y;
     };
     
     var removeGraphicObject = this.removeGraphicObject = function(graphicObject) {

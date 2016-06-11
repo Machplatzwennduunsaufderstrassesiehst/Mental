@@ -102,16 +102,14 @@
                         <p id="messageContainer"></p>
                     </div>
                 </div>
-                <form data-ajax="false" onsubmit="sendAnswer(); return false;" action="#"><!-- return false causes the form not to be submitted-->
-                    <p style="margin: 0;display:inline-block;">
-                        <span id="exercise" class="exerciseUI" style="border-radius: 8px 0px 0px 8px;text-align:right;">Bitte warten...
-                        </span><input class="exerciseUI" type="number" style="border-radius: 0px 8px 8px 0px;max-width:4.5em;" data-role="none" placeholder="?" id="answer" onkeydown="document.onkeydown(event);"/>
-                        <span id="exerciseCountdown"></span>
-                        <!-- kleiner hack, einige browser benoetigen den submit button, und auf enter druck fokussieren sie darauf 
-                             das hier interpretiert das dann als senden und fokussiert wieder die eingabe -->
-                        
-                        <input id="answerFormSubmit" type="submit" value="Submit" style="position:absolute;top:-200px;left:-200px;" onfocus="sendAnswer();byID('answer').focus();" /> 
-                    </p>
+                <form data-ajax="false" onsubmit="sendAnswer(); return false;" action="#" style="text-align: center;"><!-- return false causes the form not to be submitted-->
+                    <span id="exercise" class="exerciseUI" style="border-radius: 8px 0px 0px 8px;text-align:right;">Bitte warten...
+                    </span><input class="exerciseUI" type="number" style="border-radius: 0px 8px 8px 0px;max-width:4.5em;" data-role="none" placeholder="?" id="answer" onkeydown="document.onkeydown(event);"/>
+                    <span id="exerciseCountdown"></span>
+                    <!-- kleiner hack, einige browser benoetigen den submit button, und auf enter druck fokussieren sie darauf 
+                         das hier interpretiert das dann als senden und fokussiert wieder die eingabe -->
+
+                    <input id="answerFormSubmit" type="submit" value="Submit" style="position:absolute;top:-200px;left:-200px;" onfocus="sendAnswer();byID('answer').focus();" /> 
                 </form>
                 <div id="beatBob" class="lvlProgress">
                     <span style="width:49.9%;display:block;float:left;border-radius: 4px 0px 0px 4px;" class="lvlProgress"><span id="beatBobBarLeft" style="width:56%" class="lvlProgressBar"></span></span>
