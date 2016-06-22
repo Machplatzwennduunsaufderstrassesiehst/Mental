@@ -17,12 +17,20 @@ public class JSONObject extends HashMap<String, Object> {
         if (jsonString.charAt(0) != '{' && jsonString.charAt(jsonString.length() - 1) != '}') {
             throw new JSONException("Invalid JSON data");
         }
-        jsonString = jsonString.substring(1, jsonString.length() - 2);
-        String[] keyValueArray = jsonString.split(";");
+        jsonString = jsonString.substring(1, jsonString.length() - 1);
+        System.out.println("Cut json string: " + jsonString);
+        String[] keyValueArray = jsonString.split(",");
         for (String keyValuePair : keyValueArray) {
+            System.out.println("KV Pair: " + keyValuePair);
             String key = keyValuePair.split(":")[0];
             key = key.replaceAll("\"", "");
+            System.out.println(key);
             String value = keyValuePair.split(":")[1];
+            value = value.trim();
+            if (value.charAt(0) == '\'' && value.charAt(value.length() - 1) == '\'') {
+                value = value.substring(1, value.length() - 1);
+            }
+            System.out.println(value);
             this.put(key, value);
         }
     }
@@ -36,7 +44,7 @@ public class JSONObject extends HashMap<String, Object> {
             String keyString = "\"" + key + "\"";
             String valueString = this.get(key).toString();
             s += keyString + ":" + valueString;
-            if (keys.hasNext()) s += ";";
+            if (keys.hasNext()) s += ",";
         }
         return s + "}";
     }
@@ -71,7 +79,7 @@ public class JSONObject extends HashMap<String, Object> {
 
     public String getString(String key) {
         if (!this.containsKey(key)) throw new JSONException("key not found");
-        return this.get(key).toString();
+        return this.get(key).toString().replaceAll("\"", "");
     }
 
     public boolean has(String key) {
@@ -79,7 +87,12 @@ public class JSONObject extends HashMap<String, Object> {
     }
 
     public void put(String key, JSONArray array) {
-        this.put(key, array.toString());
+        this.put(key, (Object) array);
+    }
+
+    public void put(String key, String value) {
+        Object object = "\"" + value + "\"";
+        this.put(key, object);
     }
 }
 

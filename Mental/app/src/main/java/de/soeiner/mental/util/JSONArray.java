@@ -18,7 +18,7 @@ public class JSONArray extends ArrayList<Object> {
         if (jsonString.charAt(0) != '[' && jsonString.charAt(jsonString.length() - 1) != ']') {
             throw new JSONException("Invalid JSON array data");
         }
-        jsonString = jsonString.substring(1, jsonString.length() - 2);
+        jsonString = jsonString.substring(1, jsonString.length() - 1);
         String[] array = jsonString.split(",");
         for (int i = 0; i < array.length; i++) {
             this.set(i, array[i]);

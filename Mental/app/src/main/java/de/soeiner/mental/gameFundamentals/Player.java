@@ -199,6 +199,7 @@ public class Player extends ClientConnection {
         System.out.println(getName() + ": " + json.toString());
         try {
             String type = json.getString("type");
+            System.out.println(type);
             int index;
             JSONObject callback = null;
             switch (type) {
