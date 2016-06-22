@@ -1,12 +1,12 @@
 package de.soeiner.mental.trainGameRelated.trainTracks;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import de.soeiner.mental.util.JSONException;
+import de.soeiner.mental.util.JSONObject;
 
 /**
  * Created by Malte on 26.04.2016.
  */
-public abstract class TrainTrack extends JSONObject{ //TODO: set attributes
+public abstract class TrainTrack extends JSONObject { //TODO: set attributes
 
     protected TrainTrack successor;
     protected TrainTrack predecessor;

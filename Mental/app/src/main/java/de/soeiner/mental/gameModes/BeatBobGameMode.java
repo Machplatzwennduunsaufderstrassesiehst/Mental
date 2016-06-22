@@ -1,14 +1,10 @@
 package de.soeiner.mental.gameModes;
 
-import org.json.JSONObject;
-
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.util.GaussElimination;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
-import de.soeiner.mental.exerciseCreators.MixedExerciseCreator;
-import de.soeiner.mental.exerciseCreators.MultExerciseCreator;
-import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
+import de.soeiner.mental.util.JSONObject;
 
 /**
  * Created by Malte on 09.04.2016.

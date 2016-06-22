@@ -1,8 +1,8 @@
 package de.soeiner.mental.exerciseCreators;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
+
+import de.soeiner.mental.util.JSONObject;
 
 /**
  * Created by sven on 25.04.16.
@@ -40,7 +40,7 @@ public abstract class ArithmeticExerciseCreator extends ExerciseCreator {
     }
 
     public boolean checkAnswer(JSONObject answer) {
-        return (exerciseResult == answer.optInt("value"));
+        return (exerciseResult == answer.getInt("value"));
     }
 
     public String getExerciseString() { return exerciseString; }

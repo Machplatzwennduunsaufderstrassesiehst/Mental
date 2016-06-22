@@ -1,8 +1,6 @@
 package de.soeiner.mental.communication;
 
-import org.json.JSONObject;
-
-import de.soeiner.mental.communication.CmdRequest;
+import de.soeiner.mental.util.JSONObject;
 
 /**
  * Created by sven on 12.02.16.

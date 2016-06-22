@@ -1,12 +1,6 @@
 package de.soeiner.mental.communication;
 
-/**
- * Created by sven on 17.03.16.
- */
-
-
 import android.util.Base64;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -81,7 +75,7 @@ public class PingHttpServer {
 
                 os = new PrintWriter(socket.getOutputStream(), true);
                 // ein 1px x 1px gif Bild in base64, damit man es hier direkt im code einbinden kann.
-                byte[] response = Base64.decode("R0lGODlhAQABAIAAAP///////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACwAAAAAAQABAAACAkQBADs=\n",0); // TODO flags ???
+                byte[] response = Base64.decode("R0lGODlhAQABAIAAAP///////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACwAAAAAAQABAAACAkQBADs=\n", 0); // TODO flags ???
 
                 os.print("HTTP/1.0 200" + "\r\n");
                 os.print("Content type: image/gif" + "\r\n");

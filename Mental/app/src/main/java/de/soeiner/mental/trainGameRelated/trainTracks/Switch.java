@@ -1,10 +1,10 @@
 package de.soeiner.mental.trainGameRelated.trainTracks;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
+
+import de.soeiner.mental.util.JSONArray;
+import de.soeiner.mental.util.JSONException;
+import de.soeiner.mental.util.JSONObject;
 
 /**
  * Created by Malte on 26.04.2016.
@@ -71,7 +71,7 @@ public class Switch extends TrainTrack {
         changeSwitch((int) Math.random()*successors.size()%successors.size()); //switch gleich setzen
     }
 
-    public void changeSwitch(int st){
+    public void changeSwitch(int st){ //nimmt an, dass es zwei nachfolger gibt
         //int active = 0;
         switchedTo = st;
         /*

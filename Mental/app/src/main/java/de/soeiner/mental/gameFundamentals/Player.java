@@ -2,10 +2,6 @@ package de.soeiner.mental.gameFundamentals;
 
 import com.koushikdutta.async.http.WebSocket;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Arrays;
 
 import de.soeiner.mental.shop.Shop;
@@ -15,6 +11,9 @@ import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
+import de.soeiner.mental.util.JSONArray;
+import de.soeiner.mental.util.JSONException;
+import de.soeiner.mental.util.JSONObject;
 
 /**
  * Created by sven on 12.02.16.

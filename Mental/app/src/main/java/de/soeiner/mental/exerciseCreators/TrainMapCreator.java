@@ -1,16 +1,14 @@
 package de.soeiner.mental.exerciseCreators;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
-import de.soeiner.mental.trainGameRelated.Train;
 import de.soeiner.mental.trainGameRelated.trainTracks.BlockedTrack;
 import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
 import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
 import de.soeiner.mental.trainGameRelated.trainTracks.Track;
 import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
+import de.soeiner.mental.util.JSONArray;
+import de.soeiner.mental.util.JSONObject;
 
 /**
  * Created by sven on 25.04.16.
@@ -106,7 +104,6 @@ public class TrainMapCreator extends ExerciseCreator {
                 coordinates = getStartingPointConnection(); //anknüpfung an startpunkt finden
                     if (map[coordinates[0]][coordinates[1]].getType().equals("switch")) { //wenn der anknüpfpunkt bereits ein switch ist
                         map[coordinates[0]][coordinates[1]].setSuccessor(map[x][y]);
-                        map[x][y].setPredecessor(map[coordinates[0]][coordinates[1]]);
                     } else {
                         TrainTrack successorTemp = map[coordinates[0]][coordinates[1]].getSuccessor(); //aktueller
                         TrainTrack predecessorTemp = map[coordinates[0]][coordinates[1]].getPredecessor(); //aktueller
@@ -198,10 +195,8 @@ public class TrainMapCreator extends ExerciseCreator {
                     Goal goal = new Goal(i, j, map[i][j].getValue(), id++); //und gesetzt
                     goal.setGoalId(map[i][j].getValue());
                     map[i][j] = goal;
-                    System.out.println("i: " + i + ", j: " + j + " mit predeccessor == null : " + predeccessorTemp == null);
+                    System.out.println("i: "+i+", j: "+j+" mit predeccessor == null : "+predeccessorTemp == null);
                     if(predeccessorTemp != null){
-                        predeccessorTemp.setSuccessor(map[i][j]);
-                        map[i][j].setPredecessor(predeccessorTemp);
                         if(predeccessorTemp.getType().equals("switch")){
                             System.out.println("switch vor goal");
                         }else{
@@ -210,16 +205,8 @@ public class TrainMapCreator extends ExerciseCreator {
                     }else{
                         System.out.println("======================================== null vor switch");
                         ausgabe();
-                        //
-                        //keine längerfristige Lösung
-                        System.out.println("beginne map creation prozess von vorne"); //quick fix
-                        int ldot = 4;
-                        /* nur bildschirm ausgabe */ try{for (int g = 1; g < ldot; g++) {System.out.println("");for (int l = ldot - g; l < ldot; l++) {System.out.print(".");}}}catch(Exception e){}//der ist mit absicht leer !!}
-                        createTrainMap();
-                        return null;
-                        //keine längerfristige Lösung
-                        //
                     }
+                    predeccessorTemp.setSuccessor(map[i][j]);
                 }
             }
         }

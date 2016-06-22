@@ -1,12 +1,9 @@
 package de.soeiner.mental.communication;
 import com.koushikdutta.async.http.WebSocket;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
-import de.soeiner.mental.communication.CmdRequest;
-import de.soeiner.mental.communication.RequestAnswerObserver;
+import de.soeiner.mental.util.JSONObject;
 
 /**
  * Created by sven on 12.02.16.

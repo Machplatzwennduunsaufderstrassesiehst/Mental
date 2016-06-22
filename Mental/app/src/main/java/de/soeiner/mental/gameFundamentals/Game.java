@@ -1,19 +1,16 @@
 package de.soeiner.mental.gameFundamentals;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
-import de.soeiner.mental.exerciseCreators.TrainMapCreator;
 import de.soeiner.mental.gameModes.ClassicGameMode;
 import de.soeiner.mental.gameModes.GameMode;
-import de.soeiner.mental.gameModes.TrainGameMode;
+import de.soeiner.mental.util.JSONArray;
+import de.soeiner.mental.util.JSONException;
+import de.soeiner.mental.util.JSONObject;
 
 /**
  * Created by malte on 13.02.16.

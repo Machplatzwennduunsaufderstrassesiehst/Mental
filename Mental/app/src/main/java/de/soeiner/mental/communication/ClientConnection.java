@@ -2,7 +2,7 @@ package de.soeiner.mental.communication;
 
 import com.koushikdutta.async.http.WebSocket;
 
-import org.json.JSONObject;
+import de.soeiner.mental.util.JSONObject;
 
 import java.util.ArrayList;
 

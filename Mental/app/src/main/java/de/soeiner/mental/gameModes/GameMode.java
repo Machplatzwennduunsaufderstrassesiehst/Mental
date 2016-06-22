@@ -1,8 +1,5 @@
 package de.soeiner.mental.gameModes;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 import de.soeiner.mental.gameFundamentals.Game;
@@ -13,6 +10,8 @@ import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.MixedExerciseCreator;
 import de.soeiner.mental.exerciseCreators.MultExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
+import de.soeiner.mental.util.JSONException;
+import de.soeiner.mental.util.JSONObject;
 
 /**
  * Created by Malte on 07.04.2016.

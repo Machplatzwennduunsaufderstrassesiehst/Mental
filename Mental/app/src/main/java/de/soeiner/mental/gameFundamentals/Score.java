@@ -1,14 +1,12 @@
 package de.soeiner.mental.gameFundamentals;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import de.soeiner.mental.gameFundamentals.Player;
+import de.soeiner.mental.util.JSONException;
+import de.soeiner.mental.util.JSONObject;
 
 /**
  * Created by sven on 16.02.16.
  */
-public class Score extends JSONObject{
+public class Score extends JSONObject {
 
     String compare = "";
     int pointsGained;

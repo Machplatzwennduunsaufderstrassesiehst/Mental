@@ -1,9 +1,8 @@
 package de.soeiner.mental.shop.shopItems;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import de.soeiner.mental.shop.Shop;
+import de.soeiner.mental.util.JSONException;
+import de.soeiner.mental.util.JSONObject;
 
 /**
  * Created by Malte on 02.04.2016.

@@ -10,7 +10,6 @@ import java.io.IOException;
 
 import de.soeiner.mental.R;
 import de.soeiner.mental.communication.Server;
-import de.soeiner.mental.gameFundamentals.Game;
 
 public class MainActivity extends AppCompatActivity {
 
