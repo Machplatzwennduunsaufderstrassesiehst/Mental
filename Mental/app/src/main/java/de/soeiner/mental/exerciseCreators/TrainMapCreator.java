@@ -40,7 +40,7 @@ public class TrainMapCreator extends ExerciseCreator {
     }
 
     public String getName() {
-        return "Casual Train Map";
+        return "Square Train Map";
     }
     public String getType() {
         return "trainMap";

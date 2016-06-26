@@ -37,6 +37,11 @@ public class TrainGameMode extends GameMode {
     }
 
     @Override
+    public String getGameModeString() {
+        return "Train Game";
+    }
+
+    @Override
     public void prepareGame() {
         super.prepareGame();
         for(int i = 0; i<game.joinedPlayers.size();i++){
@@ -54,9 +59,9 @@ public class TrainGameMode extends GameMode {
         }
         reward = 100; //reward für beenden des Spiels
     }
-    private Wave[] initiateWaves(){
+    Wave[] initiateWaves(){
         Wave[] wellen = new Wave[6];
-        //double minspeed, double maxspeed, trainspawnintervall, trainarrivedreward, health, healthnw, r
+        //double minspeed, double maxspeed, trainspawnintervall, trainarrivedreward, health, healthnw, reward
         //wellen[0] = new Wave(6, 6, 100, 1, 99999, 999999, 25);
         wellen[0] = new Wave(1.0, 1.0, 4000, 1, 10, 15, 25);
         wellen[1] = new Wave(1.3, 1.3, 3500, 2, 10, 25, 50);
@@ -99,7 +104,7 @@ public class TrainGameMode extends GameMode {
                 giveReward(waves[i].getREWARD());
                 broadcastWaveCompleted(true, i, waves[i].getREWARD());
                 System.out.println("welle "+i+" erfolgreich abgeschlossen!");
-                try{Thread.sleep(3000);}catch(Exception e){e.printStackTrace();}
+                try{Thread.sleep(10000);}catch(Exception e){e.printStackTrace();}
             }else{
                 broadcastWaveCompleted(false, i, waves[i].getREWARD());
                 gameIsRunning = false;
@@ -108,6 +113,11 @@ public class TrainGameMode extends GameMode {
             if(i == waves.length-1){
                 playersWon();
                 gameIsRunning = false;
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -171,11 +181,6 @@ public class TrainGameMode extends GameMode {
         for (int i = 0; i < game.activePlayers.size(); i++) {
             game.activePlayers.get(i).sendNewTrain(train);
         }
-    }
-
-    @Override
-    public String getGameModeString() {
-        return "Train Game";
     }
 
     public void broadcastTrainDecision(int trainId, int switchId, int direction){
