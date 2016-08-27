@@ -2,6 +2,7 @@ package de.soeiner.mental.gameModes;
 
 import org.json.JSONObject;
 
+import de.soeiner.mental.exerciseCreators.PathBasedTrainMapCreator;
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.exerciseCreators.TrainMapCreator;
@@ -28,7 +29,7 @@ public class TrainGameMode extends GameMode {
     int trainArrivedReward;
 
     public void initializeCompatibleExerciseCreators() {
-        compatibleExerciseCreators.add(new TrainMapCreator());
+        compatibleExerciseCreators.add(new PathBasedTrainMapCreator());
     }
 
     public TrainGameMode(Game game) {
@@ -260,6 +261,10 @@ public class TrainGameMode extends GameMode {
             }
         }
         throw new RuntimeException("getTrackById(), konnte keine Track mit id" + id + " finden");
+    }
+
+    public int getFirstTrackId() {
+        return ((TrainMapCreator) game.exerciseCreator).getFirstTrackId();
     }
 
     //@Override

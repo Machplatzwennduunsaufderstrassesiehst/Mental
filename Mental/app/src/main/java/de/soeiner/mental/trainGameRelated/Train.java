@@ -24,9 +24,8 @@ public class Train implements Runnable {
         destinationId = d;
         speed = s;
         traingame = tg;
-        positionId = traingame.trainMap[1][1].getId();
+        positionId = traingame.getFirstTrackId();
         JSONObject train = CmdRequest.makeCmd(CmdRequest.SEND_NEWTRAIN);
-        ;
         try {
             train.put("trainId", id);
             train.put("destinationId", destinationId);
@@ -35,7 +34,8 @@ public class Train implements Runnable {
             e.printStackTrace();
         }
         traingame.broadcastNewTrain(train);
-        x = y = 1;
+        x = traingame.getTrackById(positionId).getX();
+        y = traingame.getTrackById(positionId).getY();
         Thread t = new Thread(this);
         t.start();
     }

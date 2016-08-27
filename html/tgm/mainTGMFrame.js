@@ -67,20 +67,10 @@ function fitGraphics(xMapSize, yMapSize) {
     trainGame.setViewGridSize(viewGridSize);
 } 
 
-function Map(rawdata) {
+function Map(rawdata, firstTrackId) {
     // initialize array to hold the track objects later
     var trackArray = [null];  
     var trainSpawn = null; // reference to the first track of the double linked list
-    var firstTrackId = 0;
-    
-    var correctedRawdata = [];
-    for (var i = 0; i < rawdata.length - 2; i++) {
-        correctedRawdata[i] = [];
-        for (var j = 0; j < rawdata[i].length - 2; j++) {
-            correctedRawdata[i][j] = rawdata[i+1][j+1];
-        }
-    }
-    rawdata = correctedRawdata;
     
     for (var i = 0; i < rawdata.length; i++) {
         for (var j = 0; j < rawdata[i].length; j++) {
@@ -91,19 +81,17 @@ function Map(rawdata) {
                 log("Trackid " + trackId + " doppelt vergeben");
             }
             trackArray[trackId] = trackData;
-            if (trackData.xpos == 1 && trackData.ypos == 1) {
-                firstTrackId = trackId;
-            }
         }
     }
+    
+    log(trackArray);
+    log(firstTrackId);
     
     // recursive strategy to build the track objects needed for the map
     function build(trackId, predecessor) {
         //if (!trackArray[trackId]) return null;
         try {
             var trackData = trackArray[trackId];
-            trackData.xpos -= 1;
-            trackData.ypos -= 1;
         } catch (e) {
             log(e);
             return null;
@@ -248,8 +236,8 @@ TrainGame.latencyCalculator = new LatencyCalculator();
 
 var trainMapObserver = new Observer("exercise", function(msg) {
     if (msg.exercise.type != "trainMap") return;
-    fitGraphics(msg.exercise.trainMap.length - 2, msg.exercise.trainMap[0].length - 2);
-    trainMap = new Map(msg.exercise.trainMap);
+    fitGraphics(msg.exercise.trainMap.length, msg.exercise.trainMap[0].length);
+    trainMap = new Map(msg.exercise.trainMap, msg.exercise.firstTrackId);
     trainGame.setMap(trainMap);
     trainGame.start();
     trainGame.graphics.cacheStaticEnvironment();
@@ -257,7 +245,7 @@ var trainMapObserver = new Observer("exercise", function(msg) {
     text.fadeIn();
     setTimeout(
         function(text) {
-            return function() {text.fadeOut();}
+            return function() {text.fadeOut();};
         }(text)
     , 2000);
     // send confirmation

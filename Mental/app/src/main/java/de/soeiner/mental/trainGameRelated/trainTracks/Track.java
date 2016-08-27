@@ -8,8 +8,6 @@ import org.json.JSONObject;
  */
 public class Track extends TrainTrack {
 
-    private int id;
-
     public Track(int x, int y, int v, int id) {
         super(x, y, v, id);
     }
@@ -32,11 +30,6 @@ public class Track extends TrainTrack {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public int getId() {
-        return id;
     }
 
     public int getSuccessorId() {

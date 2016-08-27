@@ -22,8 +22,6 @@ public abstract class TrainTrack extends JSONObject { //TODO: set attributes
         this.value = v;
         try {
             this.put("trackType", this.getType());
-            this.put("xpos", x);
-            this.put("ypos", y);
             this.put("value", v);
             this.put("id", id);
         } catch (JSONException e) {
@@ -79,6 +77,12 @@ public abstract class TrainTrack extends JSONObject { //TODO: set attributes
     public void setCoordinates(int x, int y) {
         coordinates[0] = x;
         coordinates[1] = y;
+        try {
+            this.put("xpos", x);
+            this.put("ypos", y);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getX() {

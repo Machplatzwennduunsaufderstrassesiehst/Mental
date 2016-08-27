@@ -1,6 +1,9 @@
 package de.soeiner.mental.exerciseCreators;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
 
 /**
  * Created by sven on 22.03.16.
@@ -44,6 +47,11 @@ public abstract class ExerciseCreator {
     // erstellt die nächste Aufgabe
     public final JSONObject next() {
         exerciseObject = createNext();
+        try {
+            exerciseObject.put("type", this.getType());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         System.out.println("ExerciseObject: " + exerciseObject.toString());
         return exerciseObject;
     }
