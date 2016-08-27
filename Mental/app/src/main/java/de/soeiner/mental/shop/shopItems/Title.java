@@ -17,7 +17,7 @@ public class Title extends ShopItem {
 
     @Override
     public boolean equip() {
-        if(bought){
+        if (bought) {
             equipSingleItem();
             shop.score.setTitle(name);
             shop.updateMoney();

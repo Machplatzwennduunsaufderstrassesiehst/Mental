@@ -6,19 +6,21 @@ package de.soeiner.mental.exerciseCreators;
 
 public class MultExerciseCreator extends ArithmeticExerciseCreator {
 
-    public String getName(){return "Großes 1x1";}
+    public String getName() {
+        return "Großes 1x1";
+    }
 
-    public double getExpectedSolveTime(){
+    public double getExpectedSolveTime() {
         return 10;
     }
 
     public String create() {
         int d = (int) Math.sqrt(difficulty);
         if (d > 10) d = 10;
-        int a = (int) (Math.random() * (20-d)) + d; // Zahlen zwischen d und 20
+        int a = (int) (Math.random() * (20 - d)) + d; // Zahlen zwischen d und 20
         int bmax = 20;
         if (a <= 4) bmax = 100 * d / a;
-        int b = (int) (Math.random() * (bmax-d)) + d;
+        int b = (int) (Math.random() * (bmax - d)) + d;
         return createMult(a % 20 + 1, b % bmax + 1);
     }
 

@@ -1,4 +1,5 @@
 package de.soeiner.mental.exerciseCreators;
+
 import org.json.JSONObject;
 
 /**
@@ -20,13 +21,17 @@ public abstract class ExerciseCreator {
         return exerciseObject;
     }
 
-    public void setDifficulty(int d){ difficulty = d; }
+    public void setDifficulty(int d) {
+        difficulty = d;
+    }
 
     public void resetDifficulty() {
         difficulty = startDifficulty;
     }
 
-    public void setStartDifficulty(int d) { startDifficulty = d; }
+    public void setStartDifficulty(int d) {
+        startDifficulty = d;
+    }
 
     public void increaseDifficulty() {
         difficulty++;

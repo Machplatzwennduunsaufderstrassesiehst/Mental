@@ -3,7 +3,7 @@ package de.soeiner.mental.trainGameRelated.trainTracks;
 /**
  * Created by Malte on 28.04.2016.
  */
-public class Goal extends TrainTrack{
+public class Goal extends TrainTrack {
 
     private int goalId = 0;
 
@@ -13,11 +13,14 @@ public class Goal extends TrainTrack{
 
     public void setGoalId(int goalId) {
         this.goalId = goalId;
-        try{
+        try {
             this.put("goalId", goalId);
-        }catch(Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    public int getGoalId(){
+
+    public int getGoalId() {
         return goalId;
     }
 

@@ -15,7 +15,7 @@ public class SpeedGameMode extends GameMode { //Es empfiehlt sich vll. diesen Mo
 
     private static final int SPEED_EXERCISE_TIMEOUT = 5;
 
-    public SpeedGameMode(Game g){
+    public SpeedGameMode(Game g) {
         super(g);
         minPlayers = 1;
     }
@@ -32,7 +32,7 @@ public class SpeedGameMode extends GameMode { //Es empfiehlt sich vll. diesen Mo
 
     public void prepareGame() {
         super.prepareGame();
-        for(int i = 0; i<game.joinedPlayers.size();i++){
+        for (int i = 0; i < game.joinedPlayers.size(); i++) {
             Player p = game.joinedPlayers.get(i);
             game.activePlayers.add(p);
         }
@@ -43,7 +43,8 @@ public class SpeedGameMode extends GameMode { //Es empfiehlt sich vll. diesen Mo
         doWaitTimeout(SPEED_EXERCISE_TIMEOUT);
     }
 
-    public void loop() {}
+    public void loop() {
+    }
 
     public boolean playerAnswered(Player player, JSONObject answer) {
         Score s = player.getScore();

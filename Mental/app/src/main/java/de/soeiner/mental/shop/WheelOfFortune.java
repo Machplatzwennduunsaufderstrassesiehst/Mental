@@ -5,7 +5,6 @@ import de.soeiner.mental.gameFundamentals.Score;
 
 /**
  * Created by Malte on 06.05.2016.
- *
  */
 public class WheelOfFortune {
     Player player;
@@ -18,17 +17,17 @@ public class WheelOfFortune {
     private int angle = 0;
     int[] slicePrizes = {-1, 50, 500, 0, 200, 100, 150, 0};
 
-    public WheelOfFortune(Player p){
+    public WheelOfFortune(Player p) {
         player = p;
         shop = p.getShop();
         score = p.getScore();
     }
 
-    protected void calculateSpinsLeft(){
-        spinsLeft = score.getPlayerLevel()-spinsSpent;
+    protected void calculateSpinsLeft() {
+        spinsLeft = score.getPlayerLevel() - spinsSpent;
     }
 
-    protected int getSpinsLeft(){
+    protected int getSpinsLeft() {
         return spinsLeft;
     }
 
@@ -36,7 +35,7 @@ public class WheelOfFortune {
         return spinsSpent;
     }
 
-    private void update(){
+    private void update() {
 
         calculateSpinsLeft();
         player.getScore().setPlayerSpins(spinsLeft);
@@ -64,8 +63,8 @@ public class WheelOfFortune {
         update();
     }
 
-    public boolean buySpin(){
-        if(player.getShop().getMoney() >= PRICE_PER_SPIN){ //wenn genug Geld vorhanden
+    public boolean buySpin() {
+        if (player.getShop().getMoney() >= PRICE_PER_SPIN) { //wenn genug Geld vorhanden
             player.getShop().addMoney(-PRICE_PER_SPIN); //zieht das entsprechende Geld ab
             addSpin(); //fügt einen Spin hinzu
             return true;
@@ -73,14 +72,14 @@ public class WheelOfFortune {
         return false;
     }
 
-    public boolean spin(){
+    public boolean spin() {
         substractSpin(); //zieht Spin ab
-        int rounds = (int) ((double) (angle)/360.0);
-        int degrees = angle%360;
+        int rounds = (int) ((double) (angle) / 360.0);
+        int degrees = angle % 360;
         int prize = SLICES - 1 - (int) (double) (((double) (degrees)) / (360.0 / ((double) (SLICES)))); //berechnung des preises
-        if(slicePrizes[prize] == -1){ //preis anrechnen
+        if (slicePrizes[prize] == -1) { //preis anrechnen
             addSpin();
-        }else{
+        } else {
             player.getShop().addMoney(slicePrizes[prize]);
         }
         update();
@@ -93,9 +92,10 @@ public class WheelOfFortune {
          */
         return true;
     }
-    public int calculateAngel(){
-        angle = (int) ((Math.random()*750)+720);
-        System.out.println("gesendeter angle XXX: "+angle);
+
+    public int calculateAngel() {
+        angle = (int) ((Math.random() * 750) + 720);
+        System.out.println("gesendeter angle XXX: " + angle);
         return angle;
     }
 }

@@ -298,7 +298,6 @@ public class Player extends ClientConnection {
             if (callback != null) send(new PushRequest(callback));
         } catch (Exception e) {
             e.printStackTrace();
-            Logger.log(e);
         }
     }
 

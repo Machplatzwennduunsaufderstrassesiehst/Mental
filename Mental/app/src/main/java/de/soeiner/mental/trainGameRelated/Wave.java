@@ -12,14 +12,14 @@ public class Wave {
     private int HEALTH_NEEDED_TO_WIN;
     private int REWARD;
 
-    public Wave(double mins, double maxs, int tsi, int tar, int h, int hnw,  int r){
-         MAX_SPEED = mins;
-         MIN_SPEED = maxs;
-         TRAIN_SPAWN_INTERVAL = tsi;
-         TRAIN_ARRIVED_REWARD = tar;
-         health = h;
-         HEALTH_NEEDED_TO_WIN = hnw;
-         REWARD = r;
+    public Wave(double mins, double maxs, int tsi, int tar, int h, int hnw, int r) {
+        MAX_SPEED = mins;
+        MIN_SPEED = maxs;
+        TRAIN_SPAWN_INTERVAL = tsi;
+        TRAIN_ARRIVED_REWARD = tar;
+        health = h;
+        HEALTH_NEEDED_TO_WIN = hnw;
+        REWARD = r;
     }
 
     public double getMAX_SPEED() {

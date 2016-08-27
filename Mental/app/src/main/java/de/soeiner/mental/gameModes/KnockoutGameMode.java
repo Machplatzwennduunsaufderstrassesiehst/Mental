@@ -22,7 +22,7 @@ public class KnockoutGameMode extends GameMode {
 
     public void prepareGame() {
         super.prepareGame();
-        for(int i = 0; i<game.joinedPlayers.size();i++){
+        for (int i = 0; i < game.joinedPlayers.size(); i++) {
             Player p = game.joinedPlayers.get(i);
             game.activePlayers.add(p);
         }
@@ -59,10 +59,10 @@ public class KnockoutGameMode extends GameMode {
         int z = 0;
         Score s = player.getScore();
         synchronized (answerLock) {
-            if(!player.finished && gameIsRunning) {
+            if (!player.finished && gameIsRunning) {
                 if (game.exerciseCreator.checkAnswer(answer)) {
                     s.updateScore(1); //score gibt bei knockout die überlebten runden wieder
-                    game.broadcastMessage(player.getName()+" hat die Aufgabe als "+(game.getRank()+1)+". gelöst!");
+                    game.broadcastMessage(player.getName() + " hat die Aufgabe als " + (game.getRank() + 1) + ". gelöst!");
                     player.finished = true;
                     for (int i = 0; i < game.activePlayers.size(); i++) {
                         Player p = game.joinedPlayers.get(i);
@@ -70,7 +70,7 @@ public class KnockoutGameMode extends GameMode {
                             z++;
                         }
                     }
-                    if(game.activePlayers.size() - z <= 1){
+                    if (game.activePlayers.size() - z <= 1) {
                         allFinishedButOne = true;
                     }
                     if (allFinishedButOne) {
@@ -79,14 +79,14 @@ public class KnockoutGameMode extends GameMode {
                     game.broadcastScoreboard();
                     return true;
                 } else {
-          //          if (s.getScoreValue() > 0) {
-          //            s.updateScore(-1);
-          //            broadcastScoreboard();
-                    }
-                    return false;
+                    //          if (s.getScoreValue() > 0) {
+                    //            s.updateScore(-1);
+                    //            broadcastScoreboard();
                 }
+                return false;
             }
-            return true;
         }
+        return true;
+    }
 }
 

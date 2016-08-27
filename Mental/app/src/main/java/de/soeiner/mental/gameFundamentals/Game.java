@@ -26,7 +26,10 @@ public class Game implements Runnable {
         games = new ArrayList<Game>();
     }
 
-    public static void addGame(Game g) {games.add(g);}
+    public static void addGame(Game g) {
+        games.add(g);
+    }
+
     public static ArrayList<Game> getGames() {
         return games;
     }
@@ -46,7 +49,9 @@ public class Game implements Runnable {
                 jsonGameArray.put(jsonGameObject);
             }
             return jsonGameArray;
-        } catch (Exception e) {e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return new JSONArray();
     }
 
@@ -78,11 +83,11 @@ public class Game implements Runnable {
         t.start();
     }
 
-    public void setName(String n){
+    public void setName(String n) {
         name = n;
     }
 
-    public String getGameModeString(){
+    public String getGameModeString() {
         return gameMode.getGameModeString();
     }
 
@@ -94,7 +99,9 @@ public class Game implements Runnable {
         return description;
     }
 
-    public Score[] getScoreboard() {return scoreboard;}
+    public Score[] getScoreboard() {
+        return scoreboard;
+    }
 
     public void destroy() {
         games.remove(this);
@@ -111,12 +118,12 @@ public class Game implements Runnable {
 
     public void broadcastScoreboard() {
         Score temp;
-        for(int i = 0; i < scoreboard.length;i++){ //aufsteigendes Sortieren nach ScoreValue
-            for(int j = 1; j < (scoreboard.length - i); j++){
-                if(scoreboard[j-1].getScoreValue() < scoreboard[j].getScoreValue()){
+        for (int i = 0; i < scoreboard.length; i++) { //aufsteigendes Sortieren nach ScoreValue
+            for (int j = 1; j < (scoreboard.length - i); j++) {
+                if (scoreboard[j - 1].getScoreValue() < scoreboard[j].getScoreValue()) {
                     temp = scoreboard[j];
-                    scoreboard[j] = scoreboard[j-1];
-                    scoreboard[j-1] = temp;
+                    scoreboard[j] = scoreboard[j - 1];
+                    scoreboard[j - 1] = temp;
                 }
             }
         }
@@ -132,7 +139,7 @@ public class Game implements Runnable {
         joinedPlayers.add(p);
         updateScoreBoardSize();
         broadcastScoreboard();
-        if(!gameMode.getGameIsRunning()) {
+        if (!gameMode.getGameIsRunning()) {
             broadcastShowScoreBoard();
             voting.broadcastSuggestions();
         }
@@ -141,10 +148,10 @@ public class Game implements Runnable {
 
     public void removePlayer(Player p) {
         joinedPlayers.remove(p);
-        if(activePlayers.contains(p)){
+        if (activePlayers.contains(p)) {
             activePlayers.remove(p);
         }
-        if(spectators.contains(p)){
+        if (spectators.contains(p)) {
             spectators.remove(p);
         }
         updateScoreBoardSize();
@@ -185,8 +192,8 @@ public class Game implements Runnable {
         }
     }
 
-    private void broadcastShopItemList(){
-        for(int i = 0; i<joinedPlayers.size();i++){
+    private void broadcastShopItemList() {
+        for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             p.sendShopItemList(p.getShop().getShopItemList());
         }
@@ -203,21 +210,21 @@ public class Game implements Runnable {
     }
     */
 
-    public int getPoints(){ //methode berechent punkte fürs lösen einer Aufgabe
+    public int getPoints() { //methode berechent punkte fürs lösen einer Aufgabe
         //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
         int points = exerciseCreator.getDifficulty() * 3 / 2; // hab ich bisschen erhöht, da eine Runde ganz schön lange gedauert hat, wenn jeder mal ne Aufgabe löst
-        for(int i = 0; i<getRank();i++){
-            points = points/2;
+        for (int i = 0; i < getRank(); i++) {
+            points = points / 2;
         }
         return points;
     }
 
-    public int getRank(){ //methode berechnet wie viele
+    public int getRank() { //methode berechnet wie viele
         // Spieler die Aufgabe schon gelöst haben
         int rank = 0;
-        for(int i = 0; i<joinedPlayers.size();i++){
+        for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
-            if(p.finished == true){
+            if (p.finished == true) {
                 rank++;
             }
         }
@@ -254,25 +261,27 @@ public class Game implements Runnable {
         }
     }
 
-    public void broadcastSendCountdown(int time){
+    public void broadcastSendCountdown(int time) {
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_COUNTDOWN);
-            try{
+            try {
                 j.put("time", time);
-            }catch(Exception e){}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             p.makePushRequest(new PushRequest(j));
         }
         try {
-            Thread.sleep(time*1000);
+            Thread.sleep(time * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
 
-    public void broadcastShowScoreBoard(){
+    public void broadcastShowScoreBoard() {
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             p.sendGameString();
@@ -282,7 +291,7 @@ public class Game implements Runnable {
         broadcastScoreboard();
     }
 
-    public void broadcastShowExercises(){
+    public void broadcastShowExercises() {
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SHOW_EXERCISES);
@@ -296,7 +305,7 @@ public class Game implements Runnable {
     }
 
 
-    private void roundTimeout(){
+    private void roundTimeout() {
         /*try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
             Thread.sleep(GAME_TIMEOUT * 1000); //VOTE_TIMEOUT
         } catch (InterruptedException e) {} */
@@ -309,24 +318,32 @@ public class Game implements Runnable {
     }
 
 
-    public void waitForPlayers(int players){
+    public void waitForPlayers(int players) {
         this.gameMode = new ClassicGameMode(this);
         gameMode.minPlayers = players;
         gameMode.waitForPlayers();
     }
-    public void confirm(){confirmed++;}
+
+    public void confirm() {
+        confirmed++;
+    }
 
     int confirmed = 0;
     int TIMEOUT_TIME = 50; //in 100 millisek
-    private void waitForConfirmation(){
+
+    private void waitForConfirmation() {
         int z = 0;
-        if(!gameMode.needsConfirmation){return;}
+        if (!gameMode.needsConfirmation) {
+            return;
+        }
         confirmed = 0;
-        while(confirmed < activePlayers.size() && z < TIMEOUT_TIME){
-            try{
+        while (confirmed < activePlayers.size() && z < TIMEOUT_TIME) {
+            try {
                 Thread.sleep(100);
                 z++;
-            }catch(Exception e){e.printStackTrace();}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -335,7 +352,7 @@ public class Game implements Runnable {
         System.out.println("run()");
         waitForPlayers(1);
         start:
-        while(true) {
+        while (true) {
             broadcastShowScoreBoard();
             sendGameStrings();
             roundTimeout();

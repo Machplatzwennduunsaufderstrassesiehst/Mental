@@ -5,9 +5,11 @@ package de.soeiner.mental.exerciseCreators;
  */
 public class SquareMultExerciseCreator extends ArithmeticExerciseCreator {
 
-    public String getName(){return "Quadratzahlen";}
+    public String getName() {
+        return "Quadratzahlen";
+    }
 
-    public double getExpectedSolveTime(){
+    public double getExpectedSolveTime() {
         return 4;
     }
 

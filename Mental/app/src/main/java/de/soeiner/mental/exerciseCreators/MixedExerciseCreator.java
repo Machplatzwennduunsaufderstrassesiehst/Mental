@@ -11,9 +11,11 @@ public class MixedExerciseCreator extends ArithmeticExerciseCreator {
         return new MixedExerciseCreator();
     }
 
-    public String getName(){return "Gemischte Aufgaben";}
+    public String getName() {
+        return "Gemischte Aufgaben";
+    }
 
-    public double getExpectedSolveTime(){
+    public double getExpectedSolveTime() {
         return 8;
     }
 
@@ -36,7 +38,7 @@ public class MixedExerciseCreator extends ArithmeticExerciseCreator {
                     if (b > a)
                         b = (int) (b / 2);
                 }
-                return createMult(a,b);
+                return createMult(a, b);
             } else {
                 if (a < d || b < d) {
                     continue start;
@@ -50,9 +52,9 @@ public class MixedExerciseCreator extends ArithmeticExerciseCreator {
                         a = b;
                         b = temp;
                     }
-                    return createSub(a,b);
+                    return createSub(a, b);
                 } else {
-                    return createAdd(a,b);
+                    return createAdd(a, b);
                 }
             }
         }

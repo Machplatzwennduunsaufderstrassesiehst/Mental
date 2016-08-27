@@ -44,7 +44,7 @@ public class TrainGameMode extends GameMode {
     @Override
     public void prepareGame() {
         super.prepareGame();
-        for(int i = 0; i<game.joinedPlayers.size();i++){
+        for (int i = 0; i < game.joinedPlayers.size(); i++) {
             game.activePlayers.add(game.joinedPlayers.get(i));
         }
         TrainMapCreator trainMapCreator = (TrainMapCreator) game.exerciseCreator;
@@ -59,7 +59,8 @@ public class TrainGameMode extends GameMode {
         }
         reward = 100; //reward für beenden des Spiels
     }
-    Wave[] initiateWaves(){
+
+    Wave[] initiateWaves() {
         Wave[] wellen = new Wave[6];
         //double minspeed, double maxspeed, trainspawnintervall, trainarrivedreward, health, healthnw, reward
         //wellen[0] = new Wave(6, 6, 100, 1, 99999, 999999, 25);
@@ -84,12 +85,12 @@ public class TrainGameMode extends GameMode {
         int destinationId = 0;
         int idcounter = 0;
         double speed = 0;
-        for(int i = 0; i < waves.length && gameIsRunning; i++) {
+        for (int i = 0; i < waves.length && gameIsRunning; i++) {
             health = waves[i].getHealth();
             healthNeededToWin = waves[i].getHEALTH_NEEDED_TO_WIN();
             trainArrivedReward = waves[i].getTRAIN_ARRIVED_REWARD();
             waveIsRunning = true;
-            while(waveIsRunning && gameIsRunning) {
+            while (waveIsRunning && gameIsRunning) {
                 destinationId = (int) (Math.random() * goals.length) + 1; // da die goalId jetzt gleich der values sind und bei 1 starten, muss hier +1 stehen
                 speed = Math.random() * (waves[i].getMAX_SPEED() - waves[i].getMIN_SPEED()) + waves[i].getMIN_SPEED();
                 new Train(idcounter, destinationId, speed, this); //zug spawnen
@@ -100,17 +101,21 @@ public class TrainGameMode extends GameMode {
                     e.printStackTrace();
                 }
             }
-            if(waveSuccess){
+            if (waveSuccess) {
                 giveReward(waves[i].getREWARD());
                 broadcastWaveCompleted(true, i, waves[i].getREWARD());
-                System.out.println("welle "+i+" erfolgreich abgeschlossen!");
-                try{Thread.sleep(10000);}catch(Exception e){e.printStackTrace();}
-            }else{
+                System.out.println("welle " + i + " erfolgreich abgeschlossen!");
+                try {
+                    Thread.sleep(10000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
                 broadcastWaveCompleted(false, i, waves[i].getREWARD());
                 gameIsRunning = false;
                 break;
             }
-            if(i == waves.length-1){
+            if (i == waves.length - 1) {
                 playersWon();
                 gameIsRunning = false;
                 try {
@@ -123,78 +128,84 @@ public class TrainGameMode extends GameMode {
     }
 
     public boolean playerAnswered(Player player, JSONObject answer) {
-        if(answer.has("switch")){
+        if (answer.has("switch")) {
             try {
                 switches[answer.getInt("switch")].changeSwitch(answer.getInt("switchedTo"));
                 for (int i = 0; i < game.activePlayers.size(); i++) {
                     game.activePlayers.get(i).sendSwitchChange(switches[answer.getInt("switch")]);
                 }
-            }catch (Exception e){e.printStackTrace();}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return true;
         }
         return false;
     }
 
-    public void trainArrived(int trainId, int goalId, boolean succsess){
-        if(succsess){
+    public void trainArrived(int trainId, int goalId, boolean succsess) {
+        if (succsess) {
             //game.broadcastMessage("Zug hat sein Ziel erreicht!");
             health++;
             giveReward(trainArrivedReward);
-        }else{
+        } else {
             //game.broadcastMessage("Zug hat das falsche Ziel erreicht :/");
             health--; //TODO TODO TODO TODO TODO
         }
-        for(int i = 0; i<game.activePlayers.size();i++){
-            if(succsess) {
+        for (int i = 0; i < game.activePlayers.size(); i++) {
+            if (succsess) {
                 game.activePlayers.get(i).getScore().updateScore(trainArrivedReward);
             }
             game.activePlayers.get(i).sendTrainArrived(trainId, goalId, succsess);
         }
-        if(health <= 0){ //Check for Wellen status
+        if (health <= 0) { //Check for Wellen status
             waveSuccess = false;
             waveIsRunning = false;
             game.broadcastMessage("Spieler haben verloren !");
         }
-        if(health >= healthNeededToWin) {
+        if (health >= healthNeededToWin) {
             waveSuccess = true;
             waveIsRunning = false;
         }
     }
 
-    private void playersWon(){
+    private void playersWon() {
         game.broadcastMessage("Spieler haben gewonnen!");
-        game.broadcastMessage("und bekomen einen Bonus von "+reward+"$ !");
+        game.broadcastMessage("und bekomen einen Bonus von " + reward + "$ !");
         giveReward(reward);
         try {
             Thread.sleep(3000);
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
     }
 
-    private void giveReward(int reward){
-        for(int i = 0; i<game.activePlayers.size();i++){
+    private void giveReward(int reward) {
+        for (int i = 0; i < game.activePlayers.size(); i++) {
             game.activePlayers.get(i).getScore().updateScore(reward);
         }
     }
 
 
-    public void broadcastNewTrain(JSONObject train){
+    public void broadcastNewTrain(JSONObject train) {
         for (int i = 0; i < game.activePlayers.size(); i++) {
             game.activePlayers.get(i).sendNewTrain(train);
         }
     }
 
-    public void broadcastTrainDecision(int trainId, int switchId, int direction){
+    public void broadcastTrainDecision(int trainId, int switchId, int direction) {
         for (int i = 0; i < game.activePlayers.size(); i++) {
             game.activePlayers.get(i).sendTrainDecision(trainId, switchId, direction);
         }
     }
-    public void broadcastWaveCompleted(boolean success, int waveNo, int reward){
+
+    public void broadcastWaveCompleted(boolean success, int waveNo, int reward) {
         for (int i = 0; i < game.activePlayers.size(); i++) {
-            game.activePlayers.get(i).sendWaveCompleted(success, (waveNo+1), reward);
+            game.activePlayers.get(i).sendWaveCompleted(success, (waveNo + 1), reward);
         }
     }
+
     @Override
-    public void doWaitTimeout (int timeout){} //es soll kein timeout stattfinden
+    public void doWaitTimeout(int timeout) {
+    } //es soll kein timeout stattfinden
 
     private Switch[] getSwitches() {
         int z = 0;
@@ -217,6 +228,7 @@ public class TrainGameMode extends GameMode {
         }
         return s;
     }
+
     private Goal[] getGoals() {
         int z = 0;
         for (int i = 0; i < trainMap.length; i++) {
@@ -239,17 +251,18 @@ public class TrainGameMode extends GameMode {
         return s;
     }
 
-    public TrainTrack getTrackById(int id){
-        for(int i = 0; i < trainMap.length; i++){
+    public TrainTrack getTrackById(int id) {
+        for (int i = 0; i < trainMap.length; i++) {
             for (int j = 0; j < trainMap.length; j++) {
-                if(trainMap[i][j].id == id){
+                if (trainMap[i][j].id == id) {
                     return trainMap[i][j];
                 }
             }
         }
-        throw new RuntimeException("getTrackById(), konnte keine Track mit id"+ id+" finden");
+        throw new RuntimeException("getTrackById(), konnte keine Track mit id" + id + " finden");
     }
 
     //@Override
-    public void newExercise() {}
+    public void newExercise() {
+    }
 }

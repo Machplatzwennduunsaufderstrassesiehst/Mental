@@ -9,6 +9,7 @@ import org.json.JSONObject;
 public class Track extends TrainTrack {
 
     private int id;
+
     public Track(int x, int y, int v, int id) {
         super(x, y, v, id);
     }
@@ -19,7 +20,7 @@ public class Track extends TrainTrack {
     }
 
     @Override
-    public void setSuccessor(TrainTrack s){
+    public void setSuccessor(TrainTrack s) {
         successor = s;
         JSONObject position = new JSONObject();
         try {
@@ -27,8 +28,10 @@ public class Track extends TrainTrack {
             position.put("ypos", s.getY()); // alt
             this.put("successorId", s.id); // Alternative
             this.put("successorPosition", position); //alt
-            System.out.println("successorId mit Wert "+s.id+" von Track mit Koordinaten ("+getX()+"|"+getY()+")");
-        }catch(JSONException e){e.printStackTrace();}
+            System.out.println("successorId mit Wert " + s.id + " von Track mit Koordinaten (" + getX() + "|" + getY() + ")");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -36,10 +39,10 @@ public class Track extends TrainTrack {
         return id;
     }
 
-    public int getSuccessorId(){
-        if(hasSuccessor()) {
+    public int getSuccessorId() {
+        if (hasSuccessor()) {
             return this.successor.getId();
-        }else{
+        } else {
             throw new RuntimeException("no succesor to get Id from ");
         }
     }

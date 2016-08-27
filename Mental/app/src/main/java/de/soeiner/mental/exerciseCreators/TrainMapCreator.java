@@ -17,7 +17,9 @@ import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
  */
 public class TrainMapCreator extends ExerciseCreator {
 
-    public double getExpectedSolveTime() { return 0; }
+    public double getExpectedSolveTime() {
+        return 0;
+    }
 
     private TrainTrack[][] trainMap;
 
@@ -42,6 +44,7 @@ public class TrainMapCreator extends ExerciseCreator {
     public String getName() {
         return "Square Train Map";
     }
+
     public String getType() {
         return "trainMap";
     }
@@ -61,15 +64,15 @@ public class TrainMapCreator extends ExerciseCreator {
     private int id;
 
 
-    private TrainTrack[][] createTrainMap(){
+    private TrainTrack[][] createTrainMap() {
         x = 0;
         y = 0;
         pathNumber = 0;
         id = 1;
 
         map = new TrainTrack[size][size];
-        for(int i = 0; i<size; i++){
-            for(int j = 0; j<size; j++){
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 map[i][j] = new Track(i, j, 0, id++);
             }
         }
@@ -77,8 +80,8 @@ public class TrainMapCreator extends ExerciseCreator {
         boolean continuePossible = true;
         boolean[] possibilities = new boolean[4];
 
-        for(int i = 0; i<4; i++){ //ränder setzen
-            for(int j = 0; j<size-1;j++){
+        for (int i = 0; i < 4; i++) { //ränder setzen
+            for (int j = 0; j < size - 1; j++) {
                 map[x][y] = new BlockedTrack(x, y, BLOCK_VALUE, -1);
                 x += xT[i];
                 y += yT[i];
@@ -91,19 +94,19 @@ public class TrainMapCreator extends ExerciseCreator {
         int[] coordinates = new int[2];
         int z = 0;
         int counter = 0;
-        while(pathNumber < 7){
+        while (pathNumber < 7) {
             pathNumber++;
-            if(pathNumber > 1) {
+            if (pathNumber > 1) {
                 coordinates = getStartingPoint();
                 if (coordinates[0] == 1 && coordinates[1] == 1) {
                     pathNumber = 10;
                     continuePossible = false;
                     System.out.println("==== Map wird aufgrund starting point fail, frühzeitig fertiggestellt ====");
                 } else {
-                x = coordinates[0];
-                y = coordinates[1];
+                    x = coordinates[0];
+                    y = coordinates[1];
 
-                coordinates = getStartingPointConnection(); //anknüpfung an startpunkt finden
+                    coordinates = getStartingPointConnection(); //anknüpfung an startpunkt finden
                     if (map[coordinates[0]][coordinates[1]].getType().equals("switch")) { //wenn der anknüpfpunkt bereits ein switch ist
                         map[coordinates[0]][coordinates[1]].setSuccessor(map[x][y]);
                         map[x][y].setPredecessor(map[coordinates[0]][coordinates[1]]);
@@ -125,31 +128,31 @@ public class TrainMapCreator extends ExerciseCreator {
                 continuePossible = true;
                 z = 0;
             }
-            while(continuePossible && z < size){
+            while (continuePossible && z < size) {
                 //System.out.println(counter+++" "+pathNumber);
-                for(int i = 0; i<4; i++){
-                    if(map[x+xT[i]][y+yT[i]].getValue() == 0){
-                        if(checkSurrounding(x+xT[i], y+yT[i])){
+                for (int i = 0; i < 4; i++) {
+                    if (map[x + xT[i]][y + yT[i]].getValue() == 0) {
+                        if (checkSurrounding(x + xT[i], y + yT[i])) {
                             possibilities[i] = true;
                         }
                     }
                 }
                 continuePossible = false;
-                for(int i = 0; i<4; i++){
-                    if(possibilities[i] == true){
+                for (int i = 0; i < 4; i++) {
+                    if (possibilities[i] == true) {
                         continuePossible = true;
                     }
                 }
                 redo:
-                while(continuePossible){
-                    for(int i = 0; i<4; i++){
-                        if(possibilities[i] == true){
-                            if(Math.random()*10 >= 9){
-                                if(Math.random()*10 >= 9.8){
-                                    for(int k = 0; k<2; k++){ //gerade strecken
-                                        if(map[x+xT[i]][y+yT[i]].getValue() == 0){
+                while (continuePossible) {
+                    for (int i = 0; i < 4; i++) {
+                        if (possibilities[i] == true) {
+                            if (Math.random() * 10 >= 9) {
+                                if (Math.random() * 10 >= 9.8) {
+                                    for (int k = 0; k < 2; k++) { //gerade strecken
+                                        if (map[x + xT[i]][y + yT[i]].getValue() == 0) {
                                             map[x][y].setSuccessor(map[x + xT[i]][y + yT[i]]);
-                                            map[x+xT[i]][y+yT[i]].setPredecessor(map[x][y]);
+                                            map[x + xT[i]][y + yT[i]].setPredecessor(map[x][y]);
                                             x += xT[i];
                                             y += yT[i];
                                             map[x][y].setValue(pathNumber);
@@ -157,9 +160,9 @@ public class TrainMapCreator extends ExerciseCreator {
                                         }
                                     }
                                 }
-                                if(map[x+xT[i]][y+yT[i]].getValue() == 0){
-                                    map[x][y].setSuccessor(map[x+xT[i]][y+yT[i]]);
-                                    map[x+xT[i]][y+yT[i]].setPredecessor(map[x][y]);
+                                if (map[x + xT[i]][y + yT[i]].getValue() == 0) {
+                                    map[x][y].setSuccessor(map[x + xT[i]][y + yT[i]]);
+                                    map[x + xT[i]][y + yT[i]].setPredecessor(map[x][y]);
                                     x += xT[i];
                                     y += yT[i];
                                     map[x][y].setValue(pathNumber);
@@ -170,12 +173,12 @@ public class TrainMapCreator extends ExerciseCreator {
                         }
                     }
                 }
-                for(int i = 0; i<4; i++){
-                    if(possibilities[i] == true){
+                for (int i = 0; i < 4; i++) {
+                    if (possibilities[i] == true) {
                         possibilities[i] = false;
                     }
                 }
-                System.out.println("========================== Iteration nr. "+pathNumber);
+                System.out.println("========================== Iteration nr. " + pathNumber);
                 ausgabe();
             }
         }
@@ -191,30 +194,39 @@ public class TrainMapCreator extends ExerciseCreator {
                 }
             }
         }
-        for(int i = 0; i<map.length; i++){
+        for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map.length; j++) {
-                if(map[i][j].getValue() != 0 && map[i][j].getType().equals("track") && map[i][j].getSuccessor() == null){ //goals werden identifiziert
+                if (map[i][j].getValue() != 0 && map[i][j].getType().equals("track") && map[i][j].getSuccessor() == null) { //goals werden identifiziert
                     TrainTrack predeccessorTemp = map[i][j].getPredecessor();
                     Goal goal = new Goal(i, j, map[i][j].getValue(), id++); //und gesetzt
                     goal.setGoalId(map[i][j].getValue());
                     map[i][j] = goal;
                     System.out.println("i: " + i + ", j: " + j + " mit predeccessor == null : " + predeccessorTemp == null);
-                    if(predeccessorTemp != null){
+                    if (predeccessorTemp != null) {
                         predeccessorTemp.setSuccessor(map[i][j]);
                         map[i][j].setPredecessor(predeccessorTemp);
-                        if(predeccessorTemp.getType().equals("switch")){
+                        if (predeccessorTemp.getType().equals("switch")) {
                             System.out.println("switch vor goal");
-                        }else{
+                        } else {
                             System.out.println("track vor switch");
                         }
-                    }else{
+                    } else {
                         System.out.println("======================================== null vor switch");
                         ausgabe();
                         //
                         //keine längerfristige Lösung
                         System.out.println("beginne map creation prozess von vorne"); //quick fix
                         int ldot = 4;
-                        /* nur bildschirm ausgabe */ try{for (int g = 1; g < ldot; g++) {System.out.println("");for (int l = ldot - g; l < ldot; l++) {System.out.print(".");}}}catch(Exception e){}//der ist mit absicht leer !!}
+                        /* nur bildschirm ausgabe */
+                        try {
+                            for (int g = 1; g < ldot; g++) {
+                                System.out.println("");
+                                for (int l = ldot - g; l < ldot; l++) {
+                                    System.out.print(".");
+                                }
+                            }
+                        } catch (Exception e) {
+                        }//der ist mit absicht leer !!}
                         createTrainMap();
                         return null;
                         //keine längerfristige Lösung
@@ -240,30 +252,30 @@ public class TrainMapCreator extends ExerciseCreator {
         int AVOID_START_REGION_VALUE = 4;
         int[] coordinates = {1, 1};
         ArrayList<int[]> pussybilities = new ArrayList<int[]>();
-        for(int i = 1; i<size-1; i++){
-            for(int j = 1; j<size-1; j++){
-                if(map[i][j].getValue() == 0 && checkSurroundingTarget(i, j, 1) && (checkSurroundingPreciselyTarget(i, j, 2) || checkSurroundingPreciselyTarget(i, j, 3)) && i+j > AVOID_START_REGION_VALUE && getStartingPointConnectionElement(i, j).hasSuccessor()) {
+        for (int i = 1; i < size - 1; i++) {
+            for (int j = 1; j < size - 1; j++) {
+                if (map[i][j].getValue() == 0 && checkSurroundingTarget(i, j, 1) && (checkSurroundingPreciselyTarget(i, j, 2) || checkSurroundingPreciselyTarget(i, j, 3)) && i + j > AVOID_START_REGION_VALUE && getStartingPointConnectionElement(i, j).hasSuccessor()) {
                     coordinates[0] = i;
                     coordinates[1] = j;
                     pussybilities.add(coordinates.clone());
                 }
             }
         }
-        if(!pussybilities.isEmpty()) {
+        if (!pussybilities.isEmpty()) {
             coordinates = pussybilities.get((int) (Math.random() * pussybilities.size()));
-        }else if (coordinates[0] == 1 && coordinates[1] == 1) {
-                System.out.println("getStartingPoint() nicht möglich");
-                //ausgabe();
+        } else if (coordinates[0] == 1 && coordinates[1] == 1) {
+            System.out.println("getStartingPoint() nicht möglich");
+            //ausgabe();
         }
         return coordinates;
     }
 
     private int[] getStartingPointConnection() {
         int[] coordinates = new int[2];
-        for(int i = 0; i<4; i++){
-            if(map[x+xT[i]][y+yT[i]].getValue() != 0 && map[x+xT[i]][y+yT[i]].getValue() != BLOCK_VALUE){
-                coordinates[0] = (x+xT[i]);
-                coordinates[1] = (y+yT[i]);
+        for (int i = 0; i < 4; i++) {
+            if (map[x + xT[i]][y + yT[i]].getValue() != 0 && map[x + xT[i]][y + yT[i]].getValue() != BLOCK_VALUE) {
+                coordinates[0] = (x + xT[i]);
+                coordinates[1] = (y + yT[i]);
             }
         }
         return coordinates;
@@ -271,57 +283,58 @@ public class TrainMapCreator extends ExerciseCreator {
 
     private TrainTrack getStartingPointConnectionElement(int x, int y) {
         int[] coordinates = new int[2];
-        for(int i = 0; i<4; i++){
-            if(map[x+xT[i]][y+yT[i]].getValue() != 0 && map[x+xT[i]][y+yT[i]].getValue() != BLOCK_VALUE){
-                coordinates[0] = (x+xT[i]);
-                coordinates[1] = (y+yT[i]);
+        for (int i = 0; i < 4; i++) {
+            if (map[x + xT[i]][y + yT[i]].getValue() != 0 && map[x + xT[i]][y + yT[i]].getValue() != BLOCK_VALUE) {
+                coordinates[0] = (x + xT[i]);
+                coordinates[1] = (y + yT[i]);
             }
         }
         return map[coordinates[0]][coordinates[1]];
     }
 
-    private boolean checkSurrounding(int x, int y){
+    private boolean checkSurrounding(int x, int y) {
         int z = 0;
-        for(int i = 0; i<4;i++){
-            if(!(map[x+xT[i]][y+yT[i]].getValue() == 0 || map[x+xT[i]][y+yT[i]].getValue() == BLOCK_VALUE)){
+        for (int i = 0; i < 4; i++) {
+            if (!(map[x + xT[i]][y + yT[i]].getValue() == 0 || map[x + xT[i]][y + yT[i]].getValue() == BLOCK_VALUE)) {
                 z++;
             }
         }
-        return !(z>=2);
+        return !(z >= 2);
     }
 
-    private boolean checkSurroundingTarget(int x, int y, int target){
+    private boolean checkSurroundingTarget(int x, int y, int target) {
         int z = 0;
-        for(int i = 0; i<4;i++){
-            if(!(map[x+xT[i]][y+yT[i]].getValue() == 0 || map[x+xT[i]][y+yT[i]].getValue() == BLOCK_VALUE)){
-                z++;
-            }
-        }
-        return z == target;
-    }
-
-    private boolean checkSurroundingPreciselyTarget(int x, int y, int target){
-        int z = 0;
-        for(int i = 0; i<8;i++){
-            if(!(map[x+xTP[i]][y+yTP[i]].getValue() == 0 || map[x+xTP[i]][y+yTP[i]].getValue() == BLOCK_VALUE)){
+        for (int i = 0; i < 4; i++) {
+            if (!(map[x + xT[i]][y + yT[i]].getValue() == 0 || map[x + xT[i]][y + yT[i]].getValue() == BLOCK_VALUE)) {
                 z++;
             }
         }
         return z == target;
     }
 
-    private void ausgabe(){
-        for(int i = 0; i<map.length;i++){
+    private boolean checkSurroundingPreciselyTarget(int x, int y, int target) {
+        int z = 0;
+        for (int i = 0; i < 8; i++) {
+            if (!(map[x + xTP[i]][y + yTP[i]].getValue() == 0 || map[x + xTP[i]][y + yTP[i]].getValue() == BLOCK_VALUE)) {
+                z++;
+            }
+        }
+        return z == target;
+    }
+
+    private void ausgabe() {
+        for (int i = 0; i < map.length; i++) {
             System.out.println("");
-            for(int j = 0; j<map.length;j++){
-                if(map[j][i].getValue() == 0){
+            for (int j = 0; j < map.length; j++) {
+                if (map[j][i].getValue() == 0) {
                     System.out.print("  ");
-                }else{
-                    System.out.print(map[j][i].getValue()+" ");
+                } else {
+                    System.out.print(map[j][i].getValue() + " ");
                 }
             }
         }
     }
+
     // hier kann man die TrainMap jetzt abrufen
     public TrainTrack[][] getTrainMap() {
         return trainMap;
@@ -330,11 +343,11 @@ public class TrainMapCreator extends ExerciseCreator {
     private JSONArray translateTrainMap() {
         JSONArray trainJSONArray = new JSONArray(); //erstellt eigenes 2d JSON array
         try {
-            for(int i = 0; i<trainMap.length;i++) {
+            for (int i = 0; i < trainMap.length; i++) {
                 JSONArray temp = new JSONArray(trainMap[i]);
                 trainJSONArray.put(temp);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return trainJSONArray;

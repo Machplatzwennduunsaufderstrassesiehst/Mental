@@ -43,14 +43,17 @@ public abstract class ArithmeticExerciseCreator extends ExerciseCreator {
         return (exerciseResult == answer.optInt("value"));
     }
 
-    public String getExerciseString() { return exerciseString; }
+    public String getExerciseString() {
+        return exerciseString;
+    }
 
     public JSONObject createNext() {
         do {
             this.create();
             System.out.println("create()");
-        } while (previousResults.contains(exerciseResult) && previousResults.size() < getFahkinBitchExerciseResetValue());
-        if(previousResults.size() >= getFahkinBitchExerciseResetValue()) {
+        }
+        while (previousResults.contains(exerciseResult) && previousResults.size() < getFahkinBitchExerciseResetValue());
+        if (previousResults.size() >= getFahkinBitchExerciseResetValue()) {
             previousResults.clear();
         }
         JSONObject j = new JSONObject();

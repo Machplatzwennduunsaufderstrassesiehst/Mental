@@ -23,14 +23,15 @@ public class Voting {
     private Suggestion revoteSuggestion;
     int voteCounter = 0;
 
-    public Voting(Game game){
+    public Voting(Game game) {
         this.game = game;
-        GameMode[] m = {new ClassicGameMode(game), new KnockoutGameMode(game), new ArenaGameMode(game), new SpeedGameMode(game), new BeatBobGameMode(game), new TrainGameMode(game)};
-        gameModes = m;
+        gameModes = new GameMode[]{new ClassicGameMode(game), new KnockoutGameMode(game),
+                new ArenaGameMode(game), new SpeedGameMode(game), new BeatBobGameMode(game),
+                new TrainGameMode(game)};
         createGameModeSuggestions();
     }
 
-    public void createGameModeSuggestions(){
+    public void createGameModeSuggestions() {
         ArrayList<GameMode> tempGameModes = new ArrayList<GameMode>();
         suggestions = new Suggestion[4];
 
@@ -38,7 +39,7 @@ public class Voting {
             tempGameModes.add(gameModes[i]);
         }
 
-        for (int i = 0; i < suggestions.length-1; i++) {
+        for (int i = 0; i < suggestions.length - 1; i++) {
             int gIndex = (int) (Math.random() * tempGameModes.size());
             ArrayList<ExerciseCreator> possibleExerciseCreators = tempGameModes.get(gIndex).getCompatibleExerciseCreators();
             int eIndex = (int) (Math.random() * possibleExerciseCreators.size());
@@ -46,16 +47,16 @@ public class Voting {
             if (tempGameModes.size() > 1) tempGameModes.remove(gIndex);
             //tempExerciseCreators.remove(eIndex);
         }
-        revoteSuggestion = new Suggestion(gameModes[0], new SimpleMultExerciseCreator(), suggestions.length-1);
-        revoteSuggestion.putName("Neue Vorschl&auml;ge!");
-        suggestions[suggestions.length-1] = revoteSuggestion;
+        revoteSuggestion = new Suggestion(gameModes[0], new SimpleMultExerciseCreator(), suggestions.length - 1);
+        revoteSuggestion.putName("Neue Vorschläge!");
+        suggestions[suggestions.length - 1] = revoteSuggestion;
         voteCounter = 0;
         broadcastSuggestions();
     }
 
-    public void broadcastSuggestions(){ //Abstimmung für nächsten gamemode
+    public void broadcastSuggestions() { //Abstimmung für nächsten gamemode
         System.out.println("broadcastSuggestions");
-        for(int i = 0;i<game.joinedPlayers.size();i++){
+        for (int i = 0; i < game.joinedPlayers.size(); i++) {
             Player p = game.joinedPlayers.get(i);
             p.sendSuggestions(suggestions);
         }

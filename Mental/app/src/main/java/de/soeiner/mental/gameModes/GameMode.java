@@ -30,7 +30,7 @@ public abstract class GameMode {
 
     public final Object answerLock = new Object();
 
-    public GameMode(Game game){
+    public GameMode(Game game) {
         this.game = game;
         initializeCompatibleExerciseCreators();
     }
@@ -42,8 +42,11 @@ public abstract class GameMode {
     }
 
     public void waitForPlayers() {
-        while(game.joinedPlayers.size() < minPlayers){
-            try{Thread.sleep(1000);}catch(Exception e){} //Warte auf genügend Spieler
+        while (game.joinedPlayers.size() < minPlayers) {
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+            } //Warte auf genügend Spieler
         }
     }
 
@@ -53,16 +56,20 @@ public abstract class GameMode {
         doWaitTimeout(EXERCISE_TIMEOUT);
     }
 
-    public void prepareGame(){
+    public void prepareGame() {
         resetGameMode();
         game.exerciseCreator.resetDifficulty();
     }
 
-    public boolean getGameIsRunning(){ return gameIsRunning; }
+    public boolean getGameIsRunning() {
+        return gameIsRunning;
+    }
+
     public abstract boolean playerAnswered(Player player, JSONObject answer);
+
     public abstract String getGameModeString();
 
-    public void resetGameMode(){
+    public void resetGameMode() {
         gameIsRunning = true;
         for (Player joinedPlayer : game.joinedPlayers) {
             joinedPlayer.getScore().resetScoreValue();
@@ -73,7 +80,7 @@ public abstract class GameMode {
         return compatibleExerciseCreators;
     }
 
-    public void doWaitTimeout (int timeout) {
+    public void doWaitTimeout(int timeout) {
         JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
         try {
             j.put("time", timeout);
@@ -87,16 +94,18 @@ public abstract class GameMode {
         synchronized (answerLock) {
             try {
                 answerLock.wait(timeout * 1000);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
         }
     }
 
 
-    public void newExercise(){
+    public void newExercise() {
         game.exerciseCreator.next(); // erstellt neue aufgabe
         game.broadcastExercise(); // sendet aufgabe an alle spieler
         game.exerciseCreator.increaseDifficulty();
     }
 
-    public void removePlayer(Player p) {}
+    public void removePlayer(Player p) {
+    }
 }

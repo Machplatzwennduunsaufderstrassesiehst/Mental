@@ -11,6 +11,7 @@ public class Color extends ShopItem {
 
     String rgb;
     String black = "#000000";
+
     public Color(Shop s, int n, String na, int p, boolean b, boolean e, int l, String r) {
         super(s, n, na, p, b, e, l);
         rgb = r;
@@ -23,7 +24,7 @@ public class Color extends ShopItem {
 
     @Override
     public boolean equip() {
-        if(bought){
+        if (bought) {
             equipSingleItem();
             shop.score.setColor(rgb);
             shop.updateMoney();
