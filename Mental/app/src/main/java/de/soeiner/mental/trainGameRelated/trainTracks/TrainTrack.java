@@ -22,6 +22,8 @@ public abstract class TrainTrack extends JSONObject { //TODO: set attributes
         this.value = v;
         try {
             this.put("trackType", this.getType());
+            this.put("xpos", x);
+            this.put("ypos", y);
             this.put("value", v);
             this.put("id", id);
         } catch (JSONException e) {
