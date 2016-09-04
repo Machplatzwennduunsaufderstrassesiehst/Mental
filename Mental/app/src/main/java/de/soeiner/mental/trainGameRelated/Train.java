@@ -47,29 +47,23 @@ public class Train implements Runnable {
     public void run() {
         boolean moving = true;
         int z = 0;
-        while (moving && traingame.getGameIsRunning()) {
-            try {
-                z++;
+        try {
+            while (moving && traingame.getGameIsRunning()) {
                 Thread.sleep(calculateTimeToDestination()); //calculateTimeToDestination() TODO
                 //System.out.println("Train " + this.getId() + " is now at (" + x + "|" + y + ")");
-            } catch (Exception e) {
-                e.printStackTrace();
-                try {
-                    System.out.println("Train " + id + " waiting 10 s due to error");
-                    Thread.sleep(10000);
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+                if (traingame.trainMap[x][y].getType().equals("goal")) {
+                    Goal tempGoal = (Goal) traingame.trainMap[x][y];
+                    if (destinationId == tempGoal.getGoalId()) {
+                        traingame.trainArrived(id, tempGoal.getGoalId(), true);
+                    } else {
+                        traingame.trainArrived(id, tempGoal.getGoalId(), false);
+                    }
+                    moving = false; //beende thread
                 }
             }
-            if (traingame.trainMap[x][y].getType().equals("goal")) {
-                Goal tempGoal = (Goal) traingame.trainMap[x][y];
-                if (destinationId == tempGoal.getGoalId()) {
-                    traingame.trainArrived(id, tempGoal.getGoalId(), true);
-                } else {
-                    traingame.trainArrived(id, tempGoal.getGoalId(), false);
-                }
-                moving = false; //beende thread
-            }
+        } catch (Exception e) {
+            System.out.println("Train " + id + " shut down due to error:");
+            e.printStackTrace();
         }
     }
 
@@ -114,10 +108,11 @@ public class Train implements Runnable {
         int xtemp = 0;
         int ytemp = 0;
         do {
+            System.out.println("Train " + this.getId() + " at Pos(" + x + "|" + y + ")");
             if (distance == 0 && traingame.trainMap[x][y].getType().equals("switch")) {
                 s = (Switch) traingame.trainMap[x][y];
                 direction = s.getSwitchedTo();
-                //System.out.println("Train " + this.getId() + " now switching. switchId:" + s.getSwitchId() + " Pos(" + x + "|" + y + ")");
+                System.out.println("Train " + this.getId() + " now switching. switchId:" + s.getSwitchId() + " Pos(" + x + "|" + y + ")");
                 traingame.broadcastTrainDecision(id, s.getSwitchId(), direction);
             }
             try {
@@ -126,7 +121,7 @@ public class Train implements Runnable {
                 x = xtemp;
                 y = ytemp;
             } catch (Exception e) {
-                System.out.println("Train ist gecrasht an stelle x: " + x + ", y: " + y + " , " + traingame.trainMap[x][y].getType() + " mit id: " + traingame.trainMap[x][y].id + " und value: " + traingame.trainMap[x][y].getValue() + " vorgänger: " + traingame.trainMap[x][y].getPredecessor().getType() + ", " + traingame.trainMap[x][y].id + ", x:" + traingame.trainMap[x][y].getX() + ", y: " + traingame.trainMap[x][y].getY());
+                System.out.println("Train ist gecrasht an stelle x: " + x + ", y: " + y + " , " + traingame.trainMap[x][y].getType() + " mit id: " + traingame.trainMap[x][y].getId() + " und value: " + traingame.trainMap[x][y].getValue() + " vorgänger: " + traingame.trainMap[x][y].getPredecessor().getType() + ", " + traingame.trainMap[x][y].getId() + ", x:" + traingame.trainMap[x][y].getX() + ", y: " + traingame.trainMap[x][y].getY());
                 throw new RuntimeException();
             }
             distance++;

@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Malte on 26.04.2016.
@@ -70,7 +71,8 @@ public class Switch extends TrainTrack {
                 e.printStackTrace();
             }
         }
-        changeSwitch((int) Math.random() * successors.size() % successors.size()); //switch gleich setzen
+        changeSwitch((int) (Math.random() * successors.size() % successors.size())); //switch gleich setzen
+        changeSwitch(0);
     }
 
     public void changeSwitch(int st) {
@@ -100,8 +102,16 @@ public class Switch extends TrainTrack {
         this.successor = successors.get(switchedTo);
     }
 
-    public ArrayList getSuccessors() {
+    public boolean removeSuccessor(TrainTrack successor) {
+        return successors.remove(successor);
+    }
+
+    public ArrayList<TrainTrack> getSuccessors() {
         return successors;
+    }
+
+    public boolean hasSuccessor() {
+        return successors.size() != 0;
     }
 
     public void setSwitchId(int id) {
@@ -111,6 +121,10 @@ public class Switch extends TrainTrack {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String toString() {
+        return super.toString() + "(switchId:" + switchId + "; successors: " + (successors != null ? Arrays.toString(successors.toArray()) : "[]") + ")";
     }
 
     public int getSwitchId() {

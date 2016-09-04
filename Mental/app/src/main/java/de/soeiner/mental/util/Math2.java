@@ -4,7 +4,7 @@ package de.soeiner.mental.util;
  * Created by Malte on 13.04.2016.
  */
 
-public class GaussElimination {
+public class Math2 {
 
     public static double[] lsolve(double[][] A, double[] b) {
         int N  = b.length;
@@ -38,5 +38,28 @@ public class GaussElimination {
             x[i] = (b[i] - summe) / A[i][i];
         }
         return x;
+    }
+
+    public static int gcd(int a, int b) {
+        if (b == 0) {
+            return a;
+        } else {
+            return gcd(b, a % b);
+        }
+    }
+
+    public static int nthCoprime(int number, int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("n must not be less than 0");
+        }
+        int i = 0;
+        int m = 0;
+        while (m < n) {
+            i++;
+            if (gcd(i, number) == 1) {
+                m++;
+            }
+        }
+        return i;
     }
 }

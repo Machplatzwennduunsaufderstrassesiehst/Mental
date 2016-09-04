@@ -36,7 +36,7 @@ public class Track extends TrainTrack {
         if (hasSuccessor()) {
             return this.successor.getId();
         } else {
-            throw new RuntimeException("no succesor to get Id from ");
+            throw new RuntimeException("no successor to get Id from ");
         }
     }
 }

@@ -23,7 +23,7 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
     }
 
     public String getName() {
-        return "Path Based";
+        return "Square Map";
     }
 
     private final int[] xT = {1, 0, -1, 0};
@@ -182,7 +182,7 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
                 if (map[i][j].getValue() != 0 && map[i][j].getType().equals("track") && map[i][j].getSuccessor() == null) { //goals werden identifiziert
                     TrainTrack predeccessorTemp = map[i][j].getPredecessor();
                     Goal goal = new Goal(i, j, map[i][j].getValue(), id++); //und gesetzt
-                    goal.setGoalId(map[i][j].getValue());
+                    goal.setGoalId(map[i][j].getValue() - 1);
                     map[i][j] = goal;
                     System.out.println("i: " + i + ", j: " + j + " mit predeccessor == null : " + (predeccessorTemp == null));
                     if (predeccessorTemp != null) {

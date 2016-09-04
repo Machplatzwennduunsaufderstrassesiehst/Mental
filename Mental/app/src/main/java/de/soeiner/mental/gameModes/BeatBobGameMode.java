@@ -3,12 +3,9 @@ package de.soeiner.mental.gameModes;
 import org.json.JSONObject;
 
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.util.GaussElimination;
+import de.soeiner.mental.util.Math2;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
-import de.soeiner.mental.exerciseCreators.MixedExerciseCreator;
-import de.soeiner.mental.exerciseCreators.MultExerciseCreator;
-import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
 
 /**
  * Created by Malte on 09.04.2016.
@@ -234,7 +231,7 @@ public class BeatBobGameMode extends GameMode {
             A[3 + i][4] = 1.0;
             A[3 + i][5] = 0;
         }
-        return GaussElimination.lsolve(A, b);
+        return Math2.lsolve(A, b);
     }
 
     private double calculateBaseRep() {

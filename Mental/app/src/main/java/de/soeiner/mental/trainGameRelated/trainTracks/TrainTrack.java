@@ -10,25 +10,23 @@ public abstract class TrainTrack extends JSONObject { //TODO: set attributes
 
     protected TrainTrack successor;
     protected TrainTrack predecessor;
-    public int id;
+    protected int id;
     protected int to;
     protected int value = 0;
     protected int[] coordinates = new int[2];
 
     public TrainTrack(int x, int y, int v, int id) {
-        coordinates[0] = x;
-        coordinates[1] = y;
+        setCoordinates(x, y);
         this.id = id;
         this.value = v;
         try {
             this.put("trackType", this.getType());
-            this.put("xpos", x);
-            this.put("ypos", y);
             this.put("value", v);
             this.put("id", id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        System.out.println("Created: " + this);
     }
 
     public abstract String getType();
@@ -47,6 +45,10 @@ public abstract class TrainTrack extends JSONObject { //TODO: set attributes
 
     public boolean hasSuccessor() {
         return !(successor == null);
+    }
+
+    public boolean hasPredecessor() {
+        return predecessor != null;
     }
 
     public abstract void setSuccessor(TrainTrack s);
@@ -95,4 +97,30 @@ public abstract class TrainTrack extends JSONObject { //TODO: set attributes
         return coordinates[1];
     }
 
+    public <T extends TrainTrack> T attachTrainTrack(T track) {
+        this.setSuccessor(track);
+        track.setPredecessor(this);
+        track.setValue(this.getValue());
+        return track;
+    }
+
+    public Track continueAsTrack(int[] v, int id) {
+        Track track = new Track(coordinates[0] + v[0], coordinates[1] + v[1], value, id);
+        return attachTrainTrack(track);
+    }
+
+    public Switch continueAsSwitch(int[] v, int id) {
+        Switch s = new Switch(coordinates[0] + v[0], coordinates[1] + v[1], value, id);
+        return attachTrainTrack(s);
+    }
+
+    public Goal continueAsGoal(int[] v, int id) {
+        Goal g = new Goal(coordinates[0] + v[0], coordinates[1] + v[1], value, id);
+        return attachTrainTrack(g);
+    }
+
+    @Override
+    public String toString() {
+        return this.getType() + " ("+coordinates[0]+"|"+coordinates[1]+") (id: "+id+", value: "+value+")";
+    }
 }

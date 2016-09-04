@@ -3,6 +3,7 @@ package de.soeiner.mental.gameModes;
 import org.json.JSONObject;
 
 import de.soeiner.mental.exerciseCreators.PathBasedTrainMapCreator;
+import de.soeiner.mental.exerciseCreators.PathFinderTrainMapCreator;
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.exerciseCreators.TrainMapCreator;
@@ -30,6 +31,7 @@ public class TrainGameMode extends GameMode {
 
     public void initializeCompatibleExerciseCreators() {
         compatibleExerciseCreators.add(new PathBasedTrainMapCreator());
+        compatibleExerciseCreators.add(new PathFinderTrainMapCreator(game));
     }
 
     public TrainGameMode(Game game) {
@@ -55,22 +57,24 @@ public class TrainGameMode extends GameMode {
         switches = getSwitches();
         goals = getGoals();
         waves = initiateWaves();
-        for (int i = 0; i < switches.length; i++) {
+        /*for (int i = 0; i < switches.length; i++) {
             switches[i].setSwitchId(i);
-        }
+        }*/
         reward = 100; //reward für beenden des Spiels
     }
 
     Wave[] initiateWaves() {
-        Wave[] wellen = new Wave[6];
+        Wave[] wellen = new Wave[7];
         //double minspeed, double maxspeed, trainspawnintervall, trainarrivedreward, health, healthnw, reward
         //wellen[0] = new Wave(6, 6, 100, 1, 99999, 999999, 25);
-        wellen[0] = new Wave(1.0, 1.0, 4000, 1, 10, 15, 25);
-        wellen[1] = new Wave(1.3, 1.3, 3500, 2, 10, 25, 50);
-        wellen[2] = new Wave(1.8, 1.8, 3200, 3, 10, 30, 100);
-        wellen[3] = new Wave(2.5, 2.5, 2500, 4, 10, 35, 200);
-        wellen[4] = new Wave(4.0, 4.0, 1600, 10, 10, 40, 500);
-        wellen[5] = new Wave(6, 6, 100, 10, 10, 50, 500);
+        //wellen[0] = new Wave(1.0, 1.0, 3500, 1, 10, 15, 25);
+        wellen[0] = new Wave(1.1, 1.3, 2700, 2, 10, 25, 50);
+        wellen[1] = new Wave(1.4, 1.8, 2200, 3, 10, 30, 100);
+        wellen[2] = new Wave(1.7, 2.2, 1800, 4, 10, 35, 200);
+        wellen[3] = new Wave(1.7, 2.5, 1600, 10, 10, 40, 300);
+        wellen[4] = new Wave(1.5, 2.6, 1400, 10, 10, 50, 500);
+        wellen[5] = new Wave(1.3, 2.6, 1300, 10, 10, 50, 750);
+        wellen[6] = new Wave(1.0, 2.6, 1300, 10, 10, 50, 1000);
 /*        int testhealth = 8;
         int testhealthNeededToWin = 17; // um schnell zur nächsten wave zu gelangen
         wellen[0] = new Wave(0.5, 0.5, 4000, 1, 10, testhealthNeededToWin, 25);
@@ -92,7 +96,7 @@ public class TrainGameMode extends GameMode {
             trainArrivedReward = waves[i].getTRAIN_ARRIVED_REWARD();
             waveIsRunning = true;
             while (waveIsRunning && gameIsRunning) {
-                destinationId = (int) (Math.random() * goals.length) + 1; // da die goalId jetzt gleich der values sind und bei 1 starten, muss hier +1 stehen
+                destinationId = (int) (Math.random() * goals.length); // da die goalId jetzt gleich der values sind und bei 1 starten, muss hier +1 stehen
                 speed = Math.random() * (waves[i].getMAX_SPEED() - waves[i].getMIN_SPEED()) + waves[i].getMIN_SPEED();
                 new Train(idcounter, destinationId, speed, this); //zug spawnen
                 idcounter++;
@@ -131,9 +135,13 @@ public class TrainGameMode extends GameMode {
     public boolean playerAnswered(Player player, JSONObject answer) {
         if (answer.has("switch")) {
             try {
-                switches[answer.getInt("switch")].changeSwitch(answer.getInt("switchedTo"));
-                for (int i = 0; i < game.activePlayers.size(); i++) {
-                    game.activePlayers.get(i).sendSwitchChange(switches[answer.getInt("switch")]);
+                for (Switch s : switches) {
+                    if (s.getSwitchId() == answer.getInt("switch")) {
+                        s.changeSwitch(answer.getInt("switchedTo"));
+                        for (int i = 0; i < game.activePlayers.size(); i++) {
+                            game.activePlayers.get(i).sendSwitchChange(s);
+                        }
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -211,8 +219,8 @@ public class TrainGameMode extends GameMode {
     private Switch[] getSwitches() {
         int z = 0;
         for (int i = 0; i < trainMap.length; i++) {
-            for (int j = 0; j < trainMap.length; j++) {
-                if (trainMap[i][j].getType().equals("switch")) {
+            for (int j = 0; j < trainMap[i].length; j++) {
+                if (trainMap[i][j] != null && trainMap[i][j].getType().equals("switch")) {
                     z++;
                 }
             }
@@ -220,8 +228,8 @@ public class TrainGameMode extends GameMode {
         Switch[] s = new Switch[z];
         z = 0;
         for (int i = 0; i < trainMap.length; i++) {
-            for (int j = 0; j < trainMap.length; j++) {
-                if (trainMap[i][j].getType().equals("switch")) {
+            for (int j = 0; j < trainMap[i].length; j++) {
+                if (trainMap[i][j] != null && trainMap[i][j].getType().equals("switch")) {
                     s[z] = (Switch) trainMap[i][j];
                     z++;
                 }
@@ -233,8 +241,8 @@ public class TrainGameMode extends GameMode {
     private Goal[] getGoals() {
         int z = 0;
         for (int i = 0; i < trainMap.length; i++) {
-            for (int j = 0; j < trainMap.length; j++) {
-                if (trainMap[i][j].getType().equals("goal")) {
+            for (int j = 0; j < trainMap[i].length; j++) {
+                if (trainMap[i][j] != null && trainMap[i][j].getType().equals("goal")) {
                     z++;
                 }
             }
@@ -242,8 +250,8 @@ public class TrainGameMode extends GameMode {
         Goal[] s = new Goal[z];
         z = 0;
         for (int i = 0; i < trainMap.length; i++) {
-            for (int j = 0; j < trainMap.length; j++) {
-                if (trainMap[i][j].getType().equals("goal")) {
+            for (int j = 0; j < trainMap[i].length; j++) {
+                if (trainMap[i][j] != null && trainMap[i][j].getType().equals("goal")) {
                     s[z] = (Goal) trainMap[i][j];
                     z++;
                 }
@@ -254,8 +262,8 @@ public class TrainGameMode extends GameMode {
 
     public TrainTrack getTrackById(int id) {
         for (int i = 0; i < trainMap.length; i++) {
-            for (int j = 0; j < trainMap.length; j++) {
-                if (trainMap[i][j].id == id) {
+            for (int j = 0; j < trainMap[i].length; j++) {
+                if (trainMap[i][j] != null && trainMap[i][j].getId() == id) {
                     return trainMap[i][j];
                 }
             }

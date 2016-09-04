@@ -25,8 +25,8 @@ public class Voting {
 
     public Voting(Game game) {
         this.game = game;
-        gameModes = new GameMode[]{new ClassicGameMode(game), new KnockoutGameMode(game),
-                new ArenaGameMode(game), new SpeedGameMode(game), new BeatBobGameMode(game),
+        gameModes = new GameMode[]{/*new ClassicGameMode(game), new KnockoutGameMode(game),
+                new ArenaGameMode(game), new SpeedGameMode(game), new BeatBobGameMode(game),*/
                 new TrainGameMode(game)};
         createGameModeSuggestions();
     }
