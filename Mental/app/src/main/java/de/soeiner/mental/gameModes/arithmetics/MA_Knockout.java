@@ -1,17 +1,18 @@
-package de.soeiner.mental.gameModes;
+package de.soeiner.mental.gameModes.arithmetics;
 
 import org.json.JSONObject;
 
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
+import de.soeiner.mental.gameModes.GameMode;
 
 /**
  * Created by Malte on 28.03.2016.
  */
-public class KnockoutGameMode extends GameMode {
+public class MA_Knockout extends Arithmetic {
 
-    public KnockoutGameMode(Game g) {
+    public MA_Knockout(Game g) {
         super(g);
         minPlayers = 2;
     }
@@ -39,7 +40,7 @@ public class KnockoutGameMode extends GameMode {
                 s.updateScore(s.getScoreValue() * 20);
             }
             game.broadcastScoreboard();
-            game.broadcastPlayerWon(game.activePlayers.get(0).getName(), "Knockout");
+            game.broadcastPlayerWon(game.activePlayers.get(0).getName(), "MA_Knockout");
         } else if (game.activePlayers.size() > 1) {
             int index = 0;
             for (int i = 1; i < game.activePlayers.size(); i++) {

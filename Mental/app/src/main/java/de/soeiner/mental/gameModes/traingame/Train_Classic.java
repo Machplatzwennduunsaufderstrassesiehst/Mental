@@ -1,4 +1,4 @@
-package de.soeiner.mental.gameModes;
+package de.soeiner.mental.gameModes.traingame;
 
 import org.json.JSONObject;
 
@@ -7,6 +7,7 @@ import de.soeiner.mental.exerciseCreators.PathFinderTrainMapCreator;
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.exerciseCreators.TrainMapCreator;
+import de.soeiner.mental.gameModes.GameMode;
 import de.soeiner.mental.trainGameRelated.Train;
 import de.soeiner.mental.trainGameRelated.Wave;
 import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
@@ -16,7 +17,7 @@ import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
 /**
  * Created by Malte on 21.04.2016.
  */
-public class TrainGameMode extends GameMode {
+public class Train_Classic extends TrainGame {
 
     public TrainTrack[][] trainMap;
     Switch[] switches;
@@ -34,14 +35,14 @@ public class TrainGameMode extends GameMode {
         compatibleExerciseCreators.add(new PathFinderTrainMapCreator(game));
     }
 
-    public TrainGameMode(Game game) {
+    public Train_Classic(Game game) {
         super(game);
         needsConfirmation = true;
     }
 
     @Override
     public String getGameModeString() {
-        return "Train Game";
+        return "Classic";
     }
 
     @Override

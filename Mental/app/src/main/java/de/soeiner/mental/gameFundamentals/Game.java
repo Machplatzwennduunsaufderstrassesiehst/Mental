@@ -10,10 +10,8 @@ import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
-import de.soeiner.mental.exerciseCreators.TrainMapCreator;
-import de.soeiner.mental.gameModes.ClassicGameMode;
+import de.soeiner.mental.gameModes.arithmetics.MA_Classic;
 import de.soeiner.mental.gameModes.GameMode;
-import de.soeiner.mental.gameModes.TrainGameMode;
 
 /**
  * Created by malte on 13.02.16.
@@ -66,19 +64,36 @@ public class Game implements Runnable {
     public ArrayList<Player> joinedPlayers;
     public ArrayList<Player> activePlayers;
     public ArrayList<Player> spectators;
+    public String type;
+    private String[] knownTypes = {"Train", "MA"};
+
+
 
     public int GAME_TIMEOUT = 0; //für pause zwischen den spielen mit siegerbildschirm
 
 
     public Game() {
         games.add(this);
+        name = "Game";
         joinedPlayers = new ArrayList<Player>();
         activePlayers = new ArrayList<Player>();
         spectators = new ArrayList<Player>();
         exerciseCreator = new SimpleMultExerciseCreator();
-        gameMode = new ClassicGameMode(this);
+        gameMode = new MA_Classic(this);
         voting = new Voting(this);
-        name = "Game";
+        Thread t = new Thread(this);
+        t.start();
+    }
+
+    public Game(String type) { //Overload des Konstruktors mit option type
+        games.add(this);
+        this.type = name = type;
+        joinedPlayers = new ArrayList<Player>();
+        activePlayers = new ArrayList<Player>();
+        spectators = new ArrayList<Player>();
+        exerciseCreator = new SimpleMultExerciseCreator();
+        gameMode = new MA_Classic(this);
+        voting = new Voting(this);
         Thread t = new Thread(this);
         t.start();
     }
@@ -93,6 +108,12 @@ public class Game implements Runnable {
 
     public String getName() {
         return name;
+    }
+
+    public String getType(){
+        if(type == null) return null;
+        for(String t : knownTypes){ if(type.equals(t)) return type;}
+        return null;
     }
 
     public String getDescription() {
@@ -319,7 +340,7 @@ public class Game implements Runnable {
 
 
     public void waitForPlayers(int players) {
-        this.gameMode = new ClassicGameMode(this);
+        this.gameMode = new MA_Classic(this);
         gameMode.minPlayers = players;
         gameMode.waitForPlayers();
     }

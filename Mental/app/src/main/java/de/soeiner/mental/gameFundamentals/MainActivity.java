@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        new Game();
-        new Game();
+        new Game("Train");
+        new Game("MA");
     }
 
     @Override

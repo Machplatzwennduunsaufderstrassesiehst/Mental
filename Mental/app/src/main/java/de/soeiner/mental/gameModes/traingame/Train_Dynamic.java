@@ -1,4 +1,4 @@
-package de.soeiner.mental.gameModes;
+package de.soeiner.mental.gameModes.traingame;
 
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.trainGameRelated.Wave;
@@ -6,12 +6,17 @@ import de.soeiner.mental.trainGameRelated.Wave;
 /**
  * Created by Sven L. on 24.06.16.
  */
-public class TrainGameDynamicMode extends TrainGameMode {
+public class Train_Dynamic extends Train_Classic {
 
     private int nWaves = 10;
 
-    public TrainGameDynamicMode(Game game) {
+    public Train_Dynamic(Game game) {
         super(game);
+    }
+
+    @Override
+    public String getGameModeString() {
+        return "Dynamic";
     }
 
     Wave[] initiateWaves() {

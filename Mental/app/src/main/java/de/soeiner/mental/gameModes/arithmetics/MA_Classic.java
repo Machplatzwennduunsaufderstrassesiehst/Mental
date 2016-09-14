@@ -1,18 +1,19 @@
-package de.soeiner.mental.gameModes;
+package de.soeiner.mental.gameModes.arithmetics;
 
 import org.json.JSONObject;
 
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
+import de.soeiner.mental.gameModes.GameMode;
 
 /**
  * Created by Malte on 28.03.2016.
  */
 
-public class ClassicGameMode extends GameMode {
+public class MA_Classic extends Arithmetic {
 
-    public ClassicGameMode(Game g) {
+    public MA_Classic(Game g) {
         super(g);
         minPlayers = 1;
     }

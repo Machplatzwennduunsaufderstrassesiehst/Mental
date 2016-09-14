@@ -1,20 +1,21 @@
-package de.soeiner.mental.gameModes;
+package de.soeiner.mental.gameModes.arithmetics;
 
 import org.json.JSONObject;
 
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
+import de.soeiner.mental.gameModes.GameMode;
 
 /**
  * Created by Malte on 02.04.2016.
  */
-public class ArenaGameMode extends GameMode {
+public class MA_ArenaGameMode extends Arithmetic {
 
     private int bet;
     private int zaehler = 0;
 
-    public ArenaGameMode(Game g) {
+    public MA_ArenaGameMode(Game g) {
         super(g);
         minPlayers = 2;
     }
