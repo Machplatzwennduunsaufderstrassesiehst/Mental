@@ -188,4 +188,6 @@ public abstract class TrainMapCreator extends ExerciseCreator {
     abstract TrainTrack[][] createTrainMap();
 
     public abstract int getFirstTrackId();
+
+    public abstract void setSizeManually(int players);
 }

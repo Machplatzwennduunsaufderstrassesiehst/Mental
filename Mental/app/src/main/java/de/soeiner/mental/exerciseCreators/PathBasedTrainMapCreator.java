@@ -2,11 +2,13 @@ package de.soeiner.mental.exerciseCreators;
 
 import java.util.ArrayList;
 
+import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.trainGameRelated.trainTracks.BlockedTrack;
 import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
 import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
 import de.soeiner.mental.trainGameRelated.trainTracks.Track;
 import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
+import de.soeiner.mental.util.Pathfinder;
 
 /**
  * Created by Malte on 27.08.16.
@@ -19,7 +21,7 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
 
     @Override
     public ExerciseCreator copy() {
-        return new PathBasedTrainMapCreator();
+        return new PathBasedTrainMapCreator(game);
     }
 
     public String getName() {
@@ -31,8 +33,10 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
     private final int[] xTP = {1, 1, 0, -1, -1, -1, 0, 1}; //precisley
     private final int[] yTP = {0, 1, 1, 1, 0, -1, -1, -1}; //precisley
     private int pathNumber = 0;
-    private final int size = 10;
-    private final int BLOCK_VALUE = 8;
+    private Game game;
+    private int size = 0;
+    private int numgoals = 7;
+    private final int BLOCK_VALUE = 51;
     private int x = 0;
     private int y = 0;
     private TrainTrack[] succesors;
@@ -47,7 +51,35 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
         return map[0][0].getId();
     }
 
+    @Override
+    public void setSizeManually(int players) {
+        int s = 4;
+        size = 8;
+        for (int i = s-players+1; i <s; i++) {
+            if(i > 1){
+                size += i;
+            }else{
+                size++;
+            }
+        }
+        //size = s*(s+1)/2 - ((s-players)*(s+1-players)/2);
+        if(size < 0) size = 100;
+        numgoals = players*3;
+    }
+
+    private void setSizeVersus(int players){
+        size = players*5*2;
+        numgoals = players*3*2;
+    }
+
+    public PathBasedTrainMapCreator(Game game) {
+        super();
+        this.game = game;
+    }
+
     TrainTrack[][] createTrainMap() {
+
+        if(size == 0) setSizeManually(game.activePlayers.size());
         x = 0;
         y = 0;
         pathNumber = 0;
@@ -77,12 +109,12 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
         int[] coordinates = new int[2];
         int z = 0;
         int counter = 0;
-        while (pathNumber < 7) {
+        while (pathNumber < numgoals) {
             pathNumber++;
             if (pathNumber > 1) {
                 coordinates = getStartingPoint();
                 if (coordinates[0] == 1 && coordinates[1] == 1) {
-                    pathNumber = 10;
+                    pathNumber = BLOCK_VALUE+1;
                     continuePossible = false;
                     System.out.println("==== Map wird aufgrund starting point fail, frühzeitig fertiggestellt ====");
                 } else {
@@ -96,7 +128,7 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
                     } else {
                         TrainTrack successorTemp = map[coordinates[0]][coordinates[1]].getSuccessor(); //aktueller
                         TrainTrack predecessorTemp = map[coordinates[0]][coordinates[1]].getPredecessor(); //aktueller
-                        map[coordinates[0]][coordinates[1]] = new Switch(coordinates[0], coordinates[1], 9, id++); //switch setzen
+                        map[coordinates[0]][coordinates[1]] = new Switch(coordinates[0], coordinates[1], -1, id++); //switch setzen
                         predecessorTemp.setSuccessor(map[coordinates[0]][coordinates[1]]); //TODO
                         map[coordinates[0]][coordinates[1]].setPredecessor(predecessorTemp);
                         map[coordinates[0]][coordinates[1]].setSuccessor(successorTemp); //1. vorheriger weg //Swich, daher mehrere Succesor

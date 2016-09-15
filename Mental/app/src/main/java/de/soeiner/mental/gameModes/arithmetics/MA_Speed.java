@@ -33,10 +33,7 @@ public class MA_Speed extends Arithmetic { //Es empfiehlt sich vll. diesen Modus
 
     public void prepareGame() {
         super.prepareGame();
-        for (int i = 0; i < game.joinedPlayers.size(); i++) {
-            Player p = game.joinedPlayers.get(i);
-            game.activePlayers.add(p);
-        }
+        addAllPlayersToActive();
     }
 
     @Override

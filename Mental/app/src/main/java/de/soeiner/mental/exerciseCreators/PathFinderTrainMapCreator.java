@@ -20,6 +20,7 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
     private int id;
     private int switchId;
     private TrainTrack firstTrack;
+    private int numPlayers = 0;
 
     Pathfinder<TrainTrack> pathfinder;
 
@@ -31,7 +32,7 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
 
     @Override
     TrainTrack[][] createTrainMap() {
-        int numPlayers = game.activePlayers.size();
+        if(numPlayers == 0) numPlayers = game.activePlayers.size();
         ArrayList<TrainTrack> protectedTrack = new ArrayList<>();
         id = 1;
         switchId = 0;
@@ -203,6 +204,11 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
     @Override
     public int getFirstTrackId() {
         return firstTrack.getId();
+    }
+
+    @Override
+    public void setSizeManually(int players) {
+        numPlayers = players;
     }
 
     @Override

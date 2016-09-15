@@ -29,10 +29,7 @@ public class MA_BeatBobGameMode extends Arithmetic {
     public void prepareGame() {
         super.prepareGame();
         status = 0;
-        for (int i = 0; i < game.joinedPlayers.size(); i++) {
-            Player p = game.joinedPlayers.get(i);
-            game.activePlayers.add(p);
-        }
+        addAllPlayersToActive();
         for (int i = 0; i < game.activePlayers.size(); i++) {
             game.activePlayers.get(i).exerciseCreator = game.exerciseCreator.copy();
             game.activePlayers.get(i).exerciseCreator.setDifficulty(10);

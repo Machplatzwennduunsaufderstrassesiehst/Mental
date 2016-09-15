@@ -23,10 +23,7 @@ public class MA_Knockout extends Arithmetic {
 
     public void prepareGame() {
         super.prepareGame();
-        for (int i = 0; i < game.joinedPlayers.size(); i++) {
-            Player p = game.joinedPlayers.get(i);
-            game.activePlayers.add(p);
-        }
+        addAllPlayersToActive();
     }
 
     public void loop() {

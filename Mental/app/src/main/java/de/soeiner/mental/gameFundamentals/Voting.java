@@ -30,7 +30,7 @@ public class Voting {
 
         if(game.type != null){ //wenn ein typ gesetzt ist, werden alle gameModes des Types rausgesuct
             int z = 0;
-            GameMode[] all = {new Train_Classic(game), new Train_Dynamic(game), new MA_Classic(game), new MA_Knockout(game), new MA_ArenaGameMode(game), new MA_Speed(game), new MA_BeatBobGameMode(game)};
+            GameMode[] all = {new Train_Classic(game)/*, new Train_Dynamic(game)*/, new MA_Classic(game), new MA_Knockout(game), new MA_ArenaGameMode(game), new MA_Speed(game), new MA_BeatBobGameMode(game)};
             for(GameMode mode : all){ if(mode.type.equals(game.getType())) z++; }
             gameModes = new GameMode[z];
             z = 0;

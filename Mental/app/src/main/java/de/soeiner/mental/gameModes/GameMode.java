@@ -108,4 +108,10 @@ public abstract class GameMode {
 
     public void removePlayer(Player p) {
     }
+
+    public void addAllPlayersToActive(){
+        for (int i = 0; i < game.joinedPlayers.size(); i++) {
+            game.activePlayers.add(game.joinedPlayers.get(i));
+        }
+    }
 }

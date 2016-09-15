@@ -6,7 +6,7 @@ import de.soeiner.mental.trainGameRelated.Wave;
 /**
  * Created by Sven L. on 24.06.16.
  */
-public class Train_Dynamic extends Train_Classic {
+public class Train_Dynamic extends TrainGame {
 
     private int nWaves = 10;
 
@@ -15,8 +15,18 @@ public class Train_Dynamic extends Train_Classic {
     }
 
     @Override
+    public void loop() {
+
+    }
+
+    @Override
     public String getGameModeString() {
         return "Dynamic";
+    }
+
+    @Override
+    public void trainArrived(int trainId, int goalId, boolean succsess) {
+
     }
 
     Wave[] initiateWaves() {
@@ -25,5 +35,15 @@ public class Train_Dynamic extends Train_Classic {
 
         }
         return null;
+    }
+
+    @Override
+    public void extraPreparations() {
+
+    }
+
+    @Override
+    public void distributePlayers() {
+        addAllPlayersToActive();
     }
 }
