@@ -2,10 +2,13 @@ package de.soeiner.mental.gameModes.traingame;
 
 import org.json.JSONObject;
 
+import de.soeiner.mental.exerciseCreators.PathBasedTrainMapCreator;
+import de.soeiner.mental.exerciseCreators.PathFinderTrainMapCreator;
 import de.soeiner.mental.exerciseCreators.TrainMapCreator;
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameModes.GameMode;
+import de.soeiner.mental.trainGameRelated.Train;
 import de.soeiner.mental.trainGameRelated.Wave;
 import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
 import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
@@ -18,6 +21,12 @@ public abstract class TrainGame extends GameMode {
     public TrainGame(Game game) {
         super(game);
         type = "Train";
+        needsConfirmation = true;
+    }
+
+    public void initializeCompatibleExerciseCreators() {
+        compatibleExerciseCreators.add(new PathBasedTrainMapCreator(game));
+        compatibleExerciseCreators.add(new PathFinderTrainMapCreator(game));
     }
 
     public abstract void trainArrived(int trainId, int goalId, boolean succsess);
@@ -39,8 +48,11 @@ public abstract class TrainGame extends GameMode {
         }*/
     }
 
-    public abstract void extraPreparations();
-    public abstract void distributePlayers();
+    public abstract void extraPreparations(); //zusätzliches vorbereitungen wie das manuelle setzen der Spieleranzahl
+    public void distributePlayers() { //verteilen der Spieler auf activeplayers oder teams usw
+        addAllPlayersToActive();
+    }
+
     //public void loop(){}
 
     public TrainTrack[][] trainMap;
@@ -165,6 +177,54 @@ public abstract class TrainGame extends GameMode {
             return true;
         }
         return false;
+    }
+
+    public abstract void loop();
+
+    protected void goThroughWaves(){
+        int destinationId = 0;
+        int idcounter = 0;
+        double speed = 0;
+        for (int i = 0; i < waves.length && gameIsRunning; i++) {
+            health = waves[i].getHealth();
+            healthNeededToWin = waves[i].getHEALTH_NEEDED_TO_WIN();
+            trainArrivedReward = waves[i].getTRAIN_ARRIVED_REWARD();
+            waveIsRunning = true;
+            while (waveIsRunning && gameIsRunning) {
+                destinationId = (int) (Math.random() * goals.length); // da die goalId jetzt gleich der values sind und bei 1 starten, muss hier +1 stehen
+                speed = Math.random() * (waves[i].getMAX_SPEED() - waves[i].getMIN_SPEED()) + waves[i].getMIN_SPEED();
+                new Train(idcounter, destinationId, speed, this); //zug spawnen
+                idcounter++;
+                try {
+                    Thread.sleep(waves[i].getTRAIN_SPAWN_INTERVAL()); //warten
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (waveSuccess) {
+                giveReward(waves[i].getREWARD());
+                broadcastWaveCompleted(true, i, waves[i].getREWARD());
+                System.out.println("welle " + i + " erfolgreich abgeschlossen!");
+                try {
+                    Thread.sleep(10000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                broadcastWaveCompleted(false, i, waves[i].getREWARD());
+                gameIsRunning = false;
+                break;
+            }
+            if (i == waves.length - 1) {
+                playersWon();
+                gameIsRunning = false;
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override

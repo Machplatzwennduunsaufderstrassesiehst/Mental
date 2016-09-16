@@ -19,24 +19,13 @@ import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
  */
 public class Train_Classic extends TrainGame {
 
-    public void initializeCompatibleExerciseCreators() {
-        compatibleExerciseCreators.add(new PathBasedTrainMapCreator(game));
-        compatibleExerciseCreators.add(new PathFinderTrainMapCreator(game));
-    }
-
     public Train_Classic(Game game) {
         super(game);
-        needsConfirmation = true;
     }
 
     @Override
     public String getGameModeString() {
         return "Classic";
-    }
-
-    @Override
-    public void distributePlayers() {
-        addAllPlayersToActive();
     }
 
     @Override
@@ -68,50 +57,8 @@ public class Train_Classic extends TrainGame {
     }
 
     @Override
-    public void loop() {
-        int destinationId = 0;
-        int idcounter = 0;
-        double speed = 0;
-        for (int i = 0; i < waves.length && gameIsRunning; i++) {
-            health = waves[i].getHealth();
-            healthNeededToWin = waves[i].getHEALTH_NEEDED_TO_WIN();
-            trainArrivedReward = waves[i].getTRAIN_ARRIVED_REWARD();
-            waveIsRunning = true;
-            while (waveIsRunning && gameIsRunning) {
-                destinationId = (int) (Math.random() * goals.length); // da die goalId jetzt gleich der values sind und bei 1 starten, muss hier +1 stehen
-                speed = Math.random() * (waves[i].getMAX_SPEED() - waves[i].getMIN_SPEED()) + waves[i].getMIN_SPEED();
-                new Train(idcounter, destinationId, speed, this); //zug spawnen
-                idcounter++;
-                try {
-                    Thread.sleep(waves[i].getTRAIN_SPAWN_INTERVAL()); //warten
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            if (waveSuccess) {
-                giveReward(waves[i].getREWARD());
-                broadcastWaveCompleted(true, i, waves[i].getREWARD());
-                System.out.println("welle " + i + " erfolgreich abgeschlossen!");
-                try {
-                    Thread.sleep(10000);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                broadcastWaveCompleted(false, i, waves[i].getREWARD());
-                gameIsRunning = false;
-                break;
-            }
-            if (i == waves.length - 1) {
-                playersWon();
-                gameIsRunning = false;
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    public void loop(){
+        goThroughWaves();
     }
 
     public void trainArrived(int trainId, int goalId, boolean succsess) {

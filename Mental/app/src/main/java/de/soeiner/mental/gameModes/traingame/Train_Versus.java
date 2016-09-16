@@ -41,11 +41,6 @@ public class Train_Versus extends TrainGame{
     }
 
     @Override
-    public boolean playerAnswered(Player player, JSONObject answer) {
-        return false;
-    }
-
-    @Override
     public String getGameModeString() {
         return "Versus";
     }

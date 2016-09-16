@@ -11,40 +11,54 @@ import de.soeiner.mental.trainGameRelated.Wave;
  */
 public class Train_SuddenDeath extends TrainGame {
 
-    public Train_SuddenDeath(Game game) { super(game); }
+    public Train_SuddenDeath(Game game) {
+        super(game);
+    }
 
-    @Override
-    public void trainArrived(int trainId, int goalId, boolean succsess) {
-
+    Wave[] initiateWaves() {
+        Wave[] wellen = new Wave[7];
+        wellen[0] = new Wave(1.1, 1.3, 2700, 2, 3, 25, 50);
+        wellen[1] = new Wave(1.4, 1.8, 2200, 3, 10, 30, 100);
+        wellen[2] = new Wave(1.7, 2.2, 1800, 4, 10, 35, 200);
+        wellen[3] = new Wave(1.7, 2.5, 1600, 10, 10, 40, 300);
+        wellen[4] = new Wave(1.5, 2.6, 1400, 10, 10, 50, 500);
+        wellen[5] = new Wave(1.3, 2.6, 1300, 10, 10, 50, 750);
+        wellen[6] = new Wave(1.0, 2.6, 1300, 10, 10, 50, 1000);
+        return wellen;
     }
 
     @Override
-    Wave[] initiateWaves() {
-        return new Wave[0];
+    public void trainArrived(int trainId, int goalId, boolean succsess) {
+        if (succsess) {
+            health++;
+            giveReward(trainArrivedReward);
+        } else {
+            waveSuccess = false;
+            waveIsRunning = false;
+        }
+        for (int i = 0; i < game.activePlayers.size(); i++) {
+            if (succsess) {
+                game.activePlayers.get(i).getScore().updateScore(trainArrivedReward);
+            }
+            game.activePlayers.get(i).sendTrainArrived(trainId, goalId, succsess);
+        }
+        if (health >= healthNeededToWin) {
+            waveSuccess = true;
+            waveIsRunning = false;
+        }
     }
 
     @Override
     public void extraPreparations() {
-
+        reward = 500;
     }
-
-    @Override
-    public void distributePlayers() {
-        addAllPlayersToActive();
-    }
-
     @Override
     public void loop() {
-
-    }
-
-    @Override
-    public boolean playerAnswered(Player player, JSONObject answer) {
-        return false;
+        goThroughWaves();
     }
 
     @Override
     public String getGameModeString() {
-        return null;
+        return "Sudden Death";
     }
 }

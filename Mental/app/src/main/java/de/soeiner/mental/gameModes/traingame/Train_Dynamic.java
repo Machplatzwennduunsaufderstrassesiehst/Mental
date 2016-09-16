@@ -16,7 +16,7 @@ public class Train_Dynamic extends TrainGame {
 
     @Override
     public void loop() {
-
+        goThroughWaves();
     }
 
     @Override
@@ -40,10 +40,5 @@ public class Train_Dynamic extends TrainGame {
     @Override
     public void extraPreparations() {
 
-    }
-
-    @Override
-    public void distributePlayers() {
-        addAllPlayersToActive();
     }
 }
