@@ -29,9 +29,14 @@ public class Train_Classic extends TrainGame {
     }
 
     @Override
-    public void extraPreparations() {
+    public void extraPreparationsPreMap() {
         trainMapCreator.setSizeManually(2);
         reward = 100;
+    }
+
+    @Override
+    public void extraPreparationsPostMap() {
+
     }
 
     Wave[] initiateWaves() {

@@ -6,6 +6,7 @@ package de.soeiner.mental.trainGameRelated.trainTracks;
 public class Goal extends TrainTrack {
 
     private int goalId = 0;
+    private boolean destroyed = false;
 
     public Goal(int x, int y, int v, int id) {
         super(x, y, v, id);
@@ -33,5 +34,13 @@ public class Goal extends TrainTrack {
     @Override
     public void setSuccessor(TrainTrack s) {
         throw new RuntimeException("there is no succesor to a goal");
+    }
+
+    public void destroy(){
+        destroyed = true;
+        //Nachricht an Clienten TODO
+    }
+    public boolean isDestroyed(){
+        return destroyed;
     }
 }

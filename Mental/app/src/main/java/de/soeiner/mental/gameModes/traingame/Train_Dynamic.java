@@ -38,7 +38,10 @@ public class Train_Dynamic extends TrainGame {
     }
 
     @Override
-    public void extraPreparations() {
+    public void extraPreparationsPreMap() {
+
+    }
+    public void extraPreparationsPostMap() {
 
     }
 }

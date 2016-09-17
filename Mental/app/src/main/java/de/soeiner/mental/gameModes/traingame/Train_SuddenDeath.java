@@ -49,9 +49,14 @@ public class Train_SuddenDeath extends TrainGame {
     }
 
     @Override
-    public void extraPreparations() {
+    public void extraPreparationsPreMap() {
         reward = 500;
     }
+    @Override
+    public void extraPreparationsPostMap() {
+
+    }
+
     @Override
     public void loop() {
         goThroughWaves();
