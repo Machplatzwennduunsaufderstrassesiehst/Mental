@@ -1,5 +1,7 @@
 package de.soeiner.mental.trainGameRelated.trainTracks;
 
+import org.json.JSONException;
+
 /**
  * Created by Malte on 28.04.2016.
  */
@@ -7,6 +9,7 @@ public class Goal extends TrainTrack {
 
     private int goalId = 0;
     private boolean destroyed = false;
+    private int colorId = 0;
 
     public Goal(int x, int y, int v, int id) {
         super(x, y, v, id);
@@ -17,6 +20,15 @@ public class Goal extends TrainTrack {
         try {
             this.put("goalId", goalId);
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setColorId(int x){
+        colorId = x;
+        try {
+            this.put("colorId", colorId);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -38,7 +50,6 @@ public class Goal extends TrainTrack {
 
     public void destroy(){
         destroyed = true;
-        //Nachricht an Clienten TODO
     }
     public boolean isDestroyed(){
         return destroyed;

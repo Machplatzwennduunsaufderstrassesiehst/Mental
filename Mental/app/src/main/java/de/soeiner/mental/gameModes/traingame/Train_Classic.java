@@ -66,7 +66,7 @@ public class Train_Classic extends TrainGame {
         goThroughWaves();
     }
 
-    public void trainArrived(int trainId, int goalId, boolean succsess) {
+    public void trainArrived(int trainId, Goal goal, boolean succsess) {
         if (succsess) {
             //game.broadcastMessage("Zug hat sein Ziel erreicht!");
             health++;
@@ -79,7 +79,7 @@ public class Train_Classic extends TrainGame {
             if (succsess) {
                 game.activePlayers.get(i).getScore().updateScore(trainArrivedReward);
             }
-            game.activePlayers.get(i).sendTrainArrived(trainId, goalId, succsess);
+            game.activePlayers.get(i).sendTrainArrived(trainId, goal.getGoalId(), succsess);
         }
         if (health <= 0) { //Check for Wellen status
             waveSuccess = false;

@@ -25,6 +25,7 @@ public class CmdRequest {
     public static final String SEND_TRAINDECISION = "{type: 'trainDecision'}";
     public static final String SEND_TRAIN_ARRIVED = "{type: 'trainArrived'}";
     public static final String SEND_TRAIN_WAVE_COMPLETED = "{type: 'trainWaveCompleted'}";
+    public static final String SEND_GOAL_DESTROYED = "{type: 'goalDestroyed'}";
 
     private JSONObject cmd;
 

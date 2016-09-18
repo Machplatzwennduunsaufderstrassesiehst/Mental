@@ -29,7 +29,7 @@ public abstract class TrainGame extends GameMode {
         compatibleExerciseCreators.add(new PathFinderTrainMapCreator(game));
     }
 
-    public abstract void trainArrived(int trainId, int goalId, boolean succsess);
+    public abstract void trainArrived(int trainId, Goal goal, boolean succsess);
     abstract Wave[] initiateWaves();
 
     public void prepareGame() {
@@ -38,19 +38,22 @@ public abstract class TrainGame extends GameMode {
         trainMapCreator = (TrainMapCreator) game.exerciseCreator;
         extraPreparationsPreMap();
         game.exerciseCreator.next(); // erstellt die neue map
-        game.broadcastExercise(); // macht nichts außer die map an alle zu senden
         trainMap = trainMapCreator.getTrainMap();
         switches = getSwitches();
         goals = getGoals();
         waves = initiateWaves();
+        extraPreparationsMidMap();
+        game.broadcastExercise(); // macht nichts außer die map an alle zu senden
         extraPreparationsPostMap();
         /*for (int i = 0; i < switches.length; i++) {
             switches[i].setSwitchId(i);
         }*/
     }
 
-    public abstract void extraPreparationsPreMap(); //zusätzliches vorbereitungen wie das manuelle setzen der Spieleranzahl
-    public abstract void extraPreparationsPostMap(); //zusätzliches vorbereitungen wie das manuelle setzen der Spieleranzahl
+    //diese mehtoden sind jetzt nicht mehr abstract sonder müssen überschrieben werden
+    public void extraPreparationsPreMap(){} //zusätzliches vorbereitungen wie das manuelle setzen der Spieleranzahl
+    public void extraPreparationsMidMap(){} //zusätzliches vorbereitungen wie die farbgebung der goals
+    public void extraPreparationsPostMap(){} //zusätzliches vorbereitungen nach dem Sender der map
     public void distributePlayers() { //verteilen der Spieler auf activeplayers oder teams usw
         addAllPlayersToActive();
     }
@@ -231,7 +234,7 @@ public abstract class TrainGame extends GameMode {
 
     public Goal findGoalById(int id){
         for (int i = 0; i < goals.length; i++) {
-            if(goals[i].getId() == id) return goals[i];
+            if(goals[i].getGoalId() == id) return goals[i];
         }
         throw new Error("Goal nicht gefunden");
     }

@@ -103,6 +103,16 @@ public class Player extends ClientConnection {
         }
     }
 
+    public void sendGoalDestroyed(int goalId){
+        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_GOAL_DESTROYED);
+        try {
+            j.put("goalId", goalId);
+            makePushRequest(new PushRequest(j));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendNewTrain(JSONObject train){
         try {
             makePushRequest(new PushRequest(train));

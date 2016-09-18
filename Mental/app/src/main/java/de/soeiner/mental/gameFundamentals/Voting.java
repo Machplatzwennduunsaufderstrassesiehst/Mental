@@ -14,6 +14,7 @@ import de.soeiner.mental.gameModes.traingame.TrainGame;
 import de.soeiner.mental.gameModes.traingame.Train_Classic;
 import de.soeiner.mental.gameModes.traingame.Train_Dynamic;
 import de.soeiner.mental.gameModes.traingame.Train_SuddenDeath;
+import de.soeiner.mental.gameModes.traingame.Train_Versus;
 
 /**
  * Created by Malte on 09.04.2016.
@@ -31,7 +32,7 @@ public class Voting {
 
         if(game.type != null){ //wenn ein typ gesetzt ist, werden alle gameModes des Types rausgesuct
             int z = 0;
-            GameMode[] all = {new Train_Classic(game)/*, new Train_Dynamic(game)*/, new Train_SuddenDeath(game), new MA_Classic(game), new MA_Knockout(game), new MA_ArenaGameMode(game), new MA_Speed(game), new MA_BeatBobGameMode(game)};
+            GameMode[] all = {new Train_Classic(game), new Train_Versus(game), new Train_SuddenDeath(game), new MA_Classic(game), new MA_Knockout(game), new MA_ArenaGameMode(game), new MA_Speed(game), new MA_BeatBobGameMode(game)};
             for(GameMode mode : all){ if(mode.type.equals(game.getType())) z++; }
             gameModes = new GameMode[z];
             z = 0;

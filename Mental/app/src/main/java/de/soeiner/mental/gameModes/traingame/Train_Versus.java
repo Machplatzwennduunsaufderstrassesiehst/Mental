@@ -20,6 +20,7 @@ public class Train_Versus extends TrainGame{
     ArrayList<Player> teamBlue = new ArrayList<>();
     ArrayList<Goal> teamRedGoals = new ArrayList<>();
     ArrayList<Goal> teamBlueGoals = new ArrayList<>();
+    Object lock = new Object();
 
 
     public Train_Versus(Game game) {
@@ -29,11 +30,11 @@ public class Train_Versus extends TrainGame{
     int goalDestructionBonus = 50;
 
     @Override
-    public void trainArrived(int trainId, int goalId, boolean succsess) {
-        Goal target = findGoalById(goalId);
-        if(!target.isDestroyed()) { //wenn das entsprechende Ziel noch nicht zerstört ist
-            target.destroy(); //zerstöre es
-            if (teamRedGoals.contains(target)) { // wenn das ziel zu team rot gehörte
+    public void trainArrived(int trainId, Goal goal, boolean succsess) {
+        if(!goal.isDestroyed()) { //wenn das entsprechende Ziel noch nicht zerstört ist
+            goal.destroy(); //zerstöre es
+            broadcastGoalDestroyed(goal.getGoalId());
+            if (teamRedGoals.contains(goal)) { // wenn das ziel zu team rot gehörte
                 for (Player p : teamBlue) {
                     p.getScore().updateScore(goalDestructionBonus); //award team blue
                 }
@@ -42,6 +43,12 @@ public class Train_Versus extends TrainGame{
                     p.getScore().updateScore(goalDestructionBonus); //award team red
                 }
             }
+        }
+    }
+
+    private void broadcastGoalDestroyed(int goalId){
+        for (int i = 0; i < game.activePlayers.size(); i++) {
+            game.activePlayers.get(i).sendGoalDestroyed(goalId);
         }
     }
 
@@ -56,12 +63,15 @@ public class Train_Versus extends TrainGame{
         trainMapCreator.setSizeManually(game.activePlayers.size());
     }
 
-    public void extraPreparationsPostMap(){
+    @Override
+    public void extraPreparationsMidMap(){
         for(int i = 0; i < goals.length; i++){
             if(i%2 == 0){
                 teamRedGoals.add(goals[i]);
+                goals[i].setColorId(1);
             }else{
                 teamBlueGoals.add(goals[i]);
+                goals[i].setColorId(2);
             }
         }
     }
@@ -80,12 +90,12 @@ public class Train_Versus extends TrainGame{
 
     boolean whosTurn = true;  // true -> rot ist an der reihe, false -> blau ist an der Reihe
     @Override
-    public void loop() {
+    public synchronized void loop() {
         int id = 0;
         while(!allGoalsDestroyed()){ //solange nicht alle Ziele eines der beiden Teams zerstört sind
             if(whosTurn){ whosTurn = false; }else{ whosTurn = true; } //alterniere wer an der Reihe ist
-            try{ wait(); }catch(Exception e){ e.printStackTrace(); } //warte darauf das eines der beiden Teams seinen move macht
-            new Train(id++, -1, 5.0, this); // schicke nächsten Zug
+            try{ wait(10000); }catch(Exception e){ e.printStackTrace(); } //warte darauf das eines der beiden Teams seinen move macht
+            new Train(id++, -1, 5.0, this, true); // schicke nächsten Zug
         }
     }
 
@@ -106,7 +116,7 @@ public class Train_Versus extends TrainGame{
         return "Versus";
     }
 
-    public boolean playerAnswered(Player player, JSONObject answer) {
+    public synchronized boolean playerAnswered(Player player, JSONObject answer) {
         if((teamRed.contains(player) && whosTurn) || (teamBlue.contains(player) && !whosTurn)) { //wenn der Spieler aus dem Team ist, das an der Reihe ist
             if (answer.has("switch")) {
                 try {

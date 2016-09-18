@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.trainGameRelated.Wave;
+import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
 
 /**
  * Created by Malte on 16.09.2016.
@@ -28,7 +29,7 @@ public class Train_SuddenDeath extends TrainGame {
     }
 
     @Override
-    public void trainArrived(int trainId, int goalId, boolean succsess) {
+    public void trainArrived(int trainId, Goal goal, boolean succsess) {
         if (succsess) {
             health++;
             giveReward(trainArrivedReward);
@@ -40,7 +41,7 @@ public class Train_SuddenDeath extends TrainGame {
             if (succsess) {
                 game.activePlayers.get(i).getScore().updateScore(trainArrivedReward);
             }
-            game.activePlayers.get(i).sendTrainArrived(trainId, goalId, succsess);
+            game.activePlayers.get(i).sendTrainArrived(trainId, goal.getGoalId(), succsess);
         }
         if (health >= healthNeededToWin) {
             waveSuccess = true;
