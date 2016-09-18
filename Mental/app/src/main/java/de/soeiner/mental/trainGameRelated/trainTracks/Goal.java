@@ -9,7 +9,7 @@ public class Goal extends TrainTrack {
 
     private int goalId = 0;
     private boolean destroyed = false;
-    private int colorId = 0;
+    private int colorId = -1;
 
     public Goal(int x, int y, int v, int id) {
         super(x, y, v, id);
@@ -18,6 +18,7 @@ public class Goal extends TrainTrack {
     public void setGoalId(int goalId) {
         this.goalId = goalId;
         try {
+            if(colorId == -1) this.put("colorId", goalId);
             this.put("goalId", goalId);
         } catch (Exception e) {
             e.printStackTrace();
