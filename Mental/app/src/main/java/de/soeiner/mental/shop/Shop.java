@@ -11,7 +11,7 @@ import de.soeiner.mental.gameFundamentals.Player;
 /**
  * Created by Malte on 30.03.2016.
  */
-public class Shop{
+public class Shop {
 
     public int money;
     public int moneySpent; //müsste noch in den shopString eingebaut werden
@@ -21,7 +21,7 @@ public class Shop{
     public ShopItem[] shopItemList;
     int[] partition = new int[8]; //8 Plätze
 
-    public Shop(Player p){
+    public Shop(Player p) {
         player = p;
         score = player.getScore();
         calculateMoney();
@@ -29,7 +29,7 @@ public class Shop{
         wheel = new WheelOfFortune(this.player);
     }
 
-    private ShopItem[] createShopItemList(){
+    private ShopItem[] createShopItemList() {
         ShopItem item1 = new Title(this, 1, "uninstall pls", 100, false, false, 0);
         ShopItem item2 = new Title(this, 2, "scrub", 500, false, false, 1);
         ShopItem item3 = new Title(this, 3, "big noob", 1000, false, false, 1);
@@ -47,7 +47,7 @@ public class Shop{
         return s;
     }
 
-    private ShopItem[] createSpecialShopItemList(){
+    private ShopItem[] createSpecialShopItemList() {
         ShopItem item1 = new Title(this, 1, "eine Seele", 100, false, false, 0);
         ShopItem item2 = new Title(this, 2, "zwei Seelen", 500, false, false, 0);
         ShopItem item3 = new Title(this, 3, "eine handvoll Seelen", 1000, false, false, 0);
@@ -78,7 +78,7 @@ public class Shop{
         }
     }
 
-    public ShopItem[] getShopItemList(){
+    public ShopItem[] getShopItemList() {
         return shopItemList;
     }
 
@@ -86,11 +86,11 @@ public class Shop{
         return shopItemList[index].buy();
     }
 
-    public boolean equipItem(int index){
+    public boolean equipItem(int index) {
         return shopItemList[index].equip();
     }
 
-    public boolean unequipItem(int index){
+    public boolean unequipItem(int index) {
         return shopItemList[index].unEquip();
     }
 
@@ -98,12 +98,12 @@ public class Shop{
         money = score.getOverallScoreValue() - moneySpent;
     }
 
-    public void addMoney(int plus){
+    public void addMoney(int plus) {
         this.moneySpent -= plus;
         calculateMoney();
     }
 
-    public int getMoney(){
+    public int getMoney() {
         return money;
     }
 
@@ -115,21 +115,21 @@ public class Shop{
         this.moneySpent = moneySpent;
     }
 
-    public void updateMoney(){
+    public void updateMoney() {
         calculateMoney();
         player.getScore().setMoney(getMoney());
         //player.sendGameString(); //das ist zu langsam, jedes mal das zu senden
     }
 
-    private void loadPartition(String partitionString){
-        for(int i = 0; i<partition.length ; i++){
-           partition[i] = ((int) partitionString.charAt(i))-35; //+20 um nicht lesbare asciis zu vermeiden
+    private void loadPartition(String partitionString) {
+        for (int i = 0; i < partition.length; i++) {
+            partition[i] = ((int) partitionString.charAt(i)) - 35; //+20 um nicht lesbare asciis zu vermeiden
         }
     }
 
-    private String addPartitionString(String shopString){
-        for(int i = 0; i<partition.length ; i++){
-            shopString += (char) (partition[i]+35); //+20 um nicht lesbare asciis zu vermeiden
+    private String addPartitionString(String shopString) {
+        for (int i = 0; i < partition.length; i++) {
+            shopString += (char) (partition[i] + 35); //+20 um nicht lesbare asciis zu vermeiden
         }
         return shopString;
     }
@@ -159,8 +159,8 @@ public class Shop{
 
     public void loadShopString(String shopString) {
         //System.out.println("Kontrollbit überprüfen: "+shopString);
-        if(checkShopString(shopString)) { //Kontrollbit überprüfen
-            shopString = shopString.substring(0, shopString.length()-1); //Kontrollbit abschneiden
+        if (checkShopString(shopString)) { //Kontrollbit überprüfen
+            shopString = shopString.substring(0, shopString.length() - 1); //Kontrollbit abschneiden
             //System.out.println("Kontrollbit abschneiden: " + shopString);
             score.updateScore(0);
             loadPartition(shopString.substring(shopString.length() - partition.length, shopString.length())); //partition laden
@@ -171,17 +171,22 @@ public class Shop{
             //System.out.println("Umwandlung ins Zehner//System: "+shopString);;
             for (int passage = partition.length - 1; passage >= 0; passage--) { //von hinten angefangen um den String verkleinern zu können
                 //System.out.println("String tempString =  shopString.substring("+shopString.length()+" - "+partition[passage]+", "+shopString.length()+");");
-                String tempString =  shopString.substring(shopString.length() - partition[passage], shopString.length());//aktuell zu behandelnden String wie nach partition vorgesehen isolieren
+                String tempString = shopString.substring(shopString.length() - partition[passage], shopString.length());//aktuell zu behandelnden String wie nach partition vorgesehen isolieren
                 //System.out.println(passage+". passage: "+tempString);
                 shopString = shopString.substring(0, shopString.length() - partition[passage]); //und abschneiden
                 //System.out.println("Shopstring nachdem tempString abgescnitten wurde: "+shopString);
 
                 //wenn die Passage einen zweck hat die dafür vorgesehene Methode aufrufen
-                if (passage == 7) {}
-                if (passage == 6) {}
-                if (passage == 5) {}
-                if (passage == 4) {}
-                if (passage == 3) {}
+                if (passage == 7) {
+                }
+                if (passage == 6) {
+                }
+                if (passage == 5) {
+                }
+                if (passage == 4) {
+                }
+                if (passage == 3) {
+                }
                 if (passage == 2) {
                     //System.out.println("loadSpinsSpent("+tempString+")");
                     //loadSpinsSpent(tempString);
@@ -197,11 +202,11 @@ public class Shop{
             }
             updateMoney(); //initialisierung des Geldes mit den gewonnenen Informationen
             easterEggs(); //Spielereien
-       }
+        }
     }
 
 
-    public String getShopString(){
+    public String getShopString() {
 
         String shopString = "";
 
@@ -224,11 +229,16 @@ public class Shop{
                 shopString = addSpinsSpent(shopString); //passage hinzufügen
                 length = shopString.length() - length; //differenz ermitteln
             }
-            if (passage == 3) {}
-            if (passage == 4) {}
-            if (passage == 5) {}
-            if (passage == 6) {}
-            if (passage == 7) {}
+            if (passage == 3) {
+            }
+            if (passage == 4) {
+            }
+            if (passage == 5) {
+            }
+            if (passage == 6) {
+            }
+            if (passage == 7) {
+            }
 
             setPartitionPassage(passage, length); //länge in Partition reservieren
         }
@@ -243,26 +253,26 @@ public class Shop{
     }
 
     private String addSpinsSpent(String shopString) {
-        return shopString+wheel.getSpinsSpent();
+        return shopString + wheel.getSpinsSpent();
     }
 
-    private void loadSpinsSpent(String spinsSpent){
+    private void loadSpinsSpent(String spinsSpent) {
         wheel.setSpinsSpent(Integer.parseInt(spinsSpent));
     }
 
-    private String addItemString(String shopString){
+    private String addItemString(String shopString) {
         //System.out.println("addItemsString()");
         String itemsBought = "";
         ShopItem[] itemList = sortCopyById(); //nach id sortierte liste der Items
         //System.out.println(Arrays.toString(itemList));
 
-        for(int i = 0; i<itemList.length;i++){
+        for (int i = 0; i < itemList.length; i++) {
             //System.out.println("i = "+i+", itemsbought: "+itemsBought);
-            if(itemList[i].getBought() && itemList[i].equipped){
+            if (itemList[i].getBought() && itemList[i].equipped) {
                 itemsBought += '2';
-            }else if(itemList[i].getBought()){
+            } else if (itemList[i].getBought()) {
                 itemsBought += '1';
-            }else{
+            } else {
                 itemsBought += '0';
             }
         }
@@ -272,58 +282,68 @@ public class Shop{
         /*while(itemsBought.length() < shopItemList.length){
             itemsBought = "0"+itemsBought; //nullen anhängen
         }*/
-        return shopString+itemsBought; //itemString anhängen und zurückgeben
+        return shopString + itemsBought; //itemString anhängen und zurückgeben
     }
 
-    private String addMoneySpent(String shopString){
-        return shopString+Integer.toString(moneySpent);
+    private String addMoneySpent(String shopString) {
+        return shopString + Integer.toString(moneySpent);
     }
 
-    private ShopItem[] sortCopyById(){  //gibt eine sortierte Kopie der ShopitemList zurück
+    private ShopItem[] sortCopyById() {  //gibt eine sortierte Kopie der ShopitemList zurück
         ShopItem temp;
-	    ShopItem[] itemList = shopItemList.clone();
-	    for(int i = 0; i<itemList.length;i++){
-	        for(int j = 1; j<itemList.length;j++){
-		    if(itemList[j-1].getId() > itemList[j].getId()){
-		        temp = itemList[j];
-		        itemList[j] = itemList[j-1];
-		        itemList[j-1] = temp;
-		    }
-	        }
-	    }
-	    return itemList;
+        ShopItem[] itemList = shopItemList.clone();
+        for (int i = 0; i < itemList.length; i++) {
+            for (int j = 1; j < itemList.length; j++) {
+                if (itemList[j - 1].getId() > itemList[j].getId()) {
+                    temp = itemList[j];
+                    itemList[j] = itemList[j - 1];
+                    itemList[j - 1] = temp;
+                }
+            }
+        }
+        return itemList;
     }
 
-    private ShopItem getItemById(int id){
-	 id++;//weil die id zum anzeigen bei 1 anfaengt
-	for(int i = 0; i < shopItemList.length;i++){
-	    if(shopItemList[i].getId() == id){
-            //System.out.println("das "+i+"te item hat die passende id = "+id);
-            return shopItemList[i];
-	    }
-	}
-	throw new RuntimeException("cant get item for given id: "+id);
+    private ShopItem getItemById(int id) {
+        id++;//weil die id zum anzeigen bei 1 anfaengt
+        for (int i = 0; i < shopItemList.length; i++) {
+            if (shopItemList[i].getId() == id) {
+                //System.out.println("das "+i+"te item hat die passende id = "+id);
+                return shopItemList[i];
+            }
+        }
+        throw new RuntimeException("cant get item for given id: " + id);
     }
 
-    public boolean checkShopString(String shopString){
-        if(shopString == ""){ return false; }
-        if(Character.getNumericValue(shopString.charAt(shopString.length()-1)) == calculateCheckBit(shopString.substring(0, shopString.length()-1))){
+    public boolean checkShopString(String shopString) {
+        if (shopString == "") {
+            return false;
+        }
+        if (Character.getNumericValue(shopString.charAt(shopString.length() - 1)) == calculateCheckBit(shopString.substring(0, shopString.length() - 1))) {
             return true;
         }
         return true;
     }
 
-    private int calculateCheckBit(String shopString){
+    private int calculateCheckBit(String shopString) {
         int k = 0;
         int a = 0;
         int checksum = 0;
-        for(int i = 0;i < shopString.length();i++){
+        for (int i = 0; i < shopString.length(); i++) {
             a = Character.getNumericValue(shopString.charAt(i));
-            switch(k%4){
-                case 0 : checksum += 7*a % 10; break;
-                case 1 : checksum += 3*a % 10; break;
-                case 2 : checksum += 5*a % 10; break;
-                case 3 : checksum += 13*a % 10; break;
+            switch (k % 4) {
+                case 0:
+                    checksum += 7 * a % 10;
+                    break;
+                case 1:
+                    checksum += 3 * a % 10;
+                    break;
+                case 2:
+                    checksum += 5 * a % 10;
+                    break;
+                case 3:
+                    checksum += 13 * a % 10;
+                    break;
             }
         }
         checksum %= 10;

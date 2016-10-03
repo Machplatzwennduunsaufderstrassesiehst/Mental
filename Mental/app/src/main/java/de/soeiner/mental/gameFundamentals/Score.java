@@ -8,7 +8,7 @@ import de.soeiner.mental.gameFundamentals.Player;
 /**
  * Created by sven on 16.02.16.
  */
-public class Score extends JSONObject{
+public class Score extends JSONObject {
 
     String compare = "";
     int pointsGained;
@@ -21,7 +21,7 @@ public class Score extends JSONObject{
         initialize();
     }
 
-    private void initialize(){
+    private void initialize() {
         setMoney(0);
         setOverallScoreValue(0);
         setScoreValue(0);
@@ -35,7 +35,7 @@ public class Score extends JSONObject{
 
     // quadratische abhängigkeit als vorschlag?
     private static int calculateLevel(int score) {
-        return (int) Math.sqrt(score/50.0);
+        return (int) Math.sqrt(score / 50.0);
     }
 
     private static int calculateLevelProgress(int score) {
@@ -48,7 +48,7 @@ public class Score extends JSONObject{
     public void updateScore(int plus) {
         int scoreValue = this.getScoreValue() + plus;
         setScoreValue(scoreValue);
-        int overallScoreValue = this.getOverallScoreValue()+plus;
+        int overallScoreValue = this.getOverallScoreValue() + plus;
         setOverallScoreValue(overallScoreValue);
         setPlayerLevel(overallScoreValue);
         setPlayerLevelProgress(overallScoreValue);
@@ -57,15 +57,15 @@ public class Score extends JSONObject{
         pointsGained = plus;
     }
 
-    public boolean attributeOf(Player p){ //vergleicht Spieler Objekt mit anderem Spielerobjekt
-        if(player.equals(p)){
+    public boolean attributeOf(Player p) { //vergleicht Spieler Objekt mit anderem Spielerobjekt
+        if (player.equals(p)) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public void setHiglight(boolean yeORnaw){
+    public void setHiglight(boolean yeORnaw) {
         if (has("highlight")) this.remove("highlight");
         try {
             this.put("highlight", yeORnaw);
@@ -92,7 +92,7 @@ public class Score extends JSONObject{
         return 0;
     }
 
-    private void setPlayerId(){ //useless
+    private void setPlayerId() { //useless
         if (has("playerId")) this.remove("playerId");
         try {
             this.put("playerId", 0);
@@ -104,6 +104,7 @@ public class Score extends JSONObject{
     public int getPointsGained() {
         return pointsGained;
     }
+
     public void setPointsGained(int p) {
         pointsGained = p;
     }
@@ -126,24 +127,28 @@ public class Score extends JSONObject{
         }
     }
 
-    public void setScoreValue(int scoreValue) { setInt("scoreValue", scoreValue); }
+    public void setScoreValue(int scoreValue) {
+        setInt("scoreValue", scoreValue);
+    }
 
     public void setTitle(String title) {
         if (has("playerTitle")) this.remove("playerTitle");
-        try{
+        try {
             put("playerTitle", title);
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
 
     }
 
     public void setColor(String color) {
         if (has("color")) this.remove("color");
-        try{
+        try {
             put("color", color);
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
     }
 
-    public void resetScoreValue(){
+    public void resetScoreValue() {
         setScoreValue(0);
     }
 
@@ -173,14 +178,16 @@ public class Score extends JSONObject{
     }
 
     public void loadScoreString(String scoreString) {
-        if(scoreString.length()< 2){return;}
+        if (scoreString.length() < 2) {
+            return;
+        }
         int overallScoreValue = 0;
 
         if (checkScoreString(scoreString)) {
-            scoreString = scoreString.substring(0,scoreString.length()-1);
-            System.out.println("Setze overallScoreValue mit String: "+scoreString);
+            scoreString = scoreString.substring(0, scoreString.length() - 1);
+            System.out.println("Setze overallScoreValue mit String: " + scoreString);
             overallScoreValue = Integer.parseInt(scoreString);
-            System.out.println("overallscoreValue ist nun: "+overallScoreValue);
+            System.out.println("overallscoreValue ist nun: " + overallScoreValue);
         }
 
         setOverallScoreValue(overallScoreValue);
@@ -188,35 +195,43 @@ public class Score extends JSONObject{
         setPlayerLevelProgress(overallScoreValue);
     }
 
-    public String getScoreString(){
+    public String getScoreString() {
         int score = getOverallScoreValue();
-        if(score == 0){
+        if (score == 0) {
             return "";
         }
         String scoreString = Integer.toString(score);
         int k = 0;
         int a = 0;
         int checksum = 0;
-        for(int i = 0;i < scoreString.length();i++){
+        for (int i = 0; i < scoreString.length(); i++) {
             a = Character.getNumericValue(scoreString.charAt(i));
-            switch(k%4){
-                case 0 : checksum += 7*a; break;
-                case 1 : checksum += 3*a; break;
-                case 2 : checksum += 5*a; break;
-                case 3 : checksum += 13*a; break;
+            switch (k % 4) {
+                case 0:
+                    checksum += 7 * a;
+                    break;
+                case 1:
+                    checksum += 3 * a;
+                    break;
+                case 2:
+                    checksum += 5 * a;
+                    break;
+                case 3:
+                    checksum += 13 * a;
+                    break;
             }
         }
         checksum %= 10;
-        scoreString = score+""+checksum;
+        scoreString = score + "" + checksum;
         return scoreString;
     }
 
-    public boolean checkScoreString(String scoreString){
+    public boolean checkScoreString(String scoreString) {
         int temp = getOverallScoreValue();
-        this.setOverallScoreValue(Integer.parseInt(scoreString.substring(0,scoreString.length()-1)));
+        this.setOverallScoreValue(Integer.parseInt(scoreString.substring(0, scoreString.length() - 1)));
         System.out.println(Integer.parseInt(scoreString.substring(0, scoreString.length() - 1)));
         System.out.println(scoreString);
-        if(this.getScoreString().equals(scoreString)){
+        if (this.getScoreString().equals(scoreString)) {
             return true;
         }
         this.setOverallScoreValue(temp);

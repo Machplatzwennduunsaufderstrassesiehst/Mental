@@ -1,20 +1,21 @@
-package de.soeiner.mental.gameModes;
+package de.soeiner.mental.gameModes.arithmetics;
 
 import org.json.JSONObject;
 
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
+import de.soeiner.mental.gameModes.GameMode;
 
 /**
  * Created by Malte on 02.04.2016.
  */
-public class ArenaGameMode extends GameMode {
+public class MA_ArenaGameMode extends Arithmetic {
 
     private int bet;
     private int zaehler = 0;
 
-    public ArenaGameMode(Game g){
+    public MA_ArenaGameMode(Game g) {
         super(g);
         minPlayers = 2;
     }
@@ -25,10 +26,10 @@ public class ArenaGameMode extends GameMode {
 
     public void prepareGame() {
         super.prepareGame();
-        if(game.joinedPlayers.size() < 2){
+        if (game.joinedPlayers.size() < 2) {
             gameIsRunning = false;
             game.broadcastMessage("Zu wenig Spieler um Arena zu starten");
-        }else {
+        } else {
             for (int i = 0; i < 2; i++) {
                 Player p = game.joinedPlayers.get(i);
                 game.activePlayers.add(p);
@@ -46,7 +47,7 @@ public class ArenaGameMode extends GameMode {
     public void loop() {
         gameIsRunning = game.activePlayers.size() == 2;
         zaehler++;
-        if(zaehler > 5) { //gleichstand nicht möglich
+        if (zaehler > 5) { //gleichstand nicht möglich
             if (game.activePlayers.get(0).getScore().getScoreValue() > game.activePlayers.get(1).getScore().getScoreValue()) {
                 game.broadcastPlayerWon(game.activePlayers.get(0).getName(), "Arena");
                 game.activePlayers.get(0).getShop().addMoney(bet);
@@ -61,8 +62,8 @@ public class ArenaGameMode extends GameMode {
         }
     }
 
-    private void agreeOnBet(){ //TODO: einsatz über kommunikation zwischen den beiden spielern bestimmen
-        for(int einsatz = 100; einsatz >= 10; einsatz -= 10) {
+    private void agreeOnBet() { //TODO: einsatz über kommunikation zwischen den beiden spielern bestimmen
+        for (int einsatz = 100; einsatz >= 10; einsatz -= 10) {
             if (game.activePlayers.get(0).getShop().getMoney() >= einsatz && game.activePlayers.get(1).getShop().getMoney() >= einsatz) {
                 bet = einsatz;
             }
@@ -70,7 +71,7 @@ public class ArenaGameMode extends GameMode {
     }
 
     public boolean playerAnswered(Player player, JSONObject answer) {
-        if(game.activePlayers.contains(player)){
+        if (game.activePlayers.contains(player)) {
             synchronized (answerLock) {
                 if (game.exerciseCreator.checkAnswer(answer)) {
                     Score s = player.getScore();

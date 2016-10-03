@@ -17,10 +17,10 @@ public class Booster extends ShopItem {
     }
 
     @Override
-    public boolean equip() {
+    public boolean equip() { //when equipped you will be able to use the booster during the game
+
         return true;
     }
-
     @Override
     public boolean unEquip() {
         return true;

@@ -6,6 +6,7 @@ import android.view.View;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Button;
+
 import java.io.IOException;
 
 import de.soeiner.mental.R;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         serverIsActive = false;
         btnJoin = (Button) findViewById(R.id.buttonJoinGame);
         btnHost = (Button) findViewById(R.id.buttonHostGame);
-        if(DEBUG) {
+        if (DEBUG) {
             // so startet man nicht aus Versehen den Server 2x im DEBUG modus
             btnHost.setText("SERVER LÄUFT");
             btnHost.setEnabled(false);
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void buttonStartServer(View v) {
         btnJoin.setEnabled(true);
-        if(serverIsActive){
+        if (serverIsActive) {
             btnHost.setText("Spiel hosten");
             btnJoin.setEnabled(false);
             serverIsActive = false;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         serverStart();
     }
 
-    private void serverStart(){
+    private void serverStart() {
         try {
             server = new Server(PORT);
             System.out.println("Server started on port " + PORT);
@@ -67,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        new Game();
-        new Game();
+        new Game("Train");
+        new Game("MA");
     }
 
     @Override

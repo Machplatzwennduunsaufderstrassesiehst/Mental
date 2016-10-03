@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Malte on 26.04.2016.
@@ -16,7 +17,7 @@ public class Switch extends TrainTrack {
     int switchId;
     int switchedTo = 0;
 
-    public Switch(int x, int y, int v, int id){
+    public Switch(int x, int y, int v, int id) {
         super(x, y, v, id);
     }
 
@@ -33,25 +34,25 @@ public class Switch extends TrainTrack {
     @Override
     public void setSuccessor(TrainTrack s) {
         boolean replaced = false;
-        if(s == null){
+        if (s == null) {
             System.out.println("Objekt ist null!!!! ://///");
         }
 
         if (!successors.contains(s)) {
-            for(int i = 0; i<successors.size();i++){
-                if(s.getX() == successors.get(i).getX() && s.getY() == successors.get(i).getY()){
+            for (int i = 0; i < successors.size(); i++) {
+                if (s.getX() == successors.get(i).getX() && s.getY() == successors.get(i).getY()) {
                     successors.set(i, s);
                     replaced = true;
                     break;
                 }
             }
-            if(!replaced) {
+            if (!replaced) {
                 successors.add(s);
                 activeSuccessors.add(false);
             }
             JSONArray successorList = new JSONArray();
             try {
-                for(int i = 0; i < successors.size(); i++){
+                for (int i = 0; i < successors.size(); i++) {
                     //System.out.println("Typ an der Stelle "+i);//+" ist "+successors.get(i).getType());
                     JSONObject position = new JSONObject();
                     position.put("xpos", successors.get(i).getX());
@@ -61,17 +62,20 @@ public class Switch extends TrainTrack {
                 this.put("successorList", successorList);
 
                 JSONArray alternativeSuccessorList = new JSONArray();
-                for(int i = 0; i < successors.size(); i++){
+                for (int i = 0; i < successors.size(); i++) {
                     //System.out.println("Typ an der Stelle "+i);//+" ist "+successors.get(i).getType());
                     alternativeSuccessorList.put(i, successors.get(i).id);
                 }
                 this.put("successorIds", alternativeSuccessorList);
-            }catch(JSONException e){e.printStackTrace();}
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
-        changeSwitch((int) Math.random()*successors.size()%successors.size()); //switch gleich setzen
+        changeSwitch((int) (Math.random() * successors.size() % successors.size())); //switch gleich setzen
+        changeSwitch(0);
     }
 
-    public void changeSwitch(int st){
+    public void changeSwitch(int st) {
         //int active = 0;
         switchedTo = st;
         /*
@@ -81,7 +85,7 @@ public class Switch extends TrainTrack {
             }
         }
         */
-        for(int i = 0; i<successors.size(); i++){ //alle nachfolger auf falsch setzen
+        for (int i = 0; i < successors.size(); i++) { //alle nachfolger auf falsch setzen
             activeSuccessors.set(i, new Boolean(false));
         }
         /*
@@ -92,22 +96,38 @@ public class Switch extends TrainTrack {
         activeSuccessors.set(switchedTo, new Boolean(true)); //nächsten nachfolger auf true setzen
         try {
             this.put("switchedTo", switchedTo); //für map jsonobject setzen
-        }catch(Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.successor = successors.get(switchedTo);
     }
 
-    public ArrayList getSuccessors(){
+    public boolean removeSuccessor(TrainTrack successor) {
+        return successors.remove(successor);
+    }
+
+    public ArrayList<TrainTrack> getSuccessors() {
         return successors;
     }
 
-    public void setSwitchId(int id){
-        switchId = id;
-        try{
-            this.put("switchId", id);
-        }catch(Exception e){e.printStackTrace();}
+    public boolean hasSuccessor() {
+        return successors.size() != 0;
     }
 
-    public int getSwitchId(){
-       return switchId;
+    public void setSwitchId(int id) {
+        switchId = id;
+        try {
+            this.put("switchId", id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String toString() {
+        return super.toString() + "(switchId:" + switchId + "; successors: " + (successors != null ? Arrays.toString(successors.toArray()) : "[]") + ")";
+    }
+
+    public int getSwitchId() {
+        return switchId;
     }
 }

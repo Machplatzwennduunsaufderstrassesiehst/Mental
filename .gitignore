@@ -10,6 +10,9 @@ html/graphics/tgm/Thumbs.db
 html/graphics/wof/Thumbs.db
 
 html/nbproject
+html/.project
+html/.settings
 Mental/app/src/androidTest/java/de/soeiner/mental/ClassicTest.java
 
 Mental/.idea/vcs.xml
+Mental/.idea/misc.xml

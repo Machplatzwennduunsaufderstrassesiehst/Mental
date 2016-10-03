@@ -6,8 +6,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import de.soeiner.mental.gameFundamentals.Logger;
-
 /**
  * Created by sven on 25.02.16.
  */
@@ -81,9 +79,8 @@ public abstract class ClientConnection implements RequestAnswerObserver {
     protected void send(CmdRequest r) {
         try {
             socket.send(r.toString());
-            Logger.log("Sent: " + r.toString());
         } catch (Exception e) {
-            Logger.log("Can't send to Connection " + this.host + "! Socket not connected.");
+            e.printStackTrace();
         }
     }
 

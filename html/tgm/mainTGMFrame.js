@@ -46,68 +46,74 @@ mainTrainGameFrame.setOnClose(function() {
     clickHandler.style.display = "none";
 });
 
-// FUNCTIONALITY =================================================================================================
+// FUNCTIONALITY =============================================================================================
 
 function fitGraphics(xMapSize, yMapSize) {
     var frame = byID("mainTrainGameFrame");
     var frameRatio = frame.clientWidth / frame.clientHeight;
     var mapRatio = xMapSize / yMapSize;
     var viewGridSize;
+    if ((frameRatio > 1 && 1 > mapRatio) || (mapRatio > 1 && 1 > frameRatio)) {
+        trainGame.flipMap = true;
+        mapRatio = 1 / mapRatio;
+        var temp = xMapSize;
+        xMapSize = yMapSize;
+        yMapSize = temp;
+    }
     if (frameRatio > mapRatio) {
         viewGridSize = frame.clientHeight / yMapSize;
     } else {
         viewGridSize = frame.clientWidth / xMapSize;
     }
-    var gridSize = viewGridSize / 2;
-    if (gridSize > 90) gridSize = 90;
+    var gridSize = viewGridSize; // currently testing, seems to be better not to scale
     var stageScale = viewGridSize / gridSize;
+    
     trainGame.graphics.resizeRenderer(xMapSize*viewGridSize, yMapSize*viewGridSize);
     trainGame.graphics.setStageScale(stageScale);
     trainGame.setGridSize(gridSize);
     trainGame.setViewGridSize(viewGridSize);
 } 
 
-function Map(rawdata) {
+function Map(rawdata, firstTrackId) {
     // initialize array to hold the track objects later
-    var trackArray = [null];  
+    var trackArray = [];  
     var trainSpawn = null; // reference to the first track of the double linked list
-    var firstTrackId = 0;
     
-    var correctedRawdata = [];
-    for (var i = 0; i < rawdata.length - 2; i++) {
-        correctedRawdata[i] = [];
-        for (var j = 0; j < rawdata[i].length - 2; j++) {
-            correctedRawdata[i][j] = rawdata[i+1][j+1];
-        }
-    }
-    rawdata = correctedRawdata;
+    log(firstTrackId);
     
     for (var i = 0; i < rawdata.length; i++) {
         for (var j = 0; j < rawdata[i].length; j++) {
             var trackData = rawdata[i][j];
+            if (trackData == null) {
+                continue;
+            }
+            if (trainGame.flipMap) {
+                var temp = trackData.xpos;
+                trackData.xpos = trackData.ypos;
+                trackData.ypos = temp;
+            }
             var trackId = Number(trackData.id);
             if (trackId < 0 || trackId == undefined) continue;
             if (trackArray[trackId] != undefined) {
                 log("Trackid " + trackId + " doppelt vergeben");
             }
             trackArray[trackId] = trackData;
-            if (trackData.xpos == 1 && trackData.ypos == 1) {
-                firstTrackId = trackId;
-            }
         }
     }
+    
+    log(trackArray);
+    log(firstTrackId);
     
     // recursive strategy to build the track objects needed for the map
     function build(trackId, predecessor) {
         //if (!trackArray[trackId]) return null;
         try {
             var trackData = trackArray[trackId];
-            trackData.xpos -= 1;
-            trackData.ypos -= 1;
         } catch (e) {
             log(e);
             return null;
         }
+        if (trackData == undefined) return null;
         try {
             switch(trackData.trackType) {
                 case "blocked":return null;
@@ -161,6 +167,7 @@ function TrainGame(graphics) {
     var trainMap = null;
     this.graphics = graphics;
     this.trainMap = null;
+    this.flipMap = false;
     var gridSize = 0;
     var viewGridSize = 0;
     var running = false;
@@ -244,12 +251,12 @@ TrainGame.idColors = ["8808ff", "00ff00", "ff0000", "ffff00", "ff00ff", "00dfdf"
 
 TrainGame.latencyCalculator = new LatencyCalculator();
 
-// OBSERVERS =====================================================================================================
+// OBSERVERS =================================================================================================
 
 var trainMapObserver = new Observer("exercise", function(msg) {
     if (msg.exercise.type != "trainMap") return;
-    fitGraphics(msg.exercise.trainMap.length - 2, msg.exercise.trainMap[0].length - 2);
-    trainMap = new Map(msg.exercise.trainMap);
+    fitGraphics(msg.exercise.trainMap.length, msg.exercise.trainMap[0].length);
+    trainMap = new Map(msg.exercise.trainMap, msg.exercise.firstTrackId);
     trainGame.setMap(trainMap);
     trainGame.start();
     trainGame.graphics.cacheStaticEnvironment();
@@ -257,7 +264,7 @@ var trainMapObserver = new Observer("exercise", function(msg) {
     text.fadeIn();
     setTimeout(
         function(text) {
-            return function() {text.fadeOut();}
+            return function() {text.fadeOut();};
         }(text)
     , 2000);
     // send confirmation

@@ -1,17 +1,18 @@
-package de.soeiner.mental.gameModes;
+package de.soeiner.mental.gameModes.arithmetics;
 
 import org.json.JSONObject;
 
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
+import de.soeiner.mental.gameModes.GameMode;
 
 /**
  * Created by Malte on 28.03.2016.
  */
-public class KnockoutGameMode extends GameMode {
+public class MA_Knockout extends Arithmetic {
 
-    public KnockoutGameMode(Game g) {
+    public MA_Knockout(Game g) {
         super(g);
         minPlayers = 2;
     }
@@ -22,10 +23,7 @@ public class KnockoutGameMode extends GameMode {
 
     public void prepareGame() {
         super.prepareGame();
-        for(int i = 0; i<game.joinedPlayers.size();i++){
-            Player p = game.joinedPlayers.get(i);
-            game.activePlayers.add(p);
-        }
+        addAllPlayersToActive();
     }
 
     public void loop() {
@@ -39,7 +37,7 @@ public class KnockoutGameMode extends GameMode {
                 s.updateScore(s.getScoreValue() * 20);
             }
             game.broadcastScoreboard();
-            game.broadcastPlayerWon(game.activePlayers.get(0).getName(), "Knockout");
+            game.broadcastPlayerWon(game.activePlayers.get(0).getName(), "MA_Knockout");
         } else if (game.activePlayers.size() > 1) {
             int index = 0;
             for (int i = 1; i < game.activePlayers.size(); i++) {
@@ -59,10 +57,10 @@ public class KnockoutGameMode extends GameMode {
         int z = 0;
         Score s = player.getScore();
         synchronized (answerLock) {
-            if(!player.finished && gameIsRunning) {
+            if (!player.finished && gameIsRunning) {
                 if (game.exerciseCreator.checkAnswer(answer)) {
                     s.updateScore(1); //score gibt bei knockout die überlebten runden wieder
-                    game.broadcastMessage(player.getName()+" hat die Aufgabe als "+(game.getRank()+1)+". gelöst!");
+                    game.broadcastMessage(player.getName() + " hat die Aufgabe als " + (game.getRank() + 1) + ". gelöst!");
                     player.finished = true;
                     for (int i = 0; i < game.activePlayers.size(); i++) {
                         Player p = game.joinedPlayers.get(i);
@@ -70,7 +68,7 @@ public class KnockoutGameMode extends GameMode {
                             z++;
                         }
                     }
-                    if(game.activePlayers.size() - z <= 1){
+                    if (game.activePlayers.size() - z <= 1) {
                         allFinishedButOne = true;
                     }
                     if (allFinishedButOne) {
@@ -79,14 +77,14 @@ public class KnockoutGameMode extends GameMode {
                     game.broadcastScoreboard();
                     return true;
                 } else {
-          //          if (s.getScoreValue() > 0) {
-          //            s.updateScore(-1);
-          //            broadcastScoreboard();
-                    }
-                    return false;
+                    //          if (s.getScoreValue() > 0) {
+                    //            s.updateScore(-1);
+                    //            broadcastScoreboard();
                 }
+                return false;
             }
-            return true;
         }
+        return true;
+    }
 }
 
