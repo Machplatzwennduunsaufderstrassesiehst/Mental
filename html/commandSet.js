@@ -25,4 +25,3 @@ function makeGetCmd(type_) {
     cmd.type = type_;
     return cmd;
 }
-

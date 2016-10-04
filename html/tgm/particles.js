@@ -1,29 +1,27 @@
 
-/* global trainGame, PIXI, TrainGame, Vector, TextureGenerator */
-
 // keep everything here in a seperate scope
-var particles = (function() {
+TrainGame.particles = (function() {
     
     function Star(posVector) {
-        var gridSize = trainGame.getGridSize();
+        var gridSize = TrainGame.instance.getGridSize();
         var scale = gridSize / 100;
         var sprite = new PIXI.Sprite(TrainGame.starTexture);
-        sprite.pivot = TextureGenerator.getSpritePivot(sprite);
+        sprite.pivot = GraphicsEngine.graphics.TextureGenerator.getSpritePivot(sprite);
         sprite.scale = new PIXI.Point(scale, scale);
         
-        var vector = Vector.newWithRandomDirection(gridSize / 1.7);
+        var vector = GraphicsEngine.physics.Vector.newWithRandomDirection(gridSize / 1.7);
         
-        var graphicObject = new GraphicObject(sprite);
-        var movement = new StraightDeaccelerationMovement(0, vector, 0.5);
+        var graphicObject = new GraphicsEngine.graphics.GraphicObject(sprite);
+        var movement = new GraphicsEngine.physics.StraightDeaccelerationMovement(0, vector, 0.5);
         movement.addVector(posVector);
-        trainGame.graphics.addGraphicObject(graphicObject);
+        TrainGame.instance.graphics.addGraphicObject(graphicObject);
         
         graphicObject.setPos(movement.getFirst());
         graphicObject.queueMovement(movement);
         
         function fadeOut() {
             graphicObject.fadeOut(function() {
-                trainGame.graphics.removeGraphicObject(graphicObject);
+                TrainGame.instance.graphics.removeGraphicObject(graphicObject);
             }, 1);
         }
         setTimeout(fadeOut, 500);
@@ -40,12 +38,12 @@ var particles = (function() {
     assetLoader.load();
     
     function Explosion(posVector) {
-        var gridSize = trainGame.getGridSize();
+        var gridSize = TrainGame.instance.getGridSize();
         var scale = gridSize / 100 * 1.15;
         
         var explosion = new PIXI.extras.MovieClip(explosionTextures);
         explosion.loop = false;
-        explosion.animationSpeed = 0.7;
+        explosion.animationSpeed = 0.33;
         
         explosion.position.x = posVector.getX();
         explosion.position.y = posVector.getY();
@@ -57,17 +55,17 @@ var particles = (function() {
             if (explosion.playing) {
                 setTimeout(checkAnimationEnded, 100);
             } else {
-                trainGame.graphics.removeSprite(explosion);
+                TrainGame.instance.graphics.removeSprite(explosion);
             }
         }
         
-        trainGame.graphics.addSprite(explosion);
+        TrainGame.instance.graphics.addSprite(explosion);
         explosion.play();
         checkAnimationEnded();
     }
     
     function Text(text, color) {
-        var gridSize = trainGame.getGridSize();
+        var gridSize = TrainGame.instance.getGridSize();
         var scale = gridSize / 100;
         
         var sprite = new PIXI.Text(text, {
@@ -94,14 +92,14 @@ var particles = (function() {
         }
         
         this.fadeIn = function() {
-            trainGame.graphics.addSprite(sprite);
-            trainGame.graphics.centerSprite(sprite);
+            TrainGame.instance.graphics.addSprite(sprite);
+            TrainGame.instance.graphics.centerSprite(sprite);
             fade(1, 0.15, function() {});
         };
         
         this.fadeOut = function() {
             fade(0, -0.07, function() {
-                trainGame.graphics.removeSprite(sprite);
+                TrainGame.instance.graphics.removeSprite(sprite);
             });
         };
     };

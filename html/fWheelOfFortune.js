@@ -17,7 +17,7 @@ wheelOfFortuneFrame.setOnClose(function() {
 // FUNCTIONALITY =======================================================
 (function(wheelOfFortuneFrame) {
     
-    var graphics = new GameGraphics("wheelGraphics");
+    var graphics = new GraphicsEngine.graphics.GameGraphics("wheelGraphics");
     var wheel = PIXI.Sprite.fromImage("graphics/wof/wheel.png");
     wheel.anchor = new PIXI.Point(0.5, 0.5);
     var wheelPin = PIXI.Sprite.fromImage("graphics/wof/pin.png");
