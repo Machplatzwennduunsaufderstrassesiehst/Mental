@@ -288,7 +288,8 @@ var mainTrainGameFrame = new Frame("mainTrainGameFrame");
     });
 
     var newtrainObserver = new Observer("newTrain", function(msg) {
-        new TrainGame.gameObjects.Train(msg.trainId, msg.destinationId, msg.speed, trainGame.getTrainSpawn());
+        var estimatedSpawnTime = new Date().getTime() - TrainGame.latencyCalculator.getCurrentLatency() * 2;
+        new TrainGame.gameObjects.Train(msg.trainId, msg.destinationId, msg.speed, trainGame.getTrainSpawn(), estimatedSpawnTime);
     });
 
     var switchChangedObserver = new Observer("switchChange", function(msg) {

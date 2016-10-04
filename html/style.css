@@ -138,6 +138,7 @@ body {
     margin-top: 5px;
     cursor: pointer;
     text-align: left;
+    box-shadow: 0px 0px 0.2em #aaa;
 }
 
 .selectListItem:hover {

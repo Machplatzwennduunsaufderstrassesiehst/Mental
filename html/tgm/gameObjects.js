@@ -2,7 +2,7 @@
 
 TrainGame.gameObjects = (function() {
     
-    function Train(trainId, destinationId, tracksPerSecond, startTrack) {
+    function Train(trainId, destinationId, tracksPerSecond, startTrack, startTime) {
         Train.s[trainId] = this;
         var container = new PIXI.Container();
 
@@ -24,7 +24,7 @@ TrainGame.gameObjects = (function() {
         var graphicObject = new GraphicsEngine.graphics.GraphicObject(container);
         TrainGame.instance.graphics.addGraphicObject(graphicObject);
 
-        var timePerTrack = 1 / tracksPerSecond;
+        var secondsPerTrack = 1 / tracksPerSecond;
         var currentTrack = startTrack;
         var successorTrack = null;
         var predecessorTrack = null;
@@ -34,7 +34,14 @@ TrainGame.gameObjects = (function() {
         var graphicsArrived = false;
 
         function move(bWithLatencyHeadStart) {
-            var headStart = (bWithLatencyHeadStart ? TrainGame.latencyCalculator.getCurrentLatency() * 1.5 : 0);
+            var headStart = 0;
+            if (bWithLatencyHeadStart) {
+                headStart = new Date().getTime() - startTime;
+                while (headStart > secondsPerTrack * 1000) {
+                    headStart -= secondsPerTrack * 1000;
+                    currentTrack = currentTrack.getSuccessor();
+                }
+            }
             setTimeout(function(){
                 if (!TrainGame.instance.isRunning()) return;
                 if (successorTrack != null) {
@@ -44,12 +51,13 @@ TrainGame.gameObjects = (function() {
                     arriveInGoal();
                     graphicsArrived = true;
                 }
-            }, timePerTrack * 1000 - headStart);
+            }, secondsPerTrack * 1000 - headStart);
 
             currentLane = currentTrack.getLane();
-            var movement = buildMovement();
+            var lateness = (1 - graphicObject.getMovementProgress()) * secondsPerTrack;
+            var movement = buildMovement(secondsPerTrack - lateness);
             if (bWithLatencyHeadStart) movement.setProgress(headStart / 1000);
-            graphicObject.setPos(movement.getFirst());
+            //graphicObject.setPos(movement.getFirst());
             graphicObject.queueMovement(movement);
             lastTrackChange = Date.now();
             successorTrack = currentTrack.getSuccessor();
@@ -74,7 +82,6 @@ TrainGame.gameObjects = (function() {
                 setTimeout(function(){
                     correctMovement(successor, successor.getSuccessor(), successor.getLane(), retry);
                 }, correctionRetryTimeout);
-                return;
             } else { // train is on the correct track => only correct its lane and successorTrack if necessary
                 // (another case corrected here: train is on a switch's wrong successor track due to INSANE lagg)
                 currentTrack = correctedTrack;
@@ -90,7 +97,7 @@ TrainGame.gameObjects = (function() {
                     graphicObject.setPos(movement.getFirst());
                     graphicObject.queueMovement(movement);
                     if (graphicsArrived) {
-                        var timeUntilNextMoveCall = (Date.now() - lastTrackChange) % (timePerTrack * 1000);
+                        var timeUntilNextMoveCall = (Date.now() - lastTrackChange) % (secondsPerTrack * 1000);
                         setTimeout(move, timeUntilNextMoveCall);
                     }
                 }
@@ -98,7 +105,7 @@ TrainGame.gameObjects = (function() {
         };
 
         // TODO movement caching
-        function buildMovement() {
+        function buildMovement(movementTime) {
             //log("BUILD MOVEMENT=========================================");
             var degrees = currentLane.getTurnDegrees();
             //log("degrees: " + degrees);
@@ -111,10 +118,10 @@ TrainGame.gameObjects = (function() {
                 case "track":case "switch":
                 switch (Math.abs(Math.sign(degrees))) {
                     case 0:
-                        movement = new GraphicsEngine.physics.StraightMovement(startRotation, GraphicsEngine.physics.Vector.newFromTo(u, v), timePerTrack);
+                        movement = new GraphicsEngine.physics.StraightMovement(startRotation, GraphicsEngine.physics.Vector.newFromTo(u, v), movementTime);
                         break;
                     case 1: // turn
-                        movement = new GraphicsEngine.physics.TurnMovement(startRotation, currentLane.getTurnRadius(), degrees, timePerTrack);
+                        movement = new GraphicsEngine.physics.TurnMovement(startRotation, currentLane.getTurnRadius(), degrees, movementTime);
                         break;
                     default:
                         log("fehler in gameObjects.js: degrees: " + degrees);
@@ -122,7 +129,7 @@ TrainGame.gameObjects = (function() {
                 }
                 break;
                 case "goal":
-                    movement = new GraphicsEngine.physics.StraightDeaccelerationMovement(startRotation, GraphicsEngine.physics.Vector.newFromTo(u, v), timePerTrack/2);
+                    movement = new GraphicsEngine.physics.StraightDeaccelerationMovement(startRotation, GraphicsEngine.physics.Vector.newFromTo(u, v), movementTime);
                     break;
             }
             movement.addVector(u);

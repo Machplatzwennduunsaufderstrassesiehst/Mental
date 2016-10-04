@@ -66,10 +66,11 @@
                 <p>
                     <input placeholder="Benutzername (frei wählbar)" type="text" id="name"/>
                     <input placeholder="Alter Spielstand (optional)" type="text" id="gameStringInput"/>
-                    <input placeholder='Server IP ("Info" oben rechts bei Host)' type="text" id="ip"/>
-                    <a style="max-width:12em;" id="connect" href="#" onclick="onServerJoinClick();" data-role="button"><span data-icon="account-login"></span>Server beitreten</a> 
                     <!--Oder:<br>
                     <a style="max-width:12em;" id="scan" href="#" onclick="netManager.scan(listAvailableServers);navigation.openFrames(serverLobbyFrame);" data-role="button"><span data-icon="magnifying-glass"></span>Server suchen</a> -->
+                    <div id="serversList"></div><br>
+                    <input placeholder='IP-Adresse des Host-Geräts (WLAN-Einstellungen Handy) manuell eingeben' type="text" id="ip"/>
+                    <a style="max-width:20em;" id="connect" href="#" onclick="onServerJoinClick();" data-role="button"><span data-icon="account-login"></span>Manuell beitreten</a>
                 </p>
                 <p>
                 </p>
@@ -83,12 +84,6 @@
                     <a class="btn" data-role="button" href="#" onclick="navigation.openFrames(shoppingFrame);" style="max-width:40em;"><span data-icon="cart"></span>Zum Shop</a> <br>
 					<a class="btn" data-role="button" href="#" onclick="navigation.openFrames(wheelOfFortuneFrame);" style="max-width:40em;"><span data-icon="target"></span>Zum Glücksrad</a>
                 </p>
-            </div>
-            <div id="listServersFrame" class="frame">
-                <h2>Verfügbare Server</h2>
-                <div id="serversList">
-                    
-                </div>
             </div>
             <div id="countdownFrame" class="frame">
                 <div style="text-align:center;">

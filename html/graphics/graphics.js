@@ -177,9 +177,10 @@ GraphicsEngine.graphics = (function() {
 
     // sprite can also be a container
     function GraphicObject(sprite_) {
-        var latestPosition = new GraphicsEngine.physics.Position(0,0);
+        var latestPosition = new GraphicsEngine.physics.Position(-1000,-1000);
         var positionQueue = [latestPosition];
         var movements = {};
+        var currentMovement = null;
         var movementQueue = [];
 
         var sprite = sprite_;
@@ -194,8 +195,8 @@ GraphicsEngine.graphics = (function() {
             var p = latestPosition = positionQueue.pop();
             if (positionQueue.length == 0) {
                 if (movementQueue.length > 0) { // no positions on queue, but movements to be extracted to the positionQueue
-                    var m = movementQueue.pop();
-                    var steps = m.getSteps();
+                    currentMovement = movementQueue.pop();
+                    var steps = currentMovement.getSteps();
                     for (var i = 0; i < steps.length; i++) {
                         positionQueue.unshift(steps[i]);
                     }
@@ -211,7 +212,7 @@ GraphicsEngine.graphics = (function() {
         };
 
         this.getPos = function() {
-            return latestPosition;
+            return (latestPosition != undefined ? latestPosition : new GraphicsEngine.physics.Position(-1000,-1000));
         };
 
         this.setPos = function(position) {;
@@ -229,6 +230,14 @@ GraphicsEngine.graphics = (function() {
 
         this.addMovement = function(key, movement) {
             movements[key] = movement;
+        };
+
+        this.getMovementProgress = function() {
+            if (currentMovement == null) {
+                return 1;
+            } else {
+                return 1.0 - 1.0 * positionQueue.length / currentMovement.getSteps().length;
+            }
         };
 
         this.queueMovement = function(movement) {

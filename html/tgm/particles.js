@@ -1,5 +1,4 @@
 
-// keep everything here in a seperate scope
 TrainGame.particles = (function() {
     
     function Star(posVector) {

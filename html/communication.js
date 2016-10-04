@@ -272,15 +272,24 @@ function NetworkManager() {
     
     // basic scan: nur 4. stelle der ip
     // leider viel zu langsam für scan auf 3. und 4. stelle, habe noch keinen besseren Ansatz...
-    this.scan = function(onScanReadyHandler) {
-        openServerConnections = [];
-        if (onScanReadyHandler) onScanReady = onScanReadyHandler;
-        if (!localIP) return;
-        var localIP_ = localIP.split(".");
+    var scan = this.scan = function(onScanReadyHandler) {
+        if (scanning) {
+            setTimeout(function(){scan(onScanReadyHandler);}, 2000);
+            console.log("test");
+            return;
+        }
         scanning = true;
-        tryPing("localhost");
-        checkNext([localIP_[0], localIP_[1], localIP_[2], 0], true, 0);
+        updateLocalIP(function() {
+            openServerConnections = [];
+            if (onScanReadyHandler) onScanReady = onScanReadyHandler;
+            if (!localIP) return;
+            var localIP_= localIP.split(".");
+            tryPing("localhost");
+            checkNext([localIP_[0], localIP_[1], localIP_[2], 0], true, 0);
+        });
     };
+
+    this.abortScanning = function() {scanning = false;}
     
     this.scanManually = function(ip) {
         var s = new ServerConnection(ip, gameServerPort);
@@ -295,7 +304,11 @@ function NetworkManager() {
     };
     
     function checkNext(ipArray, isBasic, c) {
-        if (!scanning || c > 255*255) return;
+        if (!scanning || (isBasic && c > 255) || c > 256*255) {
+            scanning = false;
+            console.log("test 2");
+            return;
+        }
         var ip = String(ipArray[0]) + "." + String(ipArray[1]) + "." + String((Math.floor(ipArray[2])+256)%256) + "." + String(ipArray[3]);
         tryPing(ip);
         ipArray[3] = ipArray[3] + 1;
@@ -340,7 +353,7 @@ function NetworkManager() {
     };
     
     // kleines workaround um die lokale IP des Users zu ermitteln
-    function updateLocalIP(){
+    function updateLocalIP(do_after){
         window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;   //compatibility for firefox and chrome
         if (!window.RTCPeerConnection) return;
         var pc = new RTCPeerConnection({iceServers:[]}); 
@@ -350,6 +363,8 @@ function NetworkManager() {
             if(!ice || !ice.candidate || !ice.candidate.candidate)  return;
             localIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
             pc.onicecandidate = uselessFunction;
+
+            if (do_after instanceof Function) do_after();
         };
     }
     this.updateLocalIP = updateLocalIP;
