@@ -215,13 +215,9 @@ GraphicsEngine.graphics = (function() {
             return (latestPosition != undefined ? latestPosition : new GraphicsEngine.physics.Position(-1000,-1000));
         };
 
-        this.setPos = function(position) {;
+        this.setPos = function(position) {
             positionQueue = [position]; // set positionQueue so it only contains the new position
             movementQueue = [];
-        };
-
-        this.setSprite = function(sprite_) {
-            sprite = sprite_;
         };
 
         this.getSprite = function() {
