@@ -53,7 +53,7 @@ public abstract class TrainGame extends GameMode {
     //diese mehtoden sind jetzt nicht mehr abstract sonder müssen überschrieben werden
     public void extraPreparationsPreMap(){} //zusätzliches vorbereitungen wie das manuelle setzen der Spieleranzahl
     public void extraPreparationsMidMap(){} //zusätzliches vorbereitungen wie die farbgebung der goals
-    public void extraPreparationsPostMap(){} //zusätzliches vorbereitungen nach dem Sender der map
+    public void extraPreparationsPostMap(){ checkSwitches(); } //zusätzliches vorbereitungen nach dem Sender der map
     public void distributePlayers() { //verteilen der Spieler auf activeplayers oder teams usw
         addAllPlayersToActive();
     }
@@ -64,8 +64,8 @@ public abstract class TrainGame extends GameMode {
     Switch[] switches;
     Goal[] goals;
     Wave[] waves;
-    boolean waveIsRunning;
-    boolean waveSuccess;
+    public boolean waveIsRunning;
+    public boolean waveSuccess;
     int health;
     int healthNeededToWin;
     int reward;
@@ -237,6 +237,23 @@ public abstract class TrainGame extends GameMode {
             if(goals[i].getGoalId() == id) return goals[i];
         }
         throw new Error("Goal nicht gefunden");
+    }
+
+    public void checkSwitches(){
+        for (int i = 0; i < switches.length; i++) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            broadcastSwitchChange(switches[i]);
+        }
+    }
+
+    public void broadcastSwitchChange(Switch s){
+        for (int i = 0; i < game.activePlayers.size(); i++) {
+            game.activePlayers.get(i).sendSwitchChange(s);
+        }
     }
 
     @Override

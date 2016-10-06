@@ -60,7 +60,7 @@ public class Train_Versus extends TrainGame{
     @Override
     public void extraPreparationsPreMap() {
         reward = 0;
-        trainMapCreator.setSizeManually(game.activePlayers.size());
+        trainMapCreator.setSizeManually(game.activePlayers.size()*2);
     }
 
     @Override
