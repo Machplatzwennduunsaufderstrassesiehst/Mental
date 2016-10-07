@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Mental.iml" filepath="$PROJECT_DIR$/Mental.iml" />
       <module fileurl="file://$PROJECT_DIR$/androidasync-2.1.7/androidasync-2.1.7.iml" filepath="$PROJECT_DIR$/androidasync-2.1.7/androidasync-2.1.7.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xwalk_core_library-21.51.546.6/xwalk_core_library-21.51.546.6.iml" filepath="$PROJECT_DIR$/xwalk_core_library-21.51.546.6/xwalk_core_library-21.51.546.6.iml" />
     </modules>
   </component>
 </project>

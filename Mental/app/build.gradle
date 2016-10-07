@@ -17,6 +17,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets {
+        main {
+            assets.srcDirs = ['html']
+        }
+    }
 }
 
 dependencies {
@@ -24,4 +30,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile project(':androidasync-2.1.7')
+    compile project(':xwalk_core_library-21.51.546.6')
 }

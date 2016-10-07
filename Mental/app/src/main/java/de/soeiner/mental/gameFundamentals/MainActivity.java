@@ -5,7 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.content.Intent;
 import android.net.Uri;
+import android.view.Window;
 import android.widget.Button;
+
+import org.xwalk.core.XWalkPreferences;
+import org.xwalk.core.XWalkView;
 
 import java.io.IOException;
 
@@ -23,19 +27,33 @@ public class MainActivity extends AppCompatActivity {
 
     private Server server;
 
+    private XWalkView xWalkWebView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         serverIsActive = false;
+
+        xWalkWebView=(XWalkView)findViewById(R.id.xwalkWebView);
+        xWalkWebView.load("file:///android_asset/index.html", null);
+
+        // turn on debugging
+        XWalkPreferences.setValue(XWalkPreferences.REMOTE_DEBUGGING, true);
+
+
+
+        /*
         btnJoin = (Button) findViewById(R.id.buttonJoinGame);
         btnHost = (Button) findViewById(R.id.buttonHostGame);
+        */
         if (DEBUG) {
             // so startet man nicht aus Versehen den Server 2x im DEBUG modus
-            btnHost.setText("SERVER LÄUFT");
+          /*  btnHost.setText("SERVER LÄUFT");
             btnHost.setEnabled(false);
             btnHost.setClickable(false);
-            btnJoin.setEnabled(true);
+            btnJoin.setEnabled(true);*/
             serverStart();
         }
     }
