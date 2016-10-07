@@ -12,6 +12,7 @@ import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
 import de.soeiner.mental.gameModes.arithmetics.MA_Classic;
 import de.soeiner.mental.gameModes.GameMode;
+import de.soeiner.mental.gameModes.traingame.TrainGame;
 
 /**
  * Created by malte on 13.02.16.
@@ -174,6 +175,14 @@ public class Game implements Runnable {
         }
         if (spectators.contains(p)) {
             spectators.remove(p);
+        }
+        if(gameMode.gameIsRunning){ //falls gerade ein game läuft
+            if(activePlayers.size() < gameMode.minPlayers){
+                gameMode.gameIsRunning = false;
+                if(gameMode.type == "Train"){
+                    ((TrainGame) gameMode).waveIsRunning = ((TrainGame) gameMode).waveSuccess = false;
+                }
+            }
         }
         updateScoreBoardSize();
         voting.checkForCompletion();
