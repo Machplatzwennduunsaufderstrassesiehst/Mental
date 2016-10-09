@@ -30,7 +30,7 @@ public class Train_Classic extends TrainGame {
 
     @Override
     public void extraPreparationsPreMap() {
-        trainMapCreator.setSizeManually(2);
+        // trainMapCreator.setSizeManually(2); // wieso war hier 2 hard gecoded?
         reward = 100;
     }
 
@@ -45,12 +45,12 @@ public class Train_Classic extends TrainGame {
         //wellen[0] = new Wave(6, 6, 100, 1, 99999, 999999, 25);
         //wellen[0] = new Wave(1.0, 1.0, 3500, 1, 10, 15, 25);
         wellen[0] = new Wave(1.1, 1.3, 2700, 2, 3, 25, 50);
-        wellen[1] = new Wave(1.4, 1.8, 2200, 3, 10, 30, 100);
-        wellen[2] = new Wave(1.7, 2.2, 1800, 4, 10, 35, 200);
-        wellen[3] = new Wave(1.7, 2.5, 1600, 10, 10, 40, 300);
-        wellen[4] = new Wave(1.5, 2.6, 1400, 10, 10, 50, 500);
-        wellen[5] = new Wave(1.3, 2.6, 1300, 10, 10, 50, 750);
-        wellen[6] = new Wave(1.0, 2.6, 1300, 10, 10, 50, 1000);
+        wellen[1] = new Wave(1.4, 1.5, 2100, 3, 10, 30, 100);
+        wellen[2] = new Wave(1.7, 1.5, 1800, 4, 10, 35, 200);
+        wellen[3] = new Wave(1.7, 1.5, 1600, 10, 10, 40, 300);
+        wellen[4] = new Wave(1.4, 1.6, 1400, 10, 10, 50, 500);
+        wellen[5] = new Wave(1.1, 1.7, 1200, 10, 10, 50, 750);
+        wellen[6] = new Wave(0.7, 1.7, 1000, 10, 10, 50, 1000);
 /*        int testhealth = 8;
         int testhealthNeededToWin = 17; // um schnell zur nächsten wave zu gelangen
         wellen[0] = new Wave(0.5, 0.5, 4000, 1, 10, testhealthNeededToWin, 25);
@@ -84,7 +84,6 @@ public class Train_Classic extends TrainGame {
         if (health <= 0) { //Check for Wellen status
             waveSuccess = false;
             waveIsRunning = false;
-            game.broadcastMessage("Spieler haben verloren !");
         }
         if (health >= healthNeededToWin) {
             waveSuccess = true;

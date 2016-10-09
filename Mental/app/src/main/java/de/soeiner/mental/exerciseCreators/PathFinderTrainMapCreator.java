@@ -16,6 +16,10 @@ import de.soeiner.mental.util.Pathfinder;
  */
 public class PathFinderTrainMapCreator extends TrainMapCreator {
 
+    private static int MAX_X_SIZE = 7;
+    private static int NUM_START_TRACKS = 4;
+    private static double MAP_RATIO = 3.0 / 2;
+
     private Game game;
     private int id;
     private int switchId;
@@ -39,17 +43,18 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
         int value = 1;
         int retry = 0;
         int x, y;
-        int numGoals = (numPlayers * 4) / 3 + 3;
+        int numGoals = (numPlayers * 5) / 3 + 3;
         int xMapSize = (numPlayers * 3) / 4 + 4;
-        if (xMapSize > 7) xMapSize = 7;
-        int yMapSize = (xMapSize * 11) / 7;
+        if (xMapSize > MAX_X_SIZE) xMapSize = MAX_X_SIZE;
+        int yMapSize = (int) (xMapSize * MAP_RATIO);
         map = new TrainTrack[xMapSize][yMapSize];
         // put the start somewhere
         x = (int) (Math.random() * xMapSize);
         y = (int) (Math.random() * yMapSize);
         TrainTrack track = map[x][y] = firstTrack = new Track(x, y, value, nextId());
         // add some start track protected from further attachments
-        while (retry < 3) {
+        int layedStartTrack = 0;
+        while (layedStartTrack < NUM_START_TRACKS) {
             int[] v = randomDirection();
             System.out.println(Arrays.toString(v));
             x = track.getX() + v[0];
@@ -57,25 +62,34 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
             if (isValid(x, y) && map[x][y] == null) {
                 protectedTrack.add(track);
                 track = map[x][y] = track.continueAsTrack(v, nextId());
+                layedStartTrack++;
+                retry = 0;
+            } else {
                 retry++;
+                if (retry > 20) {
+                    return createTrainMap();
+                }
             }
         }
-        int depth = 4;
         // Place goals randomly on the map
         Goal[] goals = new Goal[numGoals];
-        for (int i = 0; i < goals.length; i++) {
-            value = i + 1;
+        int numCompletelyRandomGoals = (int) (0.4 * numGoals);
+        int depth = yMapSize;
+        for (int i = 0 ; i < numGoals; i++) {
             retry = 0;
             while (true) {
                 retry++;
-                if (retry > 10 && depth > 0) {
-                    depth -= 1;
+                if (i < numCompletelyRandomGoals) {
+                    depth = 0;
+                } else {
+                    if (retry > 10 && depth > 0) {
+                        depth -= 1;
+                    }
                 }
                 x = (int) (Math.random() * xMapSize);
                 y = (int) (Math.random() * yMapSize);
                 if (!testSurroundings(x, y, depth, containsTrainTrack)) {
-                    System.out.println("new Goal(" + x + "," + y + ")");
-                    goals[i] = new Goal(x, y, value, nextId());
+                    goals[i] = new Goal(x, y, i + 1, nextId());
                     goals[i].setGoalId(i);
                     map[x][y] = goals[i];
                     break;

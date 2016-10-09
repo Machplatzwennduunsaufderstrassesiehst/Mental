@@ -15,6 +15,7 @@ var mainTrainGameFrame = new Frame("mainTrainGameFrame");
         serverConnection.addObserver(trainDecisionObserver);
         serverConnection.addObserver(trainArrivedObserver);
         serverConnection.addObserver(trainWaveObserver);
+        serverConnection.addObserver(textObserver);
 
         if (trainGameGraphics != undefined) {
             trainGameGraphics.stop();
@@ -37,6 +38,7 @@ var mainTrainGameFrame = new Frame("mainTrainGameFrame");
         serverConnection.removeObserver(trainDecisionObserver);
         serverConnection.removeObserver(trainArrivedObserver);
         serverConnection.removeObserver(trainWaveObserver);
+        serverConnection.removeObserver(textObserver);
 
         trainGame.stop();
         byID("mainTrainGameFrame").innerHTML = "";
@@ -261,7 +263,7 @@ var mainTrainGameFrame = new Frame("mainTrainGameFrame");
     TrainGame.goalTexture = GraphicsEngine.graphics.TextureGenerator.generate(TrainGame.TGMPATH + "goal.png");
     TrainGame.starTexture = GraphicsEngine.graphics.TextureGenerator.generate(TrainGame.TGMPATH + "star.png");
 
-    TrainGame.idColors = ["8808ff", "00ff00", "ff0000", "ffff00", "ff00ff", "00dfdf", "ffffff", "ff8800"];
+    TrainGame.idColors = ["8808ff", "ffffff", "00ff00", "ff0000", "ffff00", "ff00ff", "00dfdf", "ffffff", "ff8800", "333333"];
 
     TrainGame.latencyCalculator = new LatencyCalculator();
 
@@ -274,13 +276,6 @@ var mainTrainGameFrame = new Frame("mainTrainGameFrame");
         trainGame.setMap(trainMap);
         trainGame.start();
         trainGame.graphics.cacheStaticEnvironment();
-        var text = new TrainGame.particles.Text("Game started!", 0xffffff);
-        text.fadeIn();
-        setTimeout(
-            function(text) {
-                return function() {text.fadeOut();};
-            }(text)
-            , 2000);
         // send confirmation
         setTimeout(function() {
             serverConnection.send({type:"confirm"});
@@ -319,30 +314,44 @@ var mainTrainGameFrame = new Frame("mainTrainGameFrame");
         train.arrive(onArriveInGoal);
     });
 
-    // TODO
+    function explodeTrains() {
+        var timeout = 0;
+        var timeoutStep = 500;
+        for (var i = 0; i < TrainGame.gameObjects.Train.s.length; i++) {
+            var train = TrainGame.gameObjects.Train.s[i];
+            if (train == undefined || train.getGraphicsArrived()) continue;
+            setTimeout((function(train){return function(){train.explode();};})(train), timeout);
+            TrainGame.gameObjects.Train.s[i] = undefined;
+            timeout += timeoutStep;
+        }
+    }
+
     var trainWaveObserver = new Observer("trainWaveCompleted", function(msg) {
         var success = msg.success; // wave survived
         var waveNo = msg.waveNo;
         var reward = msg.reward;
         var text;
         if (success) {
-            var timeout = 0;
-            var timeoutStep = 100;
-            for (var i = 0; i < TrainGame.gameObjects.Train.s.length; i++) {
-                var train = TrainGame.gameObjects.Train.s[i];
-                if (train == undefined || train.getGraphicsArrived()) continue;
-                setTimeout((function(train){return function(){train.explode();};})(train), timeout);
-                TrainGame.gameObjects.Train.s[i] = undefined;
-                timeout += timeoutStep;
-            }
             text = new TrainGame.particles.Text("Wave " + waveNo + " survived!", 0xffffff);
         } else {
-            text = new TrainGame.particles.Text("You lost!!", 0xffaaaa);
+            text = new TrainGame.particles.Text("You lost!!", 0xff9999);
         }
+        explodeTrains();
         text.fadeIn();
         setTimeout(function(text){
             return function(){text.fadeOut();};
         }(text), 2000);
+    });
+
+    var messageText = null;
+
+    var textObserver = new Observer("message", function(msg) {
+        if (messageText != null) messageText.fadeOut();
+        messageText = new TrainGame.particles.Text(msg.message, 0xffffff);
+        messageText.fadeIn();
+        setTimeout(function(text){
+            return function(){text.fadeOut();};
+        }(messageText), 2000);
     });
     
     window.TrainGame = TrainGame;

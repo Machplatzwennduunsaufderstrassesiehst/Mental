@@ -80,14 +80,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void serverStart() {
         try {
+            if (server != null) {
+                server.stop();
+            }
             server = new Server(PORT);
+            new Game("Train");
+            new Game("MA");
             System.out.println("Server started on port " + PORT);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        new Game("Train");
-        new Game("MA");
     }
 
     @Override

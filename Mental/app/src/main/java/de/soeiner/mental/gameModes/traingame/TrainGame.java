@@ -156,8 +156,8 @@ public abstract class TrainGame extends GameMode {
     }
 
     protected void playersWon() {
-        game.broadcastMessage("Spieler haben gewonnen!");
-        game.broadcastMessage("und bekomen einen Bonus von " + reward + "$ !");
+        game.broadcastMessage("You Won! Reward: " + reward + "$");
+        //game.broadcastMessage("und bekommen einen Bonus von " + reward + "$ !");
         giveReward(reward);
         try {
             Thread.sleep(3000);
@@ -186,10 +186,23 @@ public abstract class TrainGame extends GameMode {
 
     public abstract void loop();
 
+    public void countdown(int from) {
+        for (int i = from; i > 0; i--) {
+            game.broadcastMessage("" + i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        game.broadcastMessage("GO!");
+    }
+
     protected void goThroughWaves(){
         int destinationId = 0;
         int idcounter = 0;
         double speed = 0;
+        countdown(5);
         for (int i = 0; i < waves.length && gameIsRunning; i++) {
             health = waves[i].getHealth();
             healthNeededToWin = waves[i].getHEALTH_NEEDED_TO_WIN();
@@ -198,7 +211,7 @@ public abstract class TrainGame extends GameMode {
             while (waveIsRunning && gameIsRunning) {
                 destinationId = (int) (Math.random() * goals.length); // da die goalId jetzt gleich der values sind und bei 1 starten, muss hier +1 stehen
                 speed = Math.random() * (waves[i].getMAX_SPEED() - waves[i].getMIN_SPEED()) + waves[i].getMIN_SPEED();
-                new Train(idcounter, destinationId, speed, this); //zug spawnen
+                new Train(idcounter, destinationId, speed, this, false); //zug spawnen
                 idcounter++;
                 try {
                     Thread.sleep(waves[i].getTRAIN_SPAWN_INTERVAL()); //warten
@@ -218,6 +231,11 @@ public abstract class TrainGame extends GameMode {
             } else {
                 broadcastWaveCompleted(false, i, waves[i].getREWARD());
                 gameIsRunning = false;
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             }
             if (i == waves.length - 1) {

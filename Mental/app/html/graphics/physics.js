@@ -204,8 +204,8 @@ GraphicsEngine.physics = (function() {
 
         var frames = calculateFrameAmount(initialTimePerTrack);
 
-        var xSpeed = vector.getX() / frames;
-        var ySpeed = vector.getY() / frames;
+        var xSpeed = vector.getX() / frames * 2;
+        var ySpeed = vector.getY() / frames * 2;
 
         var xAcc = -xSpeed / frames;
         var yAcc = -ySpeed / frames;

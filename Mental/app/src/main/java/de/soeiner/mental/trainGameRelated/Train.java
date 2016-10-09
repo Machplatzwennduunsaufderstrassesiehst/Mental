@@ -20,7 +20,8 @@ public class Train implements Runnable {
     private int x, y;
     private int positionId;
 
-    public Train(int i, int d, double s, TrainGame tg) {
+    // der kann doch weg oder?
+    /*public Train(int i, int d, double s, TrainGame tg) {
         id = i;
         destinationId = d;
         speed = s;
@@ -39,7 +40,7 @@ public class Train implements Runnable {
         y = traingame.getTrackById(positionId).getY();
         Thread t = new Thread(this);
         t.start();
-    }
+    }*/
 
     public Train(int i, int d, double s, TrainGame tg, boolean bombtrain) {
         id = i;
