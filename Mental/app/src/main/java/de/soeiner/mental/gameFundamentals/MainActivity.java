@@ -8,14 +8,10 @@ import android.net.Uri;
 import android.view.Window;
 import android.widget.Button;
 
-import org.xwalk.core.XWalkPreferences;
-import org.xwalk.core.XWalkView;
-
 import java.io.IOException;
 
 import de.soeiner.mental.R;
 import de.soeiner.mental.communication.Server;
-import de.soeiner.mental.gameFundamentals.Game;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,35 +23,41 @@ public class MainActivity extends AppCompatActivity {
 
     private Server server;
 
-    private XWalkView xWalkWebView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         serverIsActive = false;
+        if (DEBUG) {
+            // so startet man nicht aus Versehen den Server 2x im DEBUG modus
+            serverStart();
+        }
 
-        xWalkWebView=(XWalkView)findViewById(R.id.xwalkWebView);
+        androidApplicationStart();
+    }
+
+    public void androidApplicationStart() {
+        setContentView(R.layout.activity_main);
+        if (DEBUG) {
+            btnJoin = (Button) findViewById(R.id.buttonJoinGame);
+            btnHost = (Button) findViewById(R.id.buttonHostGame);
+            btnHost.setText("SERVER LÄUFT");
+            btnHost.setEnabled(false);
+            btnHost.setClickable(false);
+            btnJoin.setEnabled(true);
+        }
+    }
+
+    public void webViewStart() {
+        /*
+        setContentView(R.layout.gui_webview);
+
+        XWalkView xWalkWebView = (XWalkView) findViewById(R.id.xwalkWebView);
         xWalkWebView.load("file:///android_asset/index.html", null);
 
         // turn on debugging
         XWalkPreferences.setValue(XWalkPreferences.REMOTE_DEBUGGING, true);
-
-
-
-        /*
-        btnJoin = (Button) findViewById(R.id.buttonJoinGame);
-        btnHost = (Button) findViewById(R.id.buttonHostGame);
         */
-        if (DEBUG) {
-            // so startet man nicht aus Versehen den Server 2x im DEBUG modus
-          /*  btnHost.setText("SERVER LÄUFT");
-            btnHost.setEnabled(false);
-            btnHost.setClickable(false);
-            btnJoin.setEnabled(true);*/
-            serverStart();
-        }
     }
 
     public void buttonJoinServer(View v) {
