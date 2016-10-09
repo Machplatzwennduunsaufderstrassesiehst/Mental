@@ -1,5 +1,6 @@
 package de.soeiner.mental.gameFundamentals;
 
+import android.content.ActivityNotFoundException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.view.Window;
 import android.widget.Button;
 
+import java.io.File;
 import java.io.IOException;
 
 import de.soeiner.mental.R;
@@ -62,7 +64,14 @@ public class MainActivity extends AppCompatActivity {
     public void buttonJoinServer(View v) {
         Uri url = Uri.parse("http://www.mentalist.lima-city.de");
         Intent intent = new Intent(Intent.ACTION_VIEW, url);
-        startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setPackage("com.android.chrome");
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            intent.setPackage(null);
+            startActivity(intent);
+        }
     }
 
     public void buttonStartServer(View v) {
@@ -84,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             if (server != null) {
                 server.stop();
             }
-            server = new Server(PORT);
+            server = new Server(PORT, this);
             new Game("Train");
             new Game("MA");
             System.out.println("Server started on port " + PORT);

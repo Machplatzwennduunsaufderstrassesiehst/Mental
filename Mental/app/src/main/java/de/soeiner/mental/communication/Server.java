@@ -1,16 +1,30 @@
 package de.soeiner.mental.communication;
 
+import android.content.res.AssetManager;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.WebSocket;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
+import com.koushikdutta.async.http.server.AsyncHttpServerResponse;
+import com.koushikdutta.async.http.server.HttpServerRequestCallback;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
+import de.soeiner.mental.util.Files;
 
 
 /**
@@ -20,18 +34,61 @@ public class Server {
 
     private AsyncHttpServer asyncServer;
     private PingHttpServer httpServer;
-    private WebSocketRequestHandler webSocketRequestHandler;
     private int port;
+    private AssetManager assetManager;
 
-    public Server( int port ) throws UnknownHostException {
+    public Server(int port, AppCompatActivity context) throws UnknownHostException {
         this.port = port;
+        this.assetManager = context.getAssets();
         initialize();
     }
 
     public void initialize() {
         asyncServer = new AsyncHttpServer();
-        webSocketRequestHandler = new WebSocketRequestHandler();
+
+        WebSocketRequestHandler webSocketRequestHandler = new WebSocketRequestHandler();
         asyncServer.websocket("/mental", webSocketRequestHandler);
+
+        HttpServerRequestCallback httpServerRequestCallback = new HttpServerRequestCallback() {
+
+            @Override
+            public void onRequest(AsyncHttpServerRequest asyncHttpServerRequest, AsyncHttpServerResponse asyncHttpServerResponse) {
+                String path = asyncHttpServerRequest.getPath();
+                int fileEnding = path.lastIndexOf(".");
+                if (fileEnding < 0) {
+                    path += "index.html";
+                }
+                String suffix = path.substring(fileEnding + 1);
+                path = path.substring(1);
+                System.out.println("GET PATH: " + path + "  , suffix: " + suffix);
+                String contentType = "";
+                switch (suffix) {
+                    case "js":
+                        contentType = "text/javascript";
+                        break;
+                    case "css":
+                        contentType = "text/css";
+                        break;
+                    case "html":
+                        contentType = "text/html";
+                        break;
+                    case "png":
+                        contentType = "image/png";
+                        break;
+                }
+                if (contentType.length() > 0) {
+                    asyncHttpServerResponse.setContentType(contentType);
+                }
+                try {
+                    InputStream iStream = assetManager.open(path);
+                    asyncHttpServerResponse.sendStream(iStream, iStream.available());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                asyncHttpServerResponse.send("");
+            }
+        };
+        asyncServer.get("/.*", httpServerRequestCallback);
         asyncServer.listen(port);
 
         httpServer = new PingHttpServer();
