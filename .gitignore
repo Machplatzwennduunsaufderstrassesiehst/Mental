@@ -5,14 +5,14 @@ Mental/.idea/encodings.xml
 
 Mental/app/build
 
-html/graphics/icons/open-iconic-master/*.db 
-html/graphics/tgm/Thumbs.db 
-html/graphics/wof/Thumbs.db
+Mental/app/html/graphics/icons/open-iconic-master/*.db 
+Mental/app/html/graphics/tgm/Thumbs.db 
+Mental/app/html/graphics/wof/Thumbs.db
 
-html/nbproject
-html/.project
-html/.settings
-html/.idea
+Mental/app/html/nbproject
+Mental/app/html/.project
+Mental/app/html/.settings
+Mental/app/html/.idea
 Mental/app/src/androidTest/java/de/soeiner/mental/ClassicTest.java
 
 Mental/.idea/vcs.xml

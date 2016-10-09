@@ -2,15 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bc9d2dd8-6476-471b-85b9-98455cd95d2c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../Mental/app/src/main/res/layout/activity_main_backup.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Mental/.idea/modules.xml" afterPath="$PROJECT_DIR$/../Mental/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Mental/.idea/vcs.xml" afterPath="$PROJECT_DIR$/../Mental/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Mental/app/build.gradle" afterPath="$PROJECT_DIR$/../Mental/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Mental/app/src/main/java/de/soeiner/mental/gameFundamentals/MainActivity.java" afterPath="$PROJECT_DIR$/../Mental/app/src/main/java/de/soeiner/mental/gameFundamentals/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Mental/app/src/main/res/layout/activity_main.xml" afterPath="$PROJECT_DIR$/../Mental/app/src/main/res/layout/activity_main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Mental/settings.gradle" afterPath="$PROJECT_DIR$/../Mental/settings.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.js" afterPath="$PROJECT_DIR$/main.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../.idea/vcs.xml" afterPath="$PROJECT_DIR$/../../.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/graphics/physics.js" afterPath="$PROJECT_DIR$/graphics/physics.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgm/mainTGMFrame.js" afterPath="$PROJECT_DIR$/tgm/mainTGMFrame.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../src/main/java/de/soeiner/mental/exerciseCreators/PathFinderTrainMapCreator.java" afterPath="$PROJECT_DIR$/../src/main/java/de/soeiner/mental/exerciseCreators/PathFinderTrainMapCreator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../src/main/java/de/soeiner/mental/gameFundamentals/MainActivity.java" afterPath="$PROJECT_DIR$/../src/main/java/de/soeiner/mental/gameFundamentals/MainActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../src/main/java/de/soeiner/mental/gameModes/traingame/TrainGame.java" afterPath="$PROJECT_DIR$/../src/main/java/de/soeiner/mental/gameModes/traingame/TrainGame.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../src/main/java/de/soeiner/mental/gameModes/traingame/Train_Classic.java" afterPath="$PROJECT_DIR$/../src/main/java/de/soeiner/mental/gameModes/traingame/Train_Classic.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../src/main/java/de/soeiner/mental/trainGameRelated/Train.java" afterPath="$PROJECT_DIR$/../src/main/java/de/soeiner/mental/trainGameRelated/Train.java" />
     </list>
     <ignored path="html.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,11 +42,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mainTGMFrame.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="mainTGMFrame.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tgm/mainTGMFrame.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="19" column="37" selection-start-line="19" selection-start-column="37" selection-end-line="19" selection-end-column="37" />
+            <state relative-caret-position="283">
+              <caret line="277" column="52" selection-start-line="277" selection-start-column="52" selection-end-line="277" selection-end-column="52" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="generalObservers.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/generalObservers.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fGame.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/fGame.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1635">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -61,7 +82,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="120">
@@ -93,21 +114,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="track.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tgm/track.js">
+      <file leaf-file-name="gameObjects.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tgm/gameObjects.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3855">
-              <caret line="257" column="4" selection-start-line="257" selection-start-column="4" selection-end-line="257" selection-end-column="4" />
+            <state relative-caret-position="675">
+              <caret line="131" column="163" selection-start-line="131" selection-start-column="163" selection-end-line="131" selection-end-column="163" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gameObjects.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tgm/gameObjects.js">
+      <file leaf-file-name="physics.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/graphics/physics.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="675">
-              <caret line="45" column="60" selection-start-line="45" selection-start-column="60" selection-end-line="45" selection-end-column="60" />
+            <state relative-caret-position="700">
+              <caret line="207" column="47" selection-start-line="207" selection-start-column="47" selection-end-line="207" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -116,7 +137,7 @@
     </leaf>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
   </component>
   <component name="GradleLocalSettings">
     <option name="externalProjectsViewState">
@@ -132,10 +153,7 @@
         <option value="$PROJECT_DIR$/graphics/graphicObjects.js" />
         <option value="$PROJECT_DIR$/fWheelOfFortune.js" />
         <option value="$PROJECT_DIR$/tgm/track.js" />
-        <option value="$PROJECT_DIR$/tgm/mainTGMFrame.js" />
-        <option value="$PROJECT_DIR$/graphics/physics.js" />
         <option value="$PROJECT_DIR$/tgm/particles.js" />
-        <option value="$PROJECT_DIR$/tgm/gameObjects.js" />
         <option value="$PROJECT_DIR$/style.css" />
         <option value="$PROJECT_DIR$/communication.js" />
         <option value="$PROJECT_DIR$/fLobby.js" />
@@ -143,6 +161,9 @@
         <option value="$PROJECT_DIR$/graphics/graphics.js" />
         <option value="$PROJECT_DIR$/main.js" />
         <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/tgm/gameObjects.js" />
+        <option value="$PROJECT_DIR$/graphics/physics.js" />
+        <option value="$PROJECT_DIR$/tgm/mainTGMFrame.js" />
       </list>
     </option>
   </component>
@@ -182,6 +203,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -230,7 +252,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="Scratches" />
     </panes>
@@ -242,7 +263,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="SearchEverywhereHistoryKey" value="keymap&#9;ACTION&#9;ChangeKeymap" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
@@ -520,38 +541,41 @@
       <workItem from="1475704379160" duration="1291000" />
       <workItem from="1475783919903" duration="2963000" />
       <workItem from="1475798031459" duration="18000" />
+      <workItem from="1475799934222" duration="351000" />
+      <workItem from="1475876955973" duration="485000" />
+      <workItem from="1475967103228" duration="2578000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23380000" />
+    <option name="totallyTimeSpent" value="26794000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="24" width="1920" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14947917" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14947917" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25759163" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -575,30 +599,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/tgm/gameObjects.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="45" column="60" selection-start-line="45" selection-start-column="60" selection-end-line="45" selection-end-column="60" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tgm/particles.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="38" column="35" selection-start-line="38" selection-start-column="35" selection-end-line="38" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tgm/mainTGMFrame.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4350">
-          <caret line="290" column="107" selection-start-line="290" selection-start-column="107" selection-end-line="290" selection-end-column="107" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/graphics/graphics.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -677,7 +677,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -692,7 +691,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4305">
           <caret line="291" column="55" selection-start-line="291" selection-start-column="55" selection-end-line="291" selection-end-column="55" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -700,7 +698,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -708,9 +705,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="420">
           <caret line="28" column="56" selection-start-line="28" selection-start-column="56" selection-end-line="28" selection-end-column="56" />
-          <folding>
-            <marker date="1475624110506" expanded="true" signature="1034:1071" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -760,7 +754,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2190">
           <caret line="146" column="0" selection-start-line="146" selection-start-column="0" selection-end-line="146" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -768,34 +761,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="19" column="47" selection-start-line="19" selection-start-column="47" selection-end-line="19" selection-end-column="47" />
-          <folding>
-            <marker date="1475538091843" expanded="true" signature="1:74" ph="/*...*/" />
-            <marker date="1475538091843" expanded="true" signature="178:429" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="475:518" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="626:5021" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1110:1406" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1289:1344" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1348:1400" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1499:1688" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1726:2344" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1951:1987" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1991:2338" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2034:2214" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2375:2463" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2492:2895" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2562:2887" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2593:2791" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2797:2877" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2969:3870" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="3117:3852" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="3148:3353" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="3359:3515" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="3539:3842" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="3904:4362" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="4155:4212" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="4216:4293" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="4504:4943" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -826,7 +791,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -842,7 +806,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -857,7 +820,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -873,7 +835,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -889,50 +850,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="20" column="47" selection-start-line="20" selection-start-column="47" selection-end-line="20" selection-end-column="47" />
-          <folding>
-            <marker date="1475538091843" expanded="true" signature="1:74" ph="/*...*/" />
-            <marker date="1475538091843" expanded="true" signature="178:429" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="475:518" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="626:5021" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1110:1406" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1289:1344" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1348:1400" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1499:1688" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1726:2344" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1951:1987" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="1991:2338" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2034:2214" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2375:2463" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2492:2895" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2562:2887" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2593:2791" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2797:2877" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="2969:3870" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="3117:3852" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="3148:3353" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="3359:3515" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="3539:3842" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="3904:4362" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="4155:4212" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="4216:4293" ph="{...}" />
-            <marker date="1475538091843" expanded="true" signature="4504:4943" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/graphics/physics.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
-          <caret line="209" column="36" selection-start-line="209" selection-start-column="36" selection-end-line="209" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tgm/particles.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="38" column="35" selection-start-line="38" selection-start-column="35" selection-end-line="38" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -940,7 +857,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
           <caret line="22" column="37" selection-start-line="22" selection-start-column="37" selection-end-line="22" selection-end-column="37" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -955,7 +871,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4305">
           <caret line="291" column="55" selection-start-line="291" selection-start-column="55" selection-end-line="291" selection-end-column="55" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -963,7 +878,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -971,17 +885,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="420">
           <caret line="28" column="56" selection-start-line="28" selection-start-column="56" selection-end-line="28" selection-end-column="56" />
-          <folding>
-            <marker date="1475624110506" expanded="true" signature="1034:1071" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tgm/gameObjects.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="45" column="60" selection-start-line="45" selection-start-column="60" selection-end-line="45" selection-end-column="60" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1017,11 +920,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tgm/mainTGMFrame.js">
+    <entry file="file://$PROJECT_DIR$/angular.min.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="37" selection-start-line="19" selection-start-column="37" selection-end-line="19" selection-end-column="37" />
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1032,6 +937,54 @@
           <folding>
             <element signature="n#style#0;n#a#0;n#div#1;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tgm/particles.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="38" column="35" selection-start-line="38" selection-start-column="35" selection-end-line="38" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/graphics/physics.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="700">
+          <caret line="207" column="47" selection-start-line="207" selection-start-column="47" selection-end-line="207" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generalObservers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tgm/gameObjects.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="675">
+          <caret line="131" column="163" selection-start-line="131" selection-start-column="163" selection-end-line="131" selection-end-column="163" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fGame.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1635">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tgm/mainTGMFrame.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="283">
+          <caret line="277" column="52" selection-start-line="277" selection-start-column="52" selection-end-line="277" selection-end-column="52" />
+          <folding />
         </state>
       </provider>
     </entry>
