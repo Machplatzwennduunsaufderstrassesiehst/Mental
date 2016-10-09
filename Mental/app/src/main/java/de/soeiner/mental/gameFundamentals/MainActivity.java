@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
             serverStart();
         }
 
-        androidApplicationStart();
+        webViewStart();
     }
 
     public void androidApplicationStart() {
@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void webViewStart() {
-        /*
         setContentView(R.layout.gui_webview);
 
         XWalkView xWalkWebView = (XWalkView) findViewById(R.id.xwalkWebView);
@@ -57,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
         // turn on debugging
         XWalkPreferences.setValue(XWalkPreferences.REMOTE_DEBUGGING, true);
-        */
     }
 
     public void buttonJoinServer(View v) {
