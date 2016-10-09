@@ -52,11 +52,11 @@ public class MainActivity extends AppCompatActivity {
         /*
         setContentView(R.layout.gui_webview);
 
-        XWalkView xWalkWebView = (XWalkView) findViewById(R.id.xwalkWebView);
+        org.xwalk.core.XWalkView xWalkWebView = (org.xwalk.core.XWalkView) findViewById(R.id.xwalkWebView);
         xWalkWebView.load("file:///android_asset/index.html", null);
 
         // turn on debugging
-        XWalkPreferences.setValue(XWalkPreferences.REMOTE_DEBUGGING, true);
+        org.xwalk.core.XWalkPreferences.setValue(org.xwalk.core.XWalkPreferences.REMOTE_DEBUGGING, true);
         */
     }
 
