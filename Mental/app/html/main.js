@@ -6,6 +6,7 @@ var netManager = new NetworkManager();
 
 // DO AFTER HTML LOADED
 window.onload = function() {
+    byID("menu").style.display = "block";
     navigation.openFrames(welcomeFrame);
     iconize();
 
