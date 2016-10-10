@@ -1,4 +1,4 @@
-package de.soeiner.mental.trainGameRelated.trainTracks;
+package de.soeiner.mental.trainGame.trainTracks;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,8 +1,8 @@
-package de.soeiner.mental.gameModes.traingame;
+package de.soeiner.mental.trainGame.gameModes;
 
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.trainGameRelated.Wave;
-import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
+import de.soeiner.mental.trainGame.Wave;
+import de.soeiner.mental.trainGame.trainTracks.Goal;
 
 /**
  * Created by Malte on 21.04.2016.
@@ -19,13 +19,13 @@ public class ClassicTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    public void extraPreparationsPreMap() {
+    public void prepareMapCreation() {
         // trainMapCreator.setSizeManually(2); // wieso war hier 2 hard gecoded?
         reward = 100;
     }
 
     @Override
-    public void extraPreparationsPostMap() {
+    public void prepareGameStart() {
 
     }
 
@@ -56,8 +56,8 @@ public class ClassicTrainGameMode extends TrainGameMode {
         goThroughWaves();
     }
 
-    public void trainArrived(int trainId, Goal goal, boolean succsess) {
-        if (succsess) {
+    public void trainArrived(int trainId, Goal goal, boolean success) {
+        if (success) {
             //game.broadcastMessage("Zug hat sein Ziel erreicht!");
             health++;
             giveReward(trainArrivedReward);
@@ -66,10 +66,10 @@ public class ClassicTrainGameMode extends TrainGameMode {
             health--; //TODO TODO TODO TODO TODO
         }
         for (int i = 0; i < game.activePlayers.size(); i++) {
-            if (succsess) {
+            if (success) {
                 game.activePlayers.get(i).getScore().updateScore(trainArrivedReward);
             }
-            game.activePlayers.get(i).sendTrainArrived(trainId, goal.getGoalId(), succsess);
+            game.activePlayers.get(i).sendTrainArrived(trainId, goal.getGoalId(), success);
         }
         if (health <= 0) { //Check for Wellen status
             waveSuccess = false;

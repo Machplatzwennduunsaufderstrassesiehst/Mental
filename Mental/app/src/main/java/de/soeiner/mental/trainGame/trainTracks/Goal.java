@@ -1,4 +1,4 @@
-package de.soeiner.mental.trainGameRelated.trainTracks;
+package de.soeiner.mental.trainGame.trainTracks;
 
 import org.json.JSONException;
 
@@ -18,7 +18,6 @@ public class Goal extends TrainTrack {
     public void setGoalId(int goalId) {
         this.goalId = goalId;
         try {
-            if(matchingId == -1) this.put("matchingId", goalId);
             this.put("goalId", goalId);
         } catch (Exception e) {
             e.printStackTrace();
@@ -32,6 +31,10 @@ public class Goal extends TrainTrack {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getMatchingId() {
+        return matchingId;
     }
 
     public int getGoalId() {

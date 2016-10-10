@@ -10,8 +10,7 @@ import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
-import de.soeiner.mental.gameModes.GameMode;
-import de.soeiner.mental.gameModes.arithmetics.ClassicGameMode;
+import de.soeiner.mental.arithmetics.gameModes.ClassicGameMode;
 
 /**
  * Created by malte on 13.02.16.
@@ -210,7 +209,7 @@ public class Game implements Runnable {
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             try {
-                JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_MESSAGE);
+                JSONObject j = CmdRequest.makeCmd(CmdRequest.MESSAGE);
                 j.put("message", message);
                 p.makePushRequest(new PushRequest(j));
             } catch (JSONException e) {
@@ -223,7 +222,7 @@ public class Game implements Runnable {
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             try {
-                JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_COUNTDOWN);
+                JSONObject j = CmdRequest.makeCmd(CmdRequest.COUNTDOWN);
                 j.put("time", time);
                 p.makePushRequest(new PushRequest(j));
             } catch (Exception e) {
@@ -243,7 +242,7 @@ public class Game implements Runnable {
             Player p = joinedPlayers.get(i);
             p.sendGameString();
             try {
-                JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SHOW_SCOREBOARD);
+                JSONObject j = CmdRequest.makeCmd(CmdRequest.SHOW_SCOREBOARD);
                 p.makePushRequest(new PushRequest(j));
             } catch (Exception e) {
                 e.printStackTrace();

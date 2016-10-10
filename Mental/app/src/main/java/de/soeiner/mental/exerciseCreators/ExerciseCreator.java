@@ -3,9 +3,6 @@ package de.soeiner.mental.exerciseCreators;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
-
 /**
  * Created by sven on 22.03.16.
  */

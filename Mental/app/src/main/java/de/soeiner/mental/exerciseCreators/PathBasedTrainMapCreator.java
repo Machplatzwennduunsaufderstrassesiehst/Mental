@@ -3,11 +3,11 @@ package de.soeiner.mental.exerciseCreators;
 import java.util.ArrayList;
 
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.trainGameRelated.trainTracks.BlockedTrack;
-import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
-import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
-import de.soeiner.mental.trainGameRelated.trainTracks.Track;
-import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
+import de.soeiner.mental.trainGame.trainTracks.BlockedTrack;
+import de.soeiner.mental.trainGame.trainTracks.Goal;
+import de.soeiner.mental.trainGame.trainTracks.Switch;
+import de.soeiner.mental.trainGame.trainTracks.Track;
+import de.soeiner.mental.trainGame.trainTracks.TrainTrack;
 
 /**
  * Created by Malte on 27.08.16.

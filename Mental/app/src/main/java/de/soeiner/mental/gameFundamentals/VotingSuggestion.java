@@ -6,18 +6,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
-import de.soeiner.mental.gameModes.GameMode;
 
 /**
  * Created by Malte on 07.04.2016.
  */
-public class Suggestion extends JSONObject {
+public class VotingSuggestion extends JSONObject {
 
     GameMode gameMode;
     ExerciseCreator exerciseCreator;
     ArrayList<Player> voters = new ArrayList<Player>();
 
-    public Suggestion(GameMode g, ExerciseCreator e, int suggestionID) {
+    public VotingSuggestion(GameMode g, ExerciseCreator e, int suggestionID) {
         gameMode = g;
         exerciseCreator = e;
         try {

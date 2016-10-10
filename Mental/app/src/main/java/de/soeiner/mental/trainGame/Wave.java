@@ -1,4 +1,4 @@
-package de.soeiner.mental.trainGameRelated;
+package de.soeiner.mental.trainGame;
 
 /**
  * Created by Malte on 25.05.2016.

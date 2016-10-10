@@ -7,9 +7,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
-import de.soeiner.mental.trainGameRelated.trainTracks.Track;
-import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
+import de.soeiner.mental.trainGame.trainTracks.Goal;
+import de.soeiner.mental.trainGame.trainTracks.Switch;
+import de.soeiner.mental.trainGame.trainTracks.Track;
+import de.soeiner.mental.trainGame.trainTracks.TrainTrack;
 
 /**
  * Created by Sven on 25.04.16.
@@ -17,7 +18,9 @@ import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
 public abstract class TrainMapCreator extends ExerciseCreator {
 
     TrainTrack[][] map;
-    int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+    protected int xMapSize;
+    protected int yMapSize;
 
     @Override
     public double getExpectedSolveTime() {
@@ -32,15 +35,19 @@ public abstract class TrainMapCreator extends ExerciseCreator {
     @Override
     JSONObject createNext() {
         createTrainMap();
-        JSONObject j = new JSONObject();
+        return updateExerciseObject();
+    }
+
+    public JSONObject updateExerciseObject() {
+        exerciseObject = new JSONObject();
         try {
-            j.put("type", this.getType());
-            j.put("trainMap", trainMapToJSONArray());
-            j.put("firstTrackId", getFirstTrackId());
+            exerciseObject.put("type", this.getType());
+            exerciseObject.put("trainMap", toJSONArray());
+            exerciseObject.put("firstTrackId", getFirstTrackId());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return j;
+        return exerciseObject;
     }
 
     // hier kann man die TrainMap jetzt abrufen
@@ -49,7 +56,7 @@ public abstract class TrainMapCreator extends ExerciseCreator {
         return map;
     }
 
-    private JSONArray trainMapToJSONArray() {
+    private JSONArray toJSONArray() {
         assertMapCreated();
         JSONArray trainJSONArray = new JSONArray(); //erstellt eigenes 2d JSON array
         try {
@@ -112,7 +119,7 @@ public abstract class TrainMapCreator extends ExerciseCreator {
      * @param predicate predicate
      * @return list of found trainTrack, if predicate does apply for it in the radius specified by depth
      */
-    protected ArrayList<TrainTrack> scanSurroundings(int x, int y, int depth, Predicate<TrainTrack> predicate) {
+    public ArrayList<TrainTrack> scanSurroundings(int x, int y, int depth, Predicate<TrainTrack> predicate) {
         assertMapCreated();
         if (depth < 0) throw new AssertionError();
         if (x < 0) throw new AssertionError();
@@ -131,37 +138,48 @@ public abstract class TrainMapCreator extends ExerciseCreator {
         return surroundings;
     }
 
-    protected boolean testSurroundings(int x, int y, int depth, Predicate<TrainTrack> predicate) {
+    public boolean testSurroundings(int x, int y, int depth, Predicate<TrainTrack> predicate) {
         return scanSurroundings(x, y, depth, predicate).size() != 0;
     }
 
-    final Predicate<TrainTrack> containsNull = new Predicate<TrainTrack>() {
-        @Override
-        public boolean apply(TrainTrack trainTrack) {
-            return trainTrack == null;
-        }
-    };
+    public static class TrainTrackPredicates {
 
-    final Predicate<TrainTrack> containsTrainTrack = new Predicate<TrainTrack>() {
-        @Override
-        public boolean apply(TrainTrack trainTrack) {
-            return trainTrack != null;
-        }
-    };
+        public static final Predicate<TrainTrack> containsNull = new Predicate<TrainTrack>() {
+            @Override
+            public boolean apply(TrainTrack trainTrack) {
+                return trainTrack == null;
+            }
+        };
 
-    final Predicate<TrainTrack> containsTrack = new Predicate<TrainTrack>() {
-        @Override
-        public boolean apply(TrainTrack trainTrack) {
-            return trainTrack instanceof Track;
-        }
-    };
+        public static final Predicate<TrainTrack> containsTrainTrack = new Predicate<TrainTrack>() {
+            @Override
+            public boolean apply(TrainTrack trainTrack) {
+                return trainTrack != null;
+            }
+        };
 
-    final Predicate<TrainTrack> containsSwitch = new Predicate<TrainTrack>() {
-        @Override
-        public boolean apply(TrainTrack trainTrack) {
-            return trainTrack instanceof Switch;
-        }
-    };
+        public static final Predicate<TrainTrack> containsTrack = new Predicate<TrainTrack>() {
+            @Override
+            public boolean apply(TrainTrack trainTrack) {
+                return trainTrack instanceof Track;
+            }
+        };
+
+        public static final Predicate<TrainTrack> containsSwitch = new Predicate<TrainTrack>() {
+            @Override
+            public boolean apply(TrainTrack trainTrack) {
+                return trainTrack instanceof Switch;
+            }
+        };
+
+        public static final Predicate<TrainTrack> containsGoal = new Predicate<TrainTrack>() {
+            @Override
+            public boolean apply(TrainTrack trainTrack) {
+                return trainTrack instanceof Goal;
+            }
+        };
+
+    }
 
     protected int[] randomDirection() {
         int[] v = new int[2];
@@ -190,4 +208,12 @@ public abstract class TrainMapCreator extends ExerciseCreator {
     public abstract int getFirstTrackId();
 
     public abstract void setGoalAmount(int goalAmount);
+
+    public int getXMapSize() {
+        return xMapSize;
+    }
+
+    public int getYMapSize() {
+        return yMapSize;
+    }
 }

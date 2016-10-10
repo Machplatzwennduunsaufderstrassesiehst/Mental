@@ -1,4 +1,4 @@
-package de.soeiner.mental.gameModes;
+package de.soeiner.mental.gameFundamentals;
 
 import org.json.JSONObject;
 
@@ -10,8 +10,6 @@ import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.MixedExerciseCreator;
 import de.soeiner.mental.exerciseCreators.MultExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
-import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.gameFundamentals.Player;
 
 /**
  * Created by Malte on 07.04.2016.
@@ -94,7 +92,7 @@ public abstract class GameMode {
         for (int i = 0; i < game.joinedPlayers.size(); i++) {
             Player p = game.joinedPlayers.get(i);
             try {
-                JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SHOW_EXERCISES);
+                JSONObject j = CmdRequest.makeCmd(CmdRequest.SHOW_EXERCISES);
                 j.put("exerciseType", game.exerciseCreator.getType());
                 p.makePushRequest(new PushRequest(j));
             } catch (Exception e) {

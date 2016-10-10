@@ -1,4 +1,4 @@
-package de.soeiner.mental.gameModes.traingame;
+package de.soeiner.mental.trainGame.gameModes;
 
 import org.json.JSONObject;
 
@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
-import de.soeiner.mental.trainGameRelated.Train;
-import de.soeiner.mental.trainGameRelated.Wave;
-import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
-import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
+import de.soeiner.mental.trainGame.Train;
+import de.soeiner.mental.trainGame.Wave;
+import de.soeiner.mental.trainGame.trainTracks.Goal;
+import de.soeiner.mental.trainGame.trainTracks.Switch;
 
 /**
  * Created by Malte on 15.09.2016.
@@ -30,7 +30,7 @@ public class VersusTrainGameMode extends TrainGameMode {
     int goalDestructionBonus = 50;
 
     @Override
-    public void trainArrived(int trainId, Goal goal, boolean succsess) {
+    public void trainArrived(int trainId, Goal goal, boolean success) {
         if(!goal.isDestroyed()) { //wenn das entsprechende Ziel noch nicht zerstört ist
             goal.destroy(); //zerstöre es
             broadcastGoalDestroyed(goal.getGoalId());
@@ -58,13 +58,13 @@ public class VersusTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    public void extraPreparationsPreMap() {
+    public void prepareMapCreation() {
         reward = 0;
         trainMapCreator.setGoalAmount(game.activePlayers.size() * 2);
     }
 
     @Override
-    public void extraPreparationsMidMap(){
+    public void prepareMap(){
         for(int i = 0; i < goals.length; i++){
             if(i%2 == 0){
                 teamRedGoals.add(goals[i]);

@@ -1,15 +1,13 @@
-package de.soeiner.mental.gameModes.arithmetics;
+package de.soeiner.mental.arithmetics.gameModes;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.EventListener;
 
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
-import de.soeiner.mental.gameModes.GameMode;
+import de.soeiner.mental.gameFundamentals.GameMode;
 
 /**
  * Created by Malte on 14.09.2016.
@@ -60,7 +58,7 @@ public abstract class ArithmeticGameMode extends GameMode {
 
     public void doWaitTimeout(int timeout) {
         try {
-            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.TIME_LEFT);
             j.put("time", timeout);
             for (int i = 0; i < game.activePlayers.size(); i++) {
                 Player p = game.activePlayers.get(i);
@@ -95,7 +93,7 @@ public abstract class ArithmeticGameMode extends GameMode {
         for (int i = 0; i < game.joinedPlayers.size(); i++) {
             Player p = game.joinedPlayers.get(i);
             try {
-                JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_PLAYER_WON);
+                JSONObject j = CmdRequest.makeCmd(CmdRequest.PLAYER_WON);
                 j.put("playerName", playerName);
                 j.put("gameTimeout", GAME_TIMEOUT);
                 j.put("gameMode", gameModeString);

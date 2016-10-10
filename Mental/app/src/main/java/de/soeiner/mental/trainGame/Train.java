@@ -1,56 +1,33 @@
-package de.soeiner.mental.trainGameRelated;
+package de.soeiner.mental.trainGame;
 
 import org.json.JSONObject;
 
 import de.soeiner.mental.communication.CmdRequest;
-import de.soeiner.mental.gameModes.traingame.TrainGameMode;
-import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
-import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
+import de.soeiner.mental.trainGame.gameModes.TrainGameMode;
+import de.soeiner.mental.trainGame.trainTracks.Goal;
+import de.soeiner.mental.trainGame.trainTracks.Switch;
 
 /**
  * Created by Malte on 21.04.2016.
  */
 public class Train implements Runnable {
     private int id;
-    private String color;
-    private int destinationId;
+    private int matchingId;
     private double speed; //tracks pro sekunde
     private TrainGameMode traingame;
     private int x, y;
     private int positionId;
 
-    // der kann doch weg oder?
-    /*public Train(int i, int d, double s, TrainGameMode tg) {
-        id = i;
-        destinationId = d;
-        speed = s;
-        traingame = tg;
-        positionId = traingame.getFirstTrackId();
-        JSONObject train = CmdRequest.makeCmd(CmdRequest.SEND_NEWTRAIN);
-        try {
-            train.put("trainId", id);
-            train.put("destinationId", destinationId);
-            train.put("speed", s);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        traingame.broadcastNewTrain(train);
-        x = traingame.getTrackById(positionId).getX();
-        y = traingame.getTrackById(positionId).getY();
-        Thread t = new Thread(this);
-        t.start();
-    }*/
-
     public Train(int i, int d, double s, TrainGameMode tg, boolean bombtrain) {
         id = i;
-        destinationId = d;
+        matchingId = d;
         speed = s;
         traingame = tg;
         positionId = traingame.getFirstTrackId();
         try {
-            JSONObject train = CmdRequest.makeCmd(CmdRequest.SEND_NEWTRAIN);
+            JSONObject train = CmdRequest.makeCmd(CmdRequest.NEWTRAIN);
             train.put("trainId", id);
-            train.put("destinationId", destinationId);
+            train.put("destinationId", matchingId);
             train.put("speed", s);
             train.put("bombtrain", bombtrain);
             traingame.broadcastNewTrain(train);
@@ -76,7 +53,7 @@ public class Train implements Runnable {
                 //System.out.println("Train " + this.getId() + " is now at (" + x + "|" + y + ")");
                 if (traingame.trainMap[x][y].getType().equals("goal")) {
                     Goal tempGoal = (Goal) traingame.trainMap[x][y];
-                    if (destinationId == tempGoal.getGoalId()) {
+                    if (matchingId == tempGoal.getGoalId()) {
                         traingame.trainArrived(id, tempGoal, true);
                     } else {
                         traingame.trainArrived(id, tempGoal, false);
@@ -90,6 +67,7 @@ public class Train implements Runnable {
         }
     }
 
+    // Wird diese noch benötigt?
 /*    private int calculateTimeToDestination(){ //in millisek
         if(traingame.trainMap[x][y].getType().equals("goal")){return 0;}
         double distance = 0;

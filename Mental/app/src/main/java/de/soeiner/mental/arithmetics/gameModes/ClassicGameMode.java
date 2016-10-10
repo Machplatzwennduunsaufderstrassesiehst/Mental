@@ -1,4 +1,4 @@
-package de.soeiner.mental.gameModes.arithmetics;
+package de.soeiner.mental.arithmetics.gameModes;
 
 import org.json.JSONObject;
 
