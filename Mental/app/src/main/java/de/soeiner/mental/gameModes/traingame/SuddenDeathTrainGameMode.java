@@ -1,18 +1,15 @@
 package de.soeiner.mental.gameModes.traingame;
 
-import org.json.JSONObject;
-
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.trainGameRelated.Wave;
 import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
 
 /**
  * Created by Malte on 16.09.2016.
  */
-public class Train_SuddenDeath extends TrainGame {
+public class SuddenDeathTrainGameMode extends TrainGameMode {
 
-    public Train_SuddenDeath(Game game) {
+    public SuddenDeathTrainGameMode(Game game) {
         super(game);
     }
 

@@ -5,15 +5,14 @@ import org.json.JSONObject;
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
-import de.soeiner.mental.gameModes.GameMode;
 
 /**
  * Created by Malte on 28.03.2016.
  */
 
-public class MA_Classic extends Arithmetic {
+public class ClassicGameMode extends ArithmeticGameMode {
 
-    public MA_Classic(Game g) {
+    public ClassicGameMode(Game g) {
         super(g);
         minPlayers = 1;
     }

@@ -3,7 +3,6 @@ package de.soeiner.mental.gameModes.arithmetics;
 import org.json.JSONObject;
 
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.gameModes.GameMode;
 import de.soeiner.mental.util.Math2;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
@@ -11,7 +10,7 @@ import de.soeiner.mental.gameFundamentals.Score;
 /**
  * Created by Malte on 09.04.2016.
  */
-public class MA_BeatBobGameMode extends Arithmetic {
+public class BeatBobGameMode extends ArithmeticGameMode {
 
     double bobSolveTime;
     double bobStartSolveTime;
@@ -22,7 +21,7 @@ public class MA_BeatBobGameMode extends Arithmetic {
     double upTime;
     double[] function;
 
-    public MA_BeatBobGameMode(Game g) {
+    public BeatBobGameMode(Game g) {
         super(g);
     }
 

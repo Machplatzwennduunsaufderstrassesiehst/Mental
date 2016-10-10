@@ -3,8 +3,7 @@ package de.soeiner.mental.trainGameRelated;
 import org.json.JSONObject;
 
 import de.soeiner.mental.communication.CmdRequest;
-import de.soeiner.mental.gameModes.traingame.TrainGame;
-import de.soeiner.mental.gameModes.traingame.Train_Classic;
+import de.soeiner.mental.gameModes.traingame.TrainGameMode;
 import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
 import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
 
@@ -16,12 +15,12 @@ public class Train implements Runnable {
     private String color;
     private int destinationId;
     private double speed; //tracks pro sekunde
-    private TrainGame traingame;
+    private TrainGameMode traingame;
     private int x, y;
     private int positionId;
 
     // der kann doch weg oder?
-    /*public Train(int i, int d, double s, TrainGame tg) {
+    /*public Train(int i, int d, double s, TrainGameMode tg) {
         id = i;
         destinationId = d;
         speed = s;
@@ -42,7 +41,7 @@ public class Train implements Runnable {
         t.start();
     }*/
 
-    public Train(int i, int d, double s, TrainGame tg, boolean bombtrain) {
+    public Train(int i, int d, double s, TrainGameMode tg, boolean bombtrain) {
         id = i;
         destinationId = d;
         speed = s;

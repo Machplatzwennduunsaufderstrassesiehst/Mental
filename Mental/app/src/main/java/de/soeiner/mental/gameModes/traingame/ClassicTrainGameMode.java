@@ -1,31 +1,21 @@
 package de.soeiner.mental.gameModes.traingame;
 
-import org.json.JSONObject;
-
-import de.soeiner.mental.exerciseCreators.PathBasedTrainMapCreator;
-import de.soeiner.mental.exerciseCreators.PathFinderTrainMapCreator;
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.gameFundamentals.Player;
-import de.soeiner.mental.exerciseCreators.TrainMapCreator;
-import de.soeiner.mental.gameModes.GameMode;
-import de.soeiner.mental.trainGameRelated.Train;
 import de.soeiner.mental.trainGameRelated.Wave;
 import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
-import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
-import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
 
 /**
  * Created by Malte on 21.04.2016.
  */
-public class Train_Classic extends TrainGame {
+public class ClassicTrainGameMode extends TrainGameMode {
 
-    public Train_Classic(Game game) {
+    public ClassicTrainGameMode(Game game) {
         super(game);
     }
 
     @Override
     public String getGameModeString() {
-        return "Classic";
+        return "Classic Coop";
     }
 
     @Override

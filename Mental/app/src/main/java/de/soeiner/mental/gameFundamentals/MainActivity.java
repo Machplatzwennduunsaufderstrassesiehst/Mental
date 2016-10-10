@@ -1,5 +1,6 @@
 package de.soeiner.mental.gameFundamentals;
 
+import android.content.ActivityNotFoundException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +13,14 @@ import java.io.IOException;
 
 import de.soeiner.mental.R;
 import de.soeiner.mental.communication.Server;
+import de.soeiner.mental.gameModes.GameMode;
+import de.soeiner.mental.gameModes.arithmetics.ArenaGameMode;
+import de.soeiner.mental.gameModes.arithmetics.BeatBobGameMode;
+import de.soeiner.mental.gameModes.arithmetics.ClassicGameMode;
+import de.soeiner.mental.gameModes.arithmetics.KnockoutGameMode;
+import de.soeiner.mental.gameModes.arithmetics.SpeedGameMode;
+import de.soeiner.mental.gameModes.traingame.ClassicTrainGameMode;
+import de.soeiner.mental.gameModes.traingame.SuddenDeathTrainGameMode;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,9 +67,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void buttonJoinServer(View v) {
-        Uri url = Uri.parse("http://www.mentalist.lima-city.de");
+        Uri url = Uri.parse("http://localhost:1297/");
         Intent intent = new Intent(Intent.ACTION_VIEW, url);
-        startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setPackage("com.android.chrome");
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            intent.setPackage(null);
+            startActivity(intent);
+        }
     }
 
     public void buttonStartServer(View v) {
@@ -82,10 +98,18 @@ public class MainActivity extends AppCompatActivity {
             if (server != null) {
                 server.stop();
             }
-            server = new Server(PORT);
-            new Game("Train");
-            new Game("MA");
+            server = new Server(PORT, this);
+            Game trainGame = new Game();
+            trainGame.setVoting(new Voting(trainGame, new GameMode[]{new ClassicTrainGameMode(trainGame), new SuddenDeathTrainGameMode(trainGame)}));
+            Game arithmeticsGame = new Game();
+            arithmeticsGame.setVoting(new Voting(arithmeticsGame, new GameMode[]{new ArenaGameMode(arithmeticsGame), new BeatBobGameMode(arithmeticsGame),
+                    new ClassicGameMode(arithmeticsGame), new KnockoutGameMode(arithmeticsGame), new SpeedGameMode(arithmeticsGame)}));
             System.out.println("Server started on port " + PORT);
+            trainGame.setName("Train");
+            trainGame.start();
+            arithmeticsGame.setName("Mental Arithmetics");
+            arithmeticsGame.start();
+            System.out.println("Games started.");
         } catch (IOException e) {
             e.printStackTrace();
         }

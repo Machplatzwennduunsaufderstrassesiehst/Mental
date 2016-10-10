@@ -14,7 +14,7 @@ import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
 /**
  * Created by Malte on 15.09.2016.
  */
-public class Train_Versus extends TrainGame{
+public class VersusTrainGameMode extends TrainGameMode {
 
     ArrayList<Player> teamRed = new ArrayList<>();
     ArrayList<Player> teamBlue = new ArrayList<>();
@@ -23,7 +23,7 @@ public class Train_Versus extends TrainGame{
     Object lock = new Object();
 
 
-    public Train_Versus(Game game) {
+    public VersusTrainGameMode(Game game) {
         super(game);
     }
 

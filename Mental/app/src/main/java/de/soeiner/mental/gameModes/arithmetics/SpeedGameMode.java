@@ -7,16 +7,15 @@ import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SquareMultExerciseCreator;
-import de.soeiner.mental.gameModes.GameMode;
 
 /**
  * Created by Malte on 09.04.2016.
  */
-public class MA_Speed extends Arithmetic { //Es empfiehlt sich vll. diesen Modus mit dem kleinem 1x1 zu paaren. Jup, siehe unten
+public class SpeedGameMode extends ArithmeticGameMode { //Es empfiehlt sich vll. diesen Modus mit dem kleinem 1x1 zu paaren. Jup, siehe unten
 
     private static final int SPEED_EXERCISE_TIMEOUT = 5;
 
-    public MA_Speed(Game g) {
+    public SpeedGameMode(Game g) {
         super(g);
         minPlayers = 1;
     }

@@ -5,17 +5,16 @@ import org.json.JSONObject;
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
-import de.soeiner.mental.gameModes.GameMode;
 
 /**
  * Created by Malte on 02.04.2016.
  */
-public class MA_ArenaGameMode extends Arithmetic {
+public class ArenaGameMode extends ArithmeticGameMode {
 
     private int bet;
     private int zaehler = 0;
 
-    public MA_ArenaGameMode(Game g) {
+    public ArenaGameMode(Game g) {
         super(g);
         minPlayers = 2;
     }
