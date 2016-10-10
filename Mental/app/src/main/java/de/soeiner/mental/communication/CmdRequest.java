@@ -1,5 +1,6 @@
 package de.soeiner.mental.communication;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -12,7 +13,7 @@ public class CmdRequest {
     public static final String SEND_GAMES = "{type: '_getGames_'}";
     public static final String SEND_PLAYER_WON = "{type: 'playerWon'}";
     public static final String SEND_TIME_LEFT = "{type: 'timeLeft'}";
-    public static final String SEND_MESSAGE = "{type: 'message'}"; // wird nun allgemein fuer player + broadcast "nachrichten" (human readable!) genutzt, man
+    public static final String SEND_MESSAGE = "{type: 'message'}"; // wird nun allgemein fuer player + broadcast "nachrichten" (human readable!) genutzt
     public static final String SEND_GAME_STRING = "{type: 'gameString'}";
     public static final String SEND_SHOP_ITEM_LIST = "{type: 'shopItemList'}";
     public static final String SEND_SUGGESTIONS = "{type: 'suggestions'}";
@@ -44,17 +45,11 @@ public class CmdRequest {
 
 
 
-    public static JSONObject makeCmd(String json) {
-        try {
-            return new JSONObject(json);
-        } catch (Exception e) {e.printStackTrace();}
-        return null;
+    public static JSONObject makeCmd(String json) throws JSONException {
+        return new JSONObject(json);
     }
 
-    public static JSONObject makeResponseCmd(String type) {
-        try {
-            return new JSONObject("{type:'_"+type+"_'}");
-        } catch (Exception e) {e.printStackTrace();}
-        return null;
+    public static JSONObject makeResponseCmd(String type) throws JSONException {
+        return makeCmd("{type:'_"+type+"_'}");
     }
 }

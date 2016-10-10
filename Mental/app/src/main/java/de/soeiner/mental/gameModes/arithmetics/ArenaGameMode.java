@@ -19,14 +19,14 @@ public class ArenaGameMode extends ArithmeticGameMode {
         minPlayers = 2;
     }
 
-    public String getGameModeString() {
+    public String getName() {
         return "Arena";
     }
 
     public void prepareGame() {
         super.prepareGame();
         if (game.joinedPlayers.size() < 2) {
-            gameIsRunning = false;
+            running = false;
             game.broadcastMessage("Zu wenig Spieler um Arena zu starten");
         } else {
             for (int i = 0; i < 2; i++) {
@@ -44,19 +44,19 @@ public class ArenaGameMode extends ArithmeticGameMode {
 
 
     public void loop() {
-        gameIsRunning = game.activePlayers.size() == 2;
+        running = game.activePlayers.size() == 2;
         zaehler++;
         if (zaehler > 5) { //gleichstand nicht möglich
             if (game.activePlayers.get(0).getScore().getScoreValue() > game.activePlayers.get(1).getScore().getScoreValue()) {
-                game.broadcastPlayerWon(game.activePlayers.get(0).getName(), "Arena");
+                broadcastPlayerWon(game.activePlayers.get(0).getName(), "Arena");
                 game.activePlayers.get(0).getShop().addMoney(bet);
                 game.activePlayers.get(1).getShop().addMoney(-bet);
             } else {
-                game.broadcastPlayerWon(game.activePlayers.get(1).getName(), "Arena");
+                broadcastPlayerWon(game.activePlayers.get(1).getName(), "Arena");
                 game.activePlayers.get(1).getShop().addMoney(bet);
                 game.activePlayers.get(0).getShop().addMoney(-bet);
             }
-            gameIsRunning = false;
+            running = false;
             zaehler = 0;
         }
     }
@@ -69,14 +69,14 @@ public class ArenaGameMode extends ArithmeticGameMode {
         }
     }
 
-    public boolean playerAnswered(Player player, JSONObject answer) {
+    public boolean playerAction(Player player, JSONObject actionData) {
         if (game.activePlayers.contains(player)) {
-            synchronized (answerLock) {
-                if (game.exerciseCreator.checkAnswer(answer)) {
+            synchronized (answerTimeoutLock) {
+                if (game.exerciseCreator.checkAnswer(actionData)) {
                     Score s = player.getScore();
                     s.updateScore(10);
                     game.broadcastMessage(player.getName() + " hat die " + zaehler + ". Runde für sich entschieden!");
-                    answerLock.notify();
+                    answerTimeoutLock.notify();
                     return true; // damit die GUI dem Benutzer auch mitteilt, dass er richtig liegt
                 }
             }

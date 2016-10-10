@@ -14,7 +14,7 @@ public class ClassicTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    public String getGameModeString() {
+    public String getName() {
         return "Classic Coop";
     }
 

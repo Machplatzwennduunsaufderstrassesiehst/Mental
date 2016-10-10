@@ -61,7 +61,7 @@ public class SuddenDeathTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    public String getGameModeString() {
+    public String getName() {
         return "Sudden Death";
     }
 }

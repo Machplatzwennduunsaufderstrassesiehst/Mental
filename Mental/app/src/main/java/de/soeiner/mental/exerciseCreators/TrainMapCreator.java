@@ -35,7 +35,7 @@ public abstract class TrainMapCreator extends ExerciseCreator {
         JSONObject j = new JSONObject();
         try {
             j.put("type", this.getType());
-            j.put("trainMap", translateTrainMap());
+            j.put("trainMap", trainMapToJSONArray());
             j.put("firstTrackId", getFirstTrackId());
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,7 +49,7 @@ public abstract class TrainMapCreator extends ExerciseCreator {
         return map;
     }
 
-    private JSONArray translateTrainMap() {
+    private JSONArray trainMapToJSONArray() {
         assertMapCreated();
         JSONArray trainJSONArray = new JSONArray(); //erstellt eigenes 2d JSON array
         try {
@@ -63,7 +63,7 @@ public abstract class TrainMapCreator extends ExerciseCreator {
         return trainJSONArray;
     }
 
-    protected void ausgabe() {
+    protected void debugMapOutput() {
         assertMapCreated();
         System.out.println("__________________________");
         for (int i = 0; i < map.length; i++) {
@@ -189,5 +189,5 @@ public abstract class TrainMapCreator extends ExerciseCreator {
 
     public abstract int getFirstTrackId();
 
-    public abstract void setSizeManually(int players);
+    public abstract void setGoalAmount(int goalAmount);
 }

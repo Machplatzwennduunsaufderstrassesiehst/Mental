@@ -18,14 +18,27 @@ import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
  * Created by Malte on 14.09.2016.
  */
 public abstract class TrainGameMode extends GameMode {
+
+    public TrainTrack[][] trainMap;
+    Switch[] switches;
+    Goal[] goals;
+    Wave[] waves;
+    public boolean waveIsRunning;
+    public boolean waveSuccess;
+    int health;
+    int healthNeededToWin;
+    int reward;
+    int trainArrivedReward;
+    TrainMapCreator trainMapCreator;
+
     public TrainGameMode(Game game) {
         super(game);
         needsConfirmation = true;
     }
 
     @Override
-    public void setGameIsRunning(boolean flag) {
-        super.setGameIsRunning(flag);
+    public void setRunning(boolean flag) {
+        super.setRunning(flag);
         this.waveIsRunning = this.waveSuccess = false;
     }
 
@@ -35,6 +48,7 @@ public abstract class TrainGameMode extends GameMode {
     }
 
     public abstract void trainArrived(int trainId, Goal goal, boolean succsess);
+
     abstract Wave[] initiateWaves();
 
     public void prepareGame() {
@@ -62,20 +76,6 @@ public abstract class TrainGameMode extends GameMode {
     public void distributePlayers() { //verteilen der Spieler auf activeplayers oder teams usw
         addAllPlayersToActive();
     }
-
-    //public void loop(){}
-
-    public TrainTrack[][] trainMap;
-    Switch[] switches;
-    Goal[] goals;
-    Wave[] waves;
-    public boolean waveIsRunning;
-    public boolean waveSuccess;
-    int health;
-    int healthNeededToWin;
-    int reward;
-    int trainArrivedReward;
-    TrainMapCreator trainMapCreator;
 
     protected Switch[] getSwitches() {
         int z = 0;
@@ -170,12 +170,12 @@ public abstract class TrainGameMode extends GameMode {
         }
     }
 
-    public boolean playerAnswered(Player player, JSONObject answer) {
-        if (answer.has("switch")) {
+    public boolean playerAction(Player player, JSONObject actionData) {
+        if (actionData.has("switch")) {
             try {
                 for (Switch s : switches) {
-                    if (s.getSwitchId() == answer.getInt("switch")) {
-                        s.changeSwitch(answer.getInt("switchedTo"));
+                    if (s.getSwitchId() == actionData.getInt("switch")) {
+                        s.changeSwitch(actionData.getInt("switchedTo"));
                         for (int i = 0; i < game.activePlayers.size(); i++) {
                             game.activePlayers.get(i).sendSwitchChange(s);
                         }
@@ -188,8 +188,6 @@ public abstract class TrainGameMode extends GameMode {
         }
         return false;
     }
-
-    public abstract void loop();
 
     public void countdown(int from) {
         for (int i = from; i > 0; i--) {
@@ -208,12 +206,12 @@ public abstract class TrainGameMode extends GameMode {
         int idcounter = 0;
         double speed = 0;
         countdown(5);
-        for (int i = 0; i < waves.length && gameIsRunning; i++) {
+        for (int i = 0; i < waves.length && running; i++) {
             health = waves[i].getHealth();
             healthNeededToWin = waves[i].getHEALTH_NEEDED_TO_WIN();
             trainArrivedReward = waves[i].getTRAIN_ARRIVED_REWARD();
             waveIsRunning = true;
-            while (waveIsRunning && gameIsRunning) {
+            while (waveIsRunning && running) {
                 destinationId = (int) (Math.random() * goals.length); // da die goalId jetzt gleich der values sind und bei 1 starten, muss hier +1 stehen
                 speed = Math.random() * (waves[i].getMAX_SPEED() - waves[i].getMIN_SPEED()) + waves[i].getMIN_SPEED();
                 new Train(idcounter, destinationId, speed, this, false); //zug spawnen
@@ -235,7 +233,7 @@ public abstract class TrainGameMode extends GameMode {
                 }
             } else {
                 broadcastWaveCompleted(false, i, waves[i].getREWARD());
-                gameIsRunning = false;
+                running = false;
                 try {
                     Thread.sleep(5000);
                 } catch (Exception e) {
@@ -245,7 +243,7 @@ public abstract class TrainGameMode extends GameMode {
             }
             if (i == waves.length - 1) {
                 playersWon();
-                gameIsRunning = false;
+                running = false;
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {

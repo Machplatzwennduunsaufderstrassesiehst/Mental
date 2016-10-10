@@ -17,7 +17,7 @@ public class ClassicGameMode extends ArithmeticGameMode {
         minPlayers = 1;
     }
 
-    public String getGameModeString() {
+    public String getName() {
         return "Classic";
     }
 
@@ -29,18 +29,18 @@ public class ClassicGameMode extends ArithmeticGameMode {
     public void loop() {
     }
 
-    public boolean playerAnswered(Player player, JSONObject answer) {
+    public boolean playerAction(Player player, JSONObject actionData) {
         boolean allFinished = true;
         Score s = player.getScore();
-        synchronized (answerLock) {
+        synchronized (answerTimeoutLock) {
             if (!player.finished) { // sonst kann man 2x mal punkte absahnen ;; spieler kriegt jetzt keine punkte mehr abgezogen für doppeltes antworten
-                if (game.exerciseCreator.checkAnswer(answer)) {
-                    s.updateScore(game.getPoints());
-                    game.broadcastMessage(player.getName() + " hat die Aufgabe als " + (game.getRank() + 1) + ". gelöst!");
+                if (game.exerciseCreator.checkAnswer(actionData)) {
+                    s.updateScore(getPoints());
+                    game.broadcastMessage(player.getName() + " hat die Aufgabe als " + (getRank() + 1) + ". gelöst!");
                     if (s.getScoreValue() > 100) {
-                        gameIsRunning = false; // schleife in run() beenden
-                        game.broadcastPlayerWon(player.getName(), getGameModeString());
-                        answerLock.notify(); // hat einer gewonnen, muss das wait im game loop ebenfalls beendet werden.
+                        running = false; // schleife in run() beenden
+                        broadcastPlayerWon(player.getName(), getName());
+                        answerTimeoutLock.notify(); // hat einer gewonnen, muss das wait im game loop ebenfalls beendet werden.
                     }
                     player.finished = true;
                     for (int i = 0; i < game.activePlayers.size(); i++) {
@@ -50,7 +50,7 @@ public class ClassicGameMode extends ArithmeticGameMode {
                         }
                     }
                     if (allFinished) {
-                        answerLock.notify();
+                        answerTimeoutLock.notify();
                     }
                     game.broadcastScoreboard();
                     return true;

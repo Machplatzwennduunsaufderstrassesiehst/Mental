@@ -25,6 +25,7 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
     private int switchId;
     private TrainTrack firstTrack;
     private int numPlayers = 0;
+    private int numGoals = 0;
 
     Pathfinder<TrainTrack> pathfinder;
 
@@ -35,16 +36,21 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
     }
 
     @Override
+    public void setGoalAmount(int goalAmount) {
+        numGoals = goalAmount;
+    }
+
+    @Override
     TrainTrack[][] createTrainMap() {
-        if(numPlayers == 0) numPlayers = game.activePlayers.size();
+        numPlayers = game.activePlayers.size();
         ArrayList<TrainTrack> protectedTrack = new ArrayList<>();
         id = 1;
         switchId = 0;
         int value = 1;
         int retry = 0;
         int x, y;
-        int numGoals = (numPlayers * 5) / 3 + 3;
-        int xMapSize = (numPlayers * 3) / 4 + 4;
+        if (numGoals <= 2) numGoals = (numPlayers * 5) / 3 + 3; // numGoals - 3 == numPlayers * 5/3 // (numGoals-3) * 3/5 ~= numPlayers
+        int xMapSize = (numGoals - 3) * 2 + 4;
         if (xMapSize > MAX_X_SIZE) xMapSize = MAX_X_SIZE;
         int yMapSize = (int) (xMapSize * MAP_RATIO);
         map = new TrainTrack[xMapSize][yMapSize];
@@ -82,7 +88,7 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
                 if (i < numCompletelyRandomGoals) {
                     depth = 0;
                 } else {
-                    if (retry > 10 && depth > 0) {
+                    if (retry > 15 && depth > 0) {
                         depth -= 1;
                     }
                 }
@@ -142,7 +148,7 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
                 }
             }
         }
-        ausgabe();
+        debugMapOutput();
         return map;
     }
 
@@ -200,7 +206,7 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
                 map[x][y] = trainTrack = trainTrack.continueAsTrack(vector, nextId());
                 trainTrack.setValue(end.getValue());
                 i--;
-                ausgabe();
+                debugMapOutput();
             }
             trainTrack.attachTrainTrack(end);
             return true;
@@ -218,11 +224,6 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
     @Override
     public int getFirstTrackId() {
         return firstTrack.getId();
-    }
-
-    @Override
-    public void setSizeManually(int players) {
-        numPlayers = players;
     }
 
     @Override

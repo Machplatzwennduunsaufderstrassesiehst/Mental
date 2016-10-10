@@ -229,7 +229,7 @@ public class Player extends ClientConnection {
                     break;
                 case "answer":
                     JSONObject answer = json.getJSONObject("answer");
-                    boolean isCorrect = game.gameMode.playerAnswered(this, answer);
+                    boolean isCorrect = game.gameMode.playerAction(this, answer);
                     callback = CmdRequest.makeResponseCmd(type);
                     callback.put("isCorrect", isCorrect);
                     callback.put("pointsGained", this.getScore().getPointsGained());

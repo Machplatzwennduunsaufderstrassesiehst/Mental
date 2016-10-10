@@ -21,7 +21,7 @@ public class DynamicTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    public String getGameModeString() {
+    public String getName() {
         return "Dynamic";
     }
 

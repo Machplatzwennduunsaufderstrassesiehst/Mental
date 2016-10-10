@@ -2,11 +2,11 @@ package de.soeiner.mental.gameModes.arithmetics;
 
 import org.json.JSONObject;
 
+import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
+import de.soeiner.mental.exerciseCreators.SquareMultExerciseCreator;
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
-import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
-import de.soeiner.mental.exerciseCreators.SquareMultExerciseCreator;
 
 /**
  * Created by Malte on 09.04.2016.
@@ -26,7 +26,7 @@ public class SpeedGameMode extends ArithmeticGameMode { //Es empfiehlt sich vll.
         compatibleExerciseCreators.add(new SquareMultExerciseCreator());
     }
 
-    public String getGameModeString() {
+    public String getName() {
         return "Speed";
     }
 
@@ -43,18 +43,18 @@ public class SpeedGameMode extends ArithmeticGameMode { //Es empfiehlt sich vll.
     public void loop() {
     }
 
-    public boolean playerAnswered(Player player, JSONObject answer) {
+    public boolean playerAction(Player player, JSONObject actionData) {
         Score s = player.getScore();
-        synchronized (answerLock) {
-            if (game.exerciseCreator.checkAnswer(answer)) {
-                s.updateScore(game.getPoints());
+        synchronized (answerTimeoutLock) {
+            if (game.exerciseCreator.checkAnswer(actionData)) {
+                s.updateScore(getPoints());
                 game.broadcastMessage(player.getName() + " hat die Aufgabe als 1. gelöst");
                 if (s.getScoreValue() >= 100) {
-                    gameIsRunning = false; // schleife in run() beenden
-                    game.broadcastPlayerWon(player.getName(), getGameModeString());
-                    answerLock.notify();
+                    running = false; // schleife in run() beenden
+                    broadcastPlayerWon(player.getName(), getName());
+                    answerTimeoutLock.notify();
                 }
-                answerLock.notify();
+                answerTimeoutLock.notify();
                 game.broadcastScoreboard();
                 return true;
             } else {

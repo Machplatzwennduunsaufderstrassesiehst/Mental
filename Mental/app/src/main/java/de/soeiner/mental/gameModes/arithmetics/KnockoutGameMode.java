@@ -16,7 +16,7 @@ public class KnockoutGameMode extends ArithmeticGameMode {
         minPlayers = 2;
     }
 
-    public String getGameModeString() {
+    public String getName() {
         return "Knockout";
     }
 
@@ -29,14 +29,14 @@ public class KnockoutGameMode extends ArithmeticGameMode {
 
         if (game.activePlayers.size() == 1) {
             System.out.println("knockout gewonnen");
-            gameIsRunning = false;
+            running = false;
             for (int i = 0; i < game.joinedPlayers.size(); i++) { //Spieler kriegen am Ende Scorepunkte
                 Player p = game.joinedPlayers.get(i);
                 Score s = p.getScore();
                 s.updateScore(s.getScoreValue() * 20);
             }
             game.broadcastScoreboard();
-            game.broadcastPlayerWon(game.activePlayers.get(0).getName(), "KnockoutGameMode");
+            broadcastPlayerWon(game.activePlayers.get(0).getName(), "Knockout");
         } else if (game.activePlayers.size() > 1) {
             int index = 0;
             for (int i = 1; i < game.activePlayers.size(); i++) {
@@ -46,20 +46,20 @@ public class KnockoutGameMode extends ArithmeticGameMode {
             }
             game.broadcastMessage(game.activePlayers.get(index).getName() + " wurde eleminiert!");
             game.activePlayers.remove(index);
-            gameIsRunning = game.activePlayers.size() > 1;
+            running = game.activePlayers.size() > 1;
         }
     }
 
 
-    public boolean playerAnswered(Player player, JSONObject answer) {
+    public boolean playerAction(Player player, JSONObject actionData) {
         boolean allFinishedButOne = false;
         int z = 0;
         Score s = player.getScore();
-        synchronized (answerLock) {
-            if (!player.finished && gameIsRunning) {
-                if (game.exerciseCreator.checkAnswer(answer)) {
+        synchronized (answerTimeoutLock) {
+            if (!player.finished && running) {
+                if (game.exerciseCreator.checkAnswer(actionData)) {
                     s.updateScore(1); //score gibt bei knockout die überlebten runden wieder
-                    game.broadcastMessage(player.getName() + " hat die Aufgabe als " + (game.getRank() + 1) + ". gelöst!");
+                    game.broadcastMessage(player.getName() + " hat die Aufgabe als " + (getRank() + 1) + ". gelöst!");
                     player.finished = true;
                     for (int i = 0; i < game.activePlayers.size(); i++) {
                         Player p = game.joinedPlayers.get(i);
@@ -71,7 +71,7 @@ public class KnockoutGameMode extends ArithmeticGameMode {
                         allFinishedButOne = true;
                     }
                     if (allFinishedButOne) {
-                        answerLock.notify();
+                        answerTimeoutLock.notify();
                     }
                     game.broadcastScoreboard();
                     return true;

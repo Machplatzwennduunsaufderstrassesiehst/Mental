@@ -47,16 +47,16 @@ public class Train implements Runnable {
         speed = s;
         traingame = tg;
         positionId = traingame.getFirstTrackId();
-        JSONObject train = CmdRequest.makeCmd(CmdRequest.SEND_NEWTRAIN);
         try {
+            JSONObject train = CmdRequest.makeCmd(CmdRequest.SEND_NEWTRAIN);
             train.put("trainId", id);
             train.put("destinationId", destinationId);
             train.put("speed", s);
             train.put("bombtrain", bombtrain);
+            traingame.broadcastNewTrain(train);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        traingame.broadcastNewTrain(train);
         x = traingame.getTrackById(positionId).getX();
         y = traingame.getTrackById(positionId).getY();
         Thread t = new Thread(this);
@@ -71,7 +71,7 @@ public class Train implements Runnable {
         boolean moving = true;
         int z = 0;
         try {
-            while (moving && traingame.getGameIsRunning()) {
+            while (moving && traingame.isRunning()) {
                 Thread.sleep(calculateTimeToDestination()); //calculateTimeToDestination() TODO
                 //System.out.println("Train " + this.getId() + " is now at (" + x + "|" + y + ")");
                 if (traingame.trainMap[x][y].getType().equals("goal")) {

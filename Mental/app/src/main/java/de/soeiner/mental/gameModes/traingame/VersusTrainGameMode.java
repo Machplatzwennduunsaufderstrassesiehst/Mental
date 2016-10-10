@@ -60,7 +60,7 @@ public class VersusTrainGameMode extends TrainGameMode {
     @Override
     public void extraPreparationsPreMap() {
         reward = 0;
-        trainMapCreator.setSizeManually(game.activePlayers.size()*2);
+        trainMapCreator.setGoalAmount(game.activePlayers.size() * 2);
     }
 
     @Override
@@ -68,10 +68,10 @@ public class VersusTrainGameMode extends TrainGameMode {
         for(int i = 0; i < goals.length; i++){
             if(i%2 == 0){
                 teamRedGoals.add(goals[i]);
-                goals[i].setColorId(1);
+                goals[i].setMatchingId(1);
             }else{
                 teamBlueGoals.add(goals[i]);
-                goals[i].setColorId(2);
+                goals[i].setMatchingId(2);
             }
         }
     }
@@ -112,17 +112,17 @@ public class VersusTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    public String getGameModeString() {
+    public String getName() {
         return "Versus";
     }
 
-    public synchronized boolean playerAnswered(Player player, JSONObject answer) {
+    public synchronized boolean playerAction(Player player, JSONObject actionData) {
         if((teamRed.contains(player) && whosTurn) || (teamBlue.contains(player) && !whosTurn)) { //wenn der Spieler aus dem Team ist, das an der Reihe ist
-            if (answer.has("switch")) {
+            if (actionData.has("switch")) {
                 try {
                     for (Switch s : switches) {
-                        if (s.getSwitchId() == answer.getInt("switch")) {
-                            s.changeSwitch(answer.getInt("switchedTo"));
+                        if (s.getSwitchId() == actionData.getInt("switch")) {
+                            s.changeSwitch(actionData.getInt("switchedTo"));
                             for (int i = 0; i < game.activePlayers.size(); i++) {
                                 game.activePlayers.get(i).sendSwitchChange(s);
                             }

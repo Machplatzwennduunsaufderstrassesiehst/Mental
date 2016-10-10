@@ -21,14 +21,14 @@ public class Suggestion extends JSONObject {
         gameMode = g;
         exerciseCreator = e;
         try {
-            this.put("gameMode", g.getGameModeString());
+            this.put("gameMode", g.getName());
             this.put("exerciseCreator", e.getName());
             this.put("suggestionID", suggestionID);
             this.put("votes", voters.size());
         } catch (JSONException s) {
             s.printStackTrace();
         }
-        putName(g.getGameModeString() + " (" + e.getName() + ")");
+        putName(g.getName() + " (" + e.getName() + ")");
     }
 
     public void upvote(Player p) {
