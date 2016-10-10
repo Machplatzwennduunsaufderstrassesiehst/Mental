@@ -19,7 +19,6 @@ import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
  */
 public abstract class GameMode {
 
-    public String type;
     public ArrayList<ExerciseCreator> compatibleExerciseCreators = new ArrayList<>();
     public static final int EXERCISE_TIMEOUT = 30;
 
@@ -63,6 +62,10 @@ public abstract class GameMode {
 
     public boolean getGameIsRunning() {
         return gameIsRunning;
+    }
+
+    public void setGameIsRunning(boolean flag) {
+        gameIsRunning = flag;
     }
 
     public abstract boolean playerAnswered(Player player, JSONObject answer);

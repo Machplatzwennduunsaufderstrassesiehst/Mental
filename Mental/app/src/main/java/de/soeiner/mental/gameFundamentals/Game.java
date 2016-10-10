@@ -10,9 +10,8 @@ import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
-import de.soeiner.mental.gameModes.arithmetics.MA_Classic;
+import de.soeiner.mental.gameModes.arithmetics.ClassicGameMode;
 import de.soeiner.mental.gameModes.GameMode;
-import de.soeiner.mental.gameModes.traingame.TrainGame;
 
 /**
  * Created by malte on 13.02.16.
@@ -54,10 +53,12 @@ public class Game implements Runnable {
         return new JSONArray();
     }
 
+    private boolean running = false;
+
     public GameMode gameMode;
     public ExerciseCreator exerciseCreator = null;
     Voting voting;
-    Object voteLock = new Object();
+    final Object voteLock = new Object();
     String name;
 
     public String description = "";
@@ -65,13 +66,8 @@ public class Game implements Runnable {
     public ArrayList<Player> joinedPlayers;
     public ArrayList<Player> activePlayers;
     public ArrayList<Player> spectators;
-    public String type;
-    private String[] knownTypes = {"Train", "MA"};
-
-
 
     public int GAME_TIMEOUT = 0; //für pause zwischen den spielen mit siegerbildschirm
-
 
     public Game() {
         games.add(this);
@@ -80,23 +76,24 @@ public class Game implements Runnable {
         activePlayers = new ArrayList<Player>();
         spectators = new ArrayList<Player>();
         exerciseCreator = new SimpleMultExerciseCreator();
-        gameMode = new MA_Classic(this);
-        voting = new Voting(this);
+        gameMode = new ClassicGameMode(this);
+    }
+
+    public void setVoting(Voting voting) {
+        this.voting = voting;
+    }
+
+    public void start() {
+        running = true;
         Thread t = new Thread(this);
         t.start();
     }
 
-    public Game(String type) { //Overload des Konstruktors mit option type
-        games.add(this);
-        this.type = name = type;
-        joinedPlayers = new ArrayList<Player>();
-        activePlayers = new ArrayList<Player>();
-        spectators = new ArrayList<Player>();
-        exerciseCreator = new SimpleMultExerciseCreator();
-        gameMode = new MA_Classic(this);
-        voting = new Voting(this);
-        Thread t = new Thread(this);
-        t.start();
+    public void stop() {
+        running = false;
+        synchronized (voteLock) {
+            voteLock.notifyAll();
+        }
     }
 
     public void setName(String n) {
@@ -109,12 +106,6 @@ public class Game implements Runnable {
 
     public String getName() {
         return name;
-    }
-
-    public String getType(){
-        if(type == null) return null;
-        for(String t : knownTypes){ if(type.equals(t)) return type;}
-        return null;
     }
 
     public String getDescription() {
@@ -178,10 +169,7 @@ public class Game implements Runnable {
         }
         if(gameMode.gameIsRunning){ //falls gerade ein game läuft
             if(activePlayers.size() < gameMode.minPlayers){
-                gameMode.gameIsRunning = false;
-                if(gameMode.type == "Train"){
-                    ((TrainGame) gameMode).waveIsRunning = ((TrainGame) gameMode).waveSuccess = false;
-                }
+                gameMode.setGameIsRunning(false);
             }
         }
         updateScoreBoardSize();
@@ -349,7 +337,7 @@ public class Game implements Runnable {
 
 
     public void waitForPlayers(int players) {
-        this.gameMode = new MA_Classic(this);
+        this.gameMode = new ClassicGameMode(this);
         gameMode.minPlayers = players;
         gameMode.waitForPlayers();
     }
@@ -382,7 +370,7 @@ public class Game implements Runnable {
         System.out.println("run()");
         waitForPlayers(1);
         start:
-        while (true) {
+        while (running) {
             broadcastShowScoreBoard();
             sendGameStrings();
             roundTimeout();

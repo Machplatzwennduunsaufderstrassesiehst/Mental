@@ -7,11 +7,11 @@ import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
 /**
  * Created by Sven L. on 24.06.16.
  */
-public class Train_Dynamic extends TrainGame {
+public class DynamicTrainGameMode extends TrainGameMode {
 
     private int nWaves = 10;
 
-    public Train_Dynamic(Game game) {
+    public DynamicTrainGameMode(Game game) {
         super(game);
     }
 

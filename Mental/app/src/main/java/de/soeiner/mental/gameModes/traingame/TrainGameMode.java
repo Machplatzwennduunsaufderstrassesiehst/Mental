@@ -17,11 +17,16 @@ import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
 /**
  * Created by Malte on 14.09.2016.
  */
-public abstract class TrainGame extends GameMode {
-    public TrainGame(Game game) {
+public abstract class TrainGameMode extends GameMode {
+    public TrainGameMode(Game game) {
         super(game);
-        type = "Train";
         needsConfirmation = true;
+    }
+
+    @Override
+    public void setGameIsRunning(boolean flag) {
+        super.setGameIsRunning(flag);
+        this.waveIsRunning = this.waveSuccess = false;
     }
 
     public void initializeCompatibleExerciseCreators() {
