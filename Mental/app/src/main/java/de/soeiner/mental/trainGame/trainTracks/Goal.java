@@ -1,4 +1,4 @@
-package de.soeiner.mental.trainGameRelated.trainTracks;
+package de.soeiner.mental.trainGame.trainTracks;
 
 import org.json.JSONException;
 
@@ -8,8 +8,8 @@ import org.json.JSONException;
 public class Goal extends TrainTrack {
 
     private int goalId = 0;
+    private int matchingId = -1;
     private boolean destroyed = false;
-    private int colorId = -1;
 
     public Goal(int x, int y, int v, int id) {
         super(x, y, v, id);
@@ -18,20 +18,23 @@ public class Goal extends TrainTrack {
     public void setGoalId(int goalId) {
         this.goalId = goalId;
         try {
-            if(colorId == -1) this.put("colorId", goalId);
             this.put("goalId", goalId);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void setColorId(int x){
-        colorId = x;
+    public void setMatchingId(int x){
+        matchingId = x;
         try {
-            this.put("colorId", colorId);
+            this.put("matchingId", matchingId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getMatchingId() {
+        return matchingId;
     }
 
     public int getGoalId() {
@@ -46,7 +49,7 @@ public class Goal extends TrainTrack {
 
     @Override
     public void setSuccessor(TrainTrack s) {
-        throw new RuntimeException("there is no succesor to a goal");
+        throw new RuntimeException("there is no successor to a goal");
     }
 
     public void destroy(){

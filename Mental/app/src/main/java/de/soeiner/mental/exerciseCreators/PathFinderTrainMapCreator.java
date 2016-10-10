@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.Stack;
 
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
-import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
-import de.soeiner.mental.trainGameRelated.trainTracks.Track;
-import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
+import de.soeiner.mental.trainGame.trainTracks.Goal;
+import de.soeiner.mental.trainGame.trainTracks.Switch;
+import de.soeiner.mental.trainGame.trainTracks.Track;
+import de.soeiner.mental.trainGame.trainTracks.TrainTrack;
 import de.soeiner.mental.util.Pathfinder;
 
 /**
@@ -25,6 +25,7 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
     private int switchId;
     private TrainTrack firstTrack;
     private int numPlayers = 0;
+    private int numGoals = 0;
 
     Pathfinder<TrainTrack> pathfinder;
 
@@ -35,18 +36,24 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
     }
 
     @Override
+    public void setGoalAmount(int goalAmount) {
+        numGoals = goalAmount;
+    }
+
+    @Override
     TrainTrack[][] createTrainMap() {
-        if(numPlayers == 0) numPlayers = game.activePlayers.size();
+        numPlayers = game.activePlayers.size();
         ArrayList<TrainTrack> protectedTrack = new ArrayList<>();
         id = 1;
         switchId = 0;
         int value = 1;
         int retry = 0;
         int x, y;
-        int numGoals = (numPlayers * 5) / 3 + 3;
-        int xMapSize = (numPlayers * 3) / 4 + 4;
+        if (numGoals <= 2) numGoals = (numPlayers * 5) / 3 + 3; // numGoals - 3 == numPlayers * 5/3 // (numGoals-3) * 3/5 ~= numPlayers
+        System.out.println(numGoals);
+        xMapSize = (numGoals - 3) / 2 + 4;
         if (xMapSize > MAX_X_SIZE) xMapSize = MAX_X_SIZE;
-        int yMapSize = (int) (xMapSize * MAP_RATIO);
+        yMapSize = (int) (xMapSize * MAP_RATIO);
         map = new TrainTrack[xMapSize][yMapSize];
         // put the start somewhere
         x = (int) (Math.random() * xMapSize);
@@ -56,7 +63,6 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
         int layedStartTrack = 0;
         while (layedStartTrack < NUM_START_TRACKS) {
             int[] v = randomDirection();
-            System.out.println(Arrays.toString(v));
             x = track.getX() + v[0];
             y = track.getY() + v[1];
             if (isValid(x, y) && map[x][y] == null) {
@@ -82,13 +88,13 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
                 if (i < numCompletelyRandomGoals) {
                     depth = 0;
                 } else {
-                    if (retry > 10 && depth > 0) {
+                    if (retry > 15 && depth > 0) {
                         depth -= 1;
                     }
                 }
                 x = (int) (Math.random() * xMapSize);
                 y = (int) (Math.random() * yMapSize);
-                if (!testSurroundings(x, y, depth, containsTrainTrack)) {
+                if (!testSurroundings(x, y, depth, TrainTrackPredicates.containsTrainTrack)) {
                     goals[i] = new Goal(x, y, i + 1, nextId());
                     goals[i].setGoalId(i);
                     map[x][y] = goals[i];
@@ -103,7 +109,6 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
             int i = 0;
             while (bestPossibleJunction == null && i <= yMapSize) {
                 i += 1;
-                System.out.println(i);
                 for (Goal goal : goals) {
                     if (connectedGoals.contains(goal)) {
                         continue;
@@ -121,7 +126,7 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
                 }
             }
             if (bestPossibleJunction == null) {
-                System.out.println("no next possible junction found :/");
+                //System.out.println("no next possible junction found :/");
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -132,7 +137,7 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
                 if (connect(bestPossibleJunction.track, bestPossibleJunction.goal)) {
                     connectedGoals.add(bestPossibleJunction.goal);
                 } else {
-                    System.out.println("Retrying, no path could be found");
+                    //System.out.println("Retrying, no path could be found");
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
@@ -142,7 +147,7 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
                 }
             }
         }
-        ausgabe();
+        //debugMapOutput();
         return map;
     }
 
@@ -176,12 +181,12 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
         } else {
             newTrack = track;
         }
-        System.out.println(newTrack);
+        //System.out.println(newTrack);
         return newTrack;
     }
 
     private boolean connect(Track start, TrainTrack end) {
-        System.out.println("connect:  start(" + start.getX() + "," + start.getY() + ") <--> end(" + end.getX() + "," + end.getY() + ")");
+        //System.out.println("connect:  start(" + start.getX() + "," + start.getY() + ") <--> end(" + end.getX() + "," + end.getY() + ")");
         int x = start.getX();
         int y = start.getY();
         TrainTrack trainTrack = map[x][y] = transformIntoAttachmentPoint(start);
@@ -200,7 +205,7 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
                 map[x][y] = trainTrack = trainTrack.continueAsTrack(vector, nextId());
                 trainTrack.setValue(end.getValue());
                 i--;
-                ausgabe();
+                //debugMapOutput();
             }
             trainTrack.attachTrainTrack(end);
             return true;
@@ -218,11 +223,6 @@ public class PathFinderTrainMapCreator extends TrainMapCreator {
     @Override
     public int getFirstTrackId() {
         return firstTrack.getId();
-    }
-
-    @Override
-    public void setSizeManually(int players) {
-        numPlayers = players;
     }
 
     @Override

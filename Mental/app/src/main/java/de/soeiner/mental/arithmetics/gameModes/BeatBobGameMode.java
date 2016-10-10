@@ -1,11 +1,11 @@
-package de.soeiner.mental.gameModes.arithmetics;
+package de.soeiner.mental.arithmetics.gameModes;
 
 import org.json.JSONObject;
 
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.util.Math2;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.gameFundamentals.Score;
+import de.soeiner.mental.util.Math2;
 
 /**
  * Created by Malte on 09.04.2016.
@@ -39,7 +39,7 @@ public class BeatBobGameMode extends ArithmeticGameMode {
             health = 5 * game.activePlayers.size();
             playerHeadstart = game.exerciseCreator.getExpectedSolveTime();
         } else {
-            gameIsRunning = false;
+            running = false;
         }
         function = calculateSolveTimeFunction();
     }
@@ -56,12 +56,12 @@ public class BeatBobGameMode extends ArithmeticGameMode {
         try {
             Thread.sleep(calculateMilliSeconds(playerHeadstart));
             upTime += playerHeadstart;
-            while (gameIsRunning) {
+            while (running) {
                 System.out.println("[BeatBob.loop]");
                 if (game.activePlayers.size() == 0) {
-                    gameIsRunning = false;
+                    running = false;
                 }
-                for (double i = 0; (i <= bobSolveTime * 10) && gameIsRunning; i++) {
+                for (double i = 0; (i <= bobSolveTime * 10) && running; i++) {
                     System.out.println("[BeatBob.loop] for-Schleife");
                     bobSolveTime = balanceBob();
                     Thread.sleep(100);
@@ -76,17 +76,17 @@ public class BeatBobGameMode extends ArithmeticGameMode {
         }
     }
 
-    public boolean playerAnswered(Player player, JSONObject answer) {
+    public boolean playerAction(Player player, JSONObject actionData) {
         Score s = player.getScore();
-        if (player.exerciseCreator.checkAnswer(answer)) {
+        if (player.exerciseCreator.checkAnswer(actionData)) {
             exercisesSolved++;
             s.updateScore(5);
             player.exerciseCreator.next();
             player.sendExercise(player.exerciseCreator.getExerciseObject());
             updateStatus(1);
             game.broadcastMessage(player.getName() + " hat einen Punkt gewonnen");
-            synchronized (answerLock) {
-                answerLock.notify();
+            synchronized (answerTimeoutLock) {
+                answerTimeoutLock.notify();
             }
             game.broadcastScoreboard();
             return true;
@@ -107,28 +107,28 @@ public class BeatBobGameMode extends ArithmeticGameMode {
     }
 
     public void checkObjective() {
-        synchronized (answerLock) {
+        synchronized (answerTimeoutLock) {
             if (status >= health) { //wenn bob tot ist
                 giveReward();
-                gameIsRunning = false; // schleife in run() beenden
-                game.broadcastPlayerWon("die Spieler", getGameModeString());
-                answerLock.notify();
+                running = false; // schleife in run() beenden
+                broadcastPlayerWon("die Spieler", getName());
+                answerTimeoutLock.notify();
             }
             if (status <= -health) { //wenn spieler tot sind
                 try {
                     Thread.sleep(3000);
                 } catch (Exception e) {
                 }
-                gameIsRunning = false; // schleife in run() beenden
+                running = false; // schleife in run() beenden
                 game.broadcastMessage("Bob hat gewonnen");
-                game.broadcastPlayerWon("Bob", getGameModeString());
-                answerLock.notify();
+                broadcastPlayerWon("Bob", getName());
+                answerTimeoutLock.notify();
             }
         }
     }
 
 
-    public String getGameModeString() {
+    public String getName() {
         return "Beat Bob";
     }
 
@@ -148,7 +148,7 @@ public class BeatBobGameMode extends ArithmeticGameMode {
         function = calculateSolveTimeFunction();
         checkObjective();
         if (game.activePlayers.size() == 0) {
-            gameIsRunning = false;
+            running = false;
         }
     }
 

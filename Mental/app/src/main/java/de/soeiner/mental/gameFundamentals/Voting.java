@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
-import de.soeiner.mental.gameModes.GameMode;
 
 /**
  * Created by Malte on 09.04.2016.
@@ -13,8 +12,8 @@ public class Voting {
 
     private Game game;
     private GameMode[] gameModes;
-    private Suggestion[] suggestions;
-    private Suggestion revoteSuggestion;
+    private VotingSuggestion[] suggestions;
+    private VotingSuggestion revoteSuggestion;
     int voteCounter = 0;
 
     public Voting(Game game, GameMode[] availableGameModes) {
@@ -26,7 +25,7 @@ public class Voting {
 
     public void createGameModeSuggestions() {
         ArrayList<GameMode> tempGameModes = new ArrayList<GameMode>();
-        suggestions = new Suggestion[4];
+        suggestions = new VotingSuggestion[4];
 
         for (int i = 0; i < gameModes.length; i++) {
             tempGameModes.add(gameModes[i]);
@@ -36,11 +35,11 @@ public class Voting {
             int gIndex = (int) (Math.random() * tempGameModes.size());
             ArrayList<ExerciseCreator> possibleExerciseCreators = tempGameModes.get(gIndex).getCompatibleExerciseCreators();
             int eIndex = (int) (Math.random() * possibleExerciseCreators.size());
-            suggestions[i] = new Suggestion(tempGameModes.get(gIndex), possibleExerciseCreators.get(eIndex), i);
+            suggestions[i] = new VotingSuggestion(tempGameModes.get(gIndex), possibleExerciseCreators.get(eIndex), i);
             if (tempGameModes.size() > 1) tempGameModes.remove(gIndex);
             //tempExerciseCreators.remove(eIndex);
         }
-        revoteSuggestion = new Suggestion(gameModes[0], new SimpleMultExerciseCreator(), suggestions.length - 1);
+        revoteSuggestion = new VotingSuggestion(gameModes[0], new SimpleMultExerciseCreator(), suggestions.length - 1);
         revoteSuggestion.putName("Neue Vorschläge!");
         suggestions[suggestions.length - 1] = revoteSuggestion;
         voteCounter = 0;
@@ -56,7 +55,7 @@ public class Voting {
     }
 
     public void receiveVote(int suggestionID, Player p) {
-        for (Suggestion suggestion : suggestions) {
+        for (VotingSuggestion suggestion : suggestions) {
             if (suggestion.getPlayers().contains(p)) {
                 suggestion.downvote(p);
                 voteCounter--;
@@ -88,7 +87,7 @@ public class Voting {
                         maxIndex = i;
                     }
                 }
-                Suggestion votedForSuggestion = suggestions[maxIndex];
+                VotingSuggestion votedForSuggestion = suggestions[maxIndex];
                 game.gameMode = votedForSuggestion.gameMode;
                 game.exerciseCreator = votedForSuggestion.exerciseCreator;
                 broadcastSuggestions();

@@ -13,14 +13,13 @@ import java.io.IOException;
 
 import de.soeiner.mental.R;
 import de.soeiner.mental.communication.Server;
-import de.soeiner.mental.gameModes.GameMode;
-import de.soeiner.mental.gameModes.arithmetics.ArenaGameMode;
-import de.soeiner.mental.gameModes.arithmetics.BeatBobGameMode;
-import de.soeiner.mental.gameModes.arithmetics.ClassicGameMode;
-import de.soeiner.mental.gameModes.arithmetics.KnockoutGameMode;
-import de.soeiner.mental.gameModes.arithmetics.SpeedGameMode;
-import de.soeiner.mental.gameModes.traingame.ClassicTrainGameMode;
-import de.soeiner.mental.gameModes.traingame.SuddenDeathTrainGameMode;
+import de.soeiner.mental.arithmetics.gameModes.ArenaGameMode;
+import de.soeiner.mental.arithmetics.gameModes.BeatBobGameMode;
+import de.soeiner.mental.arithmetics.gameModes.ClassicGameMode;
+import de.soeiner.mental.arithmetics.gameModes.KnockoutGameMode;
+import de.soeiner.mental.arithmetics.gameModes.SpeedGameMode;
+import de.soeiner.mental.trainGame.gameModes.ClassicTrainGameMode;
+import de.soeiner.mental.trainGame.gameModes.SuddenDeathTrainGameMode;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -10,13 +10,26 @@ import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
-import de.soeiner.mental.gameModes.arithmetics.ClassicGameMode;
-import de.soeiner.mental.gameModes.GameMode;
+import de.soeiner.mental.arithmetics.gameModes.ClassicGameMode;
 
 /**
  * Created by malte on 13.02.16.
  */
 public class Game implements Runnable {
+
+    private boolean running = false;
+
+    public GameMode gameMode;
+    public ExerciseCreator exerciseCreator = null;
+    Voting voting;
+    final Object voteLock = new Object();
+    String name;
+
+    public String description = "";
+    public Score[] scoreboard = new Score[0];
+    public ArrayList<Player> joinedPlayers;
+    public ArrayList<Player> activePlayers;
+    public ArrayList<Player> spectators;
 
     public static ArrayList<Game> games;
 
@@ -43,7 +56,7 @@ public class Game implements Runnable {
                 jsonGameObject.put("name", g.getName());
                 jsonGameObject.put("description", g.getDescription());
                 jsonGameObject.put("players", new JSONArray(g.getScoreboard()));
-                jsonGameObject.put("gameIsRunning", g.gameMode.gameIsRunning);
+                jsonGameObject.put("gameIsRunning", g.gameMode.isRunning());
                 jsonGameArray.put(jsonGameObject);
             }
             return jsonGameArray;
@@ -52,22 +65,6 @@ public class Game implements Runnable {
         }
         return new JSONArray();
     }
-
-    private boolean running = false;
-
-    public GameMode gameMode;
-    public ExerciseCreator exerciseCreator = null;
-    Voting voting;
-    final Object voteLock = new Object();
-    String name;
-
-    public String description = "";
-    public Score[] scoreboard = new Score[0];
-    public ArrayList<Player> joinedPlayers;
-    public ArrayList<Player> activePlayers;
-    public ArrayList<Player> spectators;
-
-    public int GAME_TIMEOUT = 0; //für pause zwischen den spielen mit siegerbildschirm
 
     public Game() {
         games.add(this);
@@ -101,7 +98,7 @@ public class Game implements Runnable {
     }
 
     public String getGameModeString() {
-        return gameMode.getGameModeString();
+        return gameMode.getName();
     }
 
     public String getName() {
@@ -146,13 +143,13 @@ public class Game implements Runnable {
     }
 
     public void addPlayer(Player p) {
-        for (Game g : Game.games) { // den Spieler aus anderen Spielen gegebenenfalls entfernen
+        for (Game g : Game.getGames()) { // den Spieler aus anderen Spielen gegebenenfalls entfernen
             if (g.joinedPlayers.contains(p)) g.removePlayer(p);
         }
         joinedPlayers.add(p);
         updateScoreBoardSize();
         broadcastScoreboard();
-        if (!gameMode.getGameIsRunning()) {
+        if (!gameMode.isRunning()) {
             broadcastShowScoreBoard();
             voting.broadcastSuggestions();
         }
@@ -167,14 +164,14 @@ public class Game implements Runnable {
         if (spectators.contains(p)) {
             spectators.remove(p);
         }
-        if(gameMode.gameIsRunning){ //falls gerade ein game läuft
+        if(gameMode.isRunning()){ //falls gerade ein game läuft
             if(activePlayers.size() < gameMode.minPlayers){
-                gameMode.setGameIsRunning(false);
+                gameMode.setRunning(false);
             }
         }
         updateScoreBoardSize();
         voting.checkForCompletion();
-        if (!arePlayersInGame()) interruptGame();
+        if (!arePlayersInGame()) interrupt();
         broadcastMessage(p.getName() + " hat das Spiel verlassen.");
         gameMode.removePlayer(p);
     }
@@ -183,12 +180,9 @@ public class Game implements Runnable {
         return (activePlayers.size() >= 1);
     }
 
-    public void interruptGame() {
+    public void interrupt() {
         System.out.println("game interrupt");
-        gameMode.gameIsRunning = false;
-        synchronized (gameMode.answerLock) {
-            gameMode.answerLock.notifyAll();
-        }
+        gameMode.setRunning(false);
     }
 
     public void sendGameStrings() {
@@ -210,86 +204,30 @@ public class Game implements Runnable {
         }
     }
 
-    private void broadcastShopItemList() {
-        for (int i = 0; i < joinedPlayers.size(); i++) {
-            Player p = joinedPlayers.get(i);
-            p.sendShopItemList(p.getShop().getShopItemList());
-        }
-    }
-
-    /*
-    public boolean playerAnswered(Player player, JSONObject answer){
-        if(answer.has("value")){
-            try {
-                return gameMode.playerAnswered(player, answer.getInt("value"));
-            }catch(Exception e){}
-        }
-        return false;
-    }
-    */
-
-    public int getPoints() { //methode berechent punkte fürs lösen einer Aufgabe
-        //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat
-        int points = exerciseCreator.getDifficulty() * 3 / 2; // hab ich bisschen erhöht, da eine Runde ganz schön lange gedauert hat, wenn jeder mal ne Aufgabe löst
-        for (int i = 0; i < getRank(); i++) {
-            points = points / 2;
-        }
-        return points;
-    }
-
-    public int getRank() { //methode berechnet wie viele
-        // Spieler die Aufgabe schon gelöst haben
-        int rank = 0;
-        for (int i = 0; i < joinedPlayers.size(); i++) {
-            Player p = joinedPlayers.get(i);
-            if (p.finished == true) {
-                rank++;
-            }
-        }
-        return rank;
-    }
-
     public void broadcastMessage(String message) {
 
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
-            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_MESSAGE);
             try {
+                JSONObject j = CmdRequest.makeCmd(CmdRequest.MESSAGE);
                 j.put("message", message);
+                p.makePushRequest(new PushRequest(j));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            p.makePushRequest(new PushRequest(j));
-        }
-    }
-
-    public void broadcastPlayerWon(String playerName, String gameModeString) { //wird nur aufgerufen wenn Spieler das Spiel gewonnen hat
-        //dem scoreboard können nun auch der zweite und dritte platz entnommen werden
-        for (int i = 0; i < joinedPlayers.size(); i++) {
-            Player p = joinedPlayers.get(i);
-            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_PLAYER_WON);
-            try {
-                j.put("playerName", playerName);
-                j.put("gameTimeout", GAME_TIMEOUT);
-                j.put("gameMode", gameModeString);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            p.makePushRequest(new PushRequest(j));
         }
     }
 
     public void broadcastSendCountdown(int time) {
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
-            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_COUNTDOWN);
             try {
+                JSONObject j = CmdRequest.makeCmd(CmdRequest.COUNTDOWN);
                 j.put("time", time);
+                p.makePushRequest(new PushRequest(j));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            p.makePushRequest(new PushRequest(j));
         }
         try {
             Thread.sleep(time * 1000);
@@ -303,38 +241,15 @@ public class Game implements Runnable {
         for (int i = 0; i < joinedPlayers.size(); i++) {
             Player p = joinedPlayers.get(i);
             p.sendGameString();
-            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SHOW_SCOREBOARD);
-            p.makePushRequest(new PushRequest(j));
-        }
-        broadcastScoreboard();
-    }
-
-    public void broadcastShowExercises() {
-        for (int i = 0; i < joinedPlayers.size(); i++) {
-            Player p = joinedPlayers.get(i);
-            JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_SHOW_EXERCISES);
             try {
-                j.put("exerciseType", exerciseCreator.getType());
+                JSONObject j = CmdRequest.makeCmd(CmdRequest.SHOW_SCOREBOARD);
+                p.makePushRequest(new PushRequest(j));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            p.makePushRequest(new PushRequest(j));
         }
+        broadcastScoreboard();
     }
-
-
-    private void roundTimeout() {
-        /*try { //Zeit für einen siegerbildschrim mit erster,zweiter,dritter platz ?
-            Thread.sleep(GAME_TIMEOUT * 1000); //VOTE_TIMEOUT
-        } catch (InterruptedException e) {} */
-
-        // punktestaende fuer alle Spieler zuruecksetzen
-        for (int i = 0; i < joinedPlayers.size(); i++) {
-            Player p = joinedPlayers.get(i);
-        }
-        activePlayers = new ArrayList<Player>();
-    }
-
 
     public void waitForPlayers(int players) {
         this.gameMode = new ClassicGameMode(this);
@@ -347,15 +262,11 @@ public class Game implements Runnable {
     }
 
     int confirmed = 0;
-    int TIMEOUT_TIME = 50; //in 100 millisek
 
-    private void waitForConfirmation() {
+    private void waitForConfirmations(int maxWaitTimeoutSeconds) {
         int z = 0;
-        if (!gameMode.needsConfirmation) {
-            return;
-        }
         confirmed = 0;
-        while (confirmed < activePlayers.size() && z < TIMEOUT_TIME) {
+        while (confirmed < activePlayers.size() && z < maxWaitTimeoutSeconds * 10) {
             try {
                 Thread.sleep(100);
                 z++;
@@ -373,7 +284,6 @@ public class Game implements Runnable {
         while (running) {
             broadcastShowScoreBoard();
             sendGameStrings();
-            roundTimeout();
             voting.createGameModeSuggestions();
             synchronized (voteLock) {
                 try {
@@ -382,26 +292,23 @@ public class Game implements Runnable {
                     e.printStackTrace();
                 }
             }
-            //broadcastSendCountdown(3); TODO wieder auskommentieren
-            System.out.println("Countdown sent");
-            broadcastShowExercises();
-            System.out.println("broadcastedShowExercise");
+            gameMode.openGUIFrame();
+            System.out.println("openGUIFrame");
             gameMode.prepareGame();
-            System.out.println("game prepared: " + gameMode.getGameModeString());
-            waitForConfirmation();
-
-            while (gameMode.getGameIsRunning()) {
+            System.out.println("game prepared: " + gameMode.getName());
+            if (gameMode.needsConfirmation) {
+                waitForConfirmations(30);
+            }
+            while (gameMode.isRunning()) {
                 System.out.println("[Game.run] while-Schleife anfang");
                 if (activePlayers.size() == 0) { //wenn keine spieler mehr da sind
-                    gameMode.gameIsRunning = false;
+                    gameMode.setRunning(false);
                     System.out.println("[Game.run] continue start, no players left");
                     continue start;
                 } else {
                     try {
                         System.out.println("[Game.run] gameMode.newExercise()");
                         gameMode.newExercise();
-                        System.out.println("[Game.run] gameMode.exerciseTimeout()");
-                        gameMode.exerciseTimeout();
                         System.out.println("[Game.run] gameMode.loop()");
                         gameMode.loop();
                     } catch (Exception e) {

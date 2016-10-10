@@ -1,12 +1,9 @@
-package de.soeiner.mental.gameModes;
+package de.soeiner.mental.gameFundamentals;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
@@ -20,14 +17,11 @@ import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
 public abstract class GameMode {
 
     public ArrayList<ExerciseCreator> compatibleExerciseCreators = new ArrayList<>();
-    public static final int EXERCISE_TIMEOUT = 30;
 
-    public boolean gameIsRunning;
+    protected boolean running;
     public int minPlayers = 2;
     public boolean needsConfirmation = false;
     public Game game;
-
-    public final Object answerLock = new Object();
 
     public GameMode(Game game) {
         this.game = game;
@@ -51,29 +45,25 @@ public abstract class GameMode {
 
     public abstract void loop();
 
-    public void exerciseTimeout() {
-        doWaitTimeout(EXERCISE_TIMEOUT);
-    }
-
     public void prepareGame() {
         resetGameMode();
         game.exerciseCreator.resetDifficulty();
     }
 
-    public boolean getGameIsRunning() {
-        return gameIsRunning;
+    public boolean isRunning() {
+        return running;
     }
 
-    public void setGameIsRunning(boolean flag) {
-        gameIsRunning = flag;
+    public void setRunning(boolean flag) {
+        running = flag;
     }
 
-    public abstract boolean playerAnswered(Player player, JSONObject answer);
+    public abstract boolean playerAction(Player player, JSONObject actionData);
 
-    public abstract String getGameModeString();
+    public abstract String getName();
 
     public void resetGameMode() {
-        gameIsRunning = true;
+        running = true;
         for (Player joinedPlayer : game.joinedPlayers) {
             joinedPlayer.getScore().resetScoreValue();
         }
@@ -83,25 +73,6 @@ public abstract class GameMode {
         return compatibleExerciseCreators;
     }
 
-    public void doWaitTimeout(int timeout) {
-        JSONObject j = CmdRequest.makeCmd(CmdRequest.SEND_TIME_LEFT);
-        try {
-            j.put("time", timeout);
-            for (int i = 0; i < game.activePlayers.size(); i++) {
-                Player p = game.activePlayers.get(i);
-                p.makePushRequest(new PushRequest(j));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        synchronized (answerLock) {
-            try {
-                answerLock.wait(timeout * 1000);
-            } catch (InterruptedException e) {
-            }
-        }
-    }
-
 
     public void newExercise() {
         game.exerciseCreator.next(); // erstellt neue aufgabe
@@ -109,12 +80,24 @@ public abstract class GameMode {
         game.exerciseCreator.increaseDifficulty();
     }
 
-    public void removePlayer(Player p) {
-    }
+    public void removePlayer(Player p) {}
 
     public void addAllPlayersToActive(){
         for (int i = 0; i < game.joinedPlayers.size(); i++) {
             game.activePlayers.add(game.joinedPlayers.get(i));
+        }
+    }
+
+    public void openGUIFrame() {  // TODO make more flexible - cooperate with JS Frames
+        for (int i = 0; i < game.joinedPlayers.size(); i++) {
+            Player p = game.joinedPlayers.get(i);
+            try {
+                JSONObject j = CmdRequest.makeCmd(CmdRequest.SHOW_EXERCISES);
+                j.put("exerciseType", game.exerciseCreator.getType());
+                p.makePushRequest(new PushRequest(j));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

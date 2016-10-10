@@ -1,8 +1,8 @@
-package de.soeiner.mental.gameModes.traingame;
+package de.soeiner.mental.trainGame.gameModes;
 
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.trainGameRelated.Wave;
-import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
+import de.soeiner.mental.trainGame.Wave;
+import de.soeiner.mental.trainGame.trainTracks.Goal;
 
 /**
  * Created by Malte on 16.09.2016.
@@ -26,8 +26,8 @@ public class SuddenDeathTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    public void trainArrived(int trainId, Goal goal, boolean succsess) {
-        if (succsess) {
+    public void trainArrived(int trainId, Goal goal, boolean success) {
+        if (success) {
             health++;
             giveReward(trainArrivedReward);
         } else {
@@ -35,10 +35,10 @@ public class SuddenDeathTrainGameMode extends TrainGameMode {
             waveIsRunning = false;
         }
         for (int i = 0; i < game.activePlayers.size(); i++) {
-            if (succsess) {
+            if (success) {
                 game.activePlayers.get(i).getScore().updateScore(trainArrivedReward);
             }
-            game.activePlayers.get(i).sendTrainArrived(trainId, goal.getGoalId(), succsess);
+            game.activePlayers.get(i).sendTrainArrived(trainId, goal.getGoalId(), success);
         }
         if (health >= healthNeededToWin) {
             waveSuccess = true;
@@ -47,11 +47,11 @@ public class SuddenDeathTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    public void extraPreparationsPreMap() {
+    public void prepareMapCreation() {
         reward = 500;
     }
     @Override
-    public void extraPreparationsPostMap() {
+    public void prepareGameStart() {
 
     }
 
@@ -61,7 +61,7 @@ public class SuddenDeathTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    public String getGameModeString() {
+    public String getName() {
         return "Sudden Death";
     }
 }

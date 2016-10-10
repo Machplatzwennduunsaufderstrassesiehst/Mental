@@ -3,12 +3,11 @@ package de.soeiner.mental.exerciseCreators;
 import java.util.ArrayList;
 
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.trainGameRelated.trainTracks.BlockedTrack;
-import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
-import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
-import de.soeiner.mental.trainGameRelated.trainTracks.Track;
-import de.soeiner.mental.trainGameRelated.trainTracks.TrainTrack;
-import de.soeiner.mental.util.Pathfinder;
+import de.soeiner.mental.trainGame.trainTracks.BlockedTrack;
+import de.soeiner.mental.trainGame.trainTracks.Goal;
+import de.soeiner.mental.trainGame.trainTracks.Switch;
+import de.soeiner.mental.trainGame.trainTracks.Track;
+import de.soeiner.mental.trainGame.trainTracks.TrainTrack;
 
 /**
  * Created by Malte on 27.08.16.
@@ -51,25 +50,29 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
         return map[0][0].getId();
     }
 
-    @Override
     public void setSizeManually(int players) {
         int s = 4;
         size = 8;
-        for (int i = s-players+1; i <s; i++) {
-            if(i > 1){
+        for (int i = s - players + 1; i < s; i++) {
+            if (i > 1) {
                 size += i;
-            }else{
+            } else {
                 size++;
             }
         }
         //size = s*(s+1)/2 - ((s-players)*(s+1-players)/2);
-        if(size < 0) size = 100;
-        numgoals = players*3;
+        if (size < 0) size = 100;
+        numgoals = players * 3;
     }
 
-    private void setSizeVersus(int players){
-        size = players*5*2;
-        numgoals = players*3*2;
+    @Override
+    public void setGoalAmount(int goalAmount) {
+        numgoals = goalAmount;
+    }
+
+    private void setSizeVersus(int players) {
+        size = players * 5 * 2;
+        numgoals = players * 3 * 2;
     }
 
     public PathBasedTrainMapCreator(Game game) {
@@ -79,7 +82,7 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
 
     TrainTrack[][] createTrainMap() {
 
-        if(size == 0) setSizeManually(game.activePlayers.size());
+        if (size == 0) setSizeManually(game.activePlayers.size());
         x = 0;
         y = 0;
         pathNumber = 0;
@@ -114,7 +117,7 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
             if (pathNumber > 1) {
                 coordinates = getStartingPoint();
                 if (coordinates[0] == 1 && coordinates[1] == 1) {
-                    pathNumber = BLOCK_VALUE+1;
+                    pathNumber = BLOCK_VALUE + 1;
                     continuePossible = false;
                     System.out.println("==== Map wird aufgrund starting point fail, frühzeitig fertiggestellt ====");
                 } else {
@@ -194,7 +197,7 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
                     }
                 }
                 System.out.println("========================== Iteration nr. " + pathNumber);
-                ausgabe();
+                debugMapOutput();
             }
         }
         int zId = 0;
@@ -227,12 +230,12 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
                         }
                     } else {
                         System.out.println("======================================== null vor switch");
-                        ausgabe();
+                        debugMapOutput();
                         //
                         //keine längerfristige Lösung
                         System.out.println("beginne map creation prozess von vorne"); //quick fix
                         int ldot = 4;
-                        /* nur bildschirm ausgabe */
+                        /* nur bildschirm output */
                         try {
                             for (int g = 1; g < ldot; g++) {
                                 System.out.println("");
@@ -251,7 +254,7 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
             }
         }
         System.out.println("map: ");
-        ausgabe();
+        debugMapOutput();
         // Blocked Tracks rund um die Map entfernen
         TrainTrack[][] finalMap = new TrainTrack[size - 2][size - 2];
         for (int i = 1; i < size - 1; i++) {
@@ -262,7 +265,7 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
             }
         }
         this.map = finalMap;
-        ausgabe();
+        debugMapOutput();
         return this.map;
     }
 
@@ -283,7 +286,7 @@ public class PathBasedTrainMapCreator extends TrainMapCreator {
             coordinates = pussybilities.get((int) (Math.random() * pussybilities.size()));
         } else if (coordinates[0] == 1 && coordinates[1] == 1) {
             System.out.println("getStartingPoint() nicht möglich");
-            //ausgabe();
+            //debugMapOutput();
         }
         return coordinates;
     }

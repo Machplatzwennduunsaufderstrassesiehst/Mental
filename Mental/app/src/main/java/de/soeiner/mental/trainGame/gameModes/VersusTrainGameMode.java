@@ -1,4 +1,4 @@
-package de.soeiner.mental.gameModes.traingame;
+package de.soeiner.mental.trainGame.gameModes;
 
 import org.json.JSONObject;
 
@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
-import de.soeiner.mental.trainGameRelated.Train;
-import de.soeiner.mental.trainGameRelated.Wave;
-import de.soeiner.mental.trainGameRelated.trainTracks.Goal;
-import de.soeiner.mental.trainGameRelated.trainTracks.Switch;
+import de.soeiner.mental.trainGame.Train;
+import de.soeiner.mental.trainGame.Wave;
+import de.soeiner.mental.trainGame.trainTracks.Goal;
+import de.soeiner.mental.trainGame.trainTracks.Switch;
 
 /**
  * Created by Malte on 15.09.2016.
@@ -30,7 +30,7 @@ public class VersusTrainGameMode extends TrainGameMode {
     int goalDestructionBonus = 50;
 
     @Override
-    public void trainArrived(int trainId, Goal goal, boolean succsess) {
+    public void trainArrived(int trainId, Goal goal, boolean success) {
         if(!goal.isDestroyed()) { //wenn das entsprechende Ziel noch nicht zerstört ist
             goal.destroy(); //zerstöre es
             broadcastGoalDestroyed(goal.getGoalId());
@@ -58,20 +58,20 @@ public class VersusTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    public void extraPreparationsPreMap() {
+    public void prepareMapCreation() {
         reward = 0;
-        trainMapCreator.setSizeManually(game.activePlayers.size()*2);
+        trainMapCreator.setGoalAmount(game.activePlayers.size() * 2);
     }
 
     @Override
-    public void extraPreparationsMidMap(){
+    public void prepareMap(){
         for(int i = 0; i < goals.length; i++){
             if(i%2 == 0){
                 teamRedGoals.add(goals[i]);
-                goals[i].setColorId(1);
+                goals[i].setMatchingId(1);
             }else{
                 teamBlueGoals.add(goals[i]);
-                goals[i].setColorId(2);
+                goals[i].setMatchingId(2);
             }
         }
     }
@@ -112,17 +112,17 @@ public class VersusTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    public String getGameModeString() {
+    public String getName() {
         return "Versus";
     }
 
-    public synchronized boolean playerAnswered(Player player, JSONObject answer) {
+    public synchronized boolean playerAction(Player player, JSONObject actionData) {
         if((teamRed.contains(player) && whosTurn) || (teamBlue.contains(player) && !whosTurn)) { //wenn der Spieler aus dem Team ist, das an der Reihe ist
-            if (answer.has("switch")) {
+            if (actionData.has("switch")) {
                 try {
                     for (Switch s : switches) {
-                        if (s.getSwitchId() == answer.getInt("switch")) {
-                            s.changeSwitch(answer.getInt("switchedTo"));
+                        if (s.getSwitchId() == actionData.getInt("switch")) {
+                            s.changeSwitch(actionData.getInt("switchedTo"));
                             for (int i = 0; i < game.activePlayers.size(); i++) {
                                 game.activePlayers.get(i).sendSwitchChange(s);
                             }
