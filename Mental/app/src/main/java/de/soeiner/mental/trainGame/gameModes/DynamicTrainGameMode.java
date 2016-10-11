@@ -1,8 +1,7 @@
 package de.soeiner.mental.trainGame.gameModes;
 
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.trainGame.Wave;
-import de.soeiner.mental.trainGame.trainTracks.Goal;
+import de.soeiner.mental.trainGame.trainGenerators.Wave;
 
 /**
  * Created by Sven L. on 24.06.16.
@@ -23,11 +22,6 @@ public class DynamicTrainGameMode extends TrainGameMode {
     @Override
     public String getName() {
         return "Dynamic";
-    }
-
-    @Override
-    public void trainArrived(int trainId, Goal goal, boolean success) {
-
     }
 
     Wave[] initiateWaves() {

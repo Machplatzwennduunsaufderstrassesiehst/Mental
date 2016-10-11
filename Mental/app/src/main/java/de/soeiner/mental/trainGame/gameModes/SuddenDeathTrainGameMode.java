@@ -1,16 +1,45 @@
 package de.soeiner.mental.trainGame.gameModes;
 
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.trainGame.Wave;
+import de.soeiner.mental.trainGame.trainGenerators.Wave;
+import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
 import de.soeiner.mental.trainGame.trainTracks.Goal;
+import de.soeiner.mental.util.event.EventListener;
 
 /**
  * Created by Malte on 16.09.2016.
  */
 public class SuddenDeathTrainGameMode extends TrainGameMode {
 
-    public SuddenDeathTrainGameMode(Game game) {
+    EventListener<TrainArrivedEvent> trainArrivedListener = new EventListener<TrainArrivedEvent>() {
+        @Override
+        public void onEvent(TrainArrivedEvent event) {
+            Goal goal = event.getGoal();
+            boolean success = event.isMatch();
+            int trainId = event.getTrain().getId();
+            if (success) {
+                health++;
+                giveReward(trainArrivedReward);
+            } else {
+                waveSuccess = false;
+                waveIsRunning = false;
+            }
+            for (int i = 0; i < game.activePlayers.size(); i++) {
+                if (success) {
+                    game.activePlayers.get(i).getScore().updateScore(trainArrivedReward);
+                }
+                game.activePlayers.get(i).sendTrainArrived(trainId, goal.getGoalId(), success);
+            }
+            if (health >= healthNeededToWin) {
+                waveSuccess = true;
+                waveIsRunning = false;
+            }
+        }
+    };
+
+    public SuddenDeathTrainGameMode(final Game game) {
         super(game);
+        trainArrivedEvent.addListenerOnce(trainArrivedListener);
     }
 
     Wave[] initiateWaves() {
@@ -23,27 +52,6 @@ public class SuddenDeathTrainGameMode extends TrainGameMode {
         wellen[5] = new Wave(1.3, 2.6, 1300, 10, 10, 50, 750);
         wellen[6] = new Wave(1.0, 2.6, 1300, 10, 10, 50, 1000);
         return wellen;
-    }
-
-    @Override
-    public void trainArrived(int trainId, Goal goal, boolean success) {
-        if (success) {
-            health++;
-            giveReward(trainArrivedReward);
-        } else {
-            waveSuccess = false;
-            waveIsRunning = false;
-        }
-        for (int i = 0; i < game.activePlayers.size(); i++) {
-            if (success) {
-                game.activePlayers.get(i).getScore().updateScore(trainArrivedReward);
-            }
-            game.activePlayers.get(i).sendTrainArrived(trainId, goal.getGoalId(), success);
-        }
-        if (health >= healthNeededToWin) {
-            waveSuccess = true;
-            waveIsRunning = false;
-        }
     }
 
     @Override

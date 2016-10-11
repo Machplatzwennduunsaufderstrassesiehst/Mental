@@ -18,7 +18,7 @@ import de.soeiner.mental.arithmetics.gameModes.BeatBobGameMode;
 import de.soeiner.mental.arithmetics.gameModes.ClassicGameMode;
 import de.soeiner.mental.arithmetics.gameModes.KnockoutGameMode;
 import de.soeiner.mental.arithmetics.gameModes.SpeedGameMode;
-import de.soeiner.mental.trainGame.gameModes.ClassicTrainGameMode;
+import de.soeiner.mental.trainGame.gameModes.WavesTrainGameMode;
 import de.soeiner.mental.trainGame.gameModes.SuddenDeathTrainGameMode;
 
 public class MainActivity extends AppCompatActivity {
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             }
             server = new Server(PORT, this);
             Game trainGame = new Game();
-            trainGame.setVoting(new Voting(trainGame, new GameMode[]{new ClassicTrainGameMode(trainGame), new SuddenDeathTrainGameMode(trainGame)}));
+            trainGame.setVoting(new Voting(trainGame, new GameMode[]{new WavesTrainGameMode(trainGame), new SuddenDeathTrainGameMode(trainGame)}));
             Game arithmeticsGame = new Game();
             arithmeticsGame.setVoting(new Voting(arithmeticsGame, new GameMode[]{new ArenaGameMode(arithmeticsGame), new BeatBobGameMode(arithmeticsGame),
                     new ClassicGameMode(arithmeticsGame), new KnockoutGameMode(arithmeticsGame), new SpeedGameMode(arithmeticsGame)}));

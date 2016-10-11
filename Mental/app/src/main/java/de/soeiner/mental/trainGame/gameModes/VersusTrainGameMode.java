@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import de.soeiner.mental.gameFundamentals.Game;
 import de.soeiner.mental.gameFundamentals.Player;
 import de.soeiner.mental.trainGame.Train;
-import de.soeiner.mental.trainGame.Wave;
+import de.soeiner.mental.trainGame.trainGenerators.Wave;
+import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
 import de.soeiner.mental.trainGame.trainTracks.Goal;
 import de.soeiner.mental.trainGame.trainTracks.Switch;
+import de.soeiner.mental.util.event.EventListener;
 
 /**
  * Created by Malte on 15.09.2016.
@@ -22,29 +24,34 @@ public class VersusTrainGameMode extends TrainGameMode {
     ArrayList<Goal> teamBlueGoals = new ArrayList<>();
     Object lock = new Object();
 
+    EventListener<TrainArrivedEvent> trainArrivedListener = new EventListener<TrainArrivedEvent>() {
+        @Override
+        public void onEvent(TrainArrivedEvent event) {
+            Goal goal = event.getGoal();
+            if(!goal.isDestroyed()) { //wenn das entsprechende Ziel noch nicht zerstört ist
+                goal.destroy(); //zerstöre es
+                broadcastGoalDestroyed(goal.getGoalId());
+                if (teamRedGoals.contains(goal)) { // wenn das ziel zu team rot gehörte
+                    for (Player p : teamBlue) {
+                        p.getScore().updateScore(goalDestructionBonus); //award team blue
+                    }
+                } else { //sonst
+                    for (Player p : teamRed) {
+                        p.getScore().updateScore(goalDestructionBonus); //award team red
+                    }
+                }
+            }
+
+        }
+    };
+
 
     public VersusTrainGameMode(Game game) {
         super(game);
+        trainArrivedEvent.addListener(trainArrivedListener);
     }
 
     int goalDestructionBonus = 50;
-
-    @Override
-    public void trainArrived(int trainId, Goal goal, boolean success) {
-        if(!goal.isDestroyed()) { //wenn das entsprechende Ziel noch nicht zerstört ist
-            goal.destroy(); //zerstöre es
-            broadcastGoalDestroyed(goal.getGoalId());
-            if (teamRedGoals.contains(goal)) { // wenn das ziel zu team rot gehörte
-                for (Player p : teamBlue) {
-                    p.getScore().updateScore(goalDestructionBonus); //award team blue
-                }
-            } else { //sonst
-                for (Player p : teamRed) {
-                    p.getScore().updateScore(goalDestructionBonus); //award team red
-                }
-            }
-        }
-    }
 
     private void broadcastGoalDestroyed(int goalId){
         for (int i = 0; i < game.activePlayers.size(); i++) {

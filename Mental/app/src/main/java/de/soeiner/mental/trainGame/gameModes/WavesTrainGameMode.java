@@ -1,21 +1,56 @@
 package de.soeiner.mental.trainGame.gameModes;
 
 import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.trainGame.Wave;
+import de.soeiner.mental.trainGame.trainGenerators.Wave;
+import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
 import de.soeiner.mental.trainGame.trainTracks.Goal;
+import de.soeiner.mental.util.event.EventListener;
 
 /**
  * Created by Malte on 21.04.2016.
  */
-public class ClassicTrainGameMode extends TrainGameMode {
+public class WavesTrainGameMode extends TrainGameMode {
 
-    public ClassicTrainGameMode(Game game) {
+    private EventListener<TrainArrivedEvent> trainArrivedListener = new EventListener<TrainArrivedEvent>() {
+        @Override
+        public void onEvent(TrainArrivedEvent event) {
+            boolean success = event.isMatch();
+            int trainId = event.getTrain().getId();
+            Goal goal = event.getGoal();
+            if (success) {
+                //game.broadcastMessage("Zug hat sein Ziel erreicht!");
+                health++;
+                giveReward(trainArrivedReward);
+            } else {
+                //game.broadcastMessage("Zug hat das falsche Ziel erreicht :/");
+                health--; //TODO TODO TODO TODO TODO
+            }
+            for (int i = 0; i < game.activePlayers.size(); i++) {
+                if (success) {
+                    game.activePlayers.get(i).getScore().updateScore(trainArrivedReward);
+                }
+                game.activePlayers.get(i).sendTrainArrived(trainId, goal.getGoalId(), success);
+            }
+            if (health <= 0) { //Check for Wellen status
+                waveSuccess = false;
+                waveIsRunning = false;
+            }
+            if (health >= healthNeededToWin) {
+                waveSuccess = true;
+                waveIsRunning = false;
+            }
+
+        }
+    };
+
+    public WavesTrainGameMode(final Game game) {
         super(game);
+        trainArrivedEvent.addListenerOnce(trainArrivedListener);
     }
 
     @Override
     public String getName() {
-        return "Classic Coop";
+        return "Waves - Coop";
     }
 
     @Override
@@ -52,32 +87,8 @@ public class ClassicTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    public void loop(){
+    public void loop() {
+        countdown(5);
         goThroughWaves();
-    }
-
-    public void trainArrived(int trainId, Goal goal, boolean success) {
-        if (success) {
-            //game.broadcastMessage("Zug hat sein Ziel erreicht!");
-            health++;
-            giveReward(trainArrivedReward);
-        } else {
-            //game.broadcastMessage("Zug hat das falsche Ziel erreicht :/");
-            health--; //TODO TODO TODO TODO TODO
-        }
-        for (int i = 0; i < game.activePlayers.size(); i++) {
-            if (success) {
-                game.activePlayers.get(i).getScore().updateScore(trainArrivedReward);
-            }
-            game.activePlayers.get(i).sendTrainArrived(trainId, goal.getGoalId(), success);
-        }
-        if (health <= 0) { //Check for Wellen status
-            waveSuccess = false;
-            waveIsRunning = false;
-        }
-        if (health >= healthNeededToWin) {
-            waveSuccess = true;
-            waveIsRunning = false;
-        }
     }
 }
