@@ -5,9 +5,9 @@ import org.json.JSONObject;
 
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
-import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.gameFundamentals.Player;
-import de.soeiner.mental.gameFundamentals.GameMode;
+import de.soeiner.mental.main.Game;
+import de.soeiner.mental.main.Player;
+import de.soeiner.mental.main.GameMode;
 
 /**
  * Created by Malte on 14.09.2016.

@@ -1,7 +1,7 @@
 package de.soeiner.mental.shop;
 
-import de.soeiner.mental.gameFundamentals.Player;
-import de.soeiner.mental.gameFundamentals.Score;
+import de.soeiner.mental.main.Player;
+import de.soeiner.mental.main.Score;
 
 /**
  * Created by Malte on 06.05.2016.

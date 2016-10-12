@@ -1,10 +1,9 @@
 package de.soeiner.mental.exerciseCreators;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Stack;
 
-import de.soeiner.mental.gameFundamentals.Game;
+import de.soeiner.mental.main.Game;
 import de.soeiner.mental.trainGame.trainTracks.Goal;
 import de.soeiner.mental.trainGame.trainTracks.Switch;
 import de.soeiner.mental.trainGame.trainTracks.Track;

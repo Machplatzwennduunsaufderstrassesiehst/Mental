@@ -1,4 +1,4 @@
-package de.soeiner.mental.gameFundamentals;
+package de.soeiner.mental.main;
 
 import org.json.JSONArray;
 import org.json.JSONException;

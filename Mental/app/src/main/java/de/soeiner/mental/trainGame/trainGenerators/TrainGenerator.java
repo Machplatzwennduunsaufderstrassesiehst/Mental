@@ -1,6 +1,7 @@
 package de.soeiner.mental.trainGame.trainGenerators;
 
 import de.soeiner.mental.trainGame.Train;
+import de.soeiner.mental.trainGame.events.TrainSpawnEvent;
 import de.soeiner.mental.trainGame.gameModes.TrainGameMode;
 
 /**
@@ -42,7 +43,10 @@ public abstract class TrainGenerator implements Runnable {
     }
 
     public Train newTrain(int matchingId, int speed, boolean bombTrain) {
-        return new Train(trainIdCounter++, matchingId, speed, trainGameMode, bombTrain);
+        Train train = new Train(trainIdCounter++, matchingId, speed, trainGameMode, bombTrain);
+        train.trainArrived.addListenerOnce(trainGameMode.trainArrived);
+        trainGameMode.trainSpawn.fireEvent(new TrainSpawnEvent(train));
+        return train;
     }
 
     public abstract void loop();

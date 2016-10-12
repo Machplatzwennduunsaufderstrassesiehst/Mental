@@ -4,8 +4,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.gameFundamentals.Player;
+import de.soeiner.mental.main.Game;
+import de.soeiner.mental.main.Player;
 import de.soeiner.mental.trainGame.Train;
 import de.soeiner.mental.trainGame.trainGenerators.Wave;
 import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
@@ -48,7 +48,7 @@ public class VersusTrainGameMode extends TrainGameMode {
 
     public VersusTrainGameMode(Game game) {
         super(game);
-        trainArrivedEvent.addListener(trainArrivedListener);
+        trainArrived.addListener(trainArrivedListener);
     }
 
     int goalDestructionBonus = 50;

@@ -3,10 +3,10 @@ package de.soeiner.mental.shop;
 import java.util.Arrays;
 
 import de.soeiner.mental.shop.shopItems.Color;
-import de.soeiner.mental.gameFundamentals.Score;
+import de.soeiner.mental.main.Score;
 import de.soeiner.mental.shop.shopItems.ShopItem;
 import de.soeiner.mental.shop.shopItems.Title;
-import de.soeiner.mental.gameFundamentals.Player;
+import de.soeiner.mental.main.Player;
 
 /**
  * Created by Malte on 30.03.2016.

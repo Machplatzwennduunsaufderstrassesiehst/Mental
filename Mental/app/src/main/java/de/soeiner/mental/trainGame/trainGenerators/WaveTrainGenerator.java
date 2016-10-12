@@ -12,14 +12,14 @@ import de.soeiner.mental.util.flow.TimeoutBlocker;
 /**
  * Created by Sven on 11.10.16.
  */
-public abstract class TrainWaveGenerator extends TrainGenerator {
+public abstract class WaveTrainGenerator extends TrainGenerator {
 
     protected Wave currentWave;
     private boolean waveRunning = false;
     private Blocker betweenWaveBlocker = new TimeoutBlocker(5000);
     public final EventDispatcher<BooleanEvent> playersWon = new EventDispatcher<>();
 
-    public TrainWaveGenerator(TrainGameMode trainGameMode, int nPlayers, Integer[] availableMatchingIds, Integer[] availableStartTrackIds) {
+    public WaveTrainGenerator(TrainGameMode trainGameMode, int nPlayers, Integer[] availableMatchingIds, Integer[] availableStartTrackIds) {
         super(trainGameMode, nPlayers, availableMatchingIds, availableStartTrackIds);
     }
 

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Sven on 11.10.16.
  */
-public class EventDispatcher<E extends Event> {
+public class EventDispatcher<E extends Event> implements EventListener<E>{
 
     private ArrayList<EventListener<E>> listeners = new ArrayList<>();
 
@@ -39,6 +39,16 @@ public class EventDispatcher<E extends Event> {
         for (EventListener<E> listener : listeners) {
             listener.onEvent(event);
         }
+        System.out.println("Event fired: " + event.getClass().getSimpleName());
     }
 
+
+    /**
+     * EventDispatcher can of cause also be a listener and forward events
+     * @param event event to be forwarded
+     */
+    @Override
+    public void onEvent(E event) {
+        fireEvent(event);
+    }
 }

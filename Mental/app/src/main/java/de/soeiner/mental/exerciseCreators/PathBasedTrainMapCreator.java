@@ -2,7 +2,7 @@ package de.soeiner.mental.exerciseCreators;
 
 import java.util.ArrayList;
 
-import de.soeiner.mental.gameFundamentals.Game;
+import de.soeiner.mental.main.Game;
 import de.soeiner.mental.trainGame.trainTracks.BlockedTrack;
 import de.soeiner.mental.trainGame.trainTracks.Goal;
 import de.soeiner.mental.trainGame.trainTracks.Switch;

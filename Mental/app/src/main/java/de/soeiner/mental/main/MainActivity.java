@@ -1,4 +1,4 @@
-package de.soeiner.mental.gameFundamentals;
+package de.soeiner.mental.main;
 
 import android.content.ActivityNotFoundException;
 import android.support.v7.app.AppCompatActivity;

@@ -7,6 +7,7 @@ import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
 import de.soeiner.mental.trainGame.gameModes.TrainGameMode;
 import de.soeiner.mental.trainGame.trainTracks.Goal;
 import de.soeiner.mental.trainGame.trainTracks.Switch;
+import de.soeiner.mental.util.event.EventDispatcher;
 
 /**
  * Created by Malte on 21.04.2016.
@@ -18,6 +19,8 @@ public class Train implements Runnable {
     private TrainGameMode trainGame;
     private int x, y;
     private int positionId;
+
+    public EventDispatcher<TrainArrivedEvent> trainArrived = new EventDispatcher<>();
 
     public Train(int trainId, int matchingId, double speed, TrainGameMode trainGameMode, boolean bombtrain) {
         id = trainId;
@@ -60,7 +63,7 @@ public class Train implements Runnable {
                     } else {
                         event = new TrainArrivedEvent(this, tempGoal, false);
                     }
-                    trainGame.trainArrivedEvent.fireEvent(event);
+                    trainArrived.fireEvent(event);
                     moving = false; //beende thread
                 }
             }
@@ -101,6 +104,7 @@ public class Train implements Runnable {
         return (int) (distance/speed * 1000);
     }*/
 
+    // TODO fire event before train enters a track - useful for Bomb consumable later on
     private int calculateTimeToDestination() { //in millisek
         if (trainGame.trainMap[x][y].getType().equals("goal")) {
             return 0;

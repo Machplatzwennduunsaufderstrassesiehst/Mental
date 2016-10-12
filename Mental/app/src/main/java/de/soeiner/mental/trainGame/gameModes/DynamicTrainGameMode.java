@@ -1,6 +1,6 @@
 package de.soeiner.mental.trainGame.gameModes;
 
-import de.soeiner.mental.gameFundamentals.Game;
+import de.soeiner.mental.main.Game;
 import de.soeiner.mental.trainGame.trainGenerators.Wave;
 
 /**

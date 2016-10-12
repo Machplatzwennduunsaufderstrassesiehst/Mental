@@ -20,7 +20,7 @@ public class HealthWithRestoreGameCondition extends GameCondition<HealthLimitRea
         this.health = this.startHealth = startHealth;
         this.negativeHealthLimit = negativeHealthLimit;
         this.positiveHealthLimit = positiveHealthLimit;
-        trainGameMode.trainArrivedEvent.addListenerOnce(trainArrivedListener);
+        trainGameMode.trainArrived.addListenerOnce(trainArrivedListener);
     }
 
     EventListener<TrainArrivedEvent> trainArrivedListener = new EventListener<TrainArrivedEvent>() {

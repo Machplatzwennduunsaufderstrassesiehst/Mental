@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import de.soeiner.mental.exerciseCreators.PathBasedTrainMapCreator;
 import de.soeiner.mental.exerciseCreators.PathFinderTrainMapCreator;
 import de.soeiner.mental.exerciseCreators.TrainMapCreator;
-import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.gameFundamentals.Player;
-import de.soeiner.mental.gameFundamentals.GameMode;
+import de.soeiner.mental.main.Game;
+import de.soeiner.mental.main.Player;
+import de.soeiner.mental.main.GameMode;
 import de.soeiner.mental.trainGame.Train;
 import de.soeiner.mental.trainGame.trainGenerators.Wave;
 import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
@@ -38,8 +38,8 @@ public abstract class TrainGameMode extends GameMode {
     int trainArrivedReward;
     protected TrainMapCreator trainMapCreator;
 
-    public EventDispatcher<TrainArrivedEvent> trainArrivedEvent = new EventDispatcher<>();
-    public EventDispatcher<TrainSpawnEvent> trainSpawnEvent = new EventDispatcher<>();
+    public EventDispatcher<TrainArrivedEvent> trainArrived = new EventDispatcher<>();
+    public EventDispatcher<TrainSpawnEvent> trainSpawn = new EventDispatcher<>();
 
     public TrainGameMode(Game game) {
         super(game);
@@ -64,7 +64,7 @@ public abstract class TrainGameMode extends GameMode {
         distributePlayers();
         trainMapCreator = (TrainMapCreator) game.exerciseCreator;
         prepareMapCreation();
-        game.exerciseCreator.next(); // erstellt die neue map
+        trainMapCreator.next(); // erstellt die neue map
         trainMap = trainMapCreator.getTrainMap();
         switches = getSwitches();
         goals = getGoals();
@@ -77,20 +77,33 @@ public abstract class TrainGameMode extends GameMode {
     }
 
     //diese mehtoden sind jetzt nicht mehr abstract sonder müssen überschrieben werden
-    public void prepareMapCreation() {
-    } //zusätzliches vorbereitungen wie das manuelle setzen der Spieleranzahl
 
-    public void prepareMap() { //zusätzliches vorbereitungen wie die farbgebung der goals
+    /**
+     * zusätzliches vorbereitungen wie das manuelle setzen der Spieleranzahl
+     */
+    public void prepareMapCreation() {
+    }
+
+    /**
+     * zusätzliches vorbereitungen wie die farbgebung der goals
+     */
+    public void prepareMap() { //
         for (Goal goal : goals) {
             goal.setMatchingId(goal.getGoalId());
         }
     }
 
-    public void prepareGameStart() { //zusätzliches vorbereitungen nach dem Sender der map
+    /**
+     * zusätzliches Vorbereitungen nach dem senden der map
+     */
+    public void prepareGameStart() {
         alignSwitchesInGUI();
     }
 
-    public void distributePlayers() { //verteilen der Spieler auf activeplayers oder teams usw
+    /**
+     * verteilen der Spieler auf activeplayers oder teams usw
+     */
+    public void distributePlayers() {
         addAllPlayersToActive();
     }
 
@@ -154,9 +167,7 @@ public abstract class TrainGameMode extends GameMode {
                 for (Switch s : switches) {
                     if (s.getSwitchId() == actionData.getInt("switch")) {
                         s.changeSwitch(actionData.getInt("switchedTo"));
-                        for (int i = 0; i < game.activePlayers.size(); i++) {
-                            game.activePlayers.get(i).sendSwitchChange(s);
-                        }
+                        broadcastSwitchChange(s);
                     }
                 }
             } catch (Exception e) {

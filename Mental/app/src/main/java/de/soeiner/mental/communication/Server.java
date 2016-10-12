@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
 
-import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.gameFundamentals.Player;
+import de.soeiner.mental.main.Game;
+import de.soeiner.mental.main.Player;
 
 
 /**

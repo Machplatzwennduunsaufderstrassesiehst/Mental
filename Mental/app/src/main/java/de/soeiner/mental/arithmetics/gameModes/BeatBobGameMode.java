@@ -2,9 +2,9 @@ package de.soeiner.mental.arithmetics.gameModes;
 
 import org.json.JSONObject;
 
-import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.gameFundamentals.Player;
-import de.soeiner.mental.gameFundamentals.Score;
+import de.soeiner.mental.main.Game;
+import de.soeiner.mental.main.Player;
+import de.soeiner.mental.main.Score;
 import de.soeiner.mental.util.Math2;
 
 /**

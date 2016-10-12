@@ -1,6 +1,6 @@
 package de.soeiner.mental.trainGame.gameModes;
 
-import de.soeiner.mental.gameFundamentals.Game;
+import de.soeiner.mental.main.Game;
 import de.soeiner.mental.trainGame.trainGenerators.Wave;
 import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
 import de.soeiner.mental.trainGame.trainTracks.Goal;
@@ -39,7 +39,7 @@ public class SuddenDeathTrainGameMode extends TrainGameMode {
 
     public SuddenDeathTrainGameMode(final Game game) {
         super(game);
-        trainArrivedEvent.addListenerOnce(trainArrivedListener);
+        trainArrived.addListenerOnce(trainArrivedListener);
     }
 
     Wave[] initiateWaves() {

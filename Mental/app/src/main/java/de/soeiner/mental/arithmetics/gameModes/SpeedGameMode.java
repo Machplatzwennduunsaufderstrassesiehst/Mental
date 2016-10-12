@@ -4,9 +4,9 @@ import org.json.JSONObject;
 
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SquareMultExerciseCreator;
-import de.soeiner.mental.gameFundamentals.Game;
-import de.soeiner.mental.gameFundamentals.Player;
-import de.soeiner.mental.gameFundamentals.Score;
+import de.soeiner.mental.main.Game;
+import de.soeiner.mental.main.Player;
+import de.soeiner.mental.main.Score;
 
 /**
  * Created by Malte on 09.04.2016.
