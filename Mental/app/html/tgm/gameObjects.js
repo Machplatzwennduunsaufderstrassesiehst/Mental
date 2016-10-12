@@ -3,6 +3,7 @@
 TrainGame.gameObjects = (function() {
     
     function Train(trainId, destinationId, tracksPerSecond, startTrack, startTime) {
+        console.log(trainId);
         Train.s[trainId] = this;
         var container = new PIXI.Container();
 

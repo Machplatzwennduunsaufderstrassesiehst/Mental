@@ -10,6 +10,8 @@ import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.exerciseCreators.MixedExerciseCreator;
 import de.soeiner.mental.exerciseCreators.MultExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
+import de.soeiner.mental.trainGame.events.BooleanEvent;
+import de.soeiner.mental.util.event.EventDispatcher;
 
 /**
  * Created by Malte on 07.04.2016.
@@ -18,10 +20,12 @@ public abstract class GameMode {
 
     public ArrayList<ExerciseCreator> compatibleExerciseCreators = new ArrayList<>();
 
-    protected boolean running;
-    public int minPlayers = 2;
+    private boolean running;
+    protected int minPlayers = 2;
     public boolean needsConfirmation = false;
     public Game game;
+
+    public final EventDispatcher<BooleanEvent> runStateChanged = new EventDispatcher<>();
 
     public GameMode(Game game) {
         this.game = game;
@@ -43,19 +47,28 @@ public abstract class GameMode {
         }
     }
 
-    public abstract void loop();
+    public abstract void gameLoop();
 
     public void prepareGame() {
         resetGameMode();
         game.exerciseCreator.resetDifficulty();
     }
 
-    public boolean isRunning() {
+    public void unloadGame() {
+        while (game.activePlayers.size() > 0) {
+            game.activePlayers.remove(0);
+        }
+    }
+
+    public final boolean isRunning() {
         return running;
     }
 
-    public void setRunning(boolean flag) {
-        running = flag;
+    public final void setRunning(boolean yeOrNah) {
+        if (running != yeOrNah) {
+            runStateChanged.dispatchEvent(new BooleanEvent(yeOrNah));
+        }
+        running = yeOrNah;
     }
 
     public abstract boolean playerAction(Player player, JSONObject actionData);

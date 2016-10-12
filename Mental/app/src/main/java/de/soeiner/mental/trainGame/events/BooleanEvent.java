@@ -14,4 +14,9 @@ public class BooleanEvent implements GameConditionEvent {
     public boolean isPositive() {
         return positive;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + positive + ")";
+    }
 }

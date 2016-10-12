@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import de.soeiner.mental.main.Game;
 import de.soeiner.mental.main.Player;
 import de.soeiner.mental.trainGame.Train;
+import de.soeiner.mental.trainGame.trainGenerators.TrainGenerator;
 import de.soeiner.mental.trainGame.trainGenerators.Wave;
 import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
 import de.soeiner.mental.trainGame.trainTracks.Goal;
@@ -16,7 +17,7 @@ import de.soeiner.mental.util.event.EventListener;
 /**
  * Created by Malte on 15.09.2016.
  */
-public class VersusTrainGameMode extends TrainGameMode {
+public class VersusTrainGameMode extends TrainGameMode { // TODO
 
     ArrayList<Player> teamRed = new ArrayList<>();
     ArrayList<Player> teamBlue = new ArrayList<>();
@@ -51,6 +52,16 @@ public class VersusTrainGameMode extends TrainGameMode {
         trainArrived.addListener(trainArrivedListener);
     }
 
+    @Override
+    public void gameLoop() {
+
+    }
+
+    @Override
+    protected TrainGenerator createTrainGenerator() {
+        return null;
+    }
+
     int goalDestructionBonus = 50;
 
     private void broadcastGoalDestroyed(int goalId){
@@ -60,13 +71,7 @@ public class VersusTrainGameMode extends TrainGameMode {
     }
 
     @Override
-    Wave[] initiateWaves() {
-        return new Wave[0];
-    }
-
-    @Override
     public void prepareMapCreation() {
-        reward = 0;
         trainMapCreator.setGoalAmount(game.activePlayers.size() * 2);
     }
 
@@ -96,7 +101,6 @@ public class VersusTrainGameMode extends TrainGameMode {
     }
 
     boolean whosTurn = true;  // true -> rot ist an der reihe, false -> blau ist an der Reihe
-    @Override
     public synchronized void loop() {
         int id = 0;
         while(!allGoalsDestroyed()){ //solange nicht alle Ziele eines der beiden Teams zerstört sind
@@ -138,7 +142,7 @@ public class VersusTrainGameMode extends TrainGameMode {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                notify(); // benachrichtige loop()
+                notify(); // benachrichtige spawnNextTrain()
                 return true;
             }
         }

@@ -1,8 +1,10 @@
 package de.soeiner.mental.trainGame.trainGenerators;
 
 import de.soeiner.mental.trainGame.Train;
+import de.soeiner.mental.trainGame.events.BooleanEvent;
 import de.soeiner.mental.trainGame.events.TrainSpawnEvent;
 import de.soeiner.mental.trainGame.gameModes.TrainGameMode;
+import de.soeiner.mental.util.event.EventListener;
 
 /**
  * Created by Sven on 11.10.16.
@@ -28,7 +30,9 @@ public abstract class TrainGenerator implements Runnable {
     @Override
     public final void run() {
         while (running) {
-            loop();
+            System.out.println("[TrainGenerator.run()] spawnNextTrain()");
+            spawnNextTrain();
+            System.out.println("[TrainGenerator.run()] spawned next train");
         }
     }
 
@@ -36,6 +40,15 @@ public abstract class TrainGenerator implements Runnable {
         running = true;
         Thread t = new Thread(this);
         t.start();
+
+        trainGameMode.runStateChanged.addSingleDispatchListener(new EventListener<BooleanEvent>() {
+            @Override
+            public void onEvent(BooleanEvent event) {
+                if (!event.isPositive()) {
+                    stop();
+                }
+            }
+        });
     }
 
     public void stop() {
@@ -45,11 +58,11 @@ public abstract class TrainGenerator implements Runnable {
     public Train newTrain(int matchingId, int speed, boolean bombTrain) {
         Train train = new Train(trainIdCounter++, matchingId, speed, trainGameMode, bombTrain);
         train.trainArrived.addListenerOnce(trainGameMode.trainArrived);
-        trainGameMode.trainSpawn.fireEvent(new TrainSpawnEvent(train));
+        trainGameMode.trainSpawn.dispatchEvent(new TrainSpawnEvent(train));
         return train;
     }
 
-    public abstract void loop();
+    public abstract void spawnNextTrain();
 
     public void setNumPlayers(int numPlayers) {
         this.numPlayers = numPlayers;

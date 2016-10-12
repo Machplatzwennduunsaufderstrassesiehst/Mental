@@ -26,7 +26,7 @@ public class ArenaGameMode extends ArithmeticGameMode {
     public void prepareGame() {
         super.prepareGame();
         if (game.joinedPlayers.size() < 2) {
-            running = false;
+            setRunning(false);
             game.broadcastMessage("Zu wenig Spieler um Arena zu starten");
         } else {
             for (int i = 0; i < 2; i++) {
@@ -44,7 +44,7 @@ public class ArenaGameMode extends ArithmeticGameMode {
 
 
     public void loop() {
-        running = game.activePlayers.size() == 2;
+        setRunning(game.activePlayers.size() == 2);
         zaehler++;
         if (zaehler > 5) { //gleichstand nicht möglich
             if (game.activePlayers.get(0).getScore().getScoreValue() > game.activePlayers.get(1).getScore().getScoreValue()) {
@@ -56,7 +56,7 @@ public class ArenaGameMode extends ArithmeticGameMode {
                 game.activePlayers.get(1).getShop().addMoney(bet);
                 game.activePlayers.get(0).getShop().addMoney(-bet);
             }
-            running = false;
+            setRunning(false);
             zaehler = 0;
         }
     }

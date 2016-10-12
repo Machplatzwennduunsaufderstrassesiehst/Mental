@@ -1,7 +1,8 @@
-package de.soeiner.mental.exerciseCreators;
+package de.soeiner.mental.trainGame.mapCreators;
 
 import java.util.ArrayList;
 
+import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.main.Game;
 import de.soeiner.mental.trainGame.trainTracks.BlockedTrack;
 import de.soeiner.mental.trainGame.trainTracks.Goal;

@@ -32,9 +32,11 @@ public class HealthWithRestoreGameCondition extends GameCondition<HealthLimitRea
                 health--;
             }
             if (health <= negativeHealthLimit) {
-                fireEvent(new HealthLimitReachedEvent(false));
+                dispatchEvent(new HealthLimitReachedEvent(false));
+                health = startHealth;
             } else if (health >= positiveHealthLimit) {
-                fireEvent(new HealthLimitReachedEvent(true));
+                dispatchEvent(new HealthLimitReachedEvent(true));
+                health = startHealth;
             }
         }
     };
@@ -46,5 +48,17 @@ public class HealthWithRestoreGameCondition extends GameCondition<HealthLimitRea
     @Override
     public void reset() {
         health = startHealth;
+    }
+
+    public void setHealth(int health) {
+        this.startHealth = this.health = health;
+    }
+
+    public void setNegativeHealthLimit(int negativeHealthLimit) {
+        this.negativeHealthLimit = negativeHealthLimit;
+    }
+
+    public void setPositiveHealthLimit(int positiveHealthLimit) {
+        this.positiveHealthLimit = positiveHealthLimit;
     }
 }

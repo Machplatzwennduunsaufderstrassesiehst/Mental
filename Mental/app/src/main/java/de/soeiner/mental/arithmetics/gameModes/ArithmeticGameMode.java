@@ -8,6 +8,8 @@ import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.main.Game;
 import de.soeiner.mental.main.Player;
 import de.soeiner.mental.main.GameMode;
+import de.soeiner.mental.trainGame.events.BooleanEvent;
+import de.soeiner.mental.util.event.EventListener;
 
 /**
  * Created by Malte on 14.09.2016.
@@ -21,15 +23,42 @@ public abstract class ArithmeticGameMode extends GameMode {
 
     public ArithmeticGameMode(Game game){
         super(game);
+        this.runStateChanged.addListener(new EventListener<BooleanEvent>() {
+            @Override
+            public void onEvent(BooleanEvent event) {
+                if (event.isPositive()) {
+                    synchronized (answerTimeoutLock) {
+                        answerTimeoutLock.notifyAll();
+                    }
+                }
+            }
+        });
     }
 
     @Override
-    public void setRunning(boolean flag) {
-        super.setRunning(flag);
-        synchronized (answerTimeoutLock) {
-            answerTimeoutLock.notifyAll();
+    public void gameLoop() {
+        while (isRunning()) {
+            System.out.println("[ArithmeticGameMode.gameLoop()] while-Schleife anfang");
+            if (game.activePlayers.size() == 0) { //wenn keine spieler mehr da sind
+                setRunning(false);
+                System.out.println("[ArithmeticGameMode.gameLoop()] game ended, no players left");
+                return;
+            } else {
+                try {
+                    System.out.println("[ArithmeticGameMode.gameLoop()] newExercise()");
+                    newExercise();
+                    System.out.println("[ArithmeticGameMode.gameLoop()] spawnNextTrain()");
+                    loop();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("FEHLER IN GAMEMODE");
+                }
+            }
+
         }
     }
+
+    public abstract void loop();
 
     public int getPoints() { //methode berechent punkte fürs lösen einer Aufgabe
         //jenachdem als wievielter der jeweilige spieler die richtige Antwort eraten hat

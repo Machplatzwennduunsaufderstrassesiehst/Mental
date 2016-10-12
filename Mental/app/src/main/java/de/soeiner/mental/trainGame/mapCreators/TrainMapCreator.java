@@ -1,4 +1,4 @@
-package de.soeiner.mental.exerciseCreators;
+package de.soeiner.mental.trainGame.mapCreators;
 
 import com.android.internal.util.Predicate;
 
@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.trainGame.trainTracks.Goal;
 import de.soeiner.mental.trainGame.trainTracks.Switch;
 import de.soeiner.mental.trainGame.trainTracks.Track;
@@ -33,7 +34,7 @@ public abstract class TrainMapCreator extends ExerciseCreator {
     }
 
     @Override
-    JSONObject createNext() {
+    protected JSONObject createNext() {
         createTrainMap();
         return updateExerciseObject();
     }

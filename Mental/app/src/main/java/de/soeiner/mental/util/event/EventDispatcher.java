@@ -8,19 +8,27 @@ import java.util.ArrayList;
 public class EventDispatcher<E extends Event> implements EventListener<E>{
 
     private ArrayList<EventListener<E>> listeners = new ArrayList<>();
+    private final Object listenersArrayLock = new Object();
 
-    public void addListener(EventListener<E> listener) {
-        listeners.add(listener);
+    public final void addListener(EventListener<E> listener) {
+        if (listener == this) {
+            throw new RuntimeException("I can't listen to myself!");
+        }
+        synchronized (listenersArrayLock) {
+            listeners.add(listener);
+        }
     }
 
-    public void addListenerOnce(EventListener<E> listener) {
+    public final void addListenerOnce(EventListener<E> listener) {
         while (listeners.contains(listener)) {
-            listeners.remove(listener);
+            synchronized (listenersArrayLock) {
+                listeners.remove(listener);
+            }
         }
         addListener(listener);
     }
 
-    public void addSingleDispatchListener(final EventListener<E> listener) {
+    public final void addSingleDispatchListener(final EventListener<E> listener) {
         addListener(new EventListener<E>() {
 
             @Override
@@ -31,15 +39,24 @@ public class EventDispatcher<E extends Event> implements EventListener<E>{
         });
     }
 
-    public boolean removeListener(EventListener<E> listener) {
-        return listeners.remove(listener);
+    public final boolean removeListener(EventListener<E> listener) {
+        synchronized (listenersArrayLock) {
+            return listeners.remove(listener);
+        }
     }
 
-    public void fireEvent(E event) {
-        for (EventListener<E> listener : listeners) {
-            listener.onEvent(event);
+    public final void dispatchEvent(final E event) {
+        synchronized (listenersArrayLock) {
+            for (final EventListener<E> listener : listeners) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onEvent(event);
+                    }
+                }).start();
+            }
         }
-        System.out.println("Event fired: " + event.getClass().getSimpleName());
+        System.out.println("Event fired: " + event.toString());
     }
 
 
@@ -49,6 +66,6 @@ public class EventDispatcher<E extends Event> implements EventListener<E>{
      */
     @Override
     public void onEvent(E event) {
-        fireEvent(event);
+        dispatchEvent(event);
     }
 }

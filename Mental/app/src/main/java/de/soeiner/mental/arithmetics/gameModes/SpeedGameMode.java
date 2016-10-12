@@ -50,7 +50,7 @@ public class SpeedGameMode extends ArithmeticGameMode { //Es empfiehlt sich vll.
                 s.updateScore(getPoints());
                 game.broadcastMessage(player.getName() + " hat die Aufgabe als 1. gelöst");
                 if (s.getScoreValue() >= 100) {
-                    running = false; // schleife in run() beenden
+                    setRunning(false);
                     broadcastPlayerWon(player.getName(), getName());
                     answerTimeoutLock.notify();
                 }

@@ -55,7 +55,7 @@ public abstract class ExerciseCreator {
     }
 
     // soll man nicht mehr von außen aufrufen
-    abstract JSONObject createNext();
+    protected abstract JSONObject createNext();
 
     // Zwingt alle exerciseCreator, einen Namen bereitzustellen
     public abstract String getName();

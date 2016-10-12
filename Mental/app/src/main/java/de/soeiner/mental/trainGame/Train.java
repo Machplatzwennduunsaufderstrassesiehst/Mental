@@ -63,7 +63,7 @@ public class Train implements Runnable {
                     } else {
                         event = new TrainArrivedEvent(this, tempGoal, false);
                     }
-                    trainArrived.fireEvent(event);
+                    trainArrived.dispatchEvent(event);
                     moving = false; //beende thread
                 }
             }
@@ -116,11 +116,11 @@ public class Train implements Runnable {
         int xtemp = 0;
         int ytemp = 0;
         do {
-            System.out.println("Train " + this.getId() + " at Pos(" + x + "|" + y + ")");
+            //System.out.println("Train " + this.getId() + " at Pos(" + x + "|" + y + ")");
             if (distance == 0 && trainGame.trainMap[x][y].getType().equals("switch")) {
                 s = (Switch) trainGame.trainMap[x][y];
                 direction = s.getSwitchedTo();
-                System.out.println("Train " + this.getId() + " now switching. switchId:" + s.getSwitchId() + " Pos(" + x + "|" + y + ")");
+                //System.out.println("Train " + this.getId() + " now switching. switchId:" + s.getSwitchId() + " Pos(" + x + "|" + y + ")");
                 trainGame.broadcastTrainDecision(id, s.getSwitchId(), direction);
             }
             try {

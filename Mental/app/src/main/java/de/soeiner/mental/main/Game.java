@@ -265,7 +265,7 @@ public class Game implements Runnable {
 
     private void waitForConfirmations(int maxWaitTimeoutSeconds) {
         int z = 0;
-        confirmed = 0;
+
         while (confirmed < activePlayers.size() && z < maxWaitTimeoutSeconds * 10) {
             try {
                 Thread.sleep(100);
@@ -274,13 +274,14 @@ public class Game implements Runnable {
                 e.printStackTrace();
             }
         }
+
+        confirmed = 0;
     }
 
     @Override
     public void run() {
         System.out.println("run()");
         waitForPlayers(1);
-        start:
         while (running) {
             broadcastShowScoreBoard();
             sendGameStrings();
@@ -297,27 +298,14 @@ public class Game implements Runnable {
             gameMode.prepareGame();
             System.out.println("game prepared: " + gameMode.getName());
             if (gameMode.needsConfirmation) {
+                System.out.println("waiting for confirmations");
                 waitForConfirmations(30);
+                System.out.println("confirmations ready");
             }
-            while (gameMode.isRunning()) {
-                System.out.println("[Game.run] while-Schleife anfang");
-                if (activePlayers.size() == 0) { //wenn keine spieler mehr da sind
-                    gameMode.setRunning(false);
-                    System.out.println("[Game.run] continue start, no players left");
-                    continue start;
-                } else {
-                    try {
-                        System.out.println("[Game.run] gameMode.newExercise()");
-                        gameMode.newExercise();
-                        System.out.println("[Game.run] gameMode.loop()");
-                        gameMode.loop();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.out.println("FEHLER IN GAMEMODE");
-                    }
-                }
-
-            }
+            System.out.println("calling gameLoop()");
+            gameMode.gameLoop();
+            System.out.println("game loop end");
+            gameMode.unloadGame();
         }
     }
 }
