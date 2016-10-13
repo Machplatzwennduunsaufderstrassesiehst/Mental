@@ -106,16 +106,6 @@ public class Player extends ClientConnection {
         }
     }
 
-    public void sendGoalDestroyed(int goalId) {
-        try {
-            JSONObject j = CmdRequest.makeCmd(CmdRequest.GOAL_DESTROYED);
-            j.put("goalId", goalId);
-            makePushRequest(new PushRequest(j));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void sendNewTrain(JSONObject train) {
         try {
             makePushRequest(new PushRequest(train));
@@ -162,18 +152,6 @@ public class Player extends ClientConnection {
         try {
             JSONObject j = CmdRequest.makeCmd(CmdRequest.GAME_STRING);
             j.put("gameString", gameString);
-            makePushRequest(new PushRequest(j));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void sendWaveCompleted(boolean success, int waveNo, int reward) {
-        try {
-            JSONObject j = CmdRequest.makeCmd(CmdRequest.TRAIN_WAVE_COMPLETED);
-            j.put("success", success);
-            j.put("waveNo", waveNo);
-            j.put("reward", reward);
             makePushRequest(new PushRequest(j));
         } catch (JSONException e) {
             e.printStackTrace();

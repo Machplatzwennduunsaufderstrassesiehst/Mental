@@ -309,7 +309,9 @@ public class Game implements Runnable {
                 System.out.println("confirmations ready");
             }
             System.out.println("calling gameLoop()");
+            gameMode.runState.setRunning(true);
             gameMode.gameLoop();
+            gameMode.runState.setRunning(false);
             System.out.println("game loop end");
             gameMode.unloadGame();
         }

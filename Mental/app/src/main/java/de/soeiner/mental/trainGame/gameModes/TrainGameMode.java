@@ -122,6 +122,11 @@ public abstract class TrainGameMode extends GameMode {
         return availableMatchingIds.toArray(new Integer[availableMatchingIds.size()]);
     }
 
+    // TODO TODO TODO get the list from trainMapCreator as soon as supported
+    protected TrainTrack[] getAvailableStartTracks() {
+        return new TrainTrack[]{getTrackById(getFirstTrackId())};
+    }
+
     public TrainTrack getTrackById(int id) {
         for (int i = 0; i < trainMap.length; i++) {
             for (int j = 0; j < trainMap[i].length; j++) {
@@ -229,7 +234,7 @@ public abstract class TrainGameMode extends GameMode {
         }
     }
 
-    // TODO das muss natürlich von hier Verschwinden
+    // TODO das sollte natürlich keine Funktion von TrainGameMode sein
     public void newExercise() {
     }
 }

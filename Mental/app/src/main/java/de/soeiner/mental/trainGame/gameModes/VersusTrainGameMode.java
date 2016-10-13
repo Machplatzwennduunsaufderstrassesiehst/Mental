@@ -1,12 +1,16 @@
 package de.soeiner.mental.trainGame.gameModes;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import de.soeiner.mental.communication.CmdRequest;
+import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.main.Game;
 import de.soeiner.mental.main.Player;
 import de.soeiner.mental.trainGame.Train;
+import de.soeiner.mental.trainGame.trainGenerators.ManualTrainGenerator;
 import de.soeiner.mental.trainGame.trainGenerators.TrainGenerator;
 import de.soeiner.mental.trainGame.trainGenerators.Wave;
 import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
@@ -24,6 +28,8 @@ public class VersusTrainGameMode extends TrainGameMode { // TODO
     ArrayList<Goal> teamRedGoals = new ArrayList<>();
     ArrayList<Goal> teamBlueGoals = new ArrayList<>();
     Object lock = new Object();
+
+    ManualTrainGenerator trainGenerator;
 
     EventListener<TrainArrivedEvent> trainArrivedListener = new EventListener<TrainArrivedEvent>() {
         @Override
@@ -54,16 +60,13 @@ public class VersusTrainGameMode extends TrainGameMode { // TODO
 
     @Override
     public void gameLoop() {
-
+        trainGenerator = new ManualTrainGenerator(this, game.activePlayers.size(), getAvailableMatchingIds(), getAvailableStartTracks());
+        trainGenerator.runState.setRunning(true);
+        // TODO Game Condition
+        trainGenerator.runState.setRunning(false);
     }
 
     int goalDestructionBonus = 50;
-
-    private void broadcastGoalDestroyed(int goalId){
-        for (int i = 0; i < game.activePlayers.size(); i++) {
-            game.activePlayers.get(i).sendGoalDestroyed(goalId);
-        }
-    }
 
     @Override
     public void prepareMapCreation() {
@@ -101,8 +104,7 @@ public class VersusTrainGameMode extends TrainGameMode { // TODO
         while(!allGoalsDestroyed()){ //solange nicht alle Ziele eines der beiden Teams zerstört sind
             if(whosTurn){ whosTurn = false; }else{ whosTurn = true; } //alterniere wer an der Reihe ist
             try{ wait(10000); }catch(Exception e){ e.printStackTrace(); } //warte darauf das eines der beiden Teams seinen move macht
-            //new Train(id++, -1, 5.0, this, true, ); // schicke nächsten Zug
-            System.out.println("TODO TODO USE TRAINGENERATOR");
+            // TODO trainGenerator.newTrain(...)
         }
     }
 
@@ -143,5 +145,15 @@ public class VersusTrainGameMode extends TrainGameMode { // TODO
             }
         }
         return false;
+    }
+
+    public void broadcastGoalDestroyed(int goalId) {
+        try {
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.GOAL_DESTROYED);
+            j.put("goalId", goalId);
+            broadcast(j);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

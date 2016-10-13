@@ -54,6 +54,9 @@ public abstract class GameMode {
         }
     }
 
+    /**
+     * main game loop of the GameMode, must block until Game is finished
+     */
     public abstract void gameLoop();
 
     public void prepareGame() {

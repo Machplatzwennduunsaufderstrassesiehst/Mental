@@ -1,5 +1,10 @@
 package de.soeiner.mental.trainGame.gameModes;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import de.soeiner.mental.communication.CmdRequest;
+import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.main.Game;
 import de.soeiner.mental.trainGame.events.HealthLimitReachedEvent;
 import de.soeiner.mental.trainGame.gameConditions.HealthWithRestoreGameCondition;
@@ -36,15 +41,6 @@ public abstract class WavesTrainGameMode extends TrainGameMode {
         wave = getNextWave();
     }
 
-    protected EventListener<HealthLimitReachedEvent> broadcastWaveCompletedListener = new EventListener<HealthLimitReachedEvent>() {
-        @Override
-        public void onEvent(HealthLimitReachedEvent event) {
-            for (int i = 0; i < game.activePlayers.size(); i++) {
-                game.activePlayers.get(i).sendWaveCompleted(event.isPositive(), waveCounter++, 0);
-            }
-        }
-    };
-
     @Override
     public String getName() {
         return "Waves - Coop";
@@ -53,15 +49,12 @@ public abstract class WavesTrainGameMode extends TrainGameMode {
     @Override
     public void gameLoop() {
         countdown(5);
-        System.out.println("countdown ended");
-        runState.setRunning(true);
-        System.out.println("set running to true");
         while (runState.isRunning()) {
             trainGenerator = new TrainWaveGenerator(this, wave, game.activePlayers.size(), getAvailableMatchingIds(), new TrainTrack[]{getTrackById(getFirstTrackId())});
             trainGenerator.runState.setRunning(true);
             HealthWithRestoreGameCondition waveCondition = new HealthWithRestoreGameCondition(this, 10, 0, 20);
             waveCondition.addListener(broadcastWaveCompletedListener);
-            new EventBlocker<>(waveCondition.conditionMetOrAborted).block(); // TODO
+            new EventBlocker<>(waveCondition.conditionMetOrAborted).block();
             trainGenerator.runState.setRunning(false);
             if (hasNextWave()) {
                 System.out.println("blocker");
@@ -69,7 +62,7 @@ public abstract class WavesTrainGameMode extends TrainGameMode {
                 wave = getNextWave();
                 System.out.println("got next wave");
             } else {
-                System.out.println("Players lost");
+                System.out.println("Players won");
                 runState.setRunning(false);
             }
         }
@@ -92,5 +85,25 @@ public abstract class WavesTrainGameMode extends TrainGameMode {
     protected abstract Wave getNextWave();
 
     protected abstract void resetWaveCounter();
+
+    protected EventListener<HealthLimitReachedEvent> broadcastWaveCompletedListener = new EventListener<HealthLimitReachedEvent>() {
+        @Override
+        public void onEvent(HealthLimitReachedEvent event) {
+            broadcastWaveCompleted(event.isPositive(), waveCounter++, 0); // TODO
+        }
+    };
+
+    public void broadcastWaveCompleted(boolean success, int waveNumber, int reward) {
+        try {
+            JSONObject j = CmdRequest.makeCmd(CmdRequest.TRAIN_WAVE_COMPLETED);
+            j.put("success", success);
+            j.put("waveNo", waveNumber);
+            j.put("reward", reward);
+            broadcast(j);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }

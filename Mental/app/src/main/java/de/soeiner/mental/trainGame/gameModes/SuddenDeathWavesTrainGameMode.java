@@ -9,7 +9,7 @@ import de.soeiner.mental.util.event.EventListener;
 /**
  * Created by Malte on 16.09.2016.
  */
-public class SuddenDeathTrainGameMode extends WavesTrainGameMode {
+public class SuddenDeathWavesTrainGameMode extends StaticWavesTrainGameMode {
 
     EventListener<TrainArrivedEvent> trainArrivedListener = new EventListener<TrainArrivedEvent>() {
         @Override
@@ -20,7 +20,7 @@ public class SuddenDeathTrainGameMode extends WavesTrainGameMode {
         }
     };
 
-    public SuddenDeathTrainGameMode(final Game game) {
+    public SuddenDeathWavesTrainGameMode(final Game game) {
         super(game);
         trainArrived.addListenerOnce(trainArrivedListener);
     }

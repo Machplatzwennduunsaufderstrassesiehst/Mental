@@ -69,7 +69,7 @@ public abstract class TrainGenerator implements Runnable {
         return train;
     }
 
-    public abstract void spawnNextTrainLoop();
+    protected abstract void spawnNextTrainLoop();
 
     public void setNumPlayers(int numPlayers) {
         this.numPlayers = numPlayers;
