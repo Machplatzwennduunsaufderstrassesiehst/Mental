@@ -23,7 +23,7 @@ public abstract class ArithmeticGameMode extends GameMode {
 
     public ArithmeticGameMode(Game game){
         super(game);
-        this.runStateChanged.addListener(new EventListener<BooleanEvent>() {
+        this.runState.addListener(new EventListener<BooleanEvent>() {
             @Override
             public void onEvent(BooleanEvent event) {
                 if (event.isPositive()) {
@@ -37,17 +37,17 @@ public abstract class ArithmeticGameMode extends GameMode {
 
     @Override
     public void gameLoop() {
-        while (isRunning()) {
+        while (runState.isRunning()) {
             System.out.println("[ArithmeticGameMode.gameLoop()] while-Schleife anfang");
             if (game.activePlayers.size() == 0) { //wenn keine spieler mehr da sind
-                setRunning(false);
+                runState.setRunning(false);
                 System.out.println("[ArithmeticGameMode.gameLoop()] game ended, no players left");
                 return;
             } else {
                 try {
                     System.out.println("[ArithmeticGameMode.gameLoop()] newExercise()");
                     newExercise();
-                    System.out.println("[ArithmeticGameMode.gameLoop()] spawnNextTrain()");
+                    System.out.println("[ArithmeticGameMode.gameLoop()] spawnNextTrainLoop()");
                     loop();
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.trainGame.mapCreators.PathBasedTrainMapCreator;
 import de.soeiner.mental.trainGame.mapCreators.PathFinderTrainMapCreator;
 import de.soeiner.mental.trainGame.mapCreators.TrainMapCreator;
@@ -27,8 +28,6 @@ public abstract class TrainGameMode extends GameMode {
     public TrainTrack[][] trainMap;
     Switch[] switches;
     Goal[] goals;
-
-    protected TrainGenerator trainGenerator;
 
     protected TrainMapCreator trainMapCreator;
 
@@ -65,12 +64,9 @@ public abstract class TrainGameMode extends GameMode {
         goals = getGoals();
         prepareMap();
         trainMapCreator.updateExerciseObject();
-        trainGenerator = createTrainGenerator();
         game.broadcastExercise(); // macht nichts außer die map an alle zu senden
         prepareGameStart();
     }
-
-    protected abstract TrainGenerator createTrainGenerator();
 
     //diese mehtoden sind jetzt nicht mehr abstract sonder müssen überschrieben werden
 
@@ -218,12 +214,6 @@ public abstract class TrainGameMode extends GameMode {
     public void broadcastTrainDecision(int trainId, int switchId, int direction) {
         for (int i = 0; i < game.activePlayers.size(); i++) {
             game.activePlayers.get(i).sendTrainDecision(trainId, switchId, direction);
-        }
-    }
-
-    public void broadcastWaveCompleted(boolean success, int waveNo, int reward) {
-        for (int i = 0; i < game.activePlayers.size(); i++) {
-            game.activePlayers.get(i).sendWaveCompleted(success, (waveNo + 1), reward);
         }
     }
 

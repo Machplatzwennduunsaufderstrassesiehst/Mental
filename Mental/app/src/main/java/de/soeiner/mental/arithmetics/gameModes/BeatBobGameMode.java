@@ -39,7 +39,7 @@ public class BeatBobGameMode extends ArithmeticGameMode {
             health = 5 * game.activePlayers.size();
             playerHeadstart = game.exerciseCreator.getExpectedSolveTime();
         } else {
-            setRunning(false);
+            runState.setRunning(false);
         }
         function = calculateSolveTimeFunction();
     }
@@ -56,13 +56,13 @@ public class BeatBobGameMode extends ArithmeticGameMode {
         try {
             Thread.sleep(calculateMilliSeconds(playerHeadstart));
             upTime += playerHeadstart;
-            while (isRunning()) {
-                System.out.println("[BeatBob.spawnNextTrain]");
+            while (runState.isRunning()) {
+                System.out.println("[BeatBob.spawnNextTrainLoop]");
                 if (game.activePlayers.size() == 0) {
-                    setRunning(false);
+                    runState.setRunning(false);
                 }
-                for (double i = 0; (i <= bobSolveTime * 10) && isRunning(); i++) {
-                    System.out.println("[BeatBob.spawnNextTrain] for-Schleife");
+                for (double i = 0; (i <= bobSolveTime * 10) && runState.isRunning(); i++) {
+                    System.out.println("[BeatBob.spawnNextTrainLoop] for-Schleife");
                     bobSolveTime = balanceBob();
                     Thread.sleep(100);
                     upTime += 0.1;
@@ -110,7 +110,7 @@ public class BeatBobGameMode extends ArithmeticGameMode {
         synchronized (answerTimeoutLock) {
             if (status >= health) { //wenn bob tot ist
                 giveReward();
-                setRunning(false); // schleife in run() beenden
+                runState.setRunning(false); // schleife in run() beenden
                 broadcastPlayerWon("die Spieler", getName());
                 answerTimeoutLock.notify();
             }
@@ -119,7 +119,7 @@ public class BeatBobGameMode extends ArithmeticGameMode {
                     Thread.sleep(3000);
                 } catch (Exception e) {
                 }
-                setRunning(false); // schleife in run() beenden
+                runState.setRunning(false); // schleife in run() beenden
                 game.broadcastMessage("Bob hat gewonnen");
                 broadcastPlayerWon("Bob", getName());
                 answerTimeoutLock.notify();
@@ -148,7 +148,7 @@ public class BeatBobGameMode extends ArithmeticGameMode {
         function = calculateSolveTimeFunction();
         checkObjective();
         if (game.activePlayers.size() == 0) {
-            setRunning(false);
+            runState.setRunning(false);
         }
     }
 

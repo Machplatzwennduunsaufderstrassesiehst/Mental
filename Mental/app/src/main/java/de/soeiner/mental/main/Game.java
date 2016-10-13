@@ -56,7 +56,7 @@ public class Game implements Runnable {
                 jsonGameObject.put("name", g.getName());
                 jsonGameObject.put("description", g.getDescription());
                 jsonGameObject.put("players", new JSONArray(g.getScoreboard()));
-                jsonGameObject.put("gameIsRunning", g.gameMode.isRunning());
+                jsonGameObject.put("gameIsRunning", g.gameMode.runState.isRunning());
                 jsonGameArray.put(jsonGameObject);
             }
             return jsonGameArray;
@@ -90,6 +90,12 @@ public class Game implements Runnable {
         running = false;
         synchronized (voteLock) {
             voteLock.notifyAll();
+        }
+    }
+
+    public void broadcast(JSONObject jsonObject) {
+        for (Player player : joinedPlayers) {
+            player.makePushRequest(new PushRequest(jsonObject));
         }
     }
 
@@ -149,7 +155,7 @@ public class Game implements Runnable {
         joinedPlayers.add(p);
         updateScoreBoardSize();
         broadcastScoreboard();
-        if (!gameMode.isRunning()) {
+        if (!gameMode.runState.isRunning()) {
             broadcastShowScoreBoard();
             voting.broadcastSuggestions();
         }
@@ -164,9 +170,9 @@ public class Game implements Runnable {
         if (spectators.contains(p)) {
             spectators.remove(p);
         }
-        if(gameMode.isRunning()){ //falls gerade ein game läuft
+        if(gameMode.runState.isRunning()){ //falls gerade ein game läuft
             if(activePlayers.size() < gameMode.minPlayers){
-                gameMode.setRunning(false);
+                gameMode.runState.setRunning(false);
             }
         }
         updateScoreBoardSize();
@@ -182,7 +188,7 @@ public class Game implements Runnable {
 
     public void interrupt() {
         System.out.println("game interrupt");
-        gameMode.setRunning(false);
+        gameMode.runState.setRunning(false);
     }
 
     public void sendGameStrings() {

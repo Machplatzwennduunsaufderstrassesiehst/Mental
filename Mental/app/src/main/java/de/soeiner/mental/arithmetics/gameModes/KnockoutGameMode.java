@@ -29,7 +29,7 @@ public class KnockoutGameMode extends ArithmeticGameMode {
 
         if (game.activePlayers.size() == 1) {
             System.out.println("knockout gewonnen");
-            setRunning(false);
+            runState.setRunning(false);
             for (int i = 0; i < game.joinedPlayers.size(); i++) { //Spieler kriegen am Ende Scorepunkte
                 Player p = game.joinedPlayers.get(i);
                 Score s = p.getScore();
@@ -46,7 +46,7 @@ public class KnockoutGameMode extends ArithmeticGameMode {
             }
             game.broadcastMessage(game.activePlayers.get(index).getName() + " wurde eleminiert!");
             game.activePlayers.remove(index);
-            setRunning(game.activePlayers.size() > 1);
+            runState.setRunning(game.activePlayers.size() > 1);
         }
     }
 
@@ -56,7 +56,7 @@ public class KnockoutGameMode extends ArithmeticGameMode {
         int z = 0;
         Score s = player.getScore();
         synchronized (answerTimeoutLock) {
-            if (!player.finished && isRunning()) {
+            if (!player.finished && runState.isRunning()) {
                 if (game.exerciseCreator.checkAnswer(actionData)) {
                     s.updateScore(1); //score gibt bei knockout die überlebten runden wieder
                     game.broadcastMessage(player.getName() + " hat die Aufgabe als " + (getRank() + 1) + ". gelöst!");

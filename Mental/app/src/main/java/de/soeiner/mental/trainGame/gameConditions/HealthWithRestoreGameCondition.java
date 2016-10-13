@@ -11,13 +11,12 @@ import de.soeiner.mental.util.event.EventListener;
 public class HealthWithRestoreGameCondition extends GameCondition<HealthLimitReachedEvent> {
 
     private int health;
-    private int startHealth;
     private int negativeHealthLimit;
     private int positiveHealthLimit;
 
-    public HealthWithRestoreGameCondition(TrainGameMode trainGameMode, int startHealth, int negativeHealthLimit, int positiveHealthLimit) {
+    public HealthWithRestoreGameCondition(TrainGameMode trainGameMode, int health, int negativeHealthLimit, int positiveHealthLimit) {
         super(trainGameMode);
-        this.health = this.startHealth = startHealth;
+        this.health = health;
         this.negativeHealthLimit = negativeHealthLimit;
         this.positiveHealthLimit = positiveHealthLimit;
         trainGameMode.trainArrived.addListenerOnce(trainArrivedListener);
@@ -33,10 +32,8 @@ public class HealthWithRestoreGameCondition extends GameCondition<HealthLimitRea
             }
             if (health <= negativeHealthLimit) {
                 dispatchEvent(new HealthLimitReachedEvent(false));
-                health = startHealth;
             } else if (health >= positiveHealthLimit) {
                 dispatchEvent(new HealthLimitReachedEvent(true));
-                health = startHealth;
             }
         }
     };
@@ -46,19 +43,7 @@ public class HealthWithRestoreGameCondition extends GameCondition<HealthLimitRea
     }
 
     @Override
-    public void reset() {
-        health = startHealth;
-    }
-
-    public void setHealth(int health) {
-        this.startHealth = this.health = health;
-    }
-
-    public void setNegativeHealthLimit(int negativeHealthLimit) {
-        this.negativeHealthLimit = negativeHealthLimit;
-    }
-
-    public void setPositiveHealthLimit(int positiveHealthLimit) {
-        this.positiveHealthLimit = positiveHealthLimit;
+    public void destructor() {
+        trainGameMode.trainArrived.removeListener(trainArrivedListener);
     }
 }

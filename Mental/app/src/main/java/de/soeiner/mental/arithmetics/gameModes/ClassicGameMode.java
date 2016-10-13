@@ -38,9 +38,9 @@ public class ClassicGameMode extends ArithmeticGameMode {
                     s.updateScore(getPoints());
                     game.broadcastMessage(player.getName() + " hat die Aufgabe als " + (getRank() + 1) + ". gelöst!");
                     if (s.getScoreValue() > 100) {
-                        setRunning(false);
+                        runState.setRunning(false);
                         broadcastPlayerWon(player.getName(), getName());
-                        answerTimeoutLock.notify(); // hat einer gewonnen, muss das wait im game spawnNextTrain ebenfalls beendet werden.
+                        answerTimeoutLock.notify(); // hat einer gewonnen, muss das wait im game spawnNextTrainLoop ebenfalls beendet werden.
                     }
                     player.finished = true;
                     for (int i = 0; i < game.activePlayers.size(); i++) {

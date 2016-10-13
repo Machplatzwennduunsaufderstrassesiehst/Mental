@@ -15,7 +15,7 @@ public class SuddenDeathTrainGameMode extends WavesTrainGameMode {
         @Override
         public void onEvent(TrainArrivedEvent event) {
             if (!event.isMatch()) {
-                setRunning(false);
+                runState.setRunning(false);
             }
         }
     };

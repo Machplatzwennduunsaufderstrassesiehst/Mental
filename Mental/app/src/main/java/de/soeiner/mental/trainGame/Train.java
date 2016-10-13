@@ -7,6 +7,7 @@ import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
 import de.soeiner.mental.trainGame.gameModes.TrainGameMode;
 import de.soeiner.mental.trainGame.trainTracks.Goal;
 import de.soeiner.mental.trainGame.trainTracks.Switch;
+import de.soeiner.mental.trainGame.trainTracks.TrainTrack;
 import de.soeiner.mental.util.event.EventDispatcher;
 
 /**
@@ -22,18 +23,19 @@ public class Train implements Runnable {
 
     public EventDispatcher<TrainArrivedEvent> trainArrived = new EventDispatcher<>();
 
-    public Train(int trainId, int matchingId, double speed, TrainGameMode trainGameMode, boolean bombtrain) {
+    public Train(int trainId, int matchingId, double speed, TrainGameMode trainGameMode, boolean bombtrain, TrainTrack startTrack) {
         id = trainId;
         this.matchingId = matchingId;
         this.speed = speed;
         trainGame = trainGameMode;
-        positionId = trainGame.getFirstTrackId();
+        positionId = startTrack.getId();
         try {
             JSONObject train = CmdRequest.makeCmd(CmdRequest.NEWTRAIN);
             train.put("trainId", id);
             train.put("destinationId", this.matchingId);
             train.put("speed", speed);
             train.put("bombtrain", bombtrain);
+            train.put("startTrackId", positionId);
             trainGame.broadcastNewTrain(train);
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,7 +54,7 @@ public class Train implements Runnable {
         boolean moving = true;
         int z = 0;
         try {
-            while (moving && trainGame.isRunning()) {
+            while (moving && trainGame.runState.isRunning()) {
                 Thread.sleep(calculateTimeToDestination()); //calculateTimeToDestination() TODO
                 //System.out.println("Train " + this.getId() + " is now at (" + x + "|" + y + ")");
                 if (trainGame.trainMap[x][y].getType().equals("goal")) {

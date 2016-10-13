@@ -57,11 +57,6 @@ public class VersusTrainGameMode extends TrainGameMode { // TODO
 
     }
 
-    @Override
-    protected TrainGenerator createTrainGenerator() {
-        return null;
-    }
-
     int goalDestructionBonus = 50;
 
     private void broadcastGoalDestroyed(int goalId){
@@ -106,7 +101,8 @@ public class VersusTrainGameMode extends TrainGameMode { // TODO
         while(!allGoalsDestroyed()){ //solange nicht alle Ziele eines der beiden Teams zerstört sind
             if(whosTurn){ whosTurn = false; }else{ whosTurn = true; } //alterniere wer an der Reihe ist
             try{ wait(10000); }catch(Exception e){ e.printStackTrace(); } //warte darauf das eines der beiden Teams seinen move macht
-            new Train(id++, -1, 5.0, this, true); // schicke nächsten Zug
+            //new Train(id++, -1, 5.0, this, true, ); // schicke nächsten Zug
+            System.out.println("TODO TODO USE TRAINGENERATOR");
         }
     }
 
@@ -142,7 +138,7 @@ public class VersusTrainGameMode extends TrainGameMode { // TODO
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                notify(); // benachrichtige spawnNextTrain()
+                notify(); // benachrichtige spawnNextTrainLoop()
                 return true;
             }
         }

@@ -12,6 +12,7 @@ import de.soeiner.mental.exerciseCreators.MultExerciseCreator;
 import de.soeiner.mental.exerciseCreators.SimpleMultExerciseCreator;
 import de.soeiner.mental.trainGame.events.BooleanEvent;
 import de.soeiner.mental.util.event.EventDispatcher;
+import de.soeiner.mental.util.event.RunState;
 
 /**
  * Created by Malte on 07.04.2016.
@@ -25,7 +26,7 @@ public abstract class GameMode {
     public boolean needsConfirmation = false;
     public Game game;
 
-    public final EventDispatcher<BooleanEvent> runStateChanged = new EventDispatcher<>();
+    public final RunState runState = new RunState();
 
     public GameMode(Game game) {
         this.game = game;
@@ -36,6 +37,12 @@ public abstract class GameMode {
         compatibleExerciseCreators.add(new MultExerciseCreator());
         compatibleExerciseCreators.add(new MixedExerciseCreator());
         compatibleExerciseCreators.add(new SimpleMultExerciseCreator());
+    }
+
+    public void broadcast(JSONObject jsonObject) {
+        for (Player player : game.activePlayers) {
+            player.makePushRequest(new PushRequest(jsonObject));
+        }
     }
 
     public void waitForPlayers() {
@@ -60,16 +67,6 @@ public abstract class GameMode {
         }
     }
 
-    public final boolean isRunning() {
-        return running;
-    }
-
-    public final void setRunning(boolean yeOrNah) {
-        if (running != yeOrNah) {
-            runStateChanged.dispatchEvent(new BooleanEvent(yeOrNah));
-        }
-        running = yeOrNah;
-    }
 
     public abstract boolean playerAction(Player player, JSONObject actionData);
 

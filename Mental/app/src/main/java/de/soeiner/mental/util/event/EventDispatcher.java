@@ -45,7 +45,18 @@ public class EventDispatcher<E extends Event> implements EventListener<E>{
         }
     }
 
-    public final void dispatchEvent(final E event) {
+    public final boolean reset() {
+        boolean removed = false;
+        synchronized (listenersArrayLock) {
+            while (listeners.size() > 0) {
+                listeners.remove(0);
+                removed = true;
+            }
+        }
+        return removed;
+    }
+
+    public void dispatchEvent(final E event) {
         synchronized (listenersArrayLock) {
             for (final EventListener<E> listener : listeners) {
                 new Thread(new Runnable() {

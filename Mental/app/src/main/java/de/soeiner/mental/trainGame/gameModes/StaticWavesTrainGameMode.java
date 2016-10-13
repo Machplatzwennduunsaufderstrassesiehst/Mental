@@ -1,20 +1,25 @@
-package de.soeiner.mental.trainGame.trainGenerators;
+package de.soeiner.mental.trainGame.gameModes;
 
-import de.soeiner.mental.trainGame.gameModes.TrainGameMode;
+import de.soeiner.mental.main.Game;
+import de.soeiner.mental.trainGame.trainGenerators.Wave;
 
 /**
- * Created by Sven on 12.10.16.
+ * Created by Sven on 13.10.16.
  */
-public class StaticWaveTrainGenerator extends WaveTrainGenerator {
+public class StaticWavesTrainGameMode extends WavesTrainGameMode {
 
     protected Wave[] waves;
     protected int waveId;
 
-    public StaticWaveTrainGenerator(TrainGameMode trainGameMode, int nPlayers, Integer[] availableMatchingIds, Integer[] availableStartTrackIds) {
-        super(trainGameMode, nPlayers, availableMatchingIds, availableStartTrackIds);
-        initiateWaves();
+    public StaticWavesTrainGameMode(Game game) {
+        super(game);
     }
 
+    @Override
+    public void prepareGame() {
+        super.prepareGame();
+        initiateWaves();
+    }
 
     Wave[] initiateWaves() {
         waves = new Wave[7];
@@ -47,5 +52,10 @@ public class StaticWaveTrainGenerator extends WaveTrainGenerator {
     @Override
     protected Wave getNextWave() {
         return waves[waveId++]; /* post increment !! */
+    }
+
+    @Override
+    protected void resetWaveCounter() {
+        waveId = 0;
     }
 }
