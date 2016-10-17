@@ -6,16 +6,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import de.soeiner.mental.communication.CmdRequest;
-import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.main.Game;
 import de.soeiner.mental.main.Player;
-import de.soeiner.mental.trainGame.Train;
-import de.soeiner.mental.trainGame.trainGenerators.ManualTrainGenerator;
-import de.soeiner.mental.trainGame.trainGenerators.TrainGenerator;
-import de.soeiner.mental.trainGame.trainGenerators.Wave;
+import de.soeiner.mental.trainGame.trains.ManualTrainGenerator;
 import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
-import de.soeiner.mental.trainGame.trainTracks.Goal;
-import de.soeiner.mental.trainGame.trainTracks.Switch;
+import de.soeiner.mental.trainGame.tracks.Goal;
+import de.soeiner.mental.trainGame.tracks.Switch;
 import de.soeiner.mental.util.event.EventListener;
 
 /**
@@ -78,10 +74,10 @@ public class VersusTrainGameMode extends TrainGameMode { // TODO
         for(int i = 0; i < goals.length; i++){
             if(i%2 == 0){
                 teamRedGoals.add(goals[i]);
-                goals[i].setMatchingId(1);
+                goals[i].addMatchingId(1);
             }else{
                 teamBlueGoals.add(goals[i]);
-                goals[i].setMatchingId(2);
+                goals[i].addMatchingId(2);
             }
         }
     }

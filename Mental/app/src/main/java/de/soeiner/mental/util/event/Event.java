@@ -1,7 +1,7 @@
 package de.soeiner.mental.util.event;
 
 /**
- * Created by Sven on 11.10.16.
+ * only used as a marker interface for the event framework
  */
 public interface Event {
 }

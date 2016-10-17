@@ -1,13 +1,13 @@
-package de.soeiner.mental.trainGame;
+package de.soeiner.mental.trainGame.trains;
 
 import org.json.JSONObject;
 
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
 import de.soeiner.mental.trainGame.gameModes.TrainGameMode;
-import de.soeiner.mental.trainGame.trainTracks.Goal;
-import de.soeiner.mental.trainGame.trainTracks.Switch;
-import de.soeiner.mental.trainGame.trainTracks.TrainTrack;
+import de.soeiner.mental.trainGame.tracks.Goal;
+import de.soeiner.mental.trainGame.tracks.Switch;
+import de.soeiner.mental.trainGame.tracks.TrainTrack;
 import de.soeiner.mental.util.event.EventDispatcher;
 
 /**

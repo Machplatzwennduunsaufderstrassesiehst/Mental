@@ -54,6 +54,10 @@ public abstract class GameMode {
         }
     }
 
+    public Player[] getActivePlayers() {
+        return game.activePlayers.toArray(new Player[game.activePlayers.size()]);
+    }
+
     /**
      * main game loop of the GameMode, must block until Game is finished
      */

@@ -5,11 +5,10 @@ import java.util.Stack;
 
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
 import de.soeiner.mental.main.Game;
-import de.soeiner.mental.trainGame.mapCreators.TrainMapCreator;
-import de.soeiner.mental.trainGame.trainTracks.Goal;
-import de.soeiner.mental.trainGame.trainTracks.Switch;
-import de.soeiner.mental.trainGame.trainTracks.Track;
-import de.soeiner.mental.trainGame.trainTracks.TrainTrack;
+import de.soeiner.mental.trainGame.tracks.Goal;
+import de.soeiner.mental.trainGame.tracks.Switch;
+import de.soeiner.mental.trainGame.tracks.Track;
+import de.soeiner.mental.trainGame.tracks.TrainTrack;
 import de.soeiner.mental.util.Pathfinder;
 
 /**

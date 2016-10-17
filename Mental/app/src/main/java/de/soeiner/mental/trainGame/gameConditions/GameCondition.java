@@ -32,7 +32,7 @@ public abstract class GameCondition<E extends GameConditionEvent> extends EventD
     @Override
     public final void dispatchEvent(E event) {
         super.dispatchEvent(event);
-        super.reset();
+        super.removeAllListeners();
         destroy();
     }
 

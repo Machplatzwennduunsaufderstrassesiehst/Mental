@@ -1,18 +1,16 @@
-package de.soeiner.mental.trainGame.trainGenerators;
+package de.soeiner.mental.trainGame.trains;
 
-import de.soeiner.mental.trainGame.Train;
-import de.soeiner.mental.trainGame.events.BooleanEvent;
 import de.soeiner.mental.trainGame.events.RunStateChangedEvent;
 import de.soeiner.mental.trainGame.events.TrainSpawnEvent;
 import de.soeiner.mental.trainGame.gameModes.TrainGameMode;
-import de.soeiner.mental.trainGame.trainTracks.TrainTrack;
+import de.soeiner.mental.trainGame.tracks.TrainTrack;
 import de.soeiner.mental.util.event.EventListener;
 import de.soeiner.mental.util.event.RunState;
 
 /**
  * Created by Sven on 11.10.16.
  */
-public abstract class TrainGenerator implements Runnable {
+public abstract class TrainGenerator implements Runnable { // TODO extends GameThread
 
     public final RunState runState = new RunState();
 

@@ -1,6 +1,6 @@
 package de.soeiner.mental.trainGame.events;
 
-import de.soeiner.mental.trainGame.Train;
+import de.soeiner.mental.trainGame.trains.Train;
 import de.soeiner.mental.util.event.Event;
 
 /**

@@ -4,19 +4,18 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.trainGame.mapCreators.PathBasedTrainMapCreator;
 import de.soeiner.mental.trainGame.mapCreators.PathFinderTrainMapCreator;
 import de.soeiner.mental.trainGame.mapCreators.TrainMapCreator;
 import de.soeiner.mental.main.Game;
 import de.soeiner.mental.main.Player;
 import de.soeiner.mental.main.GameMode;
-import de.soeiner.mental.trainGame.trainGenerators.TrainGenerator;
 import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
 import de.soeiner.mental.trainGame.events.TrainSpawnEvent;
-import de.soeiner.mental.trainGame.trainTracks.Goal;
-import de.soeiner.mental.trainGame.trainTracks.Switch;
-import de.soeiner.mental.trainGame.trainTracks.TrainTrack;
+import de.soeiner.mental.trainGame.rewarding.TrainArrivedRewarder;
+import de.soeiner.mental.trainGame.tracks.Goal;
+import de.soeiner.mental.trainGame.tracks.Switch;
+import de.soeiner.mental.trainGame.tracks.TrainTrack;
 import de.soeiner.mental.util.event.EventDispatcher;
 import de.soeiner.mental.util.event.EventListener;
 
@@ -31,12 +30,15 @@ public abstract class TrainGameMode extends GameMode {
 
     protected TrainMapCreator trainMapCreator;
 
+    protected TrainArrivedRewarder trainArrivedRewarder;
+
     public EventDispatcher<TrainArrivedEvent> trainArrived = new EventDispatcher<>();
     public EventDispatcher<TrainSpawnEvent> trainSpawn = new EventDispatcher<>();
 
     public TrainGameMode(Game game) {
         super(game);
         needsConfirmation = false;
+        trainArrivedRewarder = new TrainArrivedRewarder(this);
 
         trainArrived.addListener(new EventListener<TrainArrivedEvent>() {
             @Override
@@ -81,7 +83,7 @@ public abstract class TrainGameMode extends GameMode {
      */
     public void prepareMap() { //
         for (Goal goal : goals) {
-            goal.setMatchingId(goal.getGoalId());
+            goal.addMatchingId(goal.getGoalId());
         }
     }
 
@@ -114,9 +116,11 @@ public abstract class TrainGameMode extends GameMode {
     protected Integer[] getAvailableMatchingIds() {
         ArrayList<Integer> availableMatchingIds = new ArrayList<>();
         for (Goal goal : goals) {
-            int id = goal.getMatchingId();
-            if (!availableMatchingIds.contains(id)) {
-                availableMatchingIds.add(id);
+            Integer[] matchingIds = goal.getMatchingIds();
+            for (Integer id : matchingIds) {
+                if (!availableMatchingIds.contains(id)) {
+                    availableMatchingIds.add(id);
+                }
             }
         }
         return availableMatchingIds.toArray(new Integer[availableMatchingIds.size()]);

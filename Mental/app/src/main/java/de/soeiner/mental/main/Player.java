@@ -14,7 +14,7 @@ import de.soeiner.mental.communication.ClientConnection;
 import de.soeiner.mental.communication.CmdRequest;
 import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
-import de.soeiner.mental.trainGame.trainTracks.Switch;
+import de.soeiner.mental.trainGame.tracks.Switch;
 
 /**
  * Created by sven on 12.02.16.

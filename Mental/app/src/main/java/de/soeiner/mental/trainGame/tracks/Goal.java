@@ -1,6 +1,8 @@
-package de.soeiner.mental.trainGame.trainTracks;
+package de.soeiner.mental.trainGame.tracks;
 
 import org.json.JSONException;
+
+import java.util.ArrayList;
 
 /**
  * Created by Malte on 28.04.2016.
@@ -8,7 +10,7 @@ import org.json.JSONException;
 public class Goal extends TrainTrack {
 
     private int goalId = 0;
-    private int matchingId = -1;
+    private ArrayList<Integer> matchingIds = new ArrayList<>();
     private boolean destroyed = false;
 
     public Goal(int x, int y, int v, int id) {
@@ -24,17 +26,19 @@ public class Goal extends TrainTrack {
         }
     }
 
-    public void setMatchingId(int x){
-        matchingId = x;
+    public void addMatchingId(int x){
+        if (!matchingIds.contains(x)) {
+            matchingIds.add(x);
+        }
         try {
-            this.put("matchingId", matchingId);
+            this.put("matchingIds", matchingIds);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public int getMatchingId() {
-        return matchingId;
+    public Integer[] getMatchingIds() {
+        return matchingIds.toArray(new Integer[matchingIds.size()]);
     }
 
     public int getGoalId() {

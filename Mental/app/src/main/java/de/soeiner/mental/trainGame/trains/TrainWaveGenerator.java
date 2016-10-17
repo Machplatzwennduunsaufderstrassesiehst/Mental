@@ -1,7 +1,7 @@
-package de.soeiner.mental.trainGame.trainGenerators;
+package de.soeiner.mental.trainGame.trains;
 
 import de.soeiner.mental.trainGame.gameModes.TrainGameMode;
-import de.soeiner.mental.trainGame.trainTracks.TrainTrack;
+import de.soeiner.mental.trainGame.tracks.TrainTrack;
 
 /**
  * Created by Sven on 13.10.16.

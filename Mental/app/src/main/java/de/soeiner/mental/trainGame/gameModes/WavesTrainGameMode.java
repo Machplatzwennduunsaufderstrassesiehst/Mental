@@ -4,15 +4,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.soeiner.mental.communication.CmdRequest;
-import de.soeiner.mental.communication.PushRequest;
 import de.soeiner.mental.main.Game;
 import de.soeiner.mental.trainGame.events.HealthLimitReachedEvent;
 import de.soeiner.mental.trainGame.gameConditions.HealthWithRestoreGameCondition;
-import de.soeiner.mental.trainGame.trainGenerators.TrainGenerator;
-import de.soeiner.mental.trainGame.trainGenerators.TrainWaveGenerator;
-import de.soeiner.mental.trainGame.trainGenerators.Wave;
+import de.soeiner.mental.trainGame.trains.TrainGenerator;
+import de.soeiner.mental.trainGame.trains.TrainWaveGenerator;
+import de.soeiner.mental.trainGame.trains.Wave;
 import de.soeiner.mental.trainGame.events.TrainArrivedEvent;
-import de.soeiner.mental.trainGame.trainTracks.TrainTrack;
+import de.soeiner.mental.trainGame.tracks.TrainTrack;
 import de.soeiner.mental.util.event.EventListener;
 import de.soeiner.mental.util.flow.Blocker;
 import de.soeiner.mental.util.flow.EventBlocker;
@@ -49,10 +48,13 @@ public abstract class WavesTrainGameMode extends TrainGameMode {
     @Override
     public void gameLoop() {
         countdown(5);
+        trainArrivedRewarder.runState.setRunning(true);
         while (runState.isRunning()) {
+            trainArrivedRewarder.moneyReward = wave.getReward(); // TODO may be different from
+            trainArrivedRewarder.pointsReward = wave.getReward();
             trainGenerator = new TrainWaveGenerator(this, wave, game.activePlayers.size(), getAvailableMatchingIds(), new TrainTrack[]{getTrackById(getFirstTrackId())});
             trainGenerator.runState.setRunning(true);
-            HealthWithRestoreGameCondition waveCondition = new HealthWithRestoreGameCondition(this, 10, 0, 20);
+            HealthWithRestoreGameCondition waveCondition = new HealthWithRestoreGameCondition(this, wave.getHealth(), 0, wave.getHealthNeededToWin());
             waveCondition.addListener(broadcastWaveCompletedListener);
             new EventBlocker<>(waveCondition.conditionMetOrAborted).block();
             trainGenerator.runState.setRunning(false);

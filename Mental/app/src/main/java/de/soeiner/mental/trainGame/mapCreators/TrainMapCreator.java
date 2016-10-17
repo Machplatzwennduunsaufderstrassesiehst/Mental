@@ -8,10 +8,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import de.soeiner.mental.exerciseCreators.ExerciseCreator;
-import de.soeiner.mental.trainGame.trainTracks.Goal;
-import de.soeiner.mental.trainGame.trainTracks.Switch;
-import de.soeiner.mental.trainGame.trainTracks.Track;
-import de.soeiner.mental.trainGame.trainTracks.TrainTrack;
+import de.soeiner.mental.trainGame.tracks.Goal;
+import de.soeiner.mental.trainGame.tracks.Switch;
+import de.soeiner.mental.trainGame.tracks.Track;
+import de.soeiner.mental.trainGame.tracks.TrainTrack;
 
 /**
  * Created by Sven on 25.04.16.
