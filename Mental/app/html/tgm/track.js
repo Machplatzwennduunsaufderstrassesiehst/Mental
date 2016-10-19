@@ -17,9 +17,9 @@ TrainGame.environment = (function() {
         var spriteRotation, texture;
 
         // Vector that points to the middle of the track elements
-        var relMidVector = new GraphicsEngine.physics.Vector(gridSize/2, gridSize/2);
+        var relMidVector = new engine.physics.Vector(gridSize/2, gridSize/2);
         // Vector that points to the sprite's position
-        var posVector = new GraphicsEngine.physics.Vector(i*gridSize, j*gridSize);
+        var posVector = new engine.physics.Vector(i*gridSize, j*gridSize);
         posVector.add(relMidVector);
 
         var sprite = null;
@@ -27,7 +27,7 @@ TrainGame.environment = (function() {
         // get the position Vector that points to the specified side of the element
         var calculateSideCoords = function(side) {
             var deg = ((side) % 4) * Math.PI/2;
-            var v = new GraphicsEngine.physics.Vector(Math.sin(deg), -Math.cos(deg)); // vector that points to the side
+            var v = new engine.physics.Vector(Math.sin(deg), -Math.cos(deg)); // vector that points to the side
             v.normalize();
             v.multiply(gridSize/2);
             v.add(posVector);
@@ -124,9 +124,9 @@ TrainGame.environment = (function() {
             if (texture == undefined) initTextureType();
             spriteRotation *= Math.PI / 2;
 
-            sprite = GraphicsEngine.graphics.TextureGenerator.generateSprite(texture);
+            sprite = engine.graphics.TextureGenerator.generateSprite(texture);
             sprite.position = new PIXI.Point(posVector.getX(), posVector.getY());
-            sprite.pivot = GraphicsEngine.graphics.TextureGenerator.getSpritePivot(sprite);
+            sprite.pivot = engine.graphics.TextureGenerator.getSpritePivot(sprite);
             sprite.rotation = spriteRotation;
             onload(sprite);
         };

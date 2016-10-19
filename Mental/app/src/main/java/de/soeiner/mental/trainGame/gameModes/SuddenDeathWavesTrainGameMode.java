@@ -14,6 +14,7 @@ public class SuddenDeathWavesTrainGameMode extends StaticWavesTrainGameMode {
         public void onEvent(TrainArrivedEvent event) {
             if (!event.isMatch()) {
                 runState.setRunning(false);
+                broadcastWaveCompleted(false, waveId, 0);
             }
         }
     };

@@ -1,5 +1,5 @@
 
-GraphicsEngine.physics = (function() {
+engine.physics = (function() {
     
     function Vector(x, y) {
         this.multiply = function (skalar) {
@@ -60,7 +60,7 @@ GraphicsEngine.physics = (function() {
         var r = this.rotation = r_;
 
         // only move this position relative to the parameter position
-        this.move = function (vector) {
+        this.getNextPosition = function (vector) {
             this.x = x = x + vector.getX();
             this.y = y = y + vector.getY();
         };
@@ -139,7 +139,7 @@ GraphicsEngine.physics = (function() {
 
     // calculates the amount of frames to be rendered in the "time" (in seconds)
     function calculateFrameAmount(time) {
-        return GraphicsEngine.graphics.calculateFrameAmount(time);
+        return engine.graphics.calculateFrameAmount(time);
     }
 
     function StraightMovement(rotation, vector, time) {
@@ -195,7 +195,7 @@ GraphicsEngine.physics = (function() {
     /**
      * Straight deacceleration movement
      * @param{number} rotation
-     * @param {GraphicsEngine.physics.Vector} vector
+     * @param {engine.physics.Vector} vector
      * @param {number} initialTimePerTrack
      * @returns {StraightDeaccelerationMovement}
      */

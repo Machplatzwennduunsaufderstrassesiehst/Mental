@@ -5,13 +5,13 @@ TrainGame.particles = (function() {
         var gridSize = TrainGame.instance.getGridSize();
         var scale = gridSize / 100;
         var sprite = new PIXI.Sprite(TrainGame.starTexture);
-        sprite.pivot = GraphicsEngine.graphics.TextureGenerator.getSpritePivot(sprite);
+        sprite.pivot = engine.graphics.TextureGenerator.getSpritePivot(sprite);
         sprite.scale = new PIXI.Point(scale, scale);
         
-        var vector = GraphicsEngine.physics.Vector.newWithRandomDirection(gridSize / 1.7);
+        var vector = engine.physics.Vector.newWithRandomDirection(gridSize / 1.7);
         
-        var graphicObject = new GraphicsEngine.graphics.GraphicObject(sprite);
-        var movement = new GraphicsEngine.physics.StraightDeaccelerationMovement(0, vector, 0.5);
+        var graphicObject = new engine.graphics.GraphicObject(sprite);
+        var movement = new engine.physics.StraightDeaccelerationMovement(0, vector, 0.5);
         movement.addVector(posVector);
         TrainGame.instance.graphics.addGraphicObject(graphicObject);
         

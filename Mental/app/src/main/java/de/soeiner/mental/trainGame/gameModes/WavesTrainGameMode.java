@@ -28,9 +28,10 @@ public abstract class WavesTrainGameMode extends TrainGameMode {
 
     private TrainGenerator trainGenerator;
 
+    protected HealthWithRestoreGameCondition waveCondition;
+
     public WavesTrainGameMode(final Game game) {
         super(game);
-        super.trainArrived.addListenerOnce(trainArrivedListener);
     }
 
     @Override
@@ -54,8 +55,16 @@ public abstract class WavesTrainGameMode extends TrainGameMode {
             trainArrivedRewarder.pointsReward = wave.getReward();
             trainGenerator = new TrainWaveGenerator(this, wave, game.activePlayers.size(), getAvailableMatchingIds(), new TrainTrack[]{getTrackById(getFirstTrackId())});
             trainGenerator.runState.setRunning(true);
-            HealthWithRestoreGameCondition waveCondition = new HealthWithRestoreGameCondition(this, wave.getHealth(), 0, wave.getHealthNeededToWin());
-            waveCondition.addListener(broadcastWaveCompletedListener);
+            waveCondition = new HealthWithRestoreGameCondition(this, wave.getHealth(), 0, wave.getHealthNeededToWin());
+            waveCondition.addListener(new EventListener<HealthLimitReachedEvent>() {
+                @Override
+                public void onEvent(HealthLimitReachedEvent event) {
+                    broadcastWaveCompleted(event.isPositive(), waveCounter++, 0); // TODO
+                    if (!event.isPositive()) {
+                        runState.setRunning(false);
+                    }
+                }
+            });
             new EventBlocker<>(waveCondition.conditionMetOrAborted).block();
             trainGenerator.runState.setRunning(false);
             if (hasNextWave()) {
@@ -71,13 +80,6 @@ public abstract class WavesTrainGameMode extends TrainGameMode {
         System.out.println("stopping trainGenerator");
     }
 
-    private EventListener<TrainArrivedEvent> trainArrivedListener = new EventListener<TrainArrivedEvent>() {
-        @Override
-        public void onEvent(TrainArrivedEvent event) {
-
-        }
-    };
-
     public boolean isWaveRunning() {
         return trainGenerator.runState.isRunning();
     }
@@ -87,13 +89,6 @@ public abstract class WavesTrainGameMode extends TrainGameMode {
     protected abstract Wave getNextWave();
 
     protected abstract void resetWaveCounter();
-
-    protected EventListener<HealthLimitReachedEvent> broadcastWaveCompletedListener = new EventListener<HealthLimitReachedEvent>() {
-        @Override
-        public void onEvent(HealthLimitReachedEvent event) {
-            broadcastWaveCompleted(event.isPositive(), waveCounter++, 0); // TODO
-        }
-    };
 
     public void broadcastWaveCompleted(boolean success, int waveNumber, int reward) {
         try {

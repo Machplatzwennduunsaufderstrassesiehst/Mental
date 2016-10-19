@@ -21,7 +21,7 @@ var mainTrainGameFrame = new Frame("mainTrainGameFrame");
             trainGameGraphics.stop();
             trainGameGraphics.clearEnvironment();
         }
-        var trainGameGraphics = new GraphicsEngine.graphics.GameGraphics("mainTrainGameFrame");
+        var trainGameGraphics = new engine.graphics.GameGraphics("mainTrainGameFrame");
         TrainGame.instance = trainGame = new TrainGame(trainGameGraphics);
 
         clickHandler = byID("clickHandler");
@@ -204,7 +204,7 @@ var mainTrainGameFrame = new Frame("mainTrainGameFrame");
 
         this.setGridSize = function(gridSize_) {
             gridSize = gridSize_;
-            GraphicsEngine.graphics.TextureGenerator.setGridSize(gridSize);
+            engine.graphics.TextureGenerator.setGridSize(gridSize);
         };
 
         this.getGridSize = function() {
@@ -257,11 +257,11 @@ var mainTrainGameFrame = new Frame("mainTrainGameFrame");
         };
     }
     TrainGame.TGMPATH = "graphics/tgm/";
-    TrainGame.trainTexture = GraphicsEngine.graphics.TextureGenerator.generate(TrainGame.TGMPATH + "train.png");
-    TrainGame.straightTexture = GraphicsEngine.graphics.TextureGenerator.generate(TrainGame.TGMPATH + "straight.png");
-    TrainGame.turnTexture = GraphicsEngine.graphics.TextureGenerator.generate(TrainGame.TGMPATH + "turn.png");
-    TrainGame.goalTexture = GraphicsEngine.graphics.TextureGenerator.generate(TrainGame.TGMPATH + "goal.png");
-    TrainGame.starTexture = GraphicsEngine.graphics.TextureGenerator.generate(TrainGame.TGMPATH + "star.png");
+    TrainGame.trainTexture = engine.graphics.TextureGenerator.generate(TrainGame.TGMPATH + "train.png");
+    TrainGame.straightTexture = engine.graphics.TextureGenerator.generate(TrainGame.TGMPATH + "straight.png");
+    TrainGame.turnTexture = engine.graphics.TextureGenerator.generate(TrainGame.TGMPATH + "turn.png");
+    TrainGame.goalTexture = engine.graphics.TextureGenerator.generate(TrainGame.TGMPATH + "goal.png");
+    TrainGame.starTexture = engine.graphics.TextureGenerator.generate(TrainGame.TGMPATH + "star.png");
 
     TrainGame.idColors = ["8808ff", "ffffff", "00ff00", "ff0000", "ffff00", "ff00ff", "00dfdf", "ffffff", "ff8800", "333333"];
 

@@ -2,9 +2,9 @@
 
 /* global PIXI, byID */
 
-window.GraphicsEngine = {};
+window.engine = {};
 
-GraphicsEngine.graphics = (function() {
+engine.graphics = (function() {
 
     var currentFPS = 30;
 
@@ -119,7 +119,7 @@ GraphicsEngine.graphics = (function() {
 
             for (var i = 0; i < graphicObjects.length; i++) {
                 try {
-                    graphicObjects[i].move();
+                    graphicObjects[i].getNextPosition();
                 } catch (e) {
                     //log(e);
                 }
@@ -177,7 +177,7 @@ GraphicsEngine.graphics = (function() {
 
     // sprite can also be a container
     function GraphicObject(sprite_) {
-        var latestPosition = new GraphicsEngine.physics.Position(-1000,-1000);
+        var latestPosition = new engine.physics.Position(-1000,-1000);
         var positionQueue = [latestPosition];
         var movements = {};
         var currentMovement = null;
@@ -187,9 +187,9 @@ GraphicsEngine.graphics = (function() {
 
         // pop the next position on the position queue and return it
         // called by render loop
-        this.move = function() {
+        this.getNextPosition = function() {
             if (sprite == undefined) {
-                log("GO.move: sprite still undefined");
+                log("GO.getNextPosition: sprite still undefined");
                 return false;
             }
             var p = latestPosition = positionQueue.pop();
@@ -212,7 +212,7 @@ GraphicsEngine.graphics = (function() {
         };
 
         this.getPos = function() {
-            return (latestPosition != undefined ? latestPosition : new GraphicsEngine.physics.Position(-1000,-1000));
+            return (latestPosition != undefined ? latestPosition : new engine.physics.Position(-1000,-1000));
         };
 
         this.setPos = function(position) {

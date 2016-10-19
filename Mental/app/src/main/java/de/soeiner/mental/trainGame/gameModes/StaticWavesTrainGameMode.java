@@ -13,12 +13,12 @@ public class StaticWavesTrainGameMode extends WavesTrainGameMode {
 
     public StaticWavesTrainGameMode(Game game) {
         super(game);
+        initiateWaves();
     }
 
     @Override
     public void prepareGame() {
         super.prepareGame();
-        initiateWaves();
     }
 
     Wave[] initiateWaves() {

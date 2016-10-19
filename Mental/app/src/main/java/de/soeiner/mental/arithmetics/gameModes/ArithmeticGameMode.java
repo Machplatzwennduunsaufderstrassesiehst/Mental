@@ -9,6 +9,7 @@ import de.soeiner.mental.main.Game;
 import de.soeiner.mental.main.Player;
 import de.soeiner.mental.main.GameMode;
 import de.soeiner.mental.trainGame.events.BooleanEvent;
+import de.soeiner.mental.trainGame.events.RunStateChangedEvent;
 import de.soeiner.mental.util.event.EventListener;
 
 /**
@@ -23,9 +24,9 @@ public abstract class ArithmeticGameMode extends GameMode {
 
     public ArithmeticGameMode(Game game){
         super(game);
-        this.runState.addListener(new EventListener<BooleanEvent>() {
+        this.runState.addListener(new EventListener<RunStateChangedEvent>() {
             @Override
-            public void onEvent(BooleanEvent event) {
+            public void onEvent(RunStateChangedEvent event) {
                 if (event.isPositive()) {
                     synchronized (answerTimeoutLock) {
                         answerTimeoutLock.notifyAll();

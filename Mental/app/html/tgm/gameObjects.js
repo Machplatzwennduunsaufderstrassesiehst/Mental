@@ -9,20 +9,20 @@ TrainGame.gameObjects = (function() {
 
         var gridSize = TrainGame.instance.getGridSize();
         var scale = 0.38;
-        var sprite = GraphicsEngine.graphics.TextureGenerator.generateSprite(TrainGame.trainTexture, scale);
+        var sprite = engine.graphics.TextureGenerator.generateSprite(TrainGame.trainTexture, scale);
         var colorTexture = new PIXI.Graphics();
         colorTexture.beginFill(Number("0x" + TrainGame.idColors[destinationId]), 1);
         colorTexture.drawRect(0, -gridSize/8*scale, gridSize / 3 * scale, gridSize / 1.5 * scale);
         container.addChild(sprite);
         container.addChild(colorTexture);
 
-        sprite.pivot = GraphicsEngine.graphics.TextureGenerator.getSpritePivot(sprite);
-        colorTexture.pivot = GraphicsEngine.graphics.TextureGenerator.getDisplayObjectPivot(colorTexture);
+        sprite.pivot = engine.graphics.TextureGenerator.getSpritePivot(sprite);
+        colorTexture.pivot = engine.graphics.TextureGenerator.getDisplayObjectPivot(colorTexture);
 
         container.cacheAsBitmap = true;
 
         // add color TODO
-        var graphicObject = new GraphicsEngine.graphics.GraphicObject(container);
+        var graphicObject = new engine.graphics.GraphicObject(container);
         TrainGame.instance.graphics.addGraphicObject(graphicObject);
 
         var secondsPerTrack = 1 / tracksPerSecond;
@@ -119,18 +119,18 @@ TrainGame.gameObjects = (function() {
                 case "track":case "switch":
                 switch (Math.abs(Math.sign(degrees))) {
                     case 0:
-                        movement = new GraphicsEngine.physics.StraightMovement(startRotation, GraphicsEngine.physics.Vector.newFromTo(u, v), movementTime);
+                        movement = new engine.physics.StraightMovement(startRotation, engine.physics.Vector.newFromTo(u, v), movementTime);
                         break;
                     case 1: // turn
-                        movement = new GraphicsEngine.physics.TurnMovement(startRotation, currentLane.getTurnRadius(), degrees, movementTime);
+                        movement = new engine.physics.TurnMovement(startRotation, currentLane.getTurnRadius(), degrees, movementTime);
                         break;
                     default:
                         log("fehler in gameObjects.js: degrees: " + degrees);
-                        movement = new GraphicsEngine.physics.Movement([]);
+                        movement = new engine.physics.Movement([]);
                 }
                 break;
                 case "goal":
-                    movement = new GraphicsEngine.physics.StraightDeaccelerationMovement(startRotation, GraphicsEngine.physics.Vector.newFromTo(u, v), movementTime);
+                    movement = new engine.physics.StraightDeaccelerationMovement(startRotation, engine.physics.Vector.newFromTo(u, v), movementTime);
                     break;
             }
             movement.addVector(u);
