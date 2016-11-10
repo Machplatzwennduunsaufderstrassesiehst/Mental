@@ -76,8 +76,8 @@ public class Server {
                     asyncHttpServerResponse.sendStream(iStream, iStream.available());
                 } catch (IOException e) {
                     e.printStackTrace();
+                    asyncHttpServerResponse.send("");
                 }
-                asyncHttpServerResponse.send("");
             }
         };
         asyncServer.get("/.*", httpServerRequestCallback);

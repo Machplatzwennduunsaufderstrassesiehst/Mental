@@ -6,7 +6,19 @@ window.engine = {};
 
 engine.graphics = (function() {
 
+    var texturePackPath = "/graphics/tgm/textures/";
+
     var currentFPS = 30;
+
+    var texturePacks = [];
+
+    function TexturePack(path) {
+
+    }
+
+    TexturePack.load = function(path) {
+        console.log("Loading Texture Pack from " + path);
+    };
 
     function GameGraphics(htmlContainerId) {
         GameGraphics.newestInstance = this;
@@ -133,49 +145,6 @@ engine.graphics = (function() {
         };
     }
 
-    function getCurrentFPS() {
-        return currentFPS;
-    }
-
-    function calculateFrameAmount(time) {
-        return currentFPS * time;
-    }
-
-    var TextureGenerator = new (function () {
-        var gridSize = undefined;
-
-        this.generate = function(path) {
-            var texture = PIXI.Texture.fromImage(path);
-            return texture;
-        };
-
-        this.setGridSize = function(gs) {
-            gridSize = gs;
-        };
-
-        // scale is an optional additional custom scaling factor
-        this.generateSprite = function(texture, scale) {
-            if (scale == undefined) scale = 1;
-            var sprite = new PIXI.Sprite(texture);
-            var xScale = 1, yScale = 1;
-            if (gridSize != undefined) {
-                xScale = gridSize/sprite.width * scale;
-                yScale = gridSize/sprite.height * scale;
-            }
-            sprite.scale = new PIXI.Point(xScale, yScale);
-            return sprite;
-        };
-
-        this.getSpritePivot = function(sprite) {
-            return new PIXI.Point(sprite._texture.width/2, sprite._texture.height/2);
-        };
-
-        this.getDisplayObjectPivot = function(displayObject) {
-            return new PIXI.Point(displayObject.width/2, displayObject.height/2);
-        };
-    })();
-
-    // sprite can also be a container
     function GraphicObject(sprite_) {
         var latestPosition = new engine.physics.Position(-1000,-1000);
         var positionQueue = [latestPosition];
@@ -246,7 +215,7 @@ engine.graphics = (function() {
 
         this.fadeOut = function(onFaded, seconds) {
             var startFading = function(displayObject, onFaded) {
-                var frames = calculateFrameAmount(seconds);
+                var frames = currentFPS * seconds;
                 var c = 0;
                 function fade() {
                     if (c >= frames) {
@@ -266,11 +235,72 @@ engine.graphics = (function() {
     }
 
     return {
-        TextureGenerator: TextureGenerator,
+        TextureGenerator: new (function () {
+            var gridSize = undefined;
+
+            this.generate = function(path) {
+                var texture = PIXI.Texture.fromImage(path);
+                return texture;
+            };
+
+            this.setGridSize = function(gs) {
+                gridSize = gs;
+            };
+
+            // scale is an optional additional custom scaling factor
+            this.generateSprite = function(texture, scale) {
+                if (scale == undefined) scale = 1;
+                var sprite = new PIXI.Sprite(texture);
+                var xScale = 1, yScale = 1;
+                if (gridSize != undefined) {
+                    xScale = gridSize/sprite.width * scale;
+                    yScale = gridSize/sprite.height * scale;
+                }
+                sprite.scale = new PIXI.Point(xScale, yScale);
+                return sprite;
+            };
+
+            this.getSpritePivot = function(sprite) {
+                return new PIXI.Point(sprite._texture.width/2, sprite._texture.height/2);
+            };
+
+            this.getDisplayObjectPivot = function(displayObject) {
+                return new PIXI.Point(displayObject.width/2, displayObject.height/2);
+            };
+        })(),
+
         GameGraphics: GameGraphics,
+
         GraphicObject: GraphicObject,
-        getCurrentFPS: getCurrentFPS,
-        calculateFrameAmount: calculateFrameAmount
+
+        getCurrentFPS: function () {
+            return currentFPS;
+        },
+
+        calculateFrameAmount: function (time) {
+            return currentFPS * time;
+        },
+
+        updateTexturePackList: function() {
+            texturePacks = [];
+            var i = 0;
+            var loading = true;
+            function tryLoad(path) {
+                if (loading) {
+                    ajax.fileExists(path, function(exists) {
+                        if (exists) {
+                            TexturePack.load(path.replace("pack"));
+                        } else {
+                            loading = false;
+                        }
+                    });
+                }
+            }
+        },
+
+        getTexturePacks: function() {
+            return texturePacks;
+        }
     };
 
 })();
