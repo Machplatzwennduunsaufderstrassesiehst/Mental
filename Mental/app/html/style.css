@@ -1,10 +1,19 @@
-* {transition: font-size 0.5s, padding 0.5s, top 1.5s, left 0.5s, width 0.5s, height 0.5s, opacity 0.5s, color 0.5s, background 0.5s, box-shadow 0.5s;text-shadow:none;}
+* {
+    transition: font-size 0.5s, padding 0.5s, top 1.5s, left 0.5s, width 0.5s, height 0.5s, opacity 0.5s, color 0.5s, background 0.5s, box-shadow 0.5s;
+    text-shadow: none;
+}
 
-table {border: none; margin:auto;} table * {border:none}
+table {
+    border: none;
+    margin: auto;
+}
 
+table * {
+    border: none
+}
 
 body {
-    font-family: Arial, Sans;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
@@ -21,7 +30,7 @@ body {
     border: 2px solid #abf;
     background-color: white;
     padding: 10px;
-    font-family: "Ubuntu Mono", "Mono Space", mono;
+    font-family: "Ubuntu Mono", "Mono Space", monospace;
     overflow-y: scroll;
     height: 500px;
     display: none;
@@ -60,9 +69,9 @@ body {
     color: #000;
     text-align: center;
     position: absolute;
-    left:100px;
-    top:100px;
-    margin:auto;
+    left: 100px;
+    top: 100px;
+    margin: auto;
     width: 60%;
     max-width: 25em;
     min-height: 10%;
@@ -93,11 +102,11 @@ body {
 }
 
 .btnInput {
-    float:right;
-    margin-right:18px;
-    margin-top:2px;
-    border-radius:10px;
-    cursor:pointer;
+    float: right;
+    margin-right: 18px;
+    margin-top: 2px;
+    border-radius: 10px;
+    cursor: pointer;
 }
 
 .btn {
@@ -107,7 +116,7 @@ body {
     padding: 3px;
     font-size: 0.8em;
     border-radius: 0.5em;
-    display:inline-block;
+    display: inline-block;
     transition: background 0s;
 }
 
@@ -134,9 +143,8 @@ body {
     border-radius: 4px;
     background-color: #eaeaea;
     color: black;
-    margin: auto;
     padding: 6px;
-    margin-top: 5px;
+    margin: 5px auto auto;
     cursor: pointer;
     text-align: left;
     box-shadow: 0px 0px 0.2em #aaa;
@@ -152,24 +160,27 @@ body {
 }
 
 .exerciseUI {
-    padding:5px;
-    background-color:white;
-    border:0;
-    margin:0;
-    height:auto;
+    padding: 5px;
+    background-color: white;
+    border: 0;
+    margin: 0;
+    height: auto;
     box-shadow: none;
     font-size: 1em;
     min-width: 100px;
-    display:inline-block;
+    display: inline-block;
 }
-.exerciseUI:hover, .exerciseUI:focus {border:0;box-shadow:0;}
+
+.exerciseUI:hover, .exerciseUI:focus {
+    border: 0;
+    box-shadow: 0;
+}
 
 #exerciseCountdown {
     display: none;
     font-weight: bold;
-    font-size:1em;
-    padding: 5px;
-    padding-left: 10px;
+    font-size: 1em;
+    padding: 5px 5px 5px 10px;
 }
 
 #numpadTable .btn {
@@ -178,20 +189,19 @@ body {
     width: 2em;
     margin: 0 0.6em 0.6em 0;
     font-weight: bold;
-    display:none;
+    display: none;
 }
 
 #messageContainerDivision {
     margin: 10px auto 0px auto;
     display: inline-block;
     opacity: 0;
-    overflow-y:hidden; 
-    height:1.2em;
-    background-color: #c1cfff; 
+    overflow-y: hidden;
+    height: 1.2em;
+    background-color: #c1cfff;
     padding: 0px 5px 5px 5px;
     border-radius: 5px;
 }
-
 
 #beatBob {
     width: 70%;
@@ -203,7 +213,7 @@ body {
 #beatBobBarLeft {
     background-color: #f22;
     border-radius: 4px 0px 0px 4px;
-    float:right;
+    float: right;
     transition: background 2s, width 2s;
 }
 
@@ -212,8 +222,6 @@ body {
     border-radius: 0px 4px 4px 0px;
     transition: background 2s, width 2s;
 }
-
-
 
 #scoreboardFrame {
     text-align: center;
@@ -234,40 +242,37 @@ body {
 
 #scoreboard td {
     border-top: 4px solid white;
-    padding: 12px;
-    padding-top:2px;
-    padding-bottom:2px;
+    padding: 2px 12px;
     vertical-align: middle;
 }
-#scoreboard td + td { border-left: 2px solid white;margin:0;}
+
+#scoreboard td + td {
+    border-left: 2px solid white;
+    margin: 0;
+}
 
 #scoreboard th {
-    padding: 12px;
-    padding-top:0px;
-    padding-bottom:0px;
+    padding: 0px 12px;
     margin: 0;
 }
 
 .lvlProgress {
-    display:inline-block;
-    width:60px;
-    background-color:#dadada;
-    border-radius:4px;
+    display: inline-block;
+    width: 60px;
+    background-color: #dadada;
+    border-radius: 4px;
 }
 
 .lvlProgressBar {
-    width:0%;
-    padding:0;
-    background-color:#7cf;
+    width: 0%;
+    padding: 0;
+    background-color: #7cf;
     box-shadow: 0px 0px 3px #888;
-    display:block;
-    opacity:0.5;
-    border-radius:4px;
+    display: block;
+    opacity: 0.5;
+    border-radius: 4px;
     height: 0.75em;
 }
-
-
-
 
 .userInfo {
     color: #444;
@@ -287,7 +292,7 @@ body {
     padding: 10px;
     margin-bottom: 12px;
     border: 1px solid #abf;
-    transition-duration: 0;
+    transition-duration: 0s;
 }
 
 .shopItem td {
@@ -299,9 +304,6 @@ body {
     padding: 0.5em;
     width: 6.5em;
 }
-
-
-
 
 #infobox {
     opacity: 0.7;
