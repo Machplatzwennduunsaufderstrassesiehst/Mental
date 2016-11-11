@@ -6,19 +6,7 @@ window.engine = {};
 
 engine.graphics = (function() {
 
-    var texturePackPath = "/graphics/tgm/textures/";
-
     var currentFPS = 30;
-
-    var texturePacks = [];
-
-    function TexturePack(path) {
-
-    }
-
-    TexturePack.load = function(path) {
-        console.log("Loading Texture Pack from " + path);
-    };
 
     function GameGraphics(htmlContainerId) {
         GameGraphics.newestInstance = this;
@@ -145,6 +133,48 @@ engine.graphics = (function() {
         };
     }
 
+    // new
+    function GraphicObject(textureFields, appearances) {
+        var availableAppearanceKeys = Object.keys(appearances);
+        var currentAppearanceKey = availableAppearanceKeys[0];
+        var position = new engine.physics.Position(0, 0, 0);
+
+        function updateAppearance() {
+            for (var textureFieldKey in textureFields) {
+                var textureField = textureFields[textureFieldKey];
+                if (textureFieldKey in Object.keys(appearances[currentAppearanceKey])) {
+                    var textureFieldAppearance = appearances[currentAppearanceKey][textureFieldKey];
+                    for (var optionKey in textureFieldAppearance) {
+                        var optionValue = textureFieldAppearance[optionKey];
+                        textureField.setOption(optionKey, optionValue);
+                    }
+                } else {
+                    console.log("No textureField information in appearance.");
+                }
+            }
+        }
+
+        this.getSprites = function() {
+            return textureFields;
+        };
+
+        this.getAppearance = function() {
+            return appearances[currentAppearanceKey];
+        };
+
+        this.setAppearance = function(appearanceKey) {
+            currentAppearanceKey = appearanceKey;
+            updateAppearance();
+        };
+
+        var setPosition = this.setPosition = function(position_) {
+            for (var i in textureFields) {
+                textureFields[i].setPosition(position_);
+            }
+            position = position_;
+        }
+    }
+
     function GraphicObject(sprite_) {
         var latestPosition = new engine.physics.Position(-1000,-1000);
         var positionQueue = [latestPosition];
@@ -239,8 +269,7 @@ engine.graphics = (function() {
             var gridSize = undefined;
 
             this.generate = function(path) {
-                var texture = PIXI.Texture.fromImage(path);
-                return texture;
+                return PIXI.Texture.fromImage(path);
             };
 
             this.setGridSize = function(gs) {
@@ -273,34 +302,9 @@ engine.graphics = (function() {
 
         GraphicObject: GraphicObject,
 
-        getCurrentFPS: function () {
-            return currentFPS;
-        },
-
         calculateFrameAmount: function (time) {
             return currentFPS * time;
         },
-
-        updateTexturePackList: function() {
-            texturePacks = [];
-            var i = 0;
-            var loading = true;
-            function tryLoad(path) {
-                if (loading) {
-                    ajax.fileExists(path, function(exists) {
-                        if (exists) {
-                            TexturePack.load(path.replace("pack"));
-                        } else {
-                            loading = false;
-                        }
-                    });
-                }
-            }
-        },
-
-        getTexturePacks: function() {
-            return texturePacks;
-        }
     };
 
 })();

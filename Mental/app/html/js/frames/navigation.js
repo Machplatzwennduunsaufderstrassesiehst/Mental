@@ -31,11 +31,19 @@ function Frame(id_) {
     var onopen = function(){};
     var onclose = function(){};
     var transitionTime = this.transitionTime = 300;
+    var observers = [];
+
     window.addEventListener("load", function() {
         byID(id).style.transitionDuration = (transitionTime / 1000) + "s";
     });
     
     var open = false;
+
+    this.setObservers = function() {
+        for (var i in arguments) {
+            observers.add(arguments[i]);
+        }
+    };
     
     this.isOpen = function() {
         return open;
@@ -52,12 +60,18 @@ function Frame(id_) {
     var notifyOpen = this.notifyOpen = function() {
         if (open) return;
         open = true;
+        for (var i = 0; i < observers.length; i++) {
+            serverConnection.add(observers[i]);
+        }
         onopen();    
     };
     
     var notifyClose = this.notifyClose = function() {
         if (!open) return;
         open = false;
+        for (var i = 0; i < observers.length; i++) {
+            serverConnection.remove(observers[i]);
+        }
         onclose();
     };
 
@@ -65,14 +79,6 @@ function Frame(id_) {
         var element = byID(id);
         element.style.opacity = 0;
         element.style.display = "none";
-        return;
-        /*if (element.style.display == "none") return;
-        if (!smoothLock.acquire(smoothClose)) return;
-        console.log(element);
-        console.log("close");
-        element.setAttribute("data-old-style-display", element.style.display);
-        element.style.opacity = 0;
-        setTimeout(function(){element.style.display = "none";smoothLock.release();isVisible = false;}, transitionTime);*/
     };
 
     var smoothOpen = this.smoothOpen = function() {
@@ -80,14 +86,6 @@ function Frame(id_) {
         element.style.display = "block";
         element.style.opacity = 0;
         setTimeout(function(){element.style.opacity = 1;},10);
-        return;
-        /*if (!smoothLock.acquire(smoothOpen)) return;
-        console.log(element);
-        console.log("open");
-        var d = element.getAttribute("data-old-style-display");
-        if (d == null || d == "none" || d == "") d = "block";
-        element.style.display = d;
-        setTimeout(function(){element.style.opacity = 1;smoothLock.release();isVisible = true;}, transitionTime);*/
     };
     
     navigation.registerFrame(this);

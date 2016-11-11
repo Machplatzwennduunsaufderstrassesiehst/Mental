@@ -259,16 +259,16 @@ TrainGame.environment = (function() {
 
         this.initialize = function() {
             var predecessor = this.getPredecessor();
+            var predecessorCoords;
             if (this.hasPredecessor()) {
-                var predecessorCoords = {x:predecessor.getX(), y:predecessor.getY()};
+                predecessorCoords = {x:predecessor.getX(), y:predecessor.getY()};
             } else {
-                var predecessorCoords = {x:i, y:j-1};
+                predecessorCoords = {x:i, y:j-1};
             }
             for (var s = 0; s < successors.length; s++) {
                 switchingOrder[s] = s;
                 var successorCoords = {x:successors[s].getX(), y:successors[s].getY()};
-                var lane = new Lane(i, j, predecessorCoords, successorCoords);
-                lanes[s] = lane;
+                lanes[s] = new Lane(i, j, predecessorCoords, successorCoords);
                 var onl = function(index) {
                     return function(sprite) {
                         TrainGame.instance.graphics.addEnvironment(sprite);
