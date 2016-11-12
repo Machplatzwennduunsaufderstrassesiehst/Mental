@@ -17,3 +17,5 @@ Mental/app/src/androidTest/java/de/soeiner/mental/ClassicTest.java
 
 Mental/.idea/vcs.xml
 Mental/.idea/misc.xml
+
+*.uxf

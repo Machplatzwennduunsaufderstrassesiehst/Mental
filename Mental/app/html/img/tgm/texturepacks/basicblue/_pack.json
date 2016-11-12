@@ -1,6 +1,91 @@
 {
   "gridSize": 100,
   "objects": {
-    "train":
+    "train": {
+      "textureFields": {
+        "base": {},
+        "colorMask": {"relPosition": {"x":0, "y":-10}}
+      },
+      "appearances": {
+        "default": {
+          "base": {
+            "imageFile": "train.png",
+            "zIndex": 10
+          },
+          "colorMask": {
+            "imageFile": "trainColorMask.png",
+            "alpha": 1,
+            "zIndex": 20
+          }
+        },
+        "bomb": {
+          "base": {
+            "imageFile": "bombTrain.png"
+          },
+          "colorMask": {
+            "alpha": 0
+          }
+        }
+      }
+    },
+    "straight": {
+      "textureFields": {
+        "base": {}
+      },
+      "appearances": {
+        "default": {
+          "base": {
+            "imageFile": "straight.png"
+          }
+        }
+      }
+    },
+    "turnRight": {
+      "textureFields": {
+        "base": {
+          "relRotation": -1.5708
+        }
+      },
+      "appearances": {
+        "default": {
+          "base": {
+            "imageFile": "turn.png"
+          }
+        }
+      }
+    },
+    "turnLeft": {
+      "textureFields": {
+        "base": {}
+      },
+      "appearances": {
+        "default": {
+          "base": {
+            "imageFile": "turn.png"
+          }
+        }
+      }
+    },
+    "goal": {
+      "textureFields": {
+        "base": {},
+        "colorMask": {}
+      },
+      "appearances": {
+        "default": {
+          "base": {
+            "imageFile": "goal.png"
+          },
+          "colorMask": {
+            "imageFile": "goalColorMask.png"
+          }
+        },
+        "destroyed": {
+          "base": {
+            "imageFile": "brokengoal.png"
+          }
+        }
+      }
+    }
   }
 }

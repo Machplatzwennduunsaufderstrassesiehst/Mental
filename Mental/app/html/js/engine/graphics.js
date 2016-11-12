@@ -1,10 +1,8 @@
-
-
 /* global PIXI, byID */
 
-window.engine = {};
+var engine = {};
 
-engine.graphics = (function() {
+engine.graphics = (function () {
 
     var currentFPS = 30;
 
@@ -14,9 +12,11 @@ engine.graphics = (function() {
         var environmentSprites = [];
         var running = false;
 
+        var zContainer = {};
+
         var renderer = new PIXI.autoDetectRenderer(
             1000, 1000,
-            {antialias:true, transparent:true}
+            {antialias: true, transparent: true}
         );
         var stage = new PIXI.Container();
         var environment = new PIXI.Container();
@@ -24,20 +24,22 @@ engine.graphics = (function() {
         stage.addChild(environment);
         stage.addChild(staticEnvironment);
 
-        this.resizeRenderer = function(width, height) {
+        this.resizeRenderer = function (width, height) {
             renderer.resize(width, height);
         };
 
-        this.setStageScale = function(scale) {
+        this.setStageScale = function (scale) {
             stage.scale = new PIXI.Point(scale, scale);
         };
 
-        this.getStage = function() {
+        this.getStage = function () {
             return stage;
         };
-        this.getRenderer = function() { return renderer; };
+        this.getRenderer = function () {
+            return renderer;
+        };
 
-        var start = this.start = function() {
+        var start = this.start = function () {
             running = true;
             // The renderer will create a canvas element for you that you can then insert into the DOM.
             byID(htmlContainerId).appendChild(renderer.view);
@@ -45,32 +47,42 @@ engine.graphics = (function() {
             fpsMeasureThread = setInterval(measureFPS, 1000);
         };
 
-        var stop = this.stop = function() {
+        var stop = this.stop = function () {
             byID(htmlContainerId).removeChild(renderer.view);
             staticEnvironment.cacheAsBitmap = false;
             running = false;
             clearInterval(fpsMeasureThread);
         };
 
-        var addGraphicObject = this.addGraphicObject = function(graphicObject) {
+        var addGraphicObject = this.addGraphicObject = function (graphicObject) {
             graphicObjects.push(graphicObject);
-            stage.addChild(graphicObject.getSprite());
+            var sprites = graphicObject.getSprites();
+            for (var i in sprites) {
+                stage.addChild(sprites[i]);
+            }
         };
 
-        this.addSprite = function(sprite) {stage.addChild(sprite);};
-        this.removeSprite = function(sprite) {stage.removeChild(sprite);};
+        this.addSprite = function (sprite) {
+            stage.addChild(sprite);
+        };
+        this.removeSprite = function (sprite) {
+            stage.removeChild(sprite);
+        };
 
-        this.centerSprite = function(sprite) {
+        this.centerSprite = function (sprite) {
             sprite.position.x = renderer.width / 2 / stage.scale.x;
             sprite.position.y = renderer.height / 2 / stage.scale.y;
         };
 
-        var removeGraphicObject = this.removeGraphicObject = function(graphicObject) {
+        var removeGraphicObject = this.removeGraphicObject = function (graphicObject) {
             graphicObjects.remove(graphicObject);
-            stage.removeChild(graphicObject.getSprite());
+            var sprites = graphicObject.getSprites();
+            for (var i in sprites) {
+                stage.remove(sprites[i]);
+            }
         };
 
-        var addEnvironment = this.addEnvironment = function(sprite, cache) {
+        var addEnvironment = this.addEnvironment = function (sprite, cache) {
             if (cache === true) {
                 staticEnvironment.addChild(sprite);
             } else {
@@ -80,17 +92,17 @@ engine.graphics = (function() {
             //log("environment sprite added: " + sprite.position.x + " " + sprite.position.y);
         };
 
-        var removeEnvironment = this.removeEnvironment = function(sprite) {
+        var removeEnvironment = this.removeEnvironment = function (sprite) {
             environment.removeChild(sprite);
             staticEnvironment.removeChild(sprite);
             environmentSprites.remove(sprite);
         };
 
-        this.cacheStaticEnvironment = function() {
+        this.cacheStaticEnvironment = function () {
             staticEnvironment.cacheAsBitmap = true;
         };
 
-        this.clearEnvironment = function() {
+        this.clearEnvironment = function () {
             for (var i = 0; i < environmentSprites.length; i++) {
                 removeEnvironment(environmentSprites[i]);
             }
@@ -99,6 +111,7 @@ engine.graphics = (function() {
         var fpsMeasureThread = null;
         var measurements = [60];
         var fpsMeasurementsSize = 3;
+
         function measureFPS() {
             measurements.unshift(frameCounter);
             if (measurements.length > fpsMeasurementsSize) measurements.pop();
@@ -108,7 +121,10 @@ engine.graphics = (function() {
             for (var i = 0; i < measurements.length; i++) totalFPS += measurements[i];
             currentFPS = totalFPS / measurements.length;
         }
-        this.getCurrentFPS = function(){return currentFPS;};
+
+        this.getCurrentFPS = function () {
+            return currentFPS;
+        };
         var frameCounter = 0;
 
         function animate() {
@@ -128,65 +144,79 @@ engine.graphics = (function() {
             renderer.render(stage);
         }
 
-        this.degreesToRadian = function(deg) {
+        this.degreesToRadian = function (deg) {
             return deg / 360 * Math.PI * 2;
         };
     }
 
     // new
     function GraphicObject(textureFields, appearances) {
-        var availableAppearanceKeys = Object.keys(appearances);
-        var currentAppearanceKey = availableAppearanceKeys[0];
-        var position = new engine.physics.Position(0, 0, 0);
 
         function updateAppearance() {
             for (var textureFieldKey in textureFields) {
                 var textureField = textureFields[textureFieldKey];
-                if (textureFieldKey in Object.keys(appearances[currentAppearanceKey])) {
+                if (textureFieldKey in appearances[currentAppearanceKey]) {
                     var textureFieldAppearance = appearances[currentAppearanceKey][textureFieldKey];
                     for (var optionKey in textureFieldAppearance) {
                         var optionValue = textureFieldAppearance[optionKey];
                         textureField.setOption(optionKey, optionValue);
                     }
                 } else {
-                    console.log("No textureField information in appearance.");
+                    console.log("No textureField information in appearance for key: " + textureFieldKey + ". appearance:");
+                    console.log(appearances[currentAppearanceKey]);
                 }
             }
         }
 
-        this.getSprites = function() {
+        this.getSprites = function () {
             return textureFields;
         };
 
-        this.getAppearance = function() {
+        this.getTextureField = function (textureFieldKey) {
+            return textureFields[textureFieldKey];
+        };
+
+        this.getAppearance = function () {
             return appearances[currentAppearanceKey];
         };
 
-        this.setAppearance = function(appearanceKey) {
+        this.setAppearance = function (appearanceKey) {
             currentAppearanceKey = appearanceKey;
             updateAppearance();
         };
 
-        var setPosition = this.setPosition = function(position_) {
+        var setPosition = this.setPosition = function (position_) {
+            var deltaRotation = position_.rotation - position.rotation;
             for (var i in textureFields) {
-                textureFields[i].setPosition(position_);
+                textureFields[i].setPosition(position_.getX(), position_.getY());
+                textureFields[i].changeRotation(deltaRotation);
             }
             position = position_;
+        };
+        
+        try {
+            var availableAppearanceKeys = Object.keys(appearances);
+            var currentAppearanceKey = availableAppearanceKeys[0];
+            var position = new engine.physics.Position(0, 0, 0);
+            updateAppearance();
+        } catch (e) {
+
         }
+
     }
 
-    function GraphicObject(sprite_) {
-        var latestPosition = new engine.physics.Position(-1000,-1000);
+    function MovingObject(textureFields, appearances) {
+        GraphicObject.call(this, textureFields, appearances);
+
+        var latestPosition = new engine.physics.Position(-1000, -1000);
         var positionQueue = [latestPosition];
         var movements = {};
         var currentMovement = null;
         var movementQueue = [];
 
-        var sprite = sprite_;
-
         // pop the next position on the position queue and return it
         // called by render loop
-        this.getNextPosition = function() {
+        this.getNextPosition = function () {
             if (sprite == undefined) {
                 log("GO.getNextPosition: sprite still undefined");
                 return false;
@@ -204,30 +234,24 @@ engine.graphics = (function() {
                 }
             }
             if (p == undefined) return false;
-            sprite.position.x = p.x;
-            sprite.position.y = p.y;
-            sprite.rotation = p.rotation;
+            this.setPosition(p);
             return p;
         };
 
-        this.getPos = function() {
-            return (latestPosition != undefined ? latestPosition : new engine.physics.Position(-1000,-1000));
+        this.getPos = function () {
+            return (latestPosition != undefined ? latestPosition : new engine.physics.Position(-1000, -1000));
         };
 
-        this.setPos = function(position) {
+        this.setPos = function (position) {
             positionQueue = [position]; // set positionQueue so it only contains the new position
             movementQueue = [];
         };
 
-        this.getSprite = function() {
-            return sprite;
-        };
-
-        this.addMovement = function(key, movement) {
+        this.addMovement = function (key, movement) {
             movements[key] = movement;
         };
 
-        this.getMovementProgress = function() {
+        this.getMovementProgress = function () {
             if (currentMovement == null) {
                 return 1;
             } else {
@@ -235,18 +259,19 @@ engine.graphics = (function() {
             }
         };
 
-        this.queueMovement = function(movement) {
+        this.queueMovement = function (movement) {
             movementQueue.unshift(movement);
         };
 
-        this.queueMovementByKey = function(key) {
+        this.queueMovementByKey = function (key) {
             movementQueue.unshift(movements[key]);
         };
 
-        this.fadeOut = function(onFaded, seconds) {
-            var startFading = function(displayObject, onFaded) {
+        this.fadeOut = function (onFaded, seconds) {
+            var startFading = function (displayObjects, onFaded) {
                 var frames = currentFPS * seconds;
                 var c = 0;
+
                 function fade() {
                     if (c >= frames) {
                         onFaded();
@@ -254,47 +279,53 @@ engine.graphics = (function() {
                     }
                     c++;
                     setTimeout(fade, seconds * 1000 / frames);
-                    displayObject.alpha = displayObject.alpha - 1 / frames;
+                    for (i in displayObjects) {
+                        displayObjects[i].alpha = displayObjects[i].alpha - 1 / frames;
+                    }
                 }
-                return function() {
+
+                return function () {
                     fade();
                 };
-            }(sprite, onFaded);
+            }(this.getSprites(), onFaded);
             startFading();
         };
     }
+
+    MovingObject.prototype = new GraphicObject;
+    MovingObject.prototype.constructor = MovingObject;
 
     return {
         TextureGenerator: new (function () {
             var gridSize = undefined;
 
-            this.generate = function(path) {
+            this.generate = function (path) {
                 return PIXI.Texture.fromImage(path);
             };
 
-            this.setGridSize = function(gs) {
+            this.setGridSize = function (gs) {
                 gridSize = gs;
             };
 
             // scale is an optional additional custom scaling factor
-            this.generateSprite = function(texture, scale) {
+            this.generateSprite = function (texture, scale) {
                 if (scale == undefined) scale = 1;
                 var sprite = new PIXI.Sprite(texture);
                 var xScale = 1, yScale = 1;
                 if (gridSize != undefined) {
-                    xScale = gridSize/sprite.width * scale;
-                    yScale = gridSize/sprite.height * scale;
+                    xScale = gridSize / sprite.width * scale;
+                    yScale = gridSize / sprite.height * scale;
                 }
                 sprite.scale = new PIXI.Point(xScale, yScale);
                 return sprite;
             };
 
-            this.getSpritePivot = function(sprite) {
-                return new PIXI.Point(sprite._texture.width/2, sprite._texture.height/2);
+            this.getSpritePivot = function (sprite) {
+                return new PIXI.Point(sprite._texture.width / 2, sprite._texture.height / 2);
             };
 
-            this.getDisplayObjectPivot = function(displayObject) {
-                return new PIXI.Point(displayObject.width/2, displayObject.height/2);
+            this.getDisplayObjectPivot = function (displayObject) {
+                return new PIXI.Point(displayObject.width / 2, displayObject.height / 2);
             };
         })(),
 
@@ -304,7 +335,8 @@ engine.graphics = (function() {
 
         calculateFrameAmount: function (time) {
             return currentFPS * time;
-        },
+        }
     };
 
-})();
+})
+();
