@@ -1,5 +1,6 @@
 {
   "gridSize": 100,
+  "staticLayers": [0],
   "objects": {
     "train": {
       "textureFields": {
@@ -10,17 +11,18 @@
         "default": {
           "base": {
             "imageFile": "train.png",
-            "zIndex": 10
+            "layer": 10
           },
           "colorMask": {
             "imageFile": "trainColorMask.png",
             "alpha": 1,
-            "zIndex": 20
+            "layer": 10
           }
         },
         "bomb": {
           "base": {
-            "imageFile": "bombTrain.png"
+            "imageFile": "bombTrain.png",
+            "layer": 10
           },
           "colorMask": {
             "alpha": 0
@@ -35,7 +37,8 @@
       "appearances": {
         "default": {
           "base": {
-            "imageFile": "straight.png"
+            "imageFile": "straight.png",
+            "layer": 0
           }
         }
       }
@@ -68,8 +71,8 @@
     },
     "goal": {
       "textureFields": {
-        "base": {},
-        "colorMask": {}
+        "base": {"layer": 0},
+        "colorMask": {"layer": 0}
       },
       "appearances": {
         "default": {
@@ -85,6 +88,29 @@
             "imageFile": "brokengoal.png"
           }
         }
+      }
+    },
+    "star": {
+      "textureFields": {
+        "base": {"layer": 20}
+      },
+      "appearances": {
+        "default": {
+          "base": {
+            "imageFile": "star.png"
+          }
+        }
+      }
+    }
+  },
+  "animations": {
+    "explosion": {
+      "frames": 16,
+      "filename": "explosion",
+      "properties": {
+        "animationSpeed": 0.33,
+        "scale": 2,
+        "loop": false
       }
     }
   }

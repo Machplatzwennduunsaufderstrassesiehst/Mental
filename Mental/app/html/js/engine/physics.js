@@ -1,6 +1,5 @@
+engine.physics = (function () {
 
-engine.physics = (function() {
-    
     function Vector(x, y) {
         this.multiply = function (skalar) {
             x *= skalar;
@@ -48,16 +47,19 @@ engine.physics = (function() {
     };
 
     // used to describe one element of a movement
-    function Position(x_, y_, r_) {
-        var x = this.x = x_;
-        var y = this.y = y_;
+    function Position(x, y, r) {
+        this.x = x;
+        this.y = y;
+        if (r == undefined) {
+            r = 0;
+        }
+        this.rotation = r;
         this.getX = function () {
             return x;
         };
         this.getY = function () {
             return y;
         };
-        var r = this.rotation = r_;
 
         // only move this position relative to the parameter position
         this.getNextPosition = function (vector) {
@@ -72,6 +74,12 @@ engine.physics = (function() {
         this.copyBy = function (vector) {
             if (vector == undefined) vector = new Vector(0, 0);
             return new Position(Math.floor(x + vector.getX()), Math.floor(y + vector.getY()), r);
+        };
+
+        this.set = function (x_, y_, r_) {
+            x = this.x = x_;
+            y = this.y = y_;
+            r = this.rotation = r_;
         };
     }
 
@@ -227,7 +235,7 @@ engine.physics = (function() {
 
     StraightDeaccelerationMovement.prototype = new Movement;
     StraightDeaccelerationMovement.prototype.constructor = StraightDeaccelerationMovement;
-    
+
     return {
         Vector: Vector,
         Position: Position,

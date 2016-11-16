@@ -4,25 +4,22 @@ var engine = {};
 
 engine.graphics = (function () {
 
-    var currentFPS = 30;
+    var currentFPS = 60;
 
     function GameGraphics(htmlContainerId) {
         GameGraphics.newestInstance = this;
+
+        var stage = new PIXI.Container();
         var graphicObjects = [];
-        var environmentSprites = [];
         var running = false;
 
-        var zContainer = {};
+        var layerContainer = [];
+        var highestLayerIndex = -1;
 
         var renderer = new PIXI.autoDetectRenderer(
-            1000, 1000,
+            200, 200,
             {antialias: true, transparent: true}
         );
-        var stage = new PIXI.Container();
-        var environment = new PIXI.Container();
-        var staticEnvironment = new PIXI.Container();
-        stage.addChild(environment);
-        stage.addChild(staticEnvironment);
 
         this.resizeRenderer = function (width, height) {
             renderer.resize(width, height);
@@ -35,13 +32,29 @@ engine.graphics = (function () {
         this.getStage = function () {
             return stage;
         };
+
         this.getRenderer = function () {
             return renderer;
         };
 
+        this.setStaticLayers = function (staticLayers) {
+            for (var layerIndex in staticLayers) {
+                var layer = staticLayers[layerIndex];
+                if (layerContainer[layer] == undefined) {
+                    layerContainer[layer] = new PIXI.Container();
+                }
+                layerContainer[layer].cacheAsBitmap = true;
+            }
+        };
+
         var start = this.start = function () {
             running = true;
-            // The renderer will create a canvas element for you that you can then insert into the DOM.
+            for (var i in layerContainer) {
+                var c = layerContainer[i];
+                if (c instanceof PIXI.Container && c.children.length > 0) {
+                    stage.addChild(c);
+                }
+            }
             byID(htmlContainerId).appendChild(renderer.view);
             animate();
             fpsMeasureThread = setInterval(measureFPS, 1000);
@@ -49,63 +62,63 @@ engine.graphics = (function () {
 
         var stop = this.stop = function () {
             byID(htmlContainerId).removeChild(renderer.view);
-            staticEnvironment.cacheAsBitmap = false;
             running = false;
             clearInterval(fpsMeasureThread);
         };
 
         var addGraphicObject = this.addGraphicObject = function (graphicObject) {
             graphicObjects.push(graphicObject);
-            var sprites = graphicObject.getSprites();
-            for (var i in sprites) {
-                stage.addChild(sprites[i]);
+            var textureFields = graphicObject.createTextureFields();
+            for (var i in textureFields) {
+                this.addTextureField(textureFields[i]);
             }
         };
 
-        this.addSprite = function (sprite) {
-            stage.addChild(sprite);
+        var removeGraphicObject = this.removeGraphicObject = function (graphicObject) {
+            graphicObjects.remove(graphicObject);
+            var textureFields = graphicObject.createTextureFields();
+            for (var i in textureFields) {
+                this.removeTextureField(textureFields[i])
+            }
         };
-        this.removeSprite = function (sprite) {
-            stage.removeChild(sprite);
+
+        this.addTextureField = function (textureField) {
+            var layer = textureField.layer;
+            if (layerContainer[layer] == undefined) {
+                layerContainer[layer] = new PIXI.Container();
+                if (layer > highestLayerIndex) {
+                    highestLayerIndex = layer;
+                }
+            }
+            layerContainer[layer].addChild(textureField);
+        };
+        this.removeTextureField = function (textureField) {
+            textureField.parent.removeChild(textureField);
+        };
+
+        this.playAnimation = function (animation, position, layer) {
+            var parent;
+            if (layerContainer[layer]) {
+                parent = layerContainer[layer];
+            } else if (layerContainer[highestLayerIndex]) {
+                parent = layerContainer[highestLayerIndex];
+            } else {
+                parent = stage;
+            }
+            animation.position.set(position.getX(), position.getY());
+            animation.rotation = position.rotation;
+            parent.addChild(animation);
+            animation.onComplete = (function (parent, animation) {
+                return function () {
+                    parent.removeChild(animation);
+                }
+            })(parent, animation);
+            animation.play();
         };
 
         this.centerSprite = function (sprite) {
             sprite.position.x = renderer.width / 2 / stage.scale.x;
             sprite.position.y = renderer.height / 2 / stage.scale.y;
-        };
-
-        var removeGraphicObject = this.removeGraphicObject = function (graphicObject) {
-            graphicObjects.remove(graphicObject);
-            var sprites = graphicObject.getSprites();
-            for (var i in sprites) {
-                stage.remove(sprites[i]);
-            }
-        };
-
-        var addEnvironment = this.addEnvironment = function (sprite, cache) {
-            if (cache === true) {
-                staticEnvironment.addChild(sprite);
-            } else {
-                environment.addChild(sprite);
-            }
-            environmentSprites.push(sprite);
-            //log("environment sprite added: " + sprite.position.x + " " + sprite.position.y);
-        };
-
-        var removeEnvironment = this.removeEnvironment = function (sprite) {
-            environment.removeChild(sprite);
-            staticEnvironment.removeChild(sprite);
-            environmentSprites.remove(sprite);
-        };
-
-        this.cacheStaticEnvironment = function () {
-            staticEnvironment.cacheAsBitmap = true;
-        };
-
-        this.clearEnvironment = function () {
-            for (var i = 0; i < environmentSprites.length; i++) {
-                removeEnvironment(environmentSprites[i]);
-            }
         };
 
         var fpsMeasureThread = null;
@@ -149,30 +162,29 @@ engine.graphics = (function () {
         };
     }
 
-    // new
     function GraphicObject(textureFields, appearances) {
 
         function updateAppearance() {
             for (var textureFieldKey in textureFields) {
-                var textureField = textureFields[textureFieldKey];
                 if (textureFieldKey in appearances[currentAppearanceKey]) {
+                    var textureField = textureFields[textureFieldKey];
                     var textureFieldAppearance = appearances[currentAppearanceKey][textureFieldKey];
                     for (var optionKey in textureFieldAppearance) {
                         var optionValue = textureFieldAppearance[optionKey];
                         textureField.setOption(optionKey, optionValue);
                     }
                 } else {
-                    console.log("No textureField information in appearance for key: " + textureFieldKey + ". appearance:");
+                    console.log("INFO: No textureField information in appearance for key: " + textureFieldKey + ". appearance:");
                     console.log(appearances[currentAppearanceKey]);
                 }
             }
         }
 
-        this.getSprites = function () {
+        this.createTextureFields = function () {
             return textureFields;
         };
 
-        this.getTextureField = function (textureFieldKey) {
+        this.getTextureFieldById = function (textureFieldKey) {
             return textureFields[textureFieldKey];
         };
 
@@ -185,15 +197,36 @@ engine.graphics = (function () {
             updateAppearance();
         };
 
-        var setPosition = this.setPosition = function (position_) {
-            var deltaRotation = position_.rotation - position.rotation;
+        var setPositionByValues = function (x, y, r) {
+            var deltaRotation = r - position.rotation;
             for (var i in textureFields) {
-                textureFields[i].setPosition(position_.getX(), position_.getY());
+                textureFields[i].position.set(x, y);
                 textureFields[i].changeRotation(deltaRotation);
             }
-            position = position_;
+            position.set(x, y, r);
         };
-        
+
+        var setPositionByObject = function (position_) {
+            setPositionByValues(position_.getX(), position_.getY(), position_.rotation);
+        };
+
+        var setPosition = this.setPosition = function () {
+            if (arguments.length == 1) {
+                var position_ = arguments[0];
+                setPositionByObject(position_);
+            } else if (arguments.length >= 2) {
+                var x = arguments[0];
+                var y = arguments[1];
+                var r;
+                if (arguments[2]) {
+                    r = arguments[2];
+                } else {
+                    r = 0;
+                }
+                setPositionByValues(x, y, r);
+            }
+        };
+
         try {
             var availableAppearanceKeys = Object.keys(appearances);
             var currentAppearanceKey = availableAppearanceKeys[0];
@@ -296,42 +329,11 @@ engine.graphics = (function () {
     MovingObject.prototype.constructor = MovingObject;
 
     return {
-        TextureGenerator: new (function () {
-            var gridSize = undefined;
-
-            this.generate = function (path) {
-                return PIXI.Texture.fromImage(path);
-            };
-
-            this.setGridSize = function (gs) {
-                gridSize = gs;
-            };
-
-            // scale is an optional additional custom scaling factor
-            this.generateSprite = function (texture, scale) {
-                if (scale == undefined) scale = 1;
-                var sprite = new PIXI.Sprite(texture);
-                var xScale = 1, yScale = 1;
-                if (gridSize != undefined) {
-                    xScale = gridSize / sprite.width * scale;
-                    yScale = gridSize / sprite.height * scale;
-                }
-                sprite.scale = new PIXI.Point(xScale, yScale);
-                return sprite;
-            };
-
-            this.getSpritePivot = function (sprite) {
-                return new PIXI.Point(sprite._texture.width / 2, sprite._texture.height / 2);
-            };
-
-            this.getDisplayObjectPivot = function (displayObject) {
-                return new PIXI.Point(displayObject.width / 2, displayObject.height / 2);
-            };
-        })(),
-
         GameGraphics: GameGraphics,
 
         GraphicObject: GraphicObject,
+
+        MovingObject: MovingObject,
 
         calculateFrameAmount: function (time) {
             return currentFPS * time;
