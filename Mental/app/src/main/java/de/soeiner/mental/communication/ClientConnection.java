@@ -1,10 +1,9 @@
 package de.soeiner.mental.communication;
 
-import com.koushikdutta.async.http.WebSocket;
-
 import de.soeiner.mental.util.JSONObject;
 
 import java.util.ArrayList;
+
 
 import de.soeiner.mental.gameFundamentals.Logger;
 

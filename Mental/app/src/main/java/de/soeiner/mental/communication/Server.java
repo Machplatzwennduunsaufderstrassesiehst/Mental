@@ -1,12 +1,5 @@
 package de.soeiner.mental.communication;
 
-import android.util.Log;
-
-import com.koushikdutta.async.callback.CompletedCallback;
-import com.koushikdutta.async.http.WebSocket;
-import com.koushikdutta.async.http.server.AsyncHttpServer;
-import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
-
 import java.net.UnknownHostException;
 
 import de.soeiner.mental.gameFundamentals.Game;
