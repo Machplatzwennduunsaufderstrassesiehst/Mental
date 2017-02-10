@@ -147,6 +147,14 @@ engine.texture = (function () {
             return staticLayers;
         };
 
+        this.createGraphicObject = function(objectKey) {
+            return new engine.graphics.GraphicObject(this.createTextureFields(objectKey), this.getAppearances(objectKey));
+        };
+
+        this.createMovingObject = function(objectKey) {
+            return new engine.graphics.MovingObject(this.createTextureFields(objectKey), this.getAppearances(objectKey));
+        };
+
     }
 
     function addTexturePack(path) {
@@ -174,7 +182,6 @@ engine.texture = (function () {
 
 
     return {
-
         addTexturePack: addTexturePack,
 
         loadTexturePacks: loadTexturePacks,

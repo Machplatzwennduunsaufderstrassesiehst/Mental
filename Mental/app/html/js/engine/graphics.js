@@ -11,6 +11,7 @@ engine.graphics = (function () {
 
         var stage = new PIXI.Container();
         var graphicObjects = [];
+        var movingObjects = [];
         var running = false;
 
         var layerContainer = [];
@@ -66,17 +67,23 @@ engine.graphics = (function () {
             clearInterval(fpsMeasureThread);
         };
 
-        var addGraphicObject = this.addGraphicObject = function (graphicObject) {
+        this.addGraphicObject = function (graphicObject) {
             graphicObjects.push(graphicObject);
-            var textureFields = graphicObject.createTextureFields();
+            if (graphicObject instanceof MovingObject) {
+                movingObjects.push(graphicObject);
+            }
+            var textureFields = graphicObject.getTextureFields();
             for (var i in textureFields) {
                 this.addTextureField(textureFields[i]);
             }
         };
 
-        var removeGraphicObject = this.removeGraphicObject = function (graphicObject) {
+        this.removeGraphicObject = function (graphicObject) {
             graphicObjects.remove(graphicObject);
-            var textureFields = graphicObject.createTextureFields();
+            if (graphicObject instanceof MovingObject) {
+                movingObjects.remove(graphicObject);
+            }
+            var textureFields = graphicObject.getTextureFields();
             for (var i in textureFields) {
                 this.removeTextureField(textureFields[i])
             }
@@ -146,11 +153,11 @@ engine.graphics = (function () {
 
             requestAnimationFrame(animate);
 
-            for (var i = 0; i < graphicObjects.length; i++) {
+            for (var i = 0; i < movingObjects.length; i++) {
                 try {
                     graphicObjects[i].getNextPosition();
                 } catch (e) {
-                    //log(e);
+                    log(e);
                 }
             }
 
@@ -180,7 +187,7 @@ engine.graphics = (function () {
             }
         }
 
-        this.createTextureFields = function () {
+        this.getTextureFields = function () {
             return textureFields;
         };
 
@@ -198,6 +205,9 @@ engine.graphics = (function () {
         };
 
         var setPositionByValues = function (x, y, r) {
+            if (r === undefined) {
+                r = 0;
+            }
             var deltaRotation = r - position.rotation;
             for (var i in textureFields) {
                 textureFields[i].position.set(x, y);
@@ -217,14 +227,13 @@ engine.graphics = (function () {
             } else if (arguments.length >= 2) {
                 var x = arguments[0];
                 var y = arguments[1];
-                var r;
-                if (arguments[2]) {
-                    r = arguments[2];
-                } else {
-                    r = 0;
-                }
+                var r = arguments[2];
                 setPositionByValues(x, y, r);
             }
+        };
+
+        this.getPosition = function() {
+            return position;
         };
 
         try {
@@ -241,63 +250,35 @@ engine.graphics = (function () {
     function MovingObject(textureFields, appearances) {
         GraphicObject.call(this, textureFields, appearances);
 
-        var latestPosition = new engine.physics.Position(-1000, -1000);
-        var positionQueue = [latestPosition];
-        var movements = {};
+        var position = this.getPosition();
         var currentMovement = null;
-        var movementQueue = [];
+        var moveStartTime = 0;
+        var moveEndTime = 0;
 
-        // pop the next position on the position queue and return it
         // called by render loop
         this.getNextPosition = function () {
-            if (sprite == undefined) {
-                log("GO.getNextPosition: sprite still undefined");
-                return false;
+            var percentage = this.getMovementProgress();
+            if (percentage <= 1) {
+                var newPosition = currentMovement.getPosition(percentage);
+                this.setPosition(newPosition.x, newPosition.y, newPosition.rotation);
             }
-            var p = latestPosition = positionQueue.pop();
-            if (positionQueue.length == 0) {
-                if (movementQueue.length > 0) { // no positions on queue, but movements to be extracted to the positionQueue
-                    currentMovement = movementQueue.pop();
-                    var steps = currentMovement.getSteps();
-                    for (var i = 0; i < steps.length; i++) {
-                        positionQueue.unshift(steps[i]);
-                    }
-                } else { // no movements to be performed, and positionQueue empty => stay at current position (p)
-                    positionQueue.push(p);
-                }
-            }
-            if (p == undefined) return false;
-            this.setPosition(p);
-            return p;
+            return position;
         };
 
-        this.getPos = function () {
-            return (latestPosition != undefined ? latestPosition : new engine.physics.Position(-1000, -1000));
-        };
-
-        this.setPos = function (position) {
-            positionQueue = [position]; // set positionQueue so it only contains the new position
-            movementQueue = [];
-        };
-
-        this.addMovement = function (key, movement) {
-            movements[key] = movement;
+        this.setMovement = function (movement, time) {
+            moveStartTime = new Date().getTime();
+            currentMovement = movement;
+            moveEndTime = moveStartTime + time * 1000;
         };
 
         this.getMovementProgress = function () {
-            if (currentMovement == null) {
-                return 1;
+            var total = moveEndTime - moveStartTime;
+            if (total == 0) {
+                return 0;
             } else {
-                return 1.0 - 1.0 * positionQueue.length / currentMovement.getSteps().length;
+                var now = new Date().getTime() - moveStartTime;
+                return now / total;
             }
-        };
-
-        this.queueMovement = function (movement) {
-            movementQueue.unshift(movement);
-        };
-
-        this.queueMovementByKey = function (key) {
-            movementQueue.unshift(movements[key]);
         };
 
         this.fadeOut = function (onFaded, seconds) {
@@ -320,7 +301,7 @@ engine.graphics = (function () {
                 return function () {
                     fade();
                 };
-            }(this.getSprites(), onFaded);
+            }(this.getTextureFields(), onFaded);
             startFading();
         };
     }

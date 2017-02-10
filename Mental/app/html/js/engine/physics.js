@@ -76,47 +76,26 @@ engine.physics = (function () {
             return new Position(Math.floor(x + vector.getX()), Math.floor(y + vector.getY()), r);
         };
 
-        this.set = function (x_, y_, r_) {
-            x = this.x = x_;
-            y = this.y = y_;
-            r = this.rotation = r_;
+        this.set = function () {
+            if (arguments.length == 1) {
+                x = this.x = arguments[0].x;
+                y = this.y = arguments[0].y;
+                r = this.rotation = arguments[0].rotation;
+            } else {
+                x = this.x = arguments[0];
+                y = this.y = arguments[1];
+                r = this.rotation = arguments[2];
+            }
         };
     }
 
-    function Movement(steps) {
-        if (steps == undefined) steps = [];
+    function Movement(startPosition) {
 
-        this.getSteps = function () {
-            return steps;
+        this.startPosition = startPosition;
+
+        this.getPosition = function (percentage) {
         };
 
-        var addVector = this.addVector = function (vector) {
-            steps = copyTo(vector).getSteps();
-        };
-
-        var copyTo = this.copyTo = function (vector) {
-            var movedSteps = [];
-            for (var i = 0; i < steps.length; i++) {
-                //alert(steps[i]);
-                movedSteps[i] = steps[i].copyBy(vector);
-                //alert(movedSteps[i]);
-            }
-            return new Movement(movedSteps);
-        };
-
-        this.getFirst = function () {
-            return steps[0];
-        };
-
-        /**
-         * remove the first p percent positions from position array
-         * @param {number} p percentage between 0 and 1
-         * @returns {undefined}
-         */
-        this.setProgress = function (p) {
-            var newFirstIndex = Math.floor(steps.length * p);
-            steps = steps.splice(newFirstIndex);
-        };
     }
 
     // static Movement class part
@@ -150,51 +129,45 @@ engine.physics = (function () {
         return engine.graphics.calculateFrameAmount(time);
     }
 
-    function StraightMovement(rotation, vector, time) {
-        var steps = [];
+    function StraightMovement(rotation, vector) {
+        Movement.call(this, new Position(0, 0, rotation));
 
         var dx = vector.getX();
         var dy = vector.getY();
 
-        var frames = calculateFrameAmount(time);
+        this.getPosition = function (percentage) {
+            return {
+                x: this.startPosition.x + percentage * dx,
+                y: this.startPosition.y + percentage * dy,
+                rotation: this.startPosition.rotation
+            }
+        };
 
-        var x = 0,
-            y = 0,
-            p;
-        for (var f = 0; f < frames; f++) {
-            x += dx / frames;
-            y += dy / frames;
-            p = new Position(x, y, rotation);
-            steps.push(p);
-        }
-
-        Movement.call(this, steps);
     }
 
     StraightMovement.prototype = new Movement;
     StraightMovement.prototype.constructor = StraightMovement;
 
     /**
-     * @param degrees in radian - for left, + for right turn
+     * @param degrees in radian + for left, - for right turn
      */
-    function TurnMovement(startRotation, radius, degrees, time) {
-        var steps = [];
+    function TurnMovement(startRotation, radius, degrees) {
+        Movement.call(this, new Position(0, 0, startRotation));
 
-        var frames = calculateFrameAmount(time);
-        var stepWide = -degrees / frames;
-        var x, y, p;
-        var r = startRotation;
-        for (var f = 0; f < frames; f++) {
-            r += stepWide;
+        this.getPosition = function (percentage) {
+            r = startRotation - percentage * degrees;
+            var x, y;
             x = Math.cos(r) - Math.cos(startRotation);
             x *= -Math.sign(degrees) * radius;
             y = Math.sin(r) - Math.sin(startRotation);
             y *= -Math.sign(degrees) * radius;
-            p = new Position(x, y, r);
-            steps.push(p);
-        }
+            return {
+                x: this.startPosition.x + x,
+                y: this.startPosition.y + y,
+                rotation: r
+            }
+        };
 
-        Movement.call(this, steps);
     }
 
     TurnMovement.prototype = new Movement;
@@ -203,34 +176,22 @@ engine.physics = (function () {
     /**
      * Straight deacceleration movement
      * @param{number} rotation
-     * @param {engine.physics.Vector} vector
-     * @param {number} initialTimePerTrack
+     * @param {engine.physics.Vector} vector direction and distance
      * @returns {StraightDeaccelerationMovement}
      */
-    function StraightDeaccelerationMovement(rotation, vector, initialTimePerTrack) {
-        var steps = [];
+    function StraightDeaccelerationMovement(rotation, vector) {
+        Movement.call(this, new Position(0, 0, rotation));
 
-        var frames = calculateFrameAmount(initialTimePerTrack);
-
-        var xSpeed = vector.getX() / frames * 2;
-        var ySpeed = vector.getY() / frames * 2;
-
-        var xAcc = -xSpeed / frames;
-        var yAcc = -ySpeed / frames;
-
-        var x = 0,
-            y = 0,
-            p;
-        for (var f = 0; f < frames; f++) {
-            x += xSpeed;
-            y += ySpeed;
-            xSpeed += xAcc;
-            ySpeed += yAcc;
-            p = new Position(x, y, rotation);
-            steps.push(p);
-        }
-
-        Movement.call(this, steps);
+        this.getPosition = function (percentage) {
+            percentage = percentage - percentage * percentage * 0.5;
+            var x = vector.getX() * percentage * 2;
+            var y = vector.getY() * percentage * 2;
+            return {
+                x: this.startPosition.x + x,
+                y: this.startPosition.y + y,
+                rotation: this.startPosition.rotation
+            }
+        };
     }
 
     StraightDeaccelerationMovement.prototype = new Movement;

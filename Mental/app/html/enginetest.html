@@ -31,17 +31,12 @@
             engine.texture.addTexturePack("img/tgm/texturepacks/basicblue");
             engine.texture.loadTexturePacks(function() {
                 var pack = engine.texture.getTexturePacks()[0];
-                var train = new engine.graphics.GraphicObject(pack.createTextureFields("train"), pack.getAppearances("train"));
+                var train = pack.createMovingObject("train");
                 var animation = pack.createAnimation("explosion");
-                train.setPosition(100,100,5);
-                setTimeout(function() {
-                    train.setPosition(new engine.physics.Position(100,100,1));
-                    train.getTextureFieldById("colorMask").tint = 0x00ff00;
-                }, 3000);
-                setTimeout(function() {
-                    train.setPosition(new engine.physics.Position(100,100,2));
-                    train.setAppearance("bomb");
-                }, 4000);
+                train.setPosition(100,100,1.5);
+                var movement = new engine.physics.TurnMovement(1.5, 100, -1.5);
+                movement.startPosition.set(train.getPosition());
+                train.setMovement(movement, 3);
                 graphics_.addGraphicObject(train);
                 graphics_.setStaticLayers(pack.getStaticLayers());
                 graphics_.start();
